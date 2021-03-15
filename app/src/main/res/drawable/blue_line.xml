@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!--状态是 state_checked-->
+    <item android:state_checked="true"
+        >
+        <layer-list>
+            <!-- 假设Radiobutton的高为35dp 距离top30dp-->
+            <item android:top="30dp">
+
+                <shape android:shape="line">
+                    <!-- 实际显示的线 -->
+                    <stroke
+                        android:width="1dp"
+                        android:color="#0897f1"/>
+                    <!-- 形状的高度 -->
+                    <size android:height="4dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <!-- 没有选中时的 背景颜色 -->
+    <item android:drawable="@android:color/transparent"></item>
+
+</selector>

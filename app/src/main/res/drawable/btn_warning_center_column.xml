@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 气象预警栏目按钮 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 默认时的图片 -->
+    <!--<item android:drawable="@drawable/btn_warning_center_column_sel" android:state_pressed="false"/>
+    &lt;!&ndash; 选择时的图片 &ndash;&gt;
+    <item android:drawable="@drawable/btn_warning_center_column_nor" android:state_pressed="true"/>-->
+
+    <item android:drawable="@android:color/transparent" android:state_checked="false"/>
+    <item android:drawable="@color/warnparentgroup" android:state_checked="true"/>
+</selector>

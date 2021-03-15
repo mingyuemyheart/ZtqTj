@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="160dp">
+
+
+
+    <!-- 底部年份和线 -->
+    <RelativeLayout
+        android:id="@+id/layout_bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        >
+
+        <!-- 年份 -->
+        <TextView
+            android:id="@+id/tv_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:layout_marginRight="@dimen/dimen10"
+            android:text="2016年"
+            android:textColor="@color/text_blue"
+            android:textSize="@dimen/text_footnote"
+            android:visibility="invisible"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/tv_year"
+            />
+
+    </RelativeLayout>
+
+    <!-- 左侧时间条 -->
+    <RelativeLayout
+        android:id="@+id/layout_time"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:gravity="center_horizontal"
+        android:layout_above="@id/layout_bottom_line">
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:background="@color/mblue"
+            android:visibility="visible" />
+
+        <!-- 今天的圆圈 -->
+        <TextView
+            android:id="@+id/tv_today"
+            android:layout_width="45dp"
+            android:layout_height="48dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen10"
+            android:background="@drawable/date_bg"
+            android:gravity="center"
+            android:text="今天"
+            android:textColor="@color/mblue"
+            android:textSize="16sp"/>
+
+        <!-- 其他时间的圆圈 -->
+        <LinearLayout
+            android:id="@+id/ll_date"
+            android:layout_width="45dp"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen10"
+            android:gravity="center"
+            android:background="@drawable/date_bg"
+            >
+
+            <TextView
+                android:id="@+id/time_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="-2dp"
+                android:layout_marginTop="-4dp"
+                android:textColor="@color/mblue"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sign_slash"
+                android:textColor="@color/mblue"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/time_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginBottom="-4dp"
+                android:textColor="@color/mblue"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- 图片评论和发表地点 -->
+    <RelativeLayout
+        android:id="@+id/content_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen10"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/layout_time"
+        >
+
+        <TextView
+            android:id="@+id/des_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color" />
+
+        <ImageView
+            android:id="@+id/address_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/des_tv"
+            android:src="@drawable/icon_address" />
+
+        <TextView
+            android:id="@+id/address_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/des_tv"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="3dp"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/address_iv"
+            android:textColor="@color/mgrey"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/content_layout"
+        android:layout_above="@id/layout_bottom_line"
+        >
+        <!-- 图片 -->
+        <ImageView
+            android:id="@+id/image_photo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/no_pic"/>
+
+        <!-- 删除按钮 -->
+        <TextView
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/image_photo"
+            android:layout_marginLeft="@dimen/dimen20"
+            android:layout_toRightOf="@id/image_photo"
+            android:gravity="bottom"
+            android:text="@string/delete"
+            android:textColor="@color/mgrey"
+            android:textSize="@dimen/text_footnote"
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

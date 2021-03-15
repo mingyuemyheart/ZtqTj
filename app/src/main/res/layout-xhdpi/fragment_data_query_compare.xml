@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen10"
+        android:paddingRight="@dimen/dimen10"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <!-- 站点选择 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tv_city"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_data_query_drop_down"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="@dimen/text_footnote"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_town"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_data_query_drop_down"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="@dimen/text_footnote"
+                    />
+
+            </LinearLayout>
+
+            <!-- 日期选择 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen4"
+                android:background="@color/grey_bg"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen10"
+                android:paddingBottom="@dimen/dimen10"
+                android:paddingLeft="@dimen/dimen20"
+                android:paddingRight="@dimen/dimen20"
+                android:paddingTop="@dimen/dimen10"
+                >
+
+                <TextView
+                    android:id="@+id/tv_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/weather_element_query_tips"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="13dp"
+                    />
+
+            </LinearLayout>
+
+            <!-- 查询控件 -->
+            <LinearLayout
+                android:id="@+id/layout_query"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen4"
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tv_item"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_data_query_drop_down"
+                    android:gravity="center"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="12dp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_first_year"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_data_query_drop_down"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="2016"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="@dimen/text_footnote"
+                    android:visibility="visible"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_second_year"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_data_query_drop_down"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:text="2017"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="@dimen/text_footnote"
+                    android:visibility="visible"
+                    />
+
+            </LinearLayout>
+
+            <!-- 查询结果 -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen4"
+                >
+
+                <Button
+                    android:id="@+id/btn_query"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="@dimen/dimen10"
+                    android:background="@drawable/btn_rain_info"
+                    android:text="@string/query"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_footnote"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/btn_query"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen10"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_time_drop_down"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="30dp"
+                        android:drawableLeft="@drawable/icon_data_query_first_year"
+                        android:drawablePadding="@dimen/dimen4"
+                        android:gravity="left"
+                        android:text="第一个年份"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_day_count"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/icon_data_query_scend_year"
+                        android:drawablePadding="@dimen/dimen4"
+                        android:gravity="left"
+                        android:text="第二个年份"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <!-- 柱状图 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+            android:layout_marginTop="@dimen/dimen4"
+            >
+
+            <ImageView
+                android:id="@+id/iv_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/right_data"
+                android:visibility="gone"
+                />
+
+            <com.pcs.ztqtj.view.myview.ElementCompareView
+                android:id="@+id/elementview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dimen4"
+                android:layout_toLeftOf="@id/iv_right"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen4"
+            android:minHeight="60dp"
+            android:visibility="gone"
+            >
+
+            <ImageView
+                android:id="@+id/iv_right2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/right_data"
+                android:visibility="invisible"
+                />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dimen4"
+                android:layout_toLeftOf="@id/iv_right2"
+                android:background="@color/grey2"
+                android:paddingBottom="1dp"
+                android:paddingLeft="1dp"
+                android:paddingTop="1dp"
+                >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/list_month"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:descendantFocusability="blocksDescendants"
+                    android:overScrollMode="never"
+                    android:visibility="visible"
+                    />
+
+            </RelativeLayout>
+
+            <com.pcs.ztqtj.view.myview.MyGridView
+                android:id="@+id/grid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="13"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

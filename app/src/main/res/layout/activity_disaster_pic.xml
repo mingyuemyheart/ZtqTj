@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/layout_root_pic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black" >
+
+    <!-- 图片 -->
+
+    <com.pcs.ztqtj.view.myview.ImageTouchView
+        android:id="@+id/image_pic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+    <!-- 左转 -->
+
+    <Button
+        android:id="@+id/btn_pic_del"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="60dp"
+        android:layout_marginBottom="40dp"
+        android:text="删除"
+        android:background="@mipmap/bt_circle"/>
+    <!-- 右转 -->
+
+    <Button
+        android:id="@+id/btn_pic_up"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="40dp"
+        android:lines="2"
+        android:maxEms="4"
+        android:text="重新上传"
+        android:background="@mipmap/bt_circle" />
+
+    <Button
+        android:id="@+id/btn_disaster_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_back"
+        android:padding="@dimen/dimen10" />
+
+</RelativeLayout>

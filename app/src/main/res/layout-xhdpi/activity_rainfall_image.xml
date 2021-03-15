@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_rainfall_subtitle"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop" >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/query"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_subtitle" />
+
+        <TextView
+            android:id="@+id/like_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@drawable/bg_likespinnertextview"
+            android:drawableRight="@drawable/bg_livequery_drowdown"
+            android:gravity="center"
+            android:paddingLeft="0dp"
+            android:paddingRight="@dimen/dimen4"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_subtitle" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.pcs.ztqtj.view.myview.ImageTouchView
+            android:id="@+id/imageview_show"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/activity_marginleft_right"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/image_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_rainfallimage_left" />
+
+            <ImageButton
+                android:id="@+id/image_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_rainfallimage_right" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

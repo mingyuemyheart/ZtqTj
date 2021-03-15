@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 雨情信息-时间选择点击弹出布局 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_choose_time"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+    
+	<!-- 单时雨量 -->
+    <LinearLayout
+        android:id="@+id/ll_unit_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        
+        <!-- 开始时间 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen4"
+                android:text="@string/total_time"
+                android:textColor="@color/text_blue"
+                android:textSize="@dimen/text_content" />
+
+            <TextView
+                android:id="@+id/tv_total_date"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen4"
+                android:background="@drawable/bg_rain_info_date"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/tv_total_time"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen10"
+                android:background="@drawable/bg_time_pull_down"
+                android:drawableRight="@drawable/icon_time_pull_down"
+                android:gravity="center"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+			<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen4"
+                android:text="@string/hour"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_sure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/dimen10"
+        android:background="@drawable/btn_sure"
+        android:text="@string/sure"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content" />
+
+</LinearLayout>

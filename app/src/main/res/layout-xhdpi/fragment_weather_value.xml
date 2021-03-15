@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_white"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen10"
+        android:paddingRight="@dimen/dimen10"
+        android:paddingBottom="@dimen/dimen4"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_city"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_data_query_drop_down"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"
+                />
+
+            <TextView
+                android:id="@+id/tv_station"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_data_query_drop_down"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_footnote"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/tv_head_year"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/dimen4"
+            android:background="@color/grey_bg"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen4"
+            android:textColor="@color/text_blue"
+            android:textSize="@dimen/text_content"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_data_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen4"
+            android:background="@color/grayline"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/dimen4"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_head_month"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:background="@color/grey_bg"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dimen4"
+                android:textColor="@color/text_blue"
+                android:textSize="@dimen/text_content"
+                />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:paddingLeft="@dimen/dimen10"
+                >
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_data_query_drop_down"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/text_black_common"
+                    android:textSize="@dimen/text_footnote"
+                    />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_data_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen4"
+            android:background="@color/grayline"
+            />
+
+        <LinearLayout
+            android:id="@+id/layout_today"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/gray"
+                android:gravity="center"
+                android:text="@string/history_today"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_content"
+                />
+
+            <TextView
+                android:id="@+id/tv_history_today"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen10"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

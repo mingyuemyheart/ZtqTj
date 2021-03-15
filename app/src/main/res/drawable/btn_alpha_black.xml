@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：全透明，点击变黑色 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 默认时的图片 -->
+    <item android:drawable="@color/alpha100" android:state_pressed="false"/>
+    <!-- 选择时的图片 -->
+    <item android:drawable="@color/bg_black_alpha20" android:state_pressed="true"/>
+
+</selector>

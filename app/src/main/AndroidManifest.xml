@@ -1,0 +1,1283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:tools="http://schemas.android.com/tools"
+    package="com.pcs.ztqtj"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- QQ、QQ空间所需权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <!-- 定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- 联网 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- 读取手机状态（IMEI） 允许应用程序联网，以便向我们的服务器端发送数据。 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <!-- 获取用户手机的IMEI，用来唯一的标识用户。 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <!-- 获取mac地址作为用户的备用唯一标识 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- 开启启动 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- 唤醒屏幕（信鸽） -->
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT"/>
+    <!-- 写SD卡 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- 保持屏幕常亮（雷达、云图） -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <!-- 写配置（信鸽） -->
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+
+    <!-- 用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--允许程序改变网络连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <!--读取联系人权限，上传联系人需要用到此权限 -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!--外存储读权限，构建语法需要用到此权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme"
+        android:resizeableActivity="true"
+        android:usesCleartextTraffic="true"
+        tools:ignore="LockedOrientationActivity">
+
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
+        <!-- &lt;!&ndash; 高德KEY &ndash;&gt; -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="d7cf24d98774b4ca78b1a37cff362638"/>
+        <!--
+                &lt;!&ndash; KEY_正式：810db5b45b00edd18a84f6101b49e11e &ndash;&gt;
+            &lt;!&ndash; KEY_jzy：7e0d20609db76cca89ba5417c5a520dc &ndash;&gt;
+            &lt;!&ndash; KEY_znh：935b880ea17707af2b477544aa6c1776 &ndash;&gt;
+            &lt;!&ndash; KEY_xdx：691434ed83e9855eebe7cc16e330e65a &ndash;&gt;
+            &lt;!&ndash; KEY_tya：a97608909e160869c6ebfb50912cb644 &ndash;&gt;
+            &lt;!&ndash; 定位需要的服务 &ndash;&gt;
+        -->
+        <service android:name="com.amap.api.location.APSService"/>
+
+        <!-- 城市选择列表 -->
+        <!-- 城市选择列表 整点实况等使用 -->
+        <activity
+            android:name=".view.activity.loading.ActivityLoading"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- 风雨查询数据列表单个数据详情界面 -->
+        <activity
+            android:name=".view.activity.livequery.ActivityLiveQueryDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+
+        <!-- 首页 -->
+        <activity
+            android:name=".view.activity.ActivityMain"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+
+        <!-- android:windowSoftInputMode="adjustUnspecified|stateHidden" -->
+        <!-- 引导 -->
+        <activity
+            android:name=".view.activity.loading.ActivityLoadingGuide"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+        <!-- 插图 -->
+        <activity
+            android:name=".view.activity.loading.ActivityLoadingImage"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+        <!-- 实况查询  福建 -->
+        <activity
+            android:name=".view.activity.livequery.ActivityLiveQuery"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 实况查询 全国 -->
+
+        <!-- 实况查询-风速详情 -->
+        <activity
+            android:name=".view.activity.livequery.ActivityDetailWinHightLowTemp"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实况查询-风速详情 -->
+        <activity
+            android:name=".view.activity.web.webview.ActivityWebView"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 风雨查询：分布图 -->
+
+
+        <!-- 风雨查询：省外分布图 -->
+
+
+        <!-- 实况查询-雨量统计详情 -->
+        <activity
+            android:name=".view.activity.livequery.ActivityRainCount"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- webview页面展示数据 -->
+        <activity
+            android:name=".view.activity.web.MyWebView"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- webview页面展示数据 -->
+        <activity
+            android:name=".view.activity.web.WebViewWithShare"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.livequery.ActivityRainCountDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 实况查询-雨量分布图 -->
+        <activity
+            android:name=".view.activity.livequery.RainFallImage"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 使用指南 -->
+        <activity
+            android:name=".view.activity.set.ActivityHelpQuestion"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 视频拍摄 -->
+        <activity
+            android:name=".view.activity.cammer.ActivityVideo"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 设置详情页面 -->
+        <activity
+            android:name=".view.activity.set.AcitvityAboutZTQ"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 意见反馈 -->
+        <activity
+            android:name=".view.activity.set.AcitvityFeedBack"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+        <!-- 气象短信 -->
+        <activity
+            android:name=".view.activity.set.ActivitySms"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 实况告警推送 -->
+        <activity
+            android:name=".view.activity.set.AcitvityWarnLivePush"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 自动分享 -->
+        <activity
+            android:name=".view.activity.set.ActivityAutoShare"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 业务说明 -->
+        <activity
+            android:name=".view.activity.set.ActivityCauseExplan"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 免责声明 -->
+        <activity
+            android:name=".view.activity.set.ActivityDisclaimer"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 栏目管理 -->
+        <activity
+            android:name=".view.activity.set.ActivityProgramerManager"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 温馨提示推送 -->
+        <activity
+            android:name=".view.activity.set.ActivityReminder"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 气象服务推送设置界面 -->
+        <activity
+            android:name=".view.activity.set.ActivityServicePushSet"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 其他 设置 -->
+        <!-- 气象预警推送 -->
+        <activity
+            android:name=".view.activity.set.ActivityWeatherBasedWarning"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 天气闹钟 -->
+        <activity
+            android:name=".view.activity.set.ActivityWeatherClock"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 天气预报推送 -->
+        <activity
+            android:name=".view.activity.set.ActivityWeatherPush"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 推送集合 -->
+        <activity
+            android:name=".view.activity.set.ActivityPushMain"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.set.ActivityColumnManager"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 开机启动 -->
+        <receiver
+            android:name=".control.receiver.BootStrapReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+        <!-- 天气闹钟receiver -->
+        <receiver
+            android:name=".control.receiver.AlarmReceiver"
+            android:enabled="true"
+            android:exported="false"/>
+
+        <!-- 气象产品 -->
+        <activity
+            android:name=".view.activity.product.traffic.ActivityTrafficWeather"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AlphaTheme"/> <!-- 气象产品:交通气象 -->
+
+        <activity android:name=".view.activity.product.traffic.ActivityTraffic"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/AlphaTheme"/>
+
+        <activity
+            android:name=".view.activity.product.typhoon.ActivityTyphoon"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AlphaTheme"/> <!-- 气象产品:台风路径 -->
+        <!-- 台风警报单 -->
+        <activity
+            android:name=".view.activity.product.typhoon.ActivityTyphoonBillList"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AlphaTheme"/>
+        <activity
+            android:name=".view.activity.product.typhoon.ActivityTyphoonExample"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:台风图例 -->
+
+        <activity
+            android:name=".view.activity.product.observation.AcivityObservation"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:下垫面观测图 -->
+        <activity
+            android:name=".view.activity.product.observation.ActivityObservationTable"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:下垫面观测 -->
+
+        <activity
+            android:name=".view.activity.product.observation.ActivityObservationCompTable"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:下垫面观测对比 -->
+
+        <activity
+            android:name=".view.activity.product.numericalforecast.ActivityNumericalForecast"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:数值预报 -->
+        <!-- 气象产品:数值预报 详情 -->
+        <activity
+            android:name=".view.activity.product.numericalforecast.ActivityDetailNumericalForecast"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- <activity -->
+        <!-- android:name="com.pcs.knowing_weather.view.activity.product.numericalforecast.ActivityDetailNumericalPro" -->
+        <!-- android:exported="false" -->
+        <!-- android:screenOrientation="portrait"></activity> -->
+        <activity
+            android:name=".view.activity.product.numericalforecast.ActivityDetailCenterPro"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.product.ActivityOceanWeather"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:海洋天气 -->
+
+        <activity
+            android:name=".view.activity.product.ActivitySatelliteCloudChart"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:卫星云图 -->
+
+        <activity
+            android:name=".view.activity.product.ActivityWeatherRadar"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:气象雷达 -->
+
+        <activity
+            android:name=".view.activity.product.ActivityWeatherSummary"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:天气综述 -->
+
+        <activity
+            android:name=".view.activity.product.media.ActivityMediaList"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品:气象影视 -->
+
+        <activity
+            android:name=".view.activity.product.media.ActivityMediaPlay"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"/> <!-- 气象产品:气象影视 播放界面 -->
+
+        <activity
+            android:name=".view.activity.product.lightning.ActivityLightningMonitor"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品：雷电监测 -->
+        <activity
+            android:name=".view.activity.product.lightning.ActivityThunderMoreList"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品：雷电监测列表 -->
+
+        <activity
+            android:name=".view.activity.product.locationwarning.ActivityLocationWarning"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品：定点服务 -->
+        <!-- <activity -->
+        <!-- android:name="com.pcs.knowing_weather.view.activity.citylist.ActivityChoseCity" -->
+        <!-- android:exported="false" -->
+        <!-- android:screenOrientation="portrait"></activity> &lt;!&ndash; 气象产品：定点服务城市选择 &ndash;&gt; -->
+        <activity
+            android:name=".view.activity.product.locationwarning.ActivityWarningManage"
+            android:exported="true"
+            android:screenOrientation="portrait"/> <!-- 气象产品：我的预警-管理页 -->
+        <activity
+            android:name=".view.activity.product.locationwarning.ActivityWarningCustomize"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品：我的预警-定制页 -->
+        <activity
+            android:name=".view.activity.product.locationwarning.ActivityWarningPay"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象产品：我的预警-支付页 -->
+
+
+        <!-- 气象服务 -->
+        <activity
+            android:name=".view.activity.help.ActivityHelp"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/> <!-- 气象服务:帮助 -->
+
+        <activity
+            android:name=".view.activity.help.ActivityAboutWeatherServe"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象服务:帮助 关于天气服务 -->
+
+        <activity
+            android:name=".view.activity.help.ActivityChangePwd"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象服务:帮助 修改密码 -->
+
+        <activity
+            android:name=".view.activity.service.AcitvityServeLogin"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象服务:登录 -->
+
+        <activity
+            android:name=".view.activity.service.ActivityServerSecond"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"/> <!-- 气象服务:第二级 -->
+
+        <activity
+            android:name=".view.activity.service.ActivityServeThird"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象服务:第三级 -->
+        <activity
+            android:name=".view.activity.service.ActivityMyServer"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象服务:我的服务 -->
+        <activity
+            android:name=".view.activity.service.ActivityMyServerMore"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/> <!-- 气象服务:我的服务-更多列表 -->
+
+        <activity
+            android:name=".view.activity.service.ActivityServeDetails"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象服务:详细信息 -->
+
+        <activity
+            android:name=".view.activity.set.ActivityGuideDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 使用指南细节 -->
+
+
+        <!-- 气象服务:智慧农业 -->
+
+        <activity
+            android:name=".view.activity.citylist.ActivitySelectTravelViewList"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:选择景点 -->
+
+        <activity
+            android:name=".view.activity.life.travel.ActivityTravelView"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:旅游气象 -->
+        <!-- 旅游气象:地图 -->
+        <activity
+            android:name=".view.activity.life.travel.ActivityTravelSubjectMap"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 旅游气象:收藏夹 -->
+        <activity
+            android:name=".view.activity.life.travel.ActivityTravelBookmark"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 气象生活:旅游气象 -->
+        <activity
+            android:name=".view.activity.life.travel.ActivityTravelDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:景点信息界面 -->
+
+        <activity
+            android:name=".view.activity.life.ActivityMeteorologicalScience"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:气象科普 -->
+        <activity
+            android:name=".view.activity.life.ActivityImageDisaster"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:识图防灾 -->
+
+        <activity
+            android:name=".view.activity.life.ActivityChannelList"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:气象科普 资讯列表 -->
+
+        <activity
+            android:name=".view.activity.life.ActivityChannelInfo"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 气象生活:气象科普 资讯内容 -->
+
+        <!-- 气象生活:亲情城市 -->
+
+        <!-- 气象生活:亲情城市一周天气 -->
+
+        <!-- 气象生活:选择全国城市 -->
+        <!-- 选择全国城市，侧边栏进入 -->
+        <!-- 日历中心 -->
+        <activity
+            android:name=".view.activity.calendar.ActivityCalendarSecond"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoDetail"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：详情 -->
+
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoLogin"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：登陆 -->
+
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoRegister"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：注册 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoRegisterQuestion"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：填写密码问题 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoPasswordManager"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：管理密码 -->
+        <activity
+            android:name=".view.activity.user.ActivityUserInformation"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 个人中心：个人信息 -->
+        <activity
+            android:name=".view.activity.pub.ActivityProtocol"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 知天气决策版注册协议 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoShow"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：展示 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoSubmit"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：提交 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoUserCenter"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"/> <!-- 实景开拍：用户中心 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoFullSubmit"
+            android:exported="false"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/> <!-- 实景开拍：展示完整照片 -->
+        <activity
+            android:name=".view.activity.photoshow.ActivityPhotoFullDetail"
+            android:exported="false"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/> <!-- 实景开拍：展示完整照片 -->
+        <!-- 预警详情 -->
+        <activity
+            android:name=".view.activity.warn.ActivityWarnDetails"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 推送消息弹窗：预警信息 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+        <!-- 推送消息弹窗：天气预警 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushWeatherDialog"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Dialog"/>
+        <!-- 推送消息弹窗：突发公共 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushEmergencyDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+        <!-- 预警中心 -->
+        <!-- 预警中心 非福建省城市 -->
+        <activity
+            android:name=".view.activity.warn.ActivityWarningCenterNotFjCity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
+        <!-- 预警中心 -->
+        <!-- 推送 设置预警类型 -->
+        <activity
+            android:name=".view.activity.push.ActivityWarningTypeDialog"
+            android:exported="false"
+            android:theme="@style/MyDialog"/>
+        <!-- 推送消息弹窗：气象服务推送 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushServiceDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+        <!-- 推送消息弹窗：气象服务推送详情 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushServiceDetails"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
+
+        <!-- 推送消息弹窗：定点服务 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushLocationDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+
+        <!-- 青运气象 -->
+        <activity
+            android:name=".view.activity.ActivityBanner"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 推送消息弹窗:节气、节日 -->
+        <activity
+            android:name=".view.activity.push.ActivityHolidayDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+
+        <!-- 推送默认消息弹窗:公告 -->
+        <activity
+            android:name=".view.activity.push.ActivityDefaultDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+
+        <!-- 弹窗:防御指南 -->
+        <activity
+            android:name=".view.activity.push.ActivityWarnMsgDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+
+        <!-- 弹窗:seekbar 实况数值 -->
+        <activity
+            android:name=".view.activity.set.ActivitySeekBarDialog"
+            android:exported="false"
+            android:theme="@android:style/Theme.Dialog"/>
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <!-- 生活指数详情 -->
+        <activity
+            android:name=".view.activity.lifenumber.ActivityLifeNumberDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 生活指数编辑 -->
+        <activity
+            android:name=".view.activity.lifenumber.ActivityLifeNumberEdit"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 主播比赛报名 -->
+        <activity
+            android:name=".view.activity.ActivityCompetitionEntry"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 指点天气 -->
+        <activity
+            android:name=".view.activity.product.ActivityMapForecast"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/AlphaTheme"/>
+        <!-- 空气质量列表 -->
+        <activity
+            android:name=".view.activity.air_quality.ActivityAirQuality"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
+        <!-- 空气质量列表 -->
+        <activity
+            android:name=".view.activity.air_quality.ActivityAirQualityProvince"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.air_quality.AcitvityAirWhatAQI"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Dialog"/>
+        <!-- 空气质量详情 -->
+        <activity
+            android:name=".view.activity.air_quality.ActivityAirQualityDetail"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".view.activity.newairquality.ActivityAir"
+            android:screenOrientation="portrait"/>
+        <!-- 推送预警详情详情 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushWarnDetails"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 推送公共预警详情 -->
+        <activity
+            android:name=".view.activity.push.ActivityPushEmergencyDetails"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 水利汛情产品 -->
+        <!-- 水利汛情主Activity -->
+        <activity
+            android:name=".view.activity.product.waterflood.ActivityWaterFlood"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 天津水利汛情主Activity -->
+        <activity
+            android:name=".view.activity.product.waterflood.ActivityWaterFloodTJ"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 汛情摘要 -->
+        <activity
+            android:name=".view.activity.product.waterflood.ActivityFloodSummary"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 雨量信息 -->
+        <activity
+            android:name=".view.activity.product.waterflood.ActivityRainInfo"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 水位信息 -->
+        <activity
+            android:name=".view.activity.product.waterflood.ActivityWaterLevelInfo"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 风情信息 -->
+        <activity
+            android:name=".view.activity.product.waterflood.ActivityWindInfo"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 世界气象日活动界面 -->
+        <activity
+            android:name=".view.activity.web.ActivityWeatherDay"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 影视吐槽 -->
+        <activity
+            android:name=".view.activity.product.media.ActivityMediaTaunted"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
+
+        <!-- 本時次雨量查詢activity -->
+        <activity
+            android:name=".view.activity.livequery.ActivityTimeSearch"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 专家解读详情 -->
+        <activity
+            android:name=".view.activity.life.expert_interpretation.ActivityExpertDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <!-- 专家解读列表 -->
+        <activity
+            android:name=".view.activity.life.expert_interpretation.ActivityExpertList"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 农业气象 -->
+        <activity
+            android:name=".view.activity.product.agriculture.ActivityAgricultureWeather"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 农业气象栏目 -->
+        <activity
+            android:name=".view.activity.product.agriculture.ActivityAgricultureWeatherColumn"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+
+        <!-- 农灾情直报栏目 -->
+        <activity
+            android:name=".view.activity.product.agriculture.ActivityAgricultureZQZB"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <!-- 农业气象详情页 -->
+        <activity
+            android:name=".view.activity.product.agriculture.ActivityAgricultureWeatherDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 本地视频列表 -->
+        <activity
+            android:name=".view.fragment.warning.video.VideoListActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 图片显示界面 -->
+        <activity
+            android:name=".view.fragment.warning.picture.ActivityPhotoFull"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 视频播放界面 -->
+        <activity
+            android:name=".view.fragment.warning.video.ActivityVideoPlay"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 应急责任人界面 -->
+        <activity
+            android:name=".view.fragment.warning.emergency_responsibility.Activity_respon"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 空气质量 -->
+        <activity
+            android:name=".view.activity.newairquality.ActivityAirQualityQuery"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 空气质量排行版 -->
+        <activity
+            android:name=".view.activity.newairquality.ActivityAirQualityRandking"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 省会质量排行版 -->
+        <activity
+            android:name=".view.activity.newairquality.ActivityAirQualityProvinceRranking"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 重要天气 -->
+        <activity
+            android:name=".view.activity.product.importantweather.ActivityImWeather"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 重要天气子集页面 -->
+        <activity
+            android:name=".view.activity.product.importantweather.ActivityImWeatherDown"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 重要责任人页面 -->
+        <activity
+            android:name=".view.fragment.warning.emergency_responsibility.ActivityOtherself"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 重要责任人详情页面 -->
+        <activity
+            android:name=".view.fragment.warning.emergency_responsibility.ActivityOtherDetail"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 台风路径 -->
+        <activity
+            android:name=".view.activity.product.typhoon.ActivityTyphoonRoad"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 天气形势 -->
+        <activity
+            android:name=".view.activity.product.situation.ActivitySituation"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!-- 空气质量预报 -->
+        <activity
+            android:name=".view.fragment.airquality.ActivityAirQualitySH"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <!--健康气象-->
+        <activity android:name=".view.activity.life.health.ActivityHealthWeather"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--我的服务模块展示-->
+        <activity android:name=".view.activity.service.ActivityMyServerMain"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name=".view.activity.ActivitySubscriptionAccount"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--积水监测-->
+        <activity android:name=".view.activity.product.waterflood.ActivityWaterMonitor"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--气象生活下级界面-->
+        <activity android:name=".view.activity.life.health.ActivityHealthDown"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--临近报告-->
+        <activity android:name=".view.activity.service.ActivityNearReport"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--天津天气-->
+        <activity android:name=".view.activity.ActivityShWeather"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+
+        <!--决策报告消息栏-->
+        <activity android:name=".view.activity.push.ActivityPushServiceNotificationDetails"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+
+        <!--首页英文版-->
+        <activity android:name=".view.activity.activityEn.ActivityMainEn"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--英文广告位网页-->
+        <activity android:name=".view.activity.web.ActivityWebSh"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--英文广告位网页-->
+        <activity android:name=".view.activity.product.ActivityOceanMap"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+        <!--英文广告位网页-->
+        <activity android:name=".view.activity.service.ActivityServerHyqx"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"/>
+
+
+        <!-- 防灾 app 专用中转类 -->
+        <activity
+            android:name=".view.activity.fangzai.ActivityFromFangZai"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <!-- 桌面小部件 大 -->
+        <!--
+             4x2小部件
+             android:exported="false"
+            android:label="知天气-福建"
+        -->
+        <receiver
+            android:name=".view.appwidget.WeatherWidget_5x2"
+            android:label="(5*2)天津气象">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_5x2"/>
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".view.appwidget.WeatherWidget_4x2"
+            android:label="(4*2)天津气象">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_4x2"/>
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- 5x1小部件 -->
+        <receiver
+            android:name=".view.appwidget.WeatherWidget_5x1"
+            android:exported="false"
+            android:label="(5*1)天津气象">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_5x1"/>
+        </receiver>
+
+        <!-- 5x3小部件 -->
+        <receiver
+            android:name=".view.appwidget.WeatherWidget_5x3"
+            android:exported="false"
+            android:label="(5*3)天津气象">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_5x3"/>
+        </receiver>
+        <!-- 小部件预警列表adapter -->
+        <service
+            android:name=".view.appwidget.WarnGridService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <!-- ################################################################################################################################## -->
+
+
+        <!--&lt;!&ndash; 【必须】 (2.30及以上版新增)展示通知的activity &ndash;&gt;-->
+        <!--<activity-->
+        <!--android:name="com.tencent.android.tpush.XGPushActivity"-->
+        <!--android:exported="false"-->
+        <!--android:theme="@android:style/Theme.Translucent">-->
+        <!--<intent-filter>-->
+
+        <!--&lt;!&ndash; 若使用AndroidStudio，请设置android:name="android.intent.action" &ndash;&gt;-->
+        <!--<action android:name="android.intent.action"/>-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <!--&lt;!&ndash; 【必须】 信鸽receiver广播接收 &ndash;&gt;-->
+        <!--<receiver-->
+        <!--android:name="com.tencent.android.tpush.XGPushReceiver"-->
+        <!--android:exported="false"-->
+        <!--android:process=":xg_service_v2">-->
+        <!--<intent-filter android:priority="0x7fffffff">-->
+
+        <!--&lt;!&ndash; 【必须】 信鸽SDK的内部广播 &ndash;&gt;-->
+        <!--<action android:name="com.tencent.android.tpush.action.SDK"/>-->
+        <!--<action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE"/>-->
+        <!--&lt;!&ndash; 【必须】 系统广播：开屏和网络切换 &ndash;&gt;-->
+        <!--<action android:name="android.intent.action.USER_PRESENT"/>-->
+        <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>-->
+
+        <!--&lt;!&ndash; 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service &ndash;&gt;-->
+        <!--<action android:name="android.bluetooth.adapter.action.STATE_CHANGED"/>-->
+        <!--<action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>-->
+        <!--<action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>-->
+        <!--</intent-filter>-->
+        <!--&lt;!&ndash; 【可选】 usb相关的系统广播，增强信鸽service的复活机会，请根据需要添加 &ndash;&gt;-->
+        <!--<intent-filter android:priority="0x7fffffff">-->
+        <!--<action android:name="android.intent.action.MEDIA_UNMOUNTED"/>-->
+        <!--<action android:name="android.intent.action.MEDIA_REMOVED"/>-->
+        <!--<action android:name="android.intent.action.MEDIA_CHECKING"/>-->
+        <!--<action android:name="android.intent.action.MEDIA_EJECT"/>-->
+
+        <!--<data android:scheme="file"/>-->
+        <!--</intent-filter>-->
+        <!--</receiver>-->
+        <!--&lt;!&ndash; 【必须】 信鸽service &ndash;&gt;-->
+        <!--<service-->
+        <!--android:name="com.tencent.android.tpush.service.XGPushService"-->
+        <!--android:exported="true"-->
+        <!--android:persistent="true"-->
+        <!--android:process=":xg_service_v2"/>-->
+
+        <!--&lt;!&ndash; 【必须】 通知service，其中android:name部分要改为当前包名 &ndash;&gt;-->
+        <!--<service-->
+        <!--android:name="com.tencent.android.tpush.rpc.XGRemoteService"-->
+        <!--android:exported="true">-->
+        <!--<intent-filter>-->
+
+        <!--&lt;!&ndash; 【必须】 请修改为当前APP名包.PUSH_ACTION，如demo的包名为：com.qq.xgdemo &ndash;&gt;-->
+        <!--<action android:name="com.pcs.knowing_weather.PUSH_ACTION"/>-->
+        <!--</intent-filter>-->
+        <!--</service>-->
+
+        <!-- 已废弃，可删除之；若不删除也不会有任何副作用 -->
+        <!--
+            <service android:exported="false"
+            android:name="com.tencent.android.tpush.service.XGDaemonService"
+            android:process=":qq_push_daemon" />
+        -->
+        <!-- 【可选】信鸽拉起其他APP应用，若应用在本地找不到可以自动下载 -->
+        <!--
+              <service android:exported="false"
+            android:name="com.tencent.android.tpush.XGDownloadService"
+            android:enabled="true"
+            android:exported="false" />
+        -->
+        <!-- 【可选】APP实现的Receiver，用于接收消息透传和操作结果的回调，请根据需要添加 -->
+        <!-- YOUR_PACKAGE_PATH.CustomPushReceiver需要改为自己的Recei90ver： -->
+        <receiver
+            android:name=".control.receiver.MessageReceiver"
+            android:exported="true">
+            <intent-filter>
+
+                <!-- 接收消息透传 -->
+                <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE"/>
+                <!-- 监听注册、反注册、设置/删除标签、通知被点击等处理结果 -->
+                <action android:name="com.tencent.android.tpush.action.FEEDBACK"/>
+            </intent-filter>
+        </receiver>
+
+        <!--&lt;!&ndash; 信鸽推送 【必须】 请修改为APP的AccessId，“21”开头的10位数字，中间没空格 &ndash;&gt;-->
+        <!--<meta-data-->
+        <!--android:name="XG_V2_ACCESS_ID"-->
+        <!--android:value="2100281108"/>-->
+        <!--&lt;!&ndash; 信鸽推送 【必须】 请修改为APP的AccessKey，“A”开头的12位字符串，中间没空格 &ndash;&gt;-->
+        <!--<meta-data-->
+        <!--android:name="XG_V2_ACCESS_KEY"-->
+        <!--android:value="A1I7JW857JRS"/>-->
+
+        <!-- 【必须】 信鸽service -->
+        <service
+            android:name="com.tencent.android.tpush.service.XGPushServiceV3"
+            android:exported="true"
+            android:persistent="true"
+            android:process=":xg_service_v3" />
+
+        <!-- 【必须】 通知service，此选项有助于提高抵达率 -->
+        <service
+            android:name="com.tencent.android.tpush.rpc.XGRemoteService"
+            android:exported="true" >
+            <intent-filter>
+                <!-- 【必须】 请修改为当前APP包名.PUSH_ACTION-->
+                <action android:name="com.pcs.ztqtj.PUSH_ACTION" />
+            </intent-filter>
+        </service>
+
+        <!-- 【必须】 【注意】authorities修改为 包名.AUTH_XGPUSH, 如demo的包名为：com.qq.xgdemo-->
+        <provider
+            android:name="com.tencent.android.tpush.XGPushProvider"
+            android:authorities="com.pcs.ztqtj.AUTH_XGPUSH"
+            android:exported="true"
+            />
+        <!-- 【必须】 【注意】authorities修改为 包名.TPUSH_PROVIDER, 如demo的包名为：com.qq.xgdemo-->
+        <provider
+            android:name="com.tencent.android.tpush.SettingsContentProvider"
+            android:authorities="com.pcs.ztqtj.TPUSH_PROVIDER"
+            android:exported="false" />
+        <!-- 【必须】 【注意】authorities修改为 包名.TENCENT.MID.V3, 如demo的包名为：com.qq.xgdemo-->
+        <provider
+            android:name="com.tencent.mid.api.MidProvider"
+            android:authorities="com.pcs.ztqtj.TENCENT.MID.V3"
+            android:exported="true" >
+        </provider>
+
+        <!-- xxx.xx.xx为CP自定义的广播名称，比如: com.huawei.hmssample. HuaweiPushRevicer -->
+        <receiver android:name=".control.receiver.HWMessageReceiver" >
+            <intent-filter>
+
+                <!-- 必须,用于接收TOKEN -->
+                <action android:name="com.huawei.android.push.intent.REGISTRATION" />
+                <!-- 必须，用于接收消息 -->
+                <action android:name="com.huawei.android.push.intent.RECEIVE" />
+                <!-- 可选，用于点击通知栏或通知栏上的按钮后触发onEvent回调 -->
+                <action android:name="com.huawei.android.push.intent.CLICK" />
+                <!-- 可选，查看PUSH通道是否连接，不查看则不需要 -->
+                <action android:name="com.huawei.intent.action.PUSH_STATE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- ###################注册SDK使用的Activity###################### -->
+
+
+        <!-- 分享编辑页 -->
+
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.UMDefault"/>
+
+        <!-- ############ QQ空间和QQ SSO授权的Activity注册 ############ -->
+
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent100424468" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
+        <!-- ###################添加UmengAppkey###################### -->
+        <!-- android:value="55388deb67e58effc70007b0" android:value="55effebae0f55a226c004c6a" -->
+        <!--<meta-data-->
+            <!--android:name="UMENG_APPKEY"-->
+            <!--android:value="5ca458313fc19546520016c3"/>-->
+        <!-- 微信朋友圈回调 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 新浪微博 -->
+        <activity
+            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleTask"
+            android:exported="false"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
+                  android:configChanges="keyboardHidden|orientation"
+                  android:exported="false"
+                  android:windowSoftInputMode="adjustResize"
+            >
+        </activity>
+        <activity
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
+            android:launchMode="singleTask"
+            android:name="com.sina.weibo.sdk.share.WbShareTransActivity">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".view.activity.newairquality.ActivityAirRankLevel"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".view.activity.product.dataquery.ActivityDataQuery"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".view.activity.product.dataquery.ActivityDataQueryService"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".view.activity.product.dataquery.ActivityDataQueryLogin"
+            android:exported="false"
+            android:theme="@style/MyDialog">
+        </activity>
+        <activity
+            android:name=".view.activity.product.numericalforecast.ActivityGuideForecast"
+            android:exported="false"
+            android:screenOrientation="portrait">
+        </activity>
+        <!-- 支付宝 -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.app.H5AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden">
+        </activity>
+        <activity android:name=".view.activity.citylist.ActivityCityList"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"
+            >
+        </activity>
+        <activity android:name=".view.activity.citylist.ActivityCityListCountry"
+                  android:exported="false"
+                  android:screenOrientation="portrait"
+                  android:windowSoftInputMode="stateHidden"
+            >
+        </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.pcs.ztqtj.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"
+                />
+        </provider>
+
+    </application>
+
+</manifest>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_title_deepblue"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="实况温度"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="每时次最高温"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="每时次最低温"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/bg_title_obversion"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="时间"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="温度"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:gravity="center"
+            android:text="时间"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:gravity="center"
+            android:text="温度"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:gravity="center"
+            android:text="时间"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:gravity="center"
+            android:text="温度"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@drawable/line_common"></ListView>
+
+</LinearLayout>

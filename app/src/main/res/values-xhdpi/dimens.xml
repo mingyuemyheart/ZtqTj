@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 主页菜单 -->
+    <dimen name="main_menu_paddingtop">8dp</dimen>
+    <dimen name="main_menu_textsize">15sp</dimen>
+
+    <!-- 滑动菜单滑出时，屏幕剩余宽度 -->
+    <dimen name="slidingmenu_offset">0dp</dimen>
+
+    <!-- 小部件宽度 -->
+    <dimen name="widget_minWidth">330dp</dimen>
+
+    <dimen name="widget_minWidth_5x1">330dp</dimen>
+    <dimen name="widget_minHeight_5x1">40dp</dimen>
+
+    <dimen name="widget_minWidth_5x3">330dp</dimen>
+    <dimen name="widget_minHeight_5x3">180dp</dimen>
+
+    <!-- 布局左右边距 -->
+    <dimen name="activity_marginleft_right">10dp</dimen>
+    <!-- 布局上下边距 -->
+    <dimen name="activity_margintop">5dp</dimen>
+
+    <!-- 按钮的宽 -->
+    <dimen name="btn_with">75dp</dimen>
+    <!-- 按钮的高 -->
+    <dimen name="btn_higth">30dp</dimen>
+    <!-- 首页渐变高度 -->
+    <dimen name="main_change_height">400dp</dimen>
+    <!-- activity 标题 字体大小 -->
+    <dimen name="text_the_page_title">20dp</dimen>
+    <!-- 页面字体标题大小 -->
+    <dimen name="text_the_content_title">21dp</dimen>
+    <!-- 页面副标题字体大小 -->
+    <dimen name="text_subtitle">20dp</dimen>
+    <!-- 页面内容字体大小 -->
+    <dimen name="text_content">17dp</dimen>
+    <!-- 注释字体大小 -->
+    <dimen name="text_footnote">14dp</dimen>
+    <!-- 图例字体大小 -->
+
+    <dimen name="dimen1">1dp</dimen>
+    <dimen name="dimen2">2dp</dimen>
+    <dimen name="dimen4">4dp</dimen>
+    <dimen name="dimen5">5dp</dimen>
+    <dimen name="dimen6">6dp</dimen>
+    <dimen name="dimen8">8dp</dimen>
+    <dimen name="dimen10">10dp</dimen>
+    <dimen name="dimen14">14dp</dimen>
+    <dimen name="dimen15">15dp</dimen>
+    <dimen name="dimen16">16dp</dimen>
+    <dimen name="dimen18">18dp</dimen>
+    <dimen name="dimen20">20dp</dimen>
+    <dimen name="dimen24">24dp</dimen>
+    <dimen name="dimen30">30dp</dimen>
+    <dimen name="dimen35">35dp</dimen>
+    <dimen name="dimen40">40dp</dimen>
+    <dimen name="dimen60">60dp</dimen>
+    <dimen name="dimen50">50dp</dimen>
+    <dimen name="dimen80">80dp</dimen>
+    <dimen name="dimen90">90dp</dimen>
+    <dimen name="dimen100">100dp</dimen>
+    <dimen name="dimen120">120dp</dimen>
+    <dimen name="dimen140">140dp</dimen>
+    <dimen name="dimen160">160dp</dimen>
+    <dimen name="dimen165">165dp</dimen>
+    <dimen name="dimen170">170dp</dimen>
+    <dimen name="dimen180">180dp</dimen>
+    <dimen name="dimen200">220dp</dimen>
+    <dimen name="dimen240">240dp</dimen>
+    <dimen name="dimen260">260dp</dimen>
+    <dimen name="dimen300">300dp</dimen>
+    <!-- texview上的字体大小 -->
+    <dimen name="textsize19">19sp</dimen>
+    <dimen name="textsize17">17sp</dimen>
+    <dimen name="textsize16">16sp</dimen>
+    <dimen name="textsize15">14sp</dimen>
+    <dimen name="textsize10">10sp</dimen>
+    <dimen name="dimen480">480dp</dimen>
+    <!-- dialog_按钮布局，标题布局的高 -->
+    <dimen name="dialog_hight">40dp</dimen>
+    <!-- 表格项高度 -->
+    <dimen name="item_hight">45dp</dimen>
+    <!--首页24小时趋势图-->
+    <dimen name="hight24hour">100dp</dimen>
+    <dimen name="hight24tophight">85dp</dimen>
+    <dimen name="hight24tophightXM">25dp</dimen>
+    <dimen name="height24hourbottomtext">40dp</dimen>
+    <!-- 逐时预报总高度 -->
+    <dimen name="height24hourall">185dp</dimen>
+
+    <!--首页一周趋势图-->
+    <dimen name="weektophight">75dp</dimen>
+    <dimen name="weekviewhight">125dp</dimen>
+    <dimen name="banner_com_h">150dp</dimen>
+    <!-- 滑动菜单滑出时，屏幕剩余宽度 -->
+    <dimen name="btn_hight_livequery">40dp</dimen>
+    <dimen name="tvPopH">40dp</dimen>
+
+
+    <dimen name="threeCityHight">50dp</dimen>
+</resources>

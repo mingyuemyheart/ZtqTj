@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_white"
+    >
+
+    <LinearLayout
+        android:id="@+id/layout_selector"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:id="@+id/tv_city"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview_2"
+            android:maxLines="1"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <TextView
+            android:id="@+id/tv_site"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview_2"
+            android:maxLines="1"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RadioGroup
+            android:id="@+id/radioGroupItem"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen50"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_white"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/live_temperture"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/radio_livequery_detail_view_table"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_livequery_detail_temp"
+                android:gravity="center"
+                android:paddingTop="@dimen/dimen5"
+                android:text="气温"
+                android:textColor="@drawable/text_blue_while"
+                android:textSize="@dimen/text_footnote"/>
+
+            <RadioButton
+                android:id="@+id/live_rain"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/radio_livequery_detail_view_table"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_livequery_detail_rain"
+                android:gravity="center"
+                android:paddingTop="@dimen/dimen5"
+                android:text="雨量"
+                android:textColor="@drawable/text_blue_while"
+                android:textSize="@dimen/text_footnote"/>
+
+
+            <RadioButton
+                android:id="@+id/live_wind_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/radio_livequery_detail_view_table"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_livequery_detail_wind"
+                android:gravity="center"
+                android:paddingTop="@dimen/dimen5"
+                android:text="风况"
+                android:textColor="@drawable/text_blue_while"
+                android:textSize="@dimen/text_footnote"/>
+
+
+            <RadioButton
+                android:id="@+id/live_humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/radio_livequery_detail_view_table"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_livequery_detail_humidity"
+                android:gravity="center"
+                android:paddingTop="@dimen/dimen5"
+                android:text="湿度"
+                android:textColor="@drawable/text_blue_while"
+                android:textSize="@dimen/text_footnote"/>
+
+            <RadioButton
+                android:id="@+id/live_visibility"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/radio_livequery_detail_view_table"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_livequery_detail_visibility"
+                android:gravity="center"
+                android:paddingTop="@dimen/dimen5"
+                android:text="能见度"
+                android:textColor="@drawable/text_blue_while"
+                android:textSize="@dimen/text_footnote"/>
+
+            <RadioButton
+                android:id="@+id/live_pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/radio_livequery_detail_view_table"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_livequery_detail_pressure"
+                android:gravity="center"
+                android:paddingTop="@dimen/dimen5"
+                android:text="气压"
+                android:textColor="@drawable/text_blue_while"
+                android:textSize="@dimen/text_footnote"/>
+        </RadioGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/radioGroupItem"
+            android:background="@color/bg_livequery"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dimen5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/btn_sstq"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:lines="1"
+                        android:paddingLeft="@dimen/dimen10"
+                        android:text="当前实况"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/ed_search"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:layout_marginRight="@dimen/dimen10"
+                            android:background="@drawable/bg_search"
+                            android:drawableRight="@drawable/bg_search_icon"
+                            android:hint="请输入站点名称"
+                            android:paddingLeft="@dimen/dimen15"
+                            android:paddingRight="@dimen/dimen15"
+                            android:textColor="@color/text_black"
+                            android:textColorHint="@color/bg_black_alpha20"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen10"
+                    android:layout_marginTop="@dimen/dimen10"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/dimen10"
+                    android:paddingRight="@dimen/dimen10"
+                    >
+
+                    <TextView
+                        android:id="@+id/sstq_info_left"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:lineSpacingMultiplier="2"
+                        android:lines="3"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <TextView
+                        android:id="@+id/sstq_info_right"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="3dp"
+                        android:lineSpacingMultiplier="2"
+                        android:lines="3"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+                </LinearLayout>
+
+                <RadioGroup
+                    android:id="@+id/radioGroupViewOrTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen40"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/bg_white"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/show_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/radio_livequery_detail"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableLeft="@drawable/radio_livequery_detail_view"
+                        android:lines="1"
+                        android:paddingLeft="20dp"
+                        android:text="趋势图"
+                        android:textColor="@drawable/text_black_while"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <RadioButton
+                        android:id="@+id/show_table"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen10"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/radio_livequery_detail"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/radio_livequery_detail_table"
+                        android:lines="1"
+                        android:paddingLeft="20dp"
+                        android:text="统计表"
+                        android:textColor="@drawable/text_black_while"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <RadioButton
+                        android:id="@+id/show_map"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/dimen10"
+                        android:layout_weight="1"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/radio_livequery_detail"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/radio_livequery_detail_map"
+                        android:lines="1"
+                        android:paddingLeft="20dp"
+                        android:text="地理位置"
+                        android:textColor="@drawable/text_black_while"
+                        android:textSize="@dimen/text_footnote"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_content_viewTableMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_white"
+                android:orientation="vertical">
+
+                <com.amap.api.maps.MapView
+                    android:id="@+id/map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_content_myview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen10"
+                        android:layout_marginRight="@dimen/dimen10"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:background="@color/livequery_actual"/>
+                            <!--android:src="@drawable/icon_livequery_rect"-->
+                            <TextView
+                                android:id="@+id/acTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen5"
+                                android:text="实况时段："
+                                android:textColor="@color/livequery_actual"
+                                android:textSize="@dimen/text_footnote"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimen4"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:background="@color/livequery_prediction"/>
+
+                            <TextView
+                                android:id="@+id/preTime"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen5"
+                                android:text="预报时段："
+                                android:textColor="@color/livequery_prediction"
+                                android:textSize="@dimen/text_footnote"/>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/myviewUnit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="单位：mm"
+                            android:textColor="@color/text_black"
+                            android:textSize="@dimen/text_footnote"/>
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <RelativeLayout
+                            android:id="@+id/myview_button_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:paddingBottom="@dimen/dimen5"
+                            android:paddingLeft="@dimen/dimen15"
+                            android:paddingRight="@dimen/dimen15">
+
+                            <CheckBox
+                                android:id="@+id/btn_double"
+                                android:layout_width="60dp"
+                                android:layout_height="20dp"
+                                android:layout_centerHorizontal="true"
+                                android:background="@drawable/checkbox_change_big"
+                                android:button="@null"/>
+
+                            <Button
+                                android:id="@+id/btn_to_live"
+                                android:layout_width="60dp"
+                                android:layout_height="20dp"
+                                android:background="@mipmap/icon_changeview_left"/>
+
+                            <Button
+                                android:id="@+id/btn_to_pro"
+                                android:layout_width="60dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:background="@mipmap/icon_changeview_right"/>
+                        </RelativeLayout>
+
+                        <com.pcs.ztqtj.view.myview.LiveQueryView
+                            android:id="@+id/liveQueryView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_above="@id/myview_button_layout"/>
+
+                        <TextView
+                            android:id="@+id/null_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginBottom="60dp"
+                            android:layout_marginLeft="40dp"
+                            android:gravity="center"
+                            android:text="暂无数据"
+                            android:textColor="@color/text_gray"
+                            android:textSize="@dimen/dimen20"
+                            android:visibility="gone"/>
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/table_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/bg_white"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/dimen2"
+                    android:paddingRight="@dimen/dimen2"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@color/livequery_actual"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/talbe_title_item_over24"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingBottom="@dimen/dimen8"
+                                android:paddingTop="@dimen/dimen8"
+                                android:textColor="@color/text_black"
+                                android:textSize="@dimen/text_footnote"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@color/livequery_prediction"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="1px"
+                                android:layout_height="match_parent"
+                                android:background="@color/bg_black_alpha70"/>
+
+                            <TextView
+                                android:id="@+id/talbe_title_item_prediction24"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingBottom="@dimen/dimen8"
+                                android:paddingTop="@dimen/dimen8"
+                                android:textColor="@color/text_black"
+                                android:textSize="@dimen/text_footnote"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/rain_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:cacheColorHint="@android:color/transparent"
+                        android:divider="@color/bg_black_alpha70"
+                        android:dividerHeight="1px"
+                        android:listSelector="@android:color/transparent"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <ListView
+                android:id="@+id/list_station"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen2"
+                android:layout_marginRight="@dimen/dimen2"
+                android:layout_marginTop="32dp"
+                android:layout_weight="1"
+                android:background="@color/bg_white"
+                android:cacheColorHint="@android:color/transparent"
+                android:divider="@color/bg_black_alpha70"
+                android:dividerHeight="1px"
+                android:listSelector="@android:color/transparent"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

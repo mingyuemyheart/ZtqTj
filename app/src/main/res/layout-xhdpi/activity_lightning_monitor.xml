@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 雷电监测 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <!-- 导航栏 -->
+    <LinearLayout
+        android:visibility="gone"
+	    android:id="@+id/tab_layout"
+	    android:layout_width="match_parent"
+	    android:layout_height="@dimen/dimen40"
+	    android:background="@color/grey_bg"
+	    android:gravity="center"
+	    android:orientation="horizontal" >
+	
+        <!-- 三维监测 -->
+	    <RelativeLayout
+	        android:id="@+id/label1"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1" >
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:layout_gravity="center_vertical|center_horizontal"
+	            android:text="@string/title_three_dimensions_monitor"
+	            android:textColor="@color/text_color"
+	            android:textSize="@dimen/dimen18" />
+	
+	        <View
+	            android:id="@+id/bottom_line1"
+	            android:layout_width="fill_parent"
+	            android:layout_height="2dp"
+	            android:layout_alignParentBottom="true"
+	            android:layout_marginLeft="@dimen/dimen5"
+	            android:layout_marginRight="@dimen/dimen5"
+	            android:background="@drawable/line_blue"
+	            android:visibility="gone" />
+	    </RelativeLayout>
+	
+	    <!-- 临近预警 -->
+	    <RelativeLayout
+	        android:id="@+id/label2"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1" >
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:layout_gravity="center_vertical|center_horizontal"
+	            android:text="@string/title_near_warn"
+	            android:textColor="@color/text_color"
+	            android:textSize="@dimen/dimen18" />
+	
+	        <View
+	            android:id="@+id/bottom_line2"
+	            android:layout_width="fill_parent"
+	            android:layout_height="2dp"
+	            android:layout_alignParentBottom="true"
+	            android:layout_marginLeft="@dimen/dimen5"
+	            android:layout_marginRight="@dimen/dimen5"
+	            android:background="@drawable/line_blue"
+	            android:visibility="gone" />
+	    </RelativeLayout>
+	    
+	    <!-- 防御指南 -->
+	    <RelativeLayout
+	        android:id="@+id/label3"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1" >
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_centerInParent="true"
+	            android:layout_gravity="center_vertical|center_horizontal"
+	            android:text="@string/title_defense_guide"
+	            android:textColor="@color/text_color"
+	            android:textSize="@dimen/dimen18" />
+	
+	        <View
+	            android:id="@+id/bottom_line3"
+	            android:layout_width="fill_parent"
+	            android:layout_height="2dp"
+	            android:layout_alignParentBottom="true"
+	            android:layout_marginLeft="@dimen/dimen5"
+	            android:layout_marginRight="@dimen/dimen5"
+	            android:background="@drawable/line_blue"
+	            android:visibility="gone" />
+	    </RelativeLayout>
+	</LinearLayout>
+
+   <FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" >
+ 
+		<com.amap.api.maps.MapView
+		    android:id="@+id/map"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent" />
+   
+		<!-- 三维监测 -->
+		<include
+		    android:id="@+id/layout_monitor"
+		    layout="@layout/layout_third_monitor" />
+		
+		<!-- 临近预警 -->
+		<include
+		    android:id="@+id/layout_warn"
+		    layout="@layout/layout_near_warn"
+		    android:visibility="gone" />
+		
+		<!-- 防御指南 -->
+		<include
+		    android:id="@+id/layout_guide"
+		    layout="@layout/layout_defense_guide"
+		    android:visibility="gone" />
+	</FrameLayout>
+</LinearLayout>

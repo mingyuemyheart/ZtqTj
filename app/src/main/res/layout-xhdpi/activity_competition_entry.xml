@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 主播比赛报名 -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f1f1f1" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical" >
+
+        <!-- 图片 -->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/bg_competition_top"
+            android:scaleType="centerInside" />
+        <!-- 分割线 -->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line_competition_h" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="vertical" >
+
+                <!-- 报名 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:drawableLeft="@drawable/icon_competition_alter"
+                    android:text="@string/competition_entry"
+                    android:textColor="#404040"
+                    android:textSize="23dp" />
+                <!-- 姓名 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/competition_name"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+
+                    <EditText
+                        android:id="@+id/edit_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/edit_competition"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:singleLine="true"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+                </LinearLayout>
+                <!-- 姓名提示 -->
+
+                <TextView
+                    android:id="@+id/text_tip1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/competition_tip1"
+                    android:textColor="#ff834d"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone" />
+                <!-- 性别 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/competition_gender"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+
+                    <EditText
+                        android:id="@+id/edit_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/edit_competition"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLength="1"
+                        android:singleLine="true"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+                </LinearLayout>
+                <!-- 性别提示 -->
+
+                <TextView
+                    android:id="@+id/text_tip2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/competition_tip2"
+                    android:textColor="#ff834d"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone" />
+                <!-- 年龄 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/competition_age"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+
+                    <EditText
+                        android:id="@+id/edit_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/edit_competition"
+                        android:imeOptions="actionNext"
+                        android:inputType="number"
+                        android:maxLength="2"
+                        android:singleLine="true"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+                </LinearLayout>
+                <!-- 年龄提示 -->
+
+                <TextView
+                    android:id="@+id/text_tip3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/competition_tip3"
+                    android:textColor="#ff834d"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone" />
+                <!-- 学历 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/competition_education"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+
+                    <EditText
+                        android:id="@+id/edit_education"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/edit_competition"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:maxLength="4"
+                        android:singleLine="true"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+                </LinearLayout>
+                <!-- 学历提示 -->
+
+                <TextView
+                    android:id="@+id/text_tip4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/competition_tip4"
+                    android:textColor="#ff834d"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone" />
+                <!-- 电话 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/competition_phone"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+
+                    <EditText
+                        android:id="@+id/edit_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/edit_competition"
+                        android:imeOptions="actionGo"
+                        android:inputType="phone"
+                        android:maxLength="20"
+                        android:singleLine="true"
+                        android:textColor="#404040"
+                        android:textSize="@dimen/text_subtitle" />
+                </LinearLayout>
+                <!-- 电话提示 -->
+
+                <TextView
+                    android:id="@+id/text_tip5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/competition_tip5"
+                    android:textColor="#ff834d"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <!-- 重置 -->
+
+                <Button
+                    android:id="@+id/btn_reset"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_competition_reset"
+                    android:text="@string/reset"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_subtitle" />
+                <!-- 提交 -->
+
+                <Button
+                    android:id="@+id/btn_commit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/btn_competition_commit"
+                    android:text="@string/submit"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_subtitle" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" >
+
+            <!-- 限制 -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/competition_limit_1"
+                android:textColor="#ff834d"
+                android:textSize="@dimen/text_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/competition_limit_2"
+                android:textColor="#ff834d"
+                android:textSize="@dimen/text_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/competition_limit_3"
+                android:textColor="#ff834d"
+                android:textSize="@dimen/text_content" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line_competition_h" />
+        <!-- 分割线 -->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/line_competition_h" />
+        <!-- 介绍标题 -->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_competition_middle"
+            android:scaleType="centerInside" />
+        <!-- 介绍内容 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_1"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_2"
+                android:textColor="#404040"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_3"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_4"
+                android:textColor="#404040"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_5"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_6"
+                android:textColor="#404040"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_7"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                android:text="@string/competition_content_8"
+                android:textColor="#404040"
+                android:textSize="@dimen/text_subtitle" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

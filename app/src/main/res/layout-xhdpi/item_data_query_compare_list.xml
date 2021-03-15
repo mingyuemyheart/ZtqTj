@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="wrap_content"
+    android:background="@color/grey2"
+    android:minHeight="60dp"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/tv_month"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/bg_white"
+        android:gravity="center"
+        android:text="@string/month2"
+        android:textColor="@color/text_black_common"
+        android:textSize="@dimen/text_footnote"
+        />
+
+    <TextView
+        android:id="@+id/tv_first"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg_white"
+        android:gravity="center"
+        android:text="@string/day2"
+        android:textColor="@color/text_black_common"
+        android:textSize="@dimen/text_footnote"
+        />
+
+    <TextView
+        android:id="@+id/tv_second"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="1dp"
+        android:background="@color/bg_white"
+        android:gravity="center"
+        android:text="@string/day2"
+        android:textColor="@color/text_black_common"
+        android:textSize="@dimen/text_footnote"
+        />
+
+</LinearLayout>

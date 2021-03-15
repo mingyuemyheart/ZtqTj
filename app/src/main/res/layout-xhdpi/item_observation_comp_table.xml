@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:background="@color/bg_title_obversion"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+        <TextView
+            android:id="@+id/item_c11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+        <TextView
+            android:id="@+id/item_c21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+        <TextView
+            android:id="@+id/item_c31"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c40"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+        <TextView
+            android:id="@+id/item_c41"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.3"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+        <TextView
+            android:id="@+id/item_c51"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.5"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_c60"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+        <TextView
+            android:id="@+id/item_c61"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen6"
+            android:layout_marginBottom="@dimen/dimen6"
+            android:textColor="@color/text_ovservation"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+
+</LinearLayout>

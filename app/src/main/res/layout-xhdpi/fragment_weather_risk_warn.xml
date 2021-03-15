@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_white">
+
+    <!-- 气象风险灾害预警 -->
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_white"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:visibility="gone"
+                android:id="@+id/radioa"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_disaster_reporting"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="16dp"/>
+
+            <RadioButton
+                android:visibility="gone"
+                android:id="@+id/radiob"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_disaster_reporting"
+                android:button="@null"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="16dp"/>
+
+            <RadioButton
+                android:visibility="gone"
+                android:id="@+id/radioc"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_disaster_reporting"
+                android:button="@null"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="16dp"/>
+        </RadioGroup>
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/textnull"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/horizontalScrollView"
+        android:gravity="center"
+        android:text="@string/no_data"
+        android:textColor="@color/text_black_common"
+        android:textSize="20dp"/>
+
+    <ListView
+        android:id="@+id/warnlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/horizontalScrollView"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:dividerHeight="2px"/>
+
+    <LinearLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/horizontalScrollView"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f5f5">
+
+    <RelativeLayout
+        android:id="@+id/submit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dimen6"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <Button
+            android:id="@+id/btn_commit"
+            android:layout_width="50dp"
+            android:layout_height="32dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/dimen6"
+            android:layout_marginTop="@dimen/dimen6"
+            android:background="@drawable/btn_livequery_commom"
+            android:text="提交"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <EditText
+            android:id="@+id/my_talk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/btn_commit"
+            android:background="@drawable/bg_set_edittext"
+            android:lineSpacingExtra="3dp"
+            android:lineSpacingMultiplier="1.2"
+            android:padding="@dimen/dimen6"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/submit_layout"
+        android:background="@color/bg_white"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dimen10"
+            android:paddingRight="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10">
+
+            <TextView
+                android:id="@+id/text_content_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="#090909"
+                android:textSize="@dimen/text_subtitle" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen10"
+                android:layout_marginTop="@dimen/dimen10"
+                android:gravity="center_horizontal"
+
+                android:textColor="#666666"
+                android:textSize="@dimen/text_footnote" />
+
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                />
+
+            <TextView
+                android:id="@+id/TextView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen10"
+                android:layout_marginTop="@dimen/dimen10"
+                android:lineSpacingExtra="10dp"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/dimen18" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/layoutpinglun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/dimen10"
+                    android:layout_marginTop="@dimen/dimen10"
+                    android:text="评论"
+                    android:textColor="@color/text_gray"
+                    android:textSize="@dimen/text_content" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@id/layoutpinglun"
+                    android:background="@drawable/line_common" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/layoutpinglun"
+                    android:background="@drawable/line_common" />
+            </RelativeLayout>
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/user_talk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
+

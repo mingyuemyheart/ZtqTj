@@ -1,0 +1,125 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-2dp"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:visibility="gone"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="73dp"
+            android:layout_height="22dp"
+            android:background="@drawable/temp_airquality_entry"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/entry"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/citiao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="@string/what_is_airquality"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line_common" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2">
+
+            <TextView
+                android:id="@+id/tv_ph_down"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="@drawable/btn_air_listtitle_down"
+                android:gravity="center"
+                android:text="@string/rank"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/text_content" />
+
+            <TextView
+                android:id="@+id/tv_ph_up"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:background="@drawable/btn_air_listtitle_up"
+                android:gravity="center"
+                android:text="@string/rank"
+                android:textColor="#ffffff"
+                android:textSize="@dimen/text_content"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/pm_province"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_listtitle"
+            android:text="@string/province"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/pm_city"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_listtitle"
+            android:text="@string/city"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/pm_rank_name"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_listtitle"
+            android:text="@string/aqi"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/paihang"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:orientation="vertical"></ListView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:src="@drawable/line_common" />
+
+</LinearLayout>

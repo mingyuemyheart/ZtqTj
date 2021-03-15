@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <com.pcs.ztqtj.view.myview.mExpandableListView
+        android:id="@+id/cityListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/search_bar"
+        android:cacheColorHint="#00000000"
+        android:childDivider="@drawable/line_common"
+        android:divider="@drawable/line_common"
+        android:dividerHeight="1dp"
+        android:fadingEdge="none"
+        android:focusable="false"
+        android:groupIndicator="@null"
+        android:listSelector="@color/alpha100"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:scrollingCache="false" />
+</LinearLayout>

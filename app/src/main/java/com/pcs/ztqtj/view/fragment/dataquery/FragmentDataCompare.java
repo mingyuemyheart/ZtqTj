@@ -1,0 +1,449 @@
+package com.pcs.ztqtj.view.fragment.dataquery;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.pcs.lib.lib_pcs_v3.control.tool.Util;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.AreaConfig;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.CompareInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.CompareMonthInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.ItemConfig;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryAreaConfigDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryAreaConfigUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryCompareDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryCompareUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryItemConfigDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryItemConfigUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.SubAreaConfig;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.data_query.AdapterDataQueryCompareList;
+import com.pcs.ztqtj.control.adapter.data_query.DataQueryCompareInfo;
+import com.pcs.ztqtj.control.adapter.data_query.DividerItemDecoration;
+import com.pcs.ztqtj.control.inter.ItemClickListener;
+import com.pcs.ztqtj.view.activity.product.dataquery.ActivityDataQuery;
+import com.pcs.ztqtj.view.myview.ElementCompareView;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2018/1/11.
+ */
+
+public class FragmentDataCompare extends Fragment {
+
+    private ActivityDataQuery mActivity;
+    private MyReceiver recevier = new MyReceiver();
+    private final String mType = "6";
+    private final String mCategory = "1";
+    private PackDataQueryAreaConfigUp areaUp = new PackDataQueryAreaConfigUp();
+    private PackDataQueryItemConfigUp itemUp = new PackDataQueryItemConfigUp();
+    private List<String> startYearList = new ArrayList<>();
+    private List<String> endYearList = new ArrayList<>();
+    private TextView tvTips;
+    private TextView tvCity, tvTown;
+    private TextView tvItem;
+    private List<AreaConfig> cityList = new ArrayList<>();
+    private List<SubAreaConfig> townList = new ArrayList<>();
+    private List<ItemConfig> itemList = new ArrayList<>();
+    private int currentCityPosition = 0, currentTownPosition = 0;
+    private int currentItemPosition = 0;
+    private TextView tvFirstYear;
+    private TextView tvSecondYear;
+    private Button btnQuery;
+    private ElementCompareView compareView;
+    private RecyclerView listMonth;
+    private CompareInfo firstYearInfo = new CompareInfo();
+    private CompareInfo secondYearInfo = new CompareInfo();
+    //private AdapterDataQueryCompare compareAdapter;
+    private AdapterDataQueryCompareList adapter;
+    private List<DataQueryCompareInfo> compareInfoList = new ArrayList<>();
+    private View layoutMonth;
+    private TextView tvUnit;
+    private View viewArrow;
+    private List<String> strList = new ArrayList<>();
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (ActivityDataQuery) context;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (recevier != null) {
+            PcsDataBrocastReceiver.unregisterReceiver(getActivity(), recevier);
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+            savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_data_query_compare, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initView();
+        initEvent();
+        initData();
+    }
+
+    private void initView() {
+        tvTips = (TextView) getView().findViewById(R.id.tv_tips);
+        tvCity = (TextView) getView().findViewById(R.id.tv_city);
+        tvTown = (TextView) getView().findViewById(R.id.tv_town);
+        tvItem = (TextView) getView().findViewById(R.id.tv_item);
+        tvFirstYear = (TextView) getView().findViewById(R.id.tv_first_year);
+        tvSecondYear = (TextView) getView().findViewById(R.id.tv_second_year);
+        btnQuery = (Button) getView().findViewById(R.id.btn_query);
+        compareView = (ElementCompareView) getView().findViewById(R.id.elementview);
+        listMonth = (RecyclerView) getView().findViewById(R.id.list_month);
+        layoutMonth = getView().findViewById(R.id.layout_month);
+        tvUnit = (TextView) getView().findViewById(R.id.tv_unit);
+        viewArrow = getView().findViewById(R.id.iv_right2);
+    }
+
+    private void initEvent() {
+        tvCity.setOnClickListener(onClickListener);
+        tvTown.setOnClickListener(onClickListener);
+        tvItem.setOnClickListener(onClickListener);
+        tvFirstYear.setOnClickListener(onClickListener);
+        tvSecondYear.setOnClickListener(onClickListener);
+        btnQuery.setOnClickListener(onClickListener);
+        listMonth.addOnScrollListener(recyclerviewScrollListener);
+    }
+
+    private void initData() {
+        recevier = new MyReceiver();
+        PcsDataBrocastReceiver.registerReceiver(getActivity(), recevier);
+        //compareAdapter = new AdapterDataQueryCompare(strList);
+        //listMonth.setAdapter(compareAdapter);
+        adapter = new AdapterDataQueryCompareList(compareInfoList);
+        listMonth.setAdapter(adapter);
+        listMonth.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        listMonth.addItemDecoration(new DividerItemDecoration(Util.dip2px(getContext(), 1)));
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int preYear = year-1;
+        tvFirstYear.setText(String.valueOf(year));
+        tvSecondYear.setText(String.valueOf(preYear));
+        initTimeList();
+        requestArea();
+        requestItem();
+    }
+
+    private void initTimeList() {
+        startYearList.clear();
+        endYearList.clear();
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        if(year < 2018) {
+            year = 2018;
+        }
+        for(int i = year; i >= 1961; i--) {
+            startYearList.add(String.valueOf(i));
+            endYearList.add(String.valueOf(i));
+        }
+    }
+
+    private void updateArea(int cityPosition, int stationPosition) {
+        currentCityPosition = cityPosition;
+        currentTownPosition = stationPosition;
+        townList.clear();
+        if (cityList.size() > currentCityPosition) {
+            tvCity.setText(cityList.get(currentCityPosition).name);
+            townList.addAll(cityList.get(currentCityPosition).sub_list);
+            if (townList.size() > currentTownPosition) {
+                tvTown.setText(townList.get(currentTownPosition).s_name);
+            } else {
+                tvTown.setText("");
+            }
+        }
+    }
+
+    private void updateItem(int position) {
+        currentItemPosition = position;
+        if (itemList.size() > currentItemPosition) {
+            tvItem.setText(itemList.get(currentItemPosition).name);
+        } else {
+            tvItem.setText("");
+        }
+    }
+
+    private void updateTable(CompareInfo firstYearInfo, CompareInfo secondYearInfo) {
+        strList = new ArrayList<>();
+        strList.add("月份");
+        for(int i = 1; i <= 12; i++) {
+            strList.add(i + "月");
+        }
+        if(firstYearInfo != null && firstYearInfo.sub_list != null && firstYearInfo.sub_list.size() != 0) {
+            strList.add(firstYearInfo.year);
+            for (int i = 0; i < 12; i++) {
+                if (firstYearInfo.sub_list.size() > i) {
+                    strList.add(firstYearInfo.sub_list.get(i).val);
+                } else {
+                    strList.add("");
+                }
+            }
+        }
+        if(secondYearInfo != null && secondYearInfo.sub_list != null && secondYearInfo.sub_list.size() != 0) {
+            if(firstYearInfo != null && !firstYearInfo.year.equals(secondYearInfo.year)) {
+                strList.add(secondYearInfo.year);
+                for (int i = 0; i < 12; i++) {
+                    if (secondYearInfo.sub_list.size() > i) {
+                        strList.add(secondYearInfo.sub_list.get(i).val);
+                    } else {
+                        strList.add("");
+                    }
+                }
+            }
+        }
+        if(strList.size() == 13) {
+            listMonth.setVisibility(View.GONE);
+        } else {
+            listMonth.setVisibility(View.VISIBLE);
+        }
+        //compareAdapter.setData(strList);
+    }
+
+    private void setTable(CompareInfo firstYearInfo, CompareInfo secondYearInfo) {
+        compareInfoList = new ArrayList<>();
+        DataQueryCompareInfo info = new DataQueryCompareInfo();
+        info.month = "月份";
+        info.firstYearValue = firstYearInfo.year;
+        info.secondYearValue = secondYearInfo.year;
+        compareInfoList.add(info);
+        for(int i = 0; i < 12; i++) {
+            DataQueryCompareInfo bean = new DataQueryCompareInfo();
+            bean.month = String.valueOf(i+1) + "月";
+            if(firstYearInfo.sub_list.size() > i && !TextUtils.isEmpty(firstYearInfo.sub_list.get(i).val)) {
+                bean.firstYearValue = firstYearInfo.sub_list.get(i).val;
+            } else {
+                bean.firstYearValue = "暂无";
+            }
+            if(secondYearInfo.sub_list.size() > i && !TextUtils.isEmpty(secondYearInfo.sub_list.get(i).val)) {
+                bean.secondYearValue = secondYearInfo.sub_list.get(i).val;
+            } else {
+                bean.secondYearValue = "暂无";
+            }
+            compareInfoList.add(bean);
+        }
+        if(firstYearInfo.year.equals(secondYearInfo.year)) {
+            adapter.setData(compareInfoList, false);
+        } else {
+            adapter.setData(compareInfoList, true);
+        }
+
+    }
+
+    private void setListRightVisibility() {
+        if(listMonth.canScrollHorizontally(1)) {
+            viewArrow.setVisibility(View.VISIBLE);
+        } else {
+            viewArrow.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     * 检查数据是否为空
+     * @param firstYearInfo
+     * @param secondYearInfo
+     * @return
+     */
+    private boolean checkDataIsNull(CompareInfo firstYearInfo, CompareInfo secondYearInfo) {
+        if(firstYearInfo.sub_list.size() == 0 && secondYearInfo.sub_list.size() == 0) {
+            return true;
+        }
+        for(CompareMonthInfo info : firstYearInfo.sub_list) {
+            if(!TextUtils.isEmpty(info.val)) {
+                return false;
+            }
+        }
+        for(CompareMonthInfo info : secondYearInfo.sub_list) {
+            if(!TextUtils.isEmpty(info.val)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void requestArea() {
+        mActivity.showProgressDialog();
+        areaUp = new PackDataQueryAreaConfigUp();
+        areaUp.type = mType;
+        areaUp.d_type = mCategory;
+        PcsDataDownload.addDownload(areaUp);
+    }
+
+    private void requestItem() {
+        mActivity.showProgressDialog();
+        itemUp = new PackDataQueryItemConfigUp();
+        itemUp.type = mType;
+        PcsDataDownload.addDownload(itemUp);
+    }
+
+    private void requestData() {
+        if(townList.size() > currentTownPosition
+                && itemList.size() > currentItemPosition) {
+            mActivity.showProgressDialog();
+            PackDataQueryCompareUp up = new PackDataQueryCompareUp();
+            up.id = townList.get(currentTownPosition).s_id;
+            up.s_year = tvFirstYear.getText().toString();
+            up.e_year = tvSecondYear.getText().toString();
+            up.item_id = itemList.get(currentItemPosition).item_id;
+            PcsDataDownload.addDownload(up);
+        }
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.tv_city:
+                    if (cityList.size() == 0) {
+                        return;
+                    }
+                    List<String> cityStrList = new ArrayList<>();
+                    for (AreaConfig config : cityList) {
+                        cityStrList.add(config.name);
+                    }
+                    mActivity.createPopupWindow((TextView) v, cityStrList, new ItemClickListener() {
+                        @Override
+                        public void itemClick(int position, Object... objects) {
+                            updateArea(position, 0);
+                            requestData();
+                        }
+                    }).showAsDropDown(v);
+                    break;
+                case R.id.tv_town:
+                    if (townList.size() == 0) {
+                        return;
+                    }
+                    List<String> townStrList = new ArrayList<>();
+                    for (SubAreaConfig config : townList) {
+                        townStrList.add(config.s_name);
+                    }
+                    mActivity.createPopupWindow((TextView) v, townStrList, new ItemClickListener() {
+                        @Override
+                        public void itemClick(int position, Object... objects) {
+                            updateArea(currentCityPosition, position);
+                            requestData();
+                        }
+                    }).showAsDropDown(v);
+                    break;
+                case R.id.tv_item:
+                    if (itemList.size() == 0) {
+                        return;
+                    }
+                    List<String> iList = new ArrayList<>();
+                    for (ItemConfig config : itemList) {
+                        iList.add(config.name);
+                    }
+                    mActivity.createPopupWindow((TextView) v, iList, new ItemClickListener() {
+                        @Override
+                        public void itemClick(int position, Object... objects) {
+                            updateItem(position);
+                        }
+                    }).showAsDropDown(v);
+                    break;
+                case R.id.tv_first_year:
+                    initTimeList();
+                    mActivity.createPopupWindow((TextView) v, startYearList, null).showAsDropDown(v);
+                    break;
+                case R.id.tv_second_year:
+                    initTimeList();
+                    mActivity.createPopupWindow((TextView) v, endYearList, null).showAsDropDown(v);
+                    break;
+                case R.id.btn_query:
+                    requestData();
+                    break;
+            }
+        }
+    };
+
+    private RecyclerView.OnScrollListener recyclerviewScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            setListRightVisibility();
+        }
+    };
+
+    private class MyReceiver extends PcsDataBrocastReceiver {
+
+        @Override
+        public void onReceive(String nameStr, String errorStr) {
+            if (areaUp.getName().equals(nameStr)) {
+                mActivity.dismissProgressDialog();
+                PackDataQueryAreaConfigDown down = (PackDataQueryAreaConfigDown) PcsDataManager.getInstance()
+                        .getNetPack(nameStr);
+                if (down == null) {
+                    return;
+                }
+                if(!TextUtils.isEmpty(down.des)) {
+                    tvTips.setText(down.des);
+                }
+                cityList.clear();
+                cityList.addAll(down.p_list);
+                updateArea(0, 0);
+                requestData();
+            } else if (itemUp.getName().equals(nameStr)) {
+                mActivity.dismissProgressDialog();
+                PackDataQueryItemConfigDown down = (PackDataQueryItemConfigDown) PcsDataManager.getInstance()
+                        .getNetPack(nameStr);
+                if (down == null) {
+                    return;
+                }
+                itemList.clear();
+                itemList.addAll(down.p_list);
+                updateItem(0);
+                requestData();
+            } else if (PackDataQueryCompareUp.NAME.equals(nameStr)) {
+                mActivity.dismissProgressDialog();
+                PackDataQueryCompareDown down = (PackDataQueryCompareDown) PcsDataManager.getInstance().getNetPack(nameStr);
+                if(down == null) {
+                    return;
+                }
+                tvUnit.setText(down.unit);
+                if(down.info_list.size() == 2) {
+                    firstYearInfo = down.info_list.get(0);
+                    secondYearInfo = down.info_list.get(1);
+                    if(checkDataIsNull(firstYearInfo, secondYearInfo)) {
+                        layoutMonth.setVisibility(View.GONE);
+                    } else {
+                        layoutMonth.setVisibility(View.VISIBLE);
+                    }
+                    compareView.setData(firstYearInfo, secondYearInfo);
+                    //compareAdapter.setData(firstYearInfo, secondYearInfo);
+                    //updateTable(firstYearInfo, secondYearInfo);
+                    setTable(firstYearInfo, secondYearInfo);
+                    mActivity.checkLogin();
+                }
+            }
+        }
+    }
+
+}

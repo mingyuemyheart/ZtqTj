@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/bg_title_pop">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:padding="@dimen/dimen6"
+            android:text="统计说明"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <ImageView
+            android:id="@+id/btn_delete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen16"
+            android:layout_marginTop="@dimen/dimen2"
+            android:src="@drawable/btn_delete" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="5dp"
+        android:lineSpacingMultiplier="1.3"
+        android:padding="@dimen/dimen6"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_content" />
+</LinearLayout>

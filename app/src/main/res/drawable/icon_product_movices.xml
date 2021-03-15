@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：气象影视 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 默认时的图片 -->
+    <item android:drawable="@drawable/product_movices_normal" android:state_pressed="false"/>
+    <!-- 选择时的图片 -->
+    <item android:drawable="@drawable/product_movices_pressed" android:state_pressed="true"/>
+
+</selector>

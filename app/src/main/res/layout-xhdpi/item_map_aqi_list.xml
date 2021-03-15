@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <!--地区名-->
+    <TextView
+        android:id="@+id/text_area_name"
+        android:layout_width="0dp"
+        android:textSize="15dp"
+        android:textColor="@color/text_black"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_weight="5"
+        android:gravity="left|center_vertical"
+        android:maxLines="1" />
+    <!--AQI数值-->
+    <TextView
+        android:id="@+id/text_aqi_num"
+        android:textSize="15dp"
+        android:textColor="@color/text_black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical"
+        android:maxLines="1" />
+    <!--AQI中文-->
+    <TextView
+        android:id="@+id/text_aqi_cn"
+        android:textSize="15dp"
+        android:textColor="@color/text_black"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_weight="2"
+        android:gravity="left|center_vertical"
+        android:maxLines="1" />
+    <!--AQI颜色-->
+    <ImageView
+        android:id="@+id/image_aqi_color"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:alpha="0.8"
+        android:background="@drawable/color_green"
+        android:gravity="center_vertical" />
+</LinearLayout>

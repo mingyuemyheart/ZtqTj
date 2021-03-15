@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/text_gray_light"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_marginleft_right"
+        android:layout_marginTop="@dimen/activity_marginleft_right" >
+
+        <TextView
+            android:id="@+id/warn_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_iamgedisaster_mark"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dimen4"
+            android:text="@string/warn_type"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+        <TextView
+            android:id="@+id/warn_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_subtitle" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/warn_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_marginleft_right"
+        android:layout_marginRight="@dimen/activity_marginleft_right"
+        android:background="@drawable/bg_imagedisaster_content"
+        android:padding="@dimen/activity_marginleft_right"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_content" />
+    <ListView
+        android:id="@+id/contextlistview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@null"
+        android:dividerHeight="@dimen/activity_marginleft_right"
+        android:padding="@dimen/activity_marginleft_right"
+        android:scrollbars="none" />
+
+</LinearLayout>

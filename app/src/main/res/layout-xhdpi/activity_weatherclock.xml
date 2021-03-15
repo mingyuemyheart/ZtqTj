@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dimen10"
+    android:paddingLeft="@dimen/activity_marginleft_right"
+    android:paddingRight="@dimen/activity_marginleft_right"
+    android:paddingTop="@dimen/dimen10" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/settime"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_subtitle" />
+
+        <Button
+            android:id="@+id/setcity"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_all_common"
+            android:text="@string/set"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/first"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/firsttime"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_color_time" />
+
+        <CheckBox
+            android:id="@+id/first_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_commom"
+            android:button="@null" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/second"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/secondtime"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_color_time" />
+
+        <CheckBox
+            android:id="@+id/second_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_commom"
+            android:button="@null" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/thrid"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/thirdtime"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_color_time" />
+
+        <CheckBox
+            android:id="@+id/third_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_commom"
+            android:button="@null" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+
+</LinearLayout>

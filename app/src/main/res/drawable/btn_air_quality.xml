@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：添加 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/icon_air_alpha_paihang" android:state_checked="true"></item>
+    <item android:drawable="@color/alpha100" android:state_checked="false"></item>
+
+</selector>

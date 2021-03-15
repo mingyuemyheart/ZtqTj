@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 弹出窗：拍照 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dimen10"
+    android:paddingRight="@dimen/dimen10" >
+
+    <Button
+        android:id="@+id/btnCamera2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="录像"
+        android:textColor="@color/mblue"
+        android:textSize="20dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+
+    <Button
+        android:id="@+id/btnAlbum2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="本地视频"
+        android:textColor="@color/mblue"
+        android:textSize="20dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+
+    <Button
+        android:id="@+id/btnCancel2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="@dimen/dimen5"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="@string/cancel"
+        android:textColor="@color/mblue"
+        android:textSize="20dp" />
+
+</LinearLayout>

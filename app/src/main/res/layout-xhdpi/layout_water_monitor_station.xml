@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/white_background"
+    android:orientation="vertical" >
+    
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+	
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="40dp">
+	    
+		<TextView 
+		    android:id="@+id/tv_monitor_station_title"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerInParent="true"
+		    android:textColor="@color/text_black"
+		    android:textSize="@dimen/text_content" />
+	
+        <Button
+            android:id="@+id/btn_monitor_station_close"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:text="关闭"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            android:background="@drawable/btn_rain_info"/>
+		
+	</RelativeLayout>
+	
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_black_common"  />
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal">
+	    
+	    <TextView 
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:layout_marginTop="@dimen/dimen6"
+	        android:layout_marginBottom="@dimen/dimen6"
+	        android:gravity="center"
+	        android:text="监测时间"
+	        android:textColor="@color/text_black"
+	        android:textSize="@dimen/text_footnote" />
+	    
+	    <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_black_common"  />
+	    
+	    <!-- 雨量 -->
+		<TextView 
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:gravity="center"
+            android:text="积水高度(米)"
+			android:textColor="@color/text_black"
+	        android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_black_common"  />
+
+        <!-- 雨量 -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="积水程度"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+	    
+	</LinearLayout>
+	
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_black_common" />
+	
+	<ListView
+	    android:id="@+id/lv_monitor_station"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:cacheColorHint="@color/alpha100"
+	    android:divider="@drawable/line_common"
+	    android:listSelector="@color/alpha100" >
+	    
+	</ListView>
+	
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_black_common"  />
+    
+</LinearLayout>

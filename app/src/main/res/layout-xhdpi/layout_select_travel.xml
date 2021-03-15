@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <RelativeLayout
+        android:id="@+id/search_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
+
+        <EditText
+            android:id="@+id/ss_alertedittext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_edit_select_city1"
+            android:drawableLeft="@drawable/btn_edit_select_city2"
+            android:textColorHint="@color/hint" android:hint="@string/input_scenic_py"
+            android:paddingLeft="15dp"
+            android:textColor="@color/text_black"
+            android:singleLine="true" />
+    </RelativeLayout>
+
+    <com.pcs.ztqtj.view.myview.mExpandableListView
+        android:id="@+id/cityListView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/search_bar"
+        android:cacheColorHint="#00000000"
+        android:childDivider="@drawable/line_common"
+        android:divider="@drawable/line_common"
+        android:dividerHeight="1dp"
+        android:fadingEdge="none"
+        android:focusable="false"
+        android:groupIndicator="@null"
+        android:listSelector="@color/alpha100"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:scrollingCache="false" />
+
+    <ExpandableListView
+        android:id="@+id/ss_alertgridview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/search_bar"
+        android:cacheColorHint="#00000000"
+        android:childDivider="@drawable/line_common"
+        android:divider="@drawable/line_common"
+        android:dividerHeight="1dp"
+        android:fadingEdge="none"
+        android:focusable="false"
+        android:groupIndicator="@null"
+        android:listSelector="@color/alpha100"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:scrollingCache="false"
+        android:visibility="gone" >
+    </ExpandableListView>
+
+</RelativeLayout>

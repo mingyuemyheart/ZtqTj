@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/scrollview"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_air_yb_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/text_white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.pcs.ztqtj.view.myview.MyGridView
+                android:id="@+id/lv_airlive_down"
+                android:layout_width="150dp"
+                android:layout_height="400dp"
+                android:listSelector="@null"
+                android:numColumns="1"
+                android:scrollbars="none"/>
+
+            <com.pcs.ztqtj.view.myview.CustomHScrollView
+                android:scrollbars="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="640dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.pcs.ztqtj.view.myview.MyGridView
+                            android:id="@+id/tablegrid_down"
+                            android:layout_width="fill_parent"
+                            android:layout_height="400dp"
+                            android:layout_gravity="center"
+                            android:columnWidth="80dp"
+                            android:gravity="center"
+                            android:listSelector="@null"
+                            android:scrollbarAlwaysDrawHorizontalTrack="true"
+                            android:scrollbarAlwaysDrawVerticalTrack="true"
+                            android:scrollbars="none"/>
+
+                    </LinearLayout>
+                </FrameLayout>
+            </com.pcs.ztqtj.view.myview.CustomHScrollView>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_air_yb_unit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/text_white"/>
+
+        <TextView
+            android:id="@+id/tv_airlive_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/text_white"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.pcs.ztqtj.view.myview.MyGridView
+                android:id="@+id/lv_airlive"
+                android:layout_width="100dp"
+                android:layout_height="400dp"
+                android:listSelector="@null"
+                android:numColumns="1"
+                android:scrollbars="none"/>
+
+
+            <com.pcs.ztqtj.view.myview.CustomHScrollView
+                android:scrollbars="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout_gridtableLayout"
+                        android:layout_width="640dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.pcs.ztqtj.view.myview.MyGridView
+                            android:id="@+id/tablegrid"
+                            android:layout_width="fill_parent"
+                            android:layout_height="400dp"
+                            android:layout_gravity="center"
+                            android:columnWidth="80dp"
+                            android:gravity="center"
+                            android:listSelector="@null"
+                            android:scrollbarAlwaysDrawHorizontalTrack="true"
+                            android:scrollbarAlwaysDrawVerticalTrack="true"
+                            android:scrollbars="none"/>
+
+                    </LinearLayout>
+                </FrameLayout>
+            </com.pcs.ztqtj.view.myview.CustomHScrollView>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_airlive_clara"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/text_white"/>
+
+
+
+    </LinearLayout>
+</ScrollView>

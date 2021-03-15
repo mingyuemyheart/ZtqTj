@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/fragment"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_warn_g"
+              android:orientation="vertical">
+
+    <!--<RadioGroup-->
+        <!--android:id="@+id/radiogroup"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--&gt;-->
+
+        <!--<RadioButton-->
+            <!--android:id="@+id/btn_fj_bill_list"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/bg_legend"-->
+            <!--android:button="@null"-->
+            <!--android:gravity="center"-->
+            <!--android:padding="@dimen/dimen4"-->
+            <!--android:textColor="@color/text_legend"-->
+            <!--android:textSize="@dimen/text_footnote"-->
+            <!--android:text="福建台警报单"-->
+            <!--/>-->
+
+        <!--<RadioButton-->
+            <!--android:id="@+id/btn_center_bill_list"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/bg_legend"-->
+            <!--android:button="@null"-->
+            <!--android:gravity="center"-->
+            <!--android:padding="@dimen/dimen4"-->
+            <!--android:textColor="@color/text_legend"-->
+            <!--android:textSize="@dimen/text_footnote"-->
+            <!--android:text="中央台警报单"-->
+            <!--/>-->
+
+    <!--</RadioGroup>-->
+
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        />
+
+    <ListView
+        android:id="@+id/warnlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:dividerHeight="2px"
+        android:fadingEdge="none"
+        android:groupIndicator="@null"
+        android:listSelector="@color/alpha100"
+        android:background="@color/bg_white"
+        android:scrollbars="none"
+        android:scrollingCache="false" />
+
+</LinearLayout>

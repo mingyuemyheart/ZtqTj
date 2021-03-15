@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <drawable name="gray_background">#EDEDED</drawable>
+    <drawable name="white_background">#FFFFFF</drawable>
+    <color name="act_background">#006699</color>
+    <!-- 字体：灰色 -->
+    <color name="text_ovservation">#4b4848</color>
+    <color name="livequery_buttom_pop">#62a8dd</color>
+
+    <!-- 数值预报详情背景色 -->
+    <color name="bg_number_detail_subt_blue">#95cbff</color>
+    <!-- Hint的灰色 -->
+    <color name="hint">#7d7d7d</color>
+    <!--绿色-->
+    <color name="green">#1afa29</color>
+    <!-- 字体：蓝色 -->
+    <color name="text_blue">#3f9bf8</color>
+    <!-- 首页Radio背景 -->
+    <color name="bg_main_radio">#ed1f253d</color>
+    <!-- 字体：灰色 -->
+    <color name="text_gray">#989898</color>
+    <!-- 意见反馈字体灰色 -->
+    <color name="text_feedback_gray">#f0f0f0</color>
+    <!-- 字体：浅灰色 -->
+    <color name="text_gray_light">#dadada</color>
+    <!-- 字体：深灰色 -->
+    <color name="text_gray_deep">#1d1d1d</color>
+    <!-- 背景:标题 -->
+    <color name="bg_title">#3180d1</color>
+    <!-- 背景:内容 -->
+    <color name="bg_content">#408cda</color>
+    <!-- 背景:黑色半透明 -->
+    <color name="bg_black_alpha">#bf000000</color>
+
+    <!-- 背景:黑色70%透明 -->
+    <color name="bg_black_alpha70">#b3000000</color>
+    <!-- 背景:黑色50%透明 -->
+    <color name="bg_black_alpha50">#80000000</color>
+    <!-- 背景:黑色20%透明 -->
+    <color name="bg_black_alpha20">#33000000</color>
+    <!-- 白色70%透明 -->
+    <color name="white_alpha70">#b3ffffff</color>
+    <!-- 白色50%透明 -->
+    <color name="white_alpha50">#80ffffff</color>
+    <!-- 白色20%透明 -->
+    <color name="white_alpha20">#33ffffff</color>
+
+    <!-- 白色5%透明 -->
+    <color name="white_alpha5">#0Dffffff</color>
+    <!-- 背景:白色10%透明 -->
+    <!-- 白色5%透明 -->
+    <color name="white_alpha10">#20ffffff</color>
+    <!-- 城市列表字体颜色 -->
+    <color name="citylist_textcolor">#000000</color>
+    <!-- 背景:全透明 -->
+    <color name="alpha100">#00000000</color>
+    <!--透明70%-->
+    <color name="alpha30">#16000000</color>
+    <color name="bg_white">#ffffff</color>
+    <color name="item_textcolor">#ffffff</color>
+    <color name="text_white">#ffffff</color>
+    <color name="text_black">#000000</color>
+
+    <!-- 黑色70%透明 -->
+    <color name="text_black_alpha80">#b3000000</color>
+    <color name="text_server_blue">#0066cc</color>
+    <!-- 金色文字 -->
+    <color name="text_goledn">#fffe03</color>
+    <color name="text_yellow">#ffff00</color>
+    <color name="text_color">#343434</color>
+    <color name="black_b">#3C3C3C</color>
+    <color name="blackalpha">#333333</color>
+    <color name="grayline">#bcbcbc</color>
+    <!-- 灰色线条 -->
+    <color name="time_color">#3F9DF5</color>
+    <color name="mgrey">#797979</color>
+    <color name="dgray">#696969</color>
+    <color name="grey_bg">#EDEDED</color>
+    <color name="grey_text_color">#EDEDED</color>
+    <color name="grey_bg2">#ECECEC</color>
+    <color name="grey2">#BCBCBC</color>
+    <!-- 首页的蓝色字 -->
+    <color name="text_main_blue">#00CCFF</color>
+    <!-- 背景:预警中心item -->
+    <color name="warnparentgroup">#08a0d2</color>
+    <color name="mblue">#3f9bf8</color>
+    <!-- 灰色字 -->
+    <color name="gray">#DBDBDB</color>
+
+    <!-- 实况查询列表头点击颜色 -->
+    <color name="livequery_listtitleclick">#b4d4fd</color>
+    <!-- 实况查询列表头颜色 -->
+    <color name="livequery_listtitle">#ebf3ff</color>
+    <color name="livequery_bleak_bg">#d2d2d2</color>
+    <color name="livequery_bleak2_bg">#ebebeb</color>
+
+    <!-- 逐时预报_表头 -->
+    <color name="hour_forecast_title">#67f1fe</color>
+    <!-- 逐时预报_表头背景 -->
+    <color name="hour_forecast_titlebg">#33113358</color>
+    <!-- 小部件黄色字体 -->
+    <color name="widget_text">#f8fd01</color>
+    <!-- 预警颜色值 -->
+    <color name="warn_red">#dd0505</color>
+    <color name="warn_blue">#3366ff</color>
+    <color name="warn_purple">#cc1ec5</color>
+
+    <!-- 网格预报_标题 -->
+    <color name="map_forecast_title">#464646</color>
+    <!-- 网格预报_列表标题 -->
+    <color name="map_forecast_list_title">#d8d8d8</color>
+    <!-- 网格预报_分割线 -->
+    <color name="map_forecast_line">#c6c6c6</color>
+    <!-- 网格预报_列表背景 -->
+    <color name="map_forecast_list_bg">#e7fafe</color>
+    <!-- 网格预报_列表文字 -->
+    <color name="map_forecast_list_text">#383838</color>
+    <!-- 下拉选项背景 -->
+    <color name="bg_spinner_pop">#d7e6f3</color>
+    <!-- 整点实况_列表文字 -->
+    <color name="bg_rainfall_subtitle">#e6e6e6</color>
+
+    <!-- 预警中心灰色背景 -->
+    <color name="bg_warn_g">#EBEBEB</color>
+    <!-- 预警中心灰色字 -->
+    <color name="text_warn">#6d6d6d</color>
+
+    <!-- 青运会倒计时 -->
+
+    <!-- AQI颜色 -->
+    <color name="AQI_0">#03e306</color>
+    <color name="AQI_1">#feff03</color>
+    <color name="AQI_2">#fda702</color>
+    <color name="AQI_3">#fc4849</color>
+    <color name="AQI_4">#ae0fb2</color>
+    <color name="AQI_5">#941e34</color>
+    <color name="AQI_textcolor">#0e0e0e</color>
+    <!-- 背景：天气新闻 -->
+    <color name="text_calendar">#585757</color>
+    <!-- 照片Grid颜色 -->
+    <color name="photo_grid_pressed">#1Affffff</color>
+    <color name="photo_grid_focused">#80000000</color>
+    <color name="text_rain_blue">#0066cb</color>
+	<!-- 字体颜色：黑色(登录界面) -->
+    <color name="text_black_login">#686868</color>
+    <!-- 字体颜色：蓝色(登录界面) -->
+    <color name="text_blue_login">#178bcb</color>
+    <!-- 字体颜色：黑色公共通用 -->
+    <color name="text_black_common">#555555</color>
+    <!-- 字体颜色：橙色 -->
+    <color name="text_orange">#ff9d34</color>
+    <color name="text_life">#F8983D</color>
+    <!-- 海洋区域边界线颜色：土黄色 -->
+    <color name="line_yellow_soil">#CCDD7C31</color>
+    <!-- 背景：数据查询 蓝色 -->
+    <!-- 水利汛情：浅蓝表头 -->
+    <color name="water_grid_head_light_blue">#EAF2FD</color>
+    <color name="water_grid_head_deep_blue">#C6DEFF</color>
+    <color name="water_grid_head_grey">#EEEEEE</color>
+    <!-- 雷电监测：数据查询 -->
+    <color name="tv_lightning_listtitle">#1880e5</color>
+    <color name="bg_lightning_top">#d5e9fd</color>
+    <!-- 旅游气象 -->
+    <color name="map_line">#83BEF3</color>
+    <color name="bg_bookmark">#EEEEEE</color>
+    <color name="three_time">#F3F3E1</color>
+    <!-- 台湾台风预测路径颜色 -->
+    <color name="typhoon_tw">#FFC7C7</color>
+    <color name="adapter_column_manager_odd">#F3F3F3</color>
+    <!--首页分享等按钮颜色-->
+    <color name="bg_bt_share_setting_press">#2B8FDB</color>
+    <!--  -->
+    <!--  -->
+    <color name="bg_title_obversion">#cae4eb</color>
+    <color name="bg_title_deepblue">#28639a</color>
+
+    <color name="bg_dropdown">#F6F6F6</color>
+    <color name="yellow_time">#ffff00</color>
+
+
+    <color name="livequery_prediction">#ff9933</color>
+    <color name="livequery_actual">#99cc00</color>
+
+    <color name="text_livequery">#2B8CF1</color>
+    <color name="bg_legend">#7EBDFF</color>
+
+    <color name="bg_livequery">#0f4188</color>
+    <!-- 字体颜色：蓝色公共通用 -->
+    <color name="text_blue_common">#4F94CD</color>
+    <!-- 字体颜色：蓝色(空气质量预报图) -->
+    <color name="text_blue_air">#0099cc</color>
+
+    <color name="air_quality_6">#993333</color>
+    <color name="air_quality_5">#CC3399</color>
+    <color name="air_quality_4">#FF0000</color>
+    <color name="air_quality_3">#FF6700</color>
+    <color name="air_quality_2">#FFFF66</color>
+    <color name="air_quality_1">#64E364</color>
+    <color name="curve_orange">#FF6300</color>
+    <color name="health_orange">#FF9900</color>
+    <color name="health_yellow">#F3EE0C</color>
+    <color name="health_blue">#00CCCC</color>
+    <color name="health_green">#00CC00</color>
+
+    <color name="activity_bac">#0099CC</color>
+    <color name="typhone_forecast_line_shanghai">#4F4DAE</color>
+
+    <color name="air_label_bac">#007ebb</color>
+
+</resources>

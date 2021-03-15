@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginRight="3dp"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/right_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="3dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical">
+
+            <!--<ImageView-->
+            <!--android:id="@+id/img_banner_right"-->
+            <!--android:layout_width="105dp"-->
+            <!--android:visibility="gone"-->
+            <!--android:layout_height="64dp"-->
+            <!--android:layout_margin="2dp"/>-->
+            <!-- 预警中心 -->
+            <RelativeLayout
+                android:id="@+id/layout_warn"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:background="@drawable/icon_main_label">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="14dp"
+                    android:layout_marginStart="14dp"
+                    android:maxLines="1"
+                    android:text="@string/warning_center"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp"/>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true">
+                    <ImageView
+                        android:id="@+id/widget_title_icon"
+                        android:layout_width="8dp"
+                        android:layout_height="8dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_gravity="top|right"
+                        android:src="@drawable/icon_warning_point"
+                        android:visibility="invisible"/>
+                </FrameLayout>
+
+
+            </RelativeLayout>
+
+            <!-- 风雨查询 -->
+            <RelativeLayout
+                android:id="@+id/layout_wind"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:background="@drawable/icon_main_label"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp">
+
+                <TextView
+                    android:id="@+id/rain_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:maxLines="1"
+                    android:text="@string/realtime_query"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp"/>
+
+            </RelativeLayout>
+            <!-- 空气质量 -->
+            <RelativeLayout
+                android:id="@+id/layout_air"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:background="@drawable/icon_main_label"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:maxLines="1"
+                    android:text="@string/air_quality"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp"/>
+
+            </RelativeLayout>
+            <!-- 气象服务 -->
+            <RelativeLayout
+                android:id="@+id/layout_server"
+                android:layout_width="105dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:background="@drawable/icon_main_label"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp">
+
+                <TextView
+                    android:id="@+id/report"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:maxLines="1"
+                    android:text="@string/decision_weather"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp"/>
+
+            </RelativeLayout>
+
+            <!-- 气象服务 -->
+            <RelativeLayout
+                android:id="@+id/layout_near"
+                android:layout_width="105dp"
+                android:layout_height="33dp"
+                android:visibility="gone"
+                android:layout_margin="1dp"
+                android:background="@drawable/icon_main_label"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp">
+
+                <TextView
+                    android:id="@+id/near"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:maxLines="1"
+                    android:paddingRight="5dp"
+                    android:text="@string/near_report"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp"/>
+
+                <ImageView
+                    android:id="@+id/img_near"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/icon_home_near"
+                    android:paddingLeft="5dp"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/right_layout"
+            android:background="@drawable/btn_alpha_black"
+            android:duplicateParentState="true"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="@dimen/activity_margintop"
+                android:layout_marginRight="@dimen/dimen4">
+
+
+                <ImageView
+                    android:id="@+id/warn_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@id/warn_icon"
+                    android:gravity="center_vertical"
+                    android:maxLines="1"
+                    android:textColor="@color/text_white"
+                    android:textSize="15dp"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="当前实况："
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"
+                    android:layout_marginLeft="5dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="2dp"
+                    android:orientation="horizontal"
+                    android:layout_below="@id/current"
+                    >
+                    <!-- 实时温度 -->
+                    <TextView
+                        android:id="@+id/text_temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="90dp"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="top"
+                        android:text="23"
+                        android:textColor="@color/text_white"
+                        android:textSize="80dp"/>
+                    <!-- 实时温度_小数 -->
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="vertical"
+                        >
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="50dp"
+                                android:layout_gravity="right"
+                                android:gravity="bottom">
+
+                                <TextView
+                                    android:id="@+id/text_temperature_decimals"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:text="2"
+                                    android:textColor="@color/text_white"
+                                    android:textSize="46dp"/>
+                                <!-- 度数符号 -->
+
+                                <TextView
+                                    android:id="@+id/text_degree"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom"
+                                    android:text="@string/temperaturenum"
+                                    android:textColor="@color/text_white"
+                                    android:textSize="40dp"/>
+
+                            </LinearLayout>
+
+
+                            <ImageView
+                                android:visibility="gone"
+                                android:id="@+id/main_voice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="15dp"
+                                android:background="@drawable/btn_mainvoice_nor"
+                                android:padding="3dp"/>
+
+
+                        </RelativeLayout>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+            <!-- 中文天气 -->
+            <TextView
+                android:id="@+id/text_weather_cn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_temperature"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/text_white"
+                android:textSize="23dp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
+            <!-- 分割线 -->
+
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <!-- 湿度 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/humidity_"
+                            android:textColor="@color/text_white"
+                            android:textSize="@dimen/text_footnote"/>
+
+                        <TextView
+                            android:id="@+id/text_humidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_goledn"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+
+                    <!-- 风况 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/windspeed_"
+                            android:textColor="@color/text_white"
+                            android:textSize="@dimen/text_footnote"/>
+
+                        <TextView
+                            android:id="@+id/text_wind"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_goledn"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:orientation="vertical">
+
+                    <!-- 雨量 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/timerain_"
+                            android:textColor="@color/text_white"
+                            android:textSize="@dimen/text_footnote"/>
+
+                        <TextView
+                            android:id="@+id/text_rain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textColor="@color/text_goledn"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+                    <!-- 能见度 -->
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mvisibility_"
+                            android:textColor="@color/text_white"
+                            android:textSize="@dimen/text_footnote"/>
+
+                        <TextView
+                            android:id="@+id/text_visibility"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/text_goledn"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.pcs.ztqtj.view.myview.typhoon.AutoFitTextView
+                android:id="@+id/text_station_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:drawableLeft="@mipmap/icon_station"
+                android:drawablePadding="3dp"
+                android:lines="1"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_temperature"
+            android:layout_marginTop="@dimen/dimen5"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+
+            <!--android:drawableLeft="@mipmap/icon_reflush_time"-->
+            <com.pcs.ztqtj.view.myview.typhoon.AutoFitTextView
+                android:id="@+id/text_reflush_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:lines="1"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="gone"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

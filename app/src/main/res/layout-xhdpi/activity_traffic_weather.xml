@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 交通预报 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.4"
+            android:orientation="horizontal" >
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" >
+
+            <!-- 交通气象概况 -->
+
+            <LinearLayout
+                android:id="@+id/layout_weather_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/bg_main_row"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <!-- 标题 -->
+
+                <TextView
+                    android:id="@+id/text_desc_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_marginleft_right"
+                    android:layout_marginRight="@dimen/activity_marginleft_right"
+                    android:layout_marginTop="@dimen/activity_margintop"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+                <!-- 分割线 -->
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_margintop"
+                    android:layout_marginLeft="@dimen/activity_marginleft_right"
+                    android:layout_marginRight="@dimen/activity_marginleft_right"
+                    android:layout_marginTop="@dimen/activity_margintop"
+                    android:background="@drawable/line_common" />
+                <!-- 内容 -->
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp" >
+
+                    <TextView
+                        android:id="@+id/text_desc_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_margintop"
+                        android:layout_marginLeft="@dimen/activity_marginleft_right"
+                        android:layout_marginRight="@dimen/activity_marginleft_right"
+                        android:layout_marginTop="@dimen/activity_margintop"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content" />
+                </ScrollView>
+            </LinearLayout>
+            <!-- 网格预报 -->
+
+            <LinearLayout
+                android:id="@+id/layout_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <!-- 标题栏 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/map_forecast_title"
+                    android:gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/text_list_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/activity_marginleft_right"
+                        android:layout_weight="5"
+                        android:text="@string/feature_weather"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/text_content" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right" >
+
+                        <Button
+                            android:id="@+id/btnClose"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="@dimen/activity_marginleft_right"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/btn_close_white" />
+                    </LinearLayout>
+                </LinearLayout>
+                <!-- 列表标题 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@color/map_forecast_list_title"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <!-- 时间 -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/time"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_content" />
+
+                    <ImageView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+                        android:background="@color/map_forecast_line" />
+                    <!-- 天气 -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/weather"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_content" />
+
+                    <ImageView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+                        android:background="@color/map_forecast_line" />
+                    <!-- 温度 -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/temperature"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_content" />
+
+                    <ImageView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+                        android:background="@color/map_forecast_line" />
+                    <!-- 降水量 -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/rainfall"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_content" />
+
+                    <ImageView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+                        android:background="@color/map_forecast_line" />
+
+                    <!-- 风向 -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/wind_direction"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_content" />
+
+                    <ImageView
+                        android:layout_width="1px"
+                        android:layout_height="match_parent"
+                        android:background="@color/map_forecast_line" />
+
+                    <!-- 风速 -->
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/windspeed"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/text_content" />
+                </LinearLayout>
+                <!-- 列表 -->
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:divider="#00000000"
+                    android:dividerHeight="0dp" >
+                </ListView>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

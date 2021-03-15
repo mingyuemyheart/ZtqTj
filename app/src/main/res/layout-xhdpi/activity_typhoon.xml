@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 台风路径 -->
+<LinearLayout android:id="@+id/layout_main"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+    <!-- 选择台风 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_bg"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <Button
+            android:id="@+id/btn_choice_typhoon"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_likespinnertextview"
+            android:drawableRight="@drawable/bg_livequery_drowdown"
+            android:text="@string/choice_typhoon"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_content"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 地图 -->
+        <com.amap.api.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- ==============台风详情============== -->
+            <LinearLayout
+                android:id="@+id/layout_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="#6000"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_detail_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dimen10"
+                        android:shadowColor="#4d4d4d"
+                        android:shadowDx="1"
+                        android:shadowDy="1"
+                        android:shadowRadius="2"
+                        android:text="@string/detail_time"
+                        android:textColor="#fff"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <ImageView
+                        android:id="@+id/arrow_up"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/arrow1"/>
+
+                    <ImageView
+                        android:id="@+id/arrow_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/arrow2"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <!-- 台风详情内容 -->
+                <TextView
+                    android:id="@+id/text_detail_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:shadowColor="#4d4d4d"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="2"
+                    android:text="@string/typhoon_detail"
+                    android:textColor="#fff"
+                    android:textSize="@dimen/text_footnote"/>
+            </LinearLayout>
+
+            <!-- ==============按钮列表============== -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/dimen10"
+                android:orientation="vertical"
+                >
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/lay_typhoon_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone"
+                        >
+
+                        <CheckBox
+                            android:id="@+id/btn_radar"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/dimen4"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:paddingTop="@dimen/dimen4"
+                            android:text="@string/radar"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+
+                        <CheckBox
+                            android:id="@+id/btn_cloud"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/dimen4"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:paddingTop="@dimen/dimen4"
+                            android:text="@string/cloud_chart"
+                            android:visibility="gone"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+
+                        <!-- 海温检测 -->
+                        <CheckBox
+                            android:id="@+id/btn_haiwen"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:visibility="gone"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+
+                        <!-- 台风之最 -->
+                        <CheckBox
+                            android:id="@+id/btn_typhoon_more"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:visibility="gone"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+                        <!-- 历史查询 -->
+                        <CheckBox
+                            android:id="@+id/btn_history"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:visibility="gone"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+                        <!-- 集合路径预报 -->
+                        <CheckBox
+                            android:id="@+id/btn_more_road"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:paddingLeft="@dimen/dimen2"
+                            android:paddingRight="@dimen/dimen2"
+                            android:visibility="gone"
+                            android:gravity="center"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+
+                        <!-- 图例 -->
+                        <CheckBox
+                            android:id="@+id/btn_example"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/dimen4"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:paddingTop="@dimen/dimen4"
+                            android:text="@string/image_example"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+                        <!-- 测距 -->
+                        <CheckBox
+                            android:id="@+id/btn_distance"
+                            android:layout_width="55dp"
+                            android:layout_height="35dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/btn_map_2"
+                            android:button="@null"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/dimen4"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen10"
+                            android:paddingTop="@dimen/dimen4"
+                            android:text="@string/measure_distance"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="13dp"/>
+
+
+
+                    </LinearLayout>
+
+                    <com.pcs.ztqtj.view.myview.MyListView
+                        android:id="@+id/lv_date"
+                        android:layout_width="160dp"
+                        android:layout_height="wrap_content"
+                        android:dividerHeight="@dimen/dimen4"
+                        android:divider="@android:color/transparent"
+                        android:layout_gravity="bottom|right"
+                        />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="@dimen/dimen10"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/btn_road_more"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:background="@drawable/btn_map"
+                        android:layout_weight="1">
+                        <!-- 更多 -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingBottom="@dimen/dimen4"
+                            android:paddingLeft="@dimen/dimen10"
+                            android:paddingRight="@dimen/dimen5"
+                            android:paddingTop="@dimen/dimen4"
+                            android:text="更多"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="@dimen/text_footnote"/>
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/btn_road_more_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/icon_typhoon_up"/>
+
+                        <ImageView
+                            android:id="@+id/btn_road_more_down"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/icon_typhoon_down"
+                            />
+                    </LinearLayout>
+
+
+                    <!-- 地图切换 -->
+                    <Button
+                        android:id="@+id/btn_map_switch"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_map"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen4"
+                        android:paddingLeft="@dimen/dimen5"
+                        android:paddingRight="@dimen/dimen5"
+                        android:paddingTop="@dimen/dimen4"
+                        android:text="@string/map_switch"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <CheckBox
+                        android:id="@+id/btn_play_pause"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_map_2"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen4"
+                        android:paddingLeft="@dimen/dimen10"
+                        android:paddingRight="@dimen/dimen10"
+                        android:paddingTop="@dimen/dimen4"
+                        android:text="@string/play"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                    <!-- 台风列表 -->
+                    <Button
+                        android:id="@+id/btn_typhoon_list"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_map"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen4"
+                        android:paddingLeft="@dimen/dimen5"
+                        android:paddingRight="@dimen/dimen5"
+                        android:paddingTop="@dimen/dimen4"
+                        android:text="@string/typhoon_list"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <!-- 警报单 -->
+                    <Button
+                        android:id="@+id/btn_alarm_list"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_map"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/dimen4"
+                        android:paddingLeft="@dimen/dimen10"
+                        android:paddingRight="@dimen/dimen10"
+                        android:paddingTop="@dimen/dimen4"
+                        android:text="@string/alarm_list"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"/>
+
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </FrameLayout>
+</LinearLayout>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/layout"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_page_title"
+        android:orientation="vertical"
+        >
+
+        <RelativeLayout
+            android:id="@+id/head_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+
+            <!-- 返回按钮 -->
+
+            <ImageButton
+                android:id="@+id/btn_exit"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:background="@null"
+                android:contentDescription="@null"
+                android:paddingRight="16dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/btn_back"/>
+
+
+            <!-- 返回标题 -->
+
+            <ImageButton
+                android:id="@+id/btn_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/icon_share_new"
+                android:visibility="visible"/>
+
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="水利汛情"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_the_page_title"/>
+        </RelativeLayout>
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            >
+
+            <com.pcs.ztqtj.view.myview.UnderLineRadioButton
+                android:id="@+id/rb_ravr"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="水库站信息"
+                android:textSize="@dimen/text_content"
+                android:textColor="@color/bg_white"
+                android:button="@null"
+                android:gravity="center"
+                app:line_width="120dp"
+                app:line_height="1dp"
+                app:line_marginBottom="2dp"
+                app:line_color="@color/text_white"
+                />
+
+            <com.pcs.ztqtj.view.myview.UnderLineRadioButton
+                android:id="@+id/rb_river"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="河道站信息"
+                android:textSize="@dimen/text_content"
+                android:textColor="@color/bg_white"
+                android:button="@null"
+                android:gravity="center"
+                app:line_width="120dp"
+                app:line_height="1dp"
+                app:line_marginBottom="2dp"
+                app:line_color="@color/text_white"
+                />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.amap.api.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <CheckBox
+            android:id="@+id/cb"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:button="@null"
+            android:gravity="center"
+            android:text="显示"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_footnote"
+            android:background="@drawable/icon_product_sl"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

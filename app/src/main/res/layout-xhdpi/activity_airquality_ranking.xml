@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+    <RadioGroup
+        android:id="@+id/radiogroups"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+
+        <RadioButton
+            android:id="@+id/btn_air_t"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_air_quality"
+            android:button="@null"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="今日排行"
+            android:checked="true"
+            android:textColor="@android:color/white"
+            android:textSize="17dp"/>
+
+
+
+        <RadioButton
+            android:id="@+id/btn_air_y"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:text="昨日排行"
+            android:background="@drawable/btn_air_quality"
+            android:button="@null"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="17dp"/>
+
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/fra_airfragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/radiogroups">
+    </LinearLayout>
+
+
+</RelativeLayout>

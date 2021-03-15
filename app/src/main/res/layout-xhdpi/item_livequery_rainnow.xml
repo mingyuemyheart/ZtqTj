@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/rain_station"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingBottom="@dimen/activity_margintop"
+        android:paddingTop="@dimen/activity_margintop"
+        android:textColor="@color/text_black"
+        android:textSize="13dp" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/rain_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingBottom="@dimen/activity_margintop"
+        android:paddingTop="@dimen/activity_margintop"
+        android:textColor="@color/text_black"
+        android:textSize="13dp" />
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingBottom="@dimen/activity_margintop"
+        android:paddingTop="@dimen/activity_margintop"
+        android:textColor="@color/text_black"
+        android:textSize="13dp" />
+
+    <View
+        android:visibility="gone"
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@drawable/line_common_v" />
+</LinearLayout>

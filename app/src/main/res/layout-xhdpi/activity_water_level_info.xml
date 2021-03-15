@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </com.amap.api.maps.MapView>
+
+    <!-- 时间段 -->
+
+    <LinearLayout
+        android:id="@+id/ll_time_slot"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bg_choose_time"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tv_time_slot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <Button
+            android:id="@+id/btn_choose_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen4"
+            android:background="@drawable/btn_rain_info"
+            android:text="@string/choose_time"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+
+    <!-- 底部按钮 -->
+
+    <LinearLayout
+        android:id="@+id/ll_bottom_button"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dimen10" >
+
+        <RadioGroup
+            android:id="@+id/rg_main"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/rb_reservoir_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_unit_time_rain"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="@string/reservoir_info"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote" />
+
+            <RadioButton
+                android:id="@+id/rb_river_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_total_time_rain"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/river_info"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btn_legend"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rain_info"
+            android:text="@string/image_example"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote" />
+
+        <Button
+            android:id="@+id/btn_over"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rain_info"
+            android:text="@string/over_flood"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <!-- 趋势图和列表 -->
+
+    <RelativeLayout
+        android:id="@+id/view_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_bg2"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:id="@+id/top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/water_grid_head_deep_blue" >
+
+            <CheckBox
+                android:id="@+id/change_view"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/dimen6"
+                android:background="@drawable/checkbox_weatherflood"
+                android:button="@null" />
+
+            <ImageView
+                android:id="@+id/gone_view"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/dimen6"
+                android:src="@drawable/btn_delete" />
+
+            <TextView
+                android:id="@+id/station_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/gone_view"
+                android:layout_toRightOf="@id/change_view"
+                android:gravity="center"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_content" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@id/top_layout"
+            android:background="#000000" />
+
+        <LinearLayout
+            android:id="@+id/fra_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/top_layout"
+            android:orientation="vertical" />
+    </RelativeLayout>
+</RelativeLayout>

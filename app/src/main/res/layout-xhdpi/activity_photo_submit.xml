@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 实景开拍：照片提交 -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_bg"
+            android:orientation="vertical"
+            android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/imagePhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/no_pic"/>
+            <!-- 放大按钮 -->
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="5dp"
+                android:src="@drawable/icon_larger"/>
+            <!-- 左旋转 -->
+
+            <ImageView
+                android:id="@+id/btn_rotate_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="43dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/btn_rotate_l_s"/>
+            <!-- 右旋转 -->
+
+            <ImageView
+                android:id="@+id/btn_rotate_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="84dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/btn_rotate_r_s"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/input_box_bg"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/scene_sign"
+                android:textColor="@color/text_color"
+                android:textSize="15dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common"/>
+
+            <RadioGroup
+                android:id="@+id/radio_group_1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_qh"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_yt"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_sl"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_df"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radio_group_2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_xy"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_dw"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_sh"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_gw"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radio_group_3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_zy"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_bb"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_tf"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_gh"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/radio_group_4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_dy"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_jx"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_jb"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@drawable/btn_radio"
+                    android:text="@string/weather_qt"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/input_box_bg"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/location_sign"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <EditText
+                    android:id="@+id/edit_address"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="2dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/input_box_bg"
+                    android:drawableRight="@drawable/icon_edit_blue"
+                    android:gravity="center_vertical"
+                    android:maxLength="50"
+                    android:singleLine="true"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/time_sign"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <TextView
+                    android:id="@+id/text_time"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="2dp"
+                    android:layout_weight="3"
+                    android:background="@drawable/input_box_bg"
+                    android:drawableRight="@drawable/icon_datetime"
+                    android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/text_color"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/nick_name_sign"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="2dp"
+                    android:layout_weight="3"
+                    >
+
+                    <Button
+                        android:id="@+id/btn_login"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="0dp"
+                        android:background="@drawable/btn_all_common"
+                        android:text="@string/login"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/text_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@id/btn_login"
+                        android:background="@drawable/input_box_bg"
+                        android:enabled="false"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/text_color"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/image_describe"
+                    android:textColor="@color/text_color"
+                    android:textSize="15dp"/>
+
+                <RelativeLayout
+                    android:id="@+id/layout_des"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    >
+
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="0dp"
+                        android:background="@drawable/btn_all_common"
+                        android:text="@string/release"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+
+                    <EditText
+                        android:id="@+id/edit_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:gravity="top"
+                        android:layout_toLeftOf="@id/btn_submit"
+                        android:background="@drawable/input_box_bg"
+                        android:layout_alignParentTop="true"
+                        android:hint="@string/input_tips_photo"
+                        android:inputType="textMultiLine"
+                        android:maxLength="100"
+                        android:textColor="@color/text_color"
+                        android:textColorHint="@color/hint"
+                        android:textSize="15dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_toRightOf="@id/edit_desc"
+                        android:orientation="horizontal"
+                        android:gravity="right"
+                        >
+
+                        <TextView
+                            android:id="@+id/text_tips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@id/text_maxlength"
+                            android:text="@string/num_0"
+                            android:textColor="@color/time_color"/>
+
+                        <TextView
+                            android:id="@+id/text_maxlength"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hundred_sign"
+                            android:textColor="@android:color/darker_gray"/>
+                    </LinearLayout>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

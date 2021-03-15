@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white"
+              android:orientation="vertical"
+              android:padding="@dimen/dimen16">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register_question_tip"
+        android:textColor="@color/text_black_common"
+        android:textSize="@dimen/text_footnote"
+        android:drawableLeft="@drawable/icon_warning_center"
+        android:drawablePadding="@dimen/dimen10"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/dimen10"
+        android:background="@drawable/line_common"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen10"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/question_1"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_footnote"/>
+
+
+
+        <RelativeLayout
+            android:id="@+id/layout_question_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_dropdown">
+
+            <ImageView
+                android:id="@+id/ic_dropdown_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_dropdown"
+                android:layout_alignParentRight="true"
+                />
+
+            <TextView
+                android:id="@+id/popup_question_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen10"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/ic_dropdown_1"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="@dimen/dimen10"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/answer"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_footnote" />
+
+        <EditText
+            android:id="@+id/et_answer_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:singleLine="true"
+            android:maxLength="5"
+            android:hint="@string/hint_question_tip"
+            android:textColor="@color/text_black_common"
+            android:textColorHint="@color/hint"
+            android:textSize="@dimen/text_footnote"
+            android:background="@null"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/dimen10"
+        android:background="@drawable/line_common"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen10"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/question_2"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_footnote"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_question_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_dropdown">
+
+            <ImageView
+                android:id="@+id/ic_dropdown_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_dropdown"
+                android:layout_alignParentRight="true"
+                />
+
+            <TextView
+                android:id="@+id/popup_question_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen10"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/ic_dropdown_2"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="@dimen/dimen10"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/answer"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_footnote" />
+
+        <EditText
+            android:id="@+id/et_answer_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:singleLine="true"
+            android:maxLength="5"
+            android:hint="@string/hint_question_tip"
+            android:textColor="@color/text_black_common"
+            android:textColorHint="@color/hint"
+            android:textSize="@dimen/text_footnote"
+            android:background="@null"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="@dimen/dimen10"
+        android:background="@drawable/line_common"/>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen30"
+        android:background="@drawable/btn_login_02"
+        android:text="@string/submit"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content" />
+
+</LinearLayout>

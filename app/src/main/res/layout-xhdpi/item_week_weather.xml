@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragement_week_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/weektophight"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/week_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/week_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/dimen15" />
+
+
+        <TextView
+            android:id="@+id/tv_hight_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="白天"
+            android:textColor="@color/yellow_time"
+            android:textSize="14dp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/hight_temp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/week_tv"
+            android:gravity="center_horizontal"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/week_bg"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/weekviewhight" />
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/low_temp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/tv_low_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="夜晨"
+            android:textColor="@color/yellow_time"
+            android:textSize="14dp"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_speed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_footnote" />
+</LinearLayout>

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dimen10"
+    android:paddingLeft="@dimen/activity_marginleft_right"
+    android:paddingRight="@dimen/activity_marginleft_right"
+    android:paddingTop="@dimen/dimen10" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/autoshareweather"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/textsharecontent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="5dp"
+            android:lineSpacingMultiplier="1.3"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+    <!-- 2 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:id="@+id/bundlea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/autosharestate"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bundlea"
+            android:lineSpacingExtra="5dp"
+            android:lineSpacingMultiplier="1.3"
+            android:text="@string/autosharenobundle"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <CheckBox
+            android:id="@+id/autoshare_share_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_commom"
+            android:button="@null" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+    <!-- 3 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:id="@+id/bundleb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/autosharetime"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_all_common"
+            android:text="@string/set"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/timebutton"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_all_common"
+            android:text="@string/zero_time"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bundleb"
+            android:layout_toLeftOf="@id/timebutton"
+            android:text="@string/autosharenobundletime"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+    <!-- 4 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:id="@+id/sharecity_t"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/autosharecity"
+            android:layout_centerVertical="true"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/sharecity"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/sharecity_t"
+            android:background="@color/alpha100"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+    <!-- 5 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingTop="@dimen/dimen10" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/autosharexina"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/bundlesina"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_all_common"
+            android:text="@string/autosharebundle"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bundlesina"
+            android:layout_marginTop="@dimen/dimen10"
+            android:gravity="center_vertical"
+            android:text="@string/autosharetencent"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"
+            android:visibility="gone"
+             />
+
+        <Button
+            android:id="@+id/bundletencent"
+            android:layout_width="@dimen/btn_with"
+            android:layout_height="@dimen/btn_higth"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/bundlesina"
+            android:layout_marginTop="@dimen/dimen10"
+            android:background="@drawable/btn_all_common"
+            android:text="@string/autosharebundle"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" 
+            android:visibility="gone"
+            />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/line_common" />
+
+</LinearLayout>

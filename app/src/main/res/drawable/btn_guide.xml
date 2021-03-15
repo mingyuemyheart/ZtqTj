@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：引导页面按钮 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/btn_guide_sel" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/btn_guide_nor" android:state_pressed="false"></item>
+
+</selector>

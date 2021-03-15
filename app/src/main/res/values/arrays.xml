@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- 云图类型列表 -->
+    <string-array name="product_list">
+        <item>雷达回波</item>
+        <item>卫星云图</item>
+        <item>台风路径</item>
+        <item>实况查询</item>
+        <item>整点天气</item>
+        <!--<item>下垫面观测</item>-->
+        <item>闪电定位</item>
+<!--        <item>水利汛情</item>-->
+        <item>空气质量</item>
+        <item>天气形势</item>
+        <!--<item>资料查询</item>-->
+    </string-array>
+    <string-array name="product_analysis">
+        <item>气象报告</item>
+        <!--<item>重要天气</item>-->
+        <item>指导预报</item>
+        <item>模式预报</item>
+        <!--<item>农业气象</item>-->
+        <!--<item>交通气象</item>-->
+        <item>海洋气象</item>
+        <!--<item>定点服务</item>-->
+    </string-array>
+    
+    <!-- 气象服务产品名称列表 -->
+    <!-- 气象服务产品图片资源列表 -->
+    <string-array name="product_icon_list">
+
+        <item>@drawable/icon_product_radar</item>
+        <item>@drawable/icon_product_satellite</item>
+        <item>@drawable/icon_product_typhoon</item>
+        <item>@drawable/icon_product_pointof</item>
+        <item>@drawable/icon_product_rainserach</item>
+        <!--<item>@drawable/icon_product_observation</item>-->
+        <item>@drawable/icon_product_lightning</item>
+<!--        <item>@drawable/icon_product_fujian</item>-->
+        <item>@drawable/icon_product_airquality</item>
+        <item>@drawable/icon_product_sutiation</item>
+        <!--<item>@drawable/icon_product_data_query</item>-->
+    </string-array>
+    <string-array name="product_icon_list_analysis">
+        <item>@drawable/icon_product_overview</item>
+        <!--<item>@drawable/icon_product_importweather</item>-->
+        <item>@drawable/icon_product_guideforecast</item>
+        <item>@drawable/icon_product_number</item>
+        <!--<item>@drawable/icon_product_agriculture</item>-->
+        <!--<item>@drawable/icon_product_car</item>-->
+        <item>@drawable/icon_product_ocean</item>
+        <!--<item>@drawable/icon_product_location_warning</item>-->
+    </string-array>
+    <!-- 气象服务列表 -->
+    <string-array name="city_list">
+        <item>&#160;&#160;天津中心气象台</item>
+        <item>宝山</item>
+        <item>崇明</item>
+        <item>奉贤</item>
+        <item>嘉定</item>
+        <item>金山</item>
+        <item>闵行</item>
+        <item>浦东</item>
+        <item>青浦</item>
+        <item>松江</item>
+    </string-array>
+    <string-array name="city_id">
+        <item>3601</item>
+        <item>3501</item>
+        <item>3502</item>
+        <item>3503</item>
+        <item>3504</item>
+        <item>3505</item>
+        <item>3506</item>
+        <item>3507</item>
+        <item>3508</item>
+        <item>3509</item>
+    </string-array>
+
+
+    <string-array name="onedaytime">
+        <item>00</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+    </string-array>
+    <!-- 气象生活 栏目顺序 1、旅游气象；2、气象影视;3、天气新闻；4、专家解读 ;5、灾害防御;6、气象科普. -->
+    <string-array name="life_list">
+
+        <item>旅游气象</item>
+        <item>气象影视</item><!-- <item>亲情城市</item>-->
+        <item>天气新闻</item>
+        <item>专家解读</item>
+        <item>灾害防御</item>
+        <item>气象科普</item>
+    </string-array>
+    <!-- 气象生活 栏目顺序 图片资源列表 -->
+    <string-array name="life_icon_list">
+        <item>@drawable/life_travel</item>
+        <item>@drawable/life_video</item>
+        <item>@drawable/life_news</item>
+        <item>@drawable/life_expert</item>
+        <item>@drawable/life_dis</item>
+        <item>@drawable/life_weather</item>
+    </string-array>
+    <!-- 福建防汛 栏目顺序 "全省汛情摘要", "雨情信息", "水位站信息","水库站信息", "风情信息" -->
+    <!-- 空气质量详情英文 -->
+    <string-array name="AirQualityDetailEN">
+        <item>PM2.5</item>
+        <item>PM10</item>
+        <item>CO</item>
+        <item>NO2</item>
+        <item>O3_1H</item>
+        <item>O3_8H</item>
+        <item>SO2</item>
+    </string-array>
+    <!-- 空气质量详情中文 -->
+    <string-array name="AirQualityDetailCN">
+        <item>细颗粒物</item>
+        <item>可吸入颗粒物</item>
+        <item>一氧化碳</item>
+        <item>二氧化氮</item>
+        <item>臭氧1小时平均值</item>
+        <item>臭氧8小时平均值</item>
+        <item>二氧化硫</item>
+    </string-array>
+    <!-- 空气质量详情单位 -->
+    <string-array name="AirQualityDetailUnit">
+        <item>ug/m3</item>
+        <item>ug/m3</item>
+        <item>mg/m3</item>
+        <item>ug/m3</item>
+        <item>ug/m3</item>
+        <item>ug/m3</item>
+        <item>ug/m3</item>
+    </string-array>
+    <!-- 空气质量详情_健康提示 -->
+    <string-array name="AirQualityHeathTip">
+        <item>空气质量令人满意，基本无污染。</item>
+        <item>空气质量可接受，但某些污染物可能对极少数异常敏感人群健康有较弱影响。</item>
+        <item>易感人群症状有轻度加剧，健康人群出现刺激症状。</item>
+        <item>进一步加剧易感人群症状，可能对健康人群心脏、呼吸系统有影响。</item>
+        <item>心脏病和肺病患者症状显著加剧，运动耐受力降低，健康人群中普遍出现症状。</item>
+        <item>健康人运动耐受力降低，有明显强烈症状，提前出现某些疾病。</item>
+    </string-array>
+    <!-- 编号 -->
+    <string-array name="CodeStringArray">
+        <item>①</item>
+        <item>②</item>
+        <item>③</item>
+        <item>④</item>
+        <item>⑤</item>
+        <item>⑥</item>
+        <item>⑦</item>
+        <item>⑧</item>
+        <item>⑨</item>
+        <item>⑩</item>
+    </string-array>
+    <!-- 编号 -->
+    <!-- 风雨查询雨量色斑图时间 -->
+    <!-- 风雨查询气温色斑图时间 -->
+    <!-- 风雨查询风速色斑图时间 -->
+    <!-- 雨量图例区间 -->
+
+    <string-array name="DataQueryElementSort">
+        <item>年份正序</item>
+        <item>年份倒序</item>
+        <item>多到少</item>
+        <item>少到多</item>
+    </string-array>
+</resources>

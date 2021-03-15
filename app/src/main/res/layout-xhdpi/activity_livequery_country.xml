@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/buttom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/to_map_img"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/btn_hight_livequery"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/btn_all_common"
+            android:gravity="center"
+            android:paddingLeft="@dimen/dimen8"
+            android:paddingRight="@dimen/dimen8"
+            android:text="分布图"
+            android:drawablePadding="@dimen/dimen4"
+            android:drawableLeft="@mipmap/icon_rain_to_image"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/to_map_img"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_rain"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btn_livequery_left"
+                android:button="@null"
+                android:textSize="@dimen/text_content"
+                android:checked="true"
+                android:gravity="center"
+                android:text="@string/rain"
+                android:textColor="@color/text_white" />
+
+            <RadioButton
+                android:id="@+id/radio_highttemper"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_weight="1"
+                android:textSize="@dimen/text_content"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btn_livequery_middle"
+                android:button="@null"
+                android:gravity="center"
+                android:text="@string/high_temp"
+                android:textColor="@color/text_white" />
+
+            <RadioButton
+                android:id="@+id/raido_lowtemper"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btn_livequery_middle"
+                android:button="@null"
+                android:gravity="center"
+                android:textSize="@dimen/text_content"
+                android:text="@string/low_temp"
+                android:textColor="@color/text_white" />
+
+            <RadioButton
+                android:id="@+id/raido_wind"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:background="@drawable/btn_livequery_right"
+                android:button="@null"
+                android:textSize="@dimen/text_content"
+                android:gravity="center"
+                android:text="@string/wind"
+                android:textColor="@color/text_white" />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttom_layout"
+        android:orientation="vertical" />
+
+</RelativeLayout>

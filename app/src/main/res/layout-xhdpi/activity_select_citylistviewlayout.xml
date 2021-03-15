@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_to_notfjcity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_edit_select_city1"
+        android:drawableLeft="@drawable/btn_edit_select_city2"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:singleLine="true"
+        android:text="查询国内城市"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_content" />
+
+
+
+    <RelativeLayout
+        android:id="@+id/search_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <EditText
+            android:id="@+id/ss_alertedittext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_likespinnertextview"
+            android:hint="@string/city_hint"
+            android:paddingLeft="15dp"
+            android:singleLine="true"
+            android:textColor="@color/text_black"
+            android:textColorHint="@color/hint" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/bg_black_alpha50" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ExpandableListView
+            android:id="@+id/expandablelistview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_margintop"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="1px"
+            android:cacheColorHint="#00000000"
+            android:childDivider="@drawable/line_common"
+            android:divider="@drawable/line_common"
+            android:fadingEdge="none"
+            android:focusable="false"
+            android:groupIndicator="@null"
+            android:listSelector="#00000000"
+            android:scrollbars="none"
+            android:scrollingCache="false" />
+
+        <ListView
+            android:id="@+id/select_city_listview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginTop="1px"
+            android:divider="@null"
+            android:dividerHeight="1dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:verticalSpacing="20dp"
+            android:visibility="gone"></ListView>
+    </RelativeLayout>
+</LinearLayout>

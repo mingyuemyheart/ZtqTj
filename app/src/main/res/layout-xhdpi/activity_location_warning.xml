@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 定点服务 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_bg"
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <!-- 公众定点服务类型按钮 -->
+        <Button
+            android:id="@+id/btn_location_warning_public"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:layout_marginRight="@dimen/dimen4"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview"
+            android:drawablePadding="4dp"
+            android:drawableRight="@drawable/bg_livequery_drowdown"
+            android:paddingLeft="4dp"
+            android:singleLine="true"
+            android:text="@string/hint_no_public_warning"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_content" />
+        
+        <!-- 精确定点服务类型按钮 -->
+        <Button
+            android:id="@+id/btn_location_warning_accurate"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:layout_marginRight="@dimen/dimen4"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview"
+            android:drawablePadding="4dp"
+            android:drawableRight="@drawable/bg_livequery_drowdown"
+            android:paddingLeft="4dp"
+            android:singleLine="true"
+            android:text="@string/hint_no_accurate_warning"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        
+        <com.amap.api.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </com.amap.api.maps.MapView>
+        
+        <!-- 公众定点服务信息框 -->
+        <include
+            android:id="@+id/layout_public_info"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_info_warning" >
+        </include>
+        
+        <!-- 精确定点服务信息框 -->
+        <include
+            android:id="@+id/layout_accurate_info"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            layout="@layout/layout_info_warning"
+            android:layout_alignParentRight="true"
+            android:visibility="gone" >
+        </include>
+        
+        <!-- 定位信息提示框 -->
+        <TextView
+            android:id="@+id/tv_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dimen50"
+            android:padding="@dimen/dimen5"
+            android:gravity="center"
+            android:text="@string/hint_search_location"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_black" />
+    </RelativeLayout>
+    
+ 
+    
+</LinearLayout>

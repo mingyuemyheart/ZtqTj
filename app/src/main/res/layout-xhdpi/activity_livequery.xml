@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/live_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/buttom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_white"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/all_city_data"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_marginLeft="1px"
+                android:layout_weight="1"
+                android:background="@color/livequery_buttom_pop"
+                android:drawableLeft="@mipmap/icon_rain_to_all_data"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dimen8"
+                android:paddingRight="@dimen/dimen8"
+                android:visibility="gone"
+                android:text="@string/all_city_search"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
+
+            <Button
+                android:id="@+id/data_map"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_marginLeft="1px"
+                android:layout_weight="1"
+                android:background="@drawable/bg_livequerytitle"
+                android:drawableLeft="@mipmap/icon_rain_to_image"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dimen8"
+                android:paddingRight="@dimen/dimen8"
+                android:text="@string/view_search"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
+
+            <Button
+                android:id="@+id/data_table"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_hight_livequery"
+                android:layout_weight="1"
+                android:background="@color/livequery_buttom_pop"
+                android:drawableLeft="@mipmap/icon_rain_to_data"
+                android:gravity="center"
+                android:paddingLeft="@dimen/dimen8"
+                android:paddingRight="@dimen/dimen8"
+                android:text="@string/city_search"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttom_layout"
+        android:orientation="vertical" />
+
+</RelativeLayout>
