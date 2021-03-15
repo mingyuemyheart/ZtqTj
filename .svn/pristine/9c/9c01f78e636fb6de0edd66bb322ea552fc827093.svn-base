@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 积水信息-站点的积水信息下载包
+ * @author tya
+ *
+ */
+public class PackWaterMonitorInfoDown extends PcsPackDown {
+
+	/**
+	 * 积水列表
+	 */
+	public List<WaterMonitorInfo> raininfo_list = new ArrayList<>();
+	public String tj_desc;
+
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			raininfo_list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+            tj_desc=obj.getString("tj_desc");
+			JSONArray ary = obj.getJSONArray("info_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+                WaterMonitorInfo ri = new WaterMonitorInfo();
+				ri.lev = temp.getString("lev");
+				ri.rectime = temp.getString("rectime");
+				ri.js_h=temp.getString("js_h");
+				ri.station_name=temp.getString("station_name");
+				raininfo_list.add(ri);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

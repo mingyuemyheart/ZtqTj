@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 雨晴信息-所有站点的单时次雨量信息下载包
+ * @author tya
+ *
+ */
+public class PackWaterMonitorDown extends PcsPackDown {
+
+	/**
+	 * 雨量列表
+	 */
+	public List<WaterMonitorStationInfo> listdata = new ArrayList<>();
+	public String time_pub;
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			listdata.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+            time_pub=obj.getString("time_pub");
+			JSONArray ary = obj.getJSONArray("info_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+                WaterMonitorStationInfo rsi = new WaterMonitorStationInfo();
+				rsi.num = temp.getString("station_no");
+				rsi.station = temp.getString("station_name");
+				rsi.log = temp.getString("lon");
+				rsi.lat = temp.getString("lat");
+				rsi.lev = temp.getString("lev");
+				listdata.add(rsi);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

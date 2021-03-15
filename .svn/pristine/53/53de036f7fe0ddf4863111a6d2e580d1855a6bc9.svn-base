@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ *最大降雨量排名（1、3小时）”：各取前三
+ */
+public class PackYltjRankUp extends PcsPackUp {
+    public static final String NAME = "yltj_rank";
+	public String county = "";
+	public String province = "";
+    public boolean is_jc = false;
+	public PackYltjRankUp() {
+		intervalMill = 0;
+	}
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("county", county);
+			obj.put("province", province);
+            if(is_jc) {
+                obj.put("user_type", "0");
+            } else {
+                obj.put("user_type", "1");
+            }
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public String getName() {
+		return NAME + "#"+county+province;
+	}
+}

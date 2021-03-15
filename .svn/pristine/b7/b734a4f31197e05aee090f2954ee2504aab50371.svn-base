@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 风雨查询_实时天气
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxSstqUp extends PcsPackUp {
+
+    public static final String NAME = "fycx_sstq";
+    public String stationid = "";
+
+    public PackFycxSstqUp(){
+        intervalMill=0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("stationid", stationid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + stationid;
+    }
+}

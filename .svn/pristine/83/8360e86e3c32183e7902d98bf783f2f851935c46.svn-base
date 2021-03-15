@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 旅游气象
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackTravelWeatherDown extends PcsPackDown {
+
+	/** 景点简介 **/
+	public String des = "";
+
+	/** 景点名 **/
+	public String nm = "";
+
+	/** 景点图片 **/
+	public String img = null;
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONObject data = temp.getJSONObject("data");
+			des = data.getString("des");
+			nm = data.getString("nm");
+			img = data.getString("img");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+}

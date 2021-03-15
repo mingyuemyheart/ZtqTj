@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/radarView"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/text_white">
+
+    <LinearLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_bg"
+        android:orientation="horizontal"
+        android:paddingBottom="2dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="2dp">
+
+        <RelativeLayout
+            android:id="@+id/spinner_station"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/right_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/bg_livequery_drowdown"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/img_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/right_iv"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/text_black"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/spinner_puzzle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview">
+
+            <ImageView
+                android:id="@+id/right_iv_station"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/bg_livequery_drowdown"/>
+
+            <TextView
+                android:id="@+id/tab_name_puzzle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/right_iv_station"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/please_puzzle"
+                android:textColor="@color/text_black"/>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tab_layout">
+
+        <com.pcs.ztqtj.view.myview.ImageTouchView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:scaleType="matrix"/>
+
+        <com.amap.api.maps.TextureMapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/iv_radar_example"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="120dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:src="@drawable/icon_radar_example"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        >
+
+        <FrameLayout
+            android:id="@+id/layout_scale"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_bottom_bg_02"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+
+                <SeekBar
+                    android:id="@+id/seekBar_maps"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:layout_marginTop="10dp"
+                    android:paddingLeft="@dimen/dimen8"
+                    android:paddingRight="@dimen/dimen8"
+                    android:progressDrawable="@drawable/common_background_seekbar_style"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/common_seekbar_thumb"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/hor_scr"
+                    android:layout_width="250dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:paddingLeft="@dimen/dimen8"
+                    android:paddingRight="@dimen/dimen8">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:textSize="@dimen/text_footnote"
+                android:textColor="@color/text_white"
+                android:layout_margin="10dp"
+                android:text="(dBZ)"
+                />
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:id="@+id/bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_bottom_bg_02">
+
+            <TextView
+                android:id="@+id/txt_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="8dp"
+                android:textColor="@color/white_alpha70"
+                android:textSize="@dimen/text_content"/>
+
+            <TextView
+                android:id="@+id/img_times"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/txt_progress"
+                android:textColor="@color/white_alpha70"
+                android:textSize="@dimen/text_content"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/img_times"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/btn_start"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/btn_play"/>
+
+                <SeekBar
+                    android:id="@+id/seekBar"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:layout_weight="0.2"
+                    android:paddingLeft="@dimen/dimen8"
+                    android:paddingRight="@dimen/dimen8"
+                    android:progressDrawable="@drawable/common_background_seekbar_style"
+                    android:splitTrack="false"
+                    android:thumb="@drawable/common_seekbar_thumb"
+                    />
+
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <!--<com.pcs.ztqtj.view.myview.CustomSeekbar-->
+    <!--android:id="@+id/myCustomSeekBar"-->
+    <!--android:layout_marginBottom="50dp"-->
+    <!--android:layout_above="@+id/bottom_map_bar"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"/>-->
+
+
+</RelativeLayout>

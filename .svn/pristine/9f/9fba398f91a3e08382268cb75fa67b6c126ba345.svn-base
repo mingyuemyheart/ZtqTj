@@ -1,0 +1,92 @@
+apply plugin: 'com.android.application'
+
+android {
+    useLibrary 'org.apache.http.legacy'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
+    defaultConfig {
+        multiDexEnabled true
+        applicationId "com.pcs.ztqtj"
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 10020
+        versionName "V1.2.0"
+        manifestPlaceholders = [
+                XG_ACCESS_ID:"2100331791",
+                XG_ACCESS_KEY : "AV2S73V38UXQ",
+                HW_APPID:"100729913"
+        ]
+        ndk {
+            abiFilters 'armeabi'
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file("F:\\recv\\key")
+            storePassword "3331234"
+            keyAlias "chenai"
+            keyPassword "3331234"
+        }
+        release {
+            storeFile file("F:\\recv\\key")
+            storePassword "3331234"
+            keyAlias "chenai"
+            keyPassword "3331234"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation files('libs\\umeng-analytics-8.1.2.jar')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation project(':LibZtqFj')
+    implementation project(':ShareLib')
+    implementation project(':SlidingLib')
+    implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.3'
+
+    //信鸽jar
+    implementation 'com.tencent.xinge:xinge:3.2.3-release'
+    //wup包
+    implementation 'com.tencent.wup:wup:1.0.0.E-release'
+    //mid包
+    implementation 'com.tencent.mid:mid:4.0.6-release'
+    // 信鸽华为推送包
+    implementation 'com.tencent.xinge:xghw:2.5.2.300-release'
+    //implementation 'com.tencent.xinge:xghw:3.2.4-beta'
+
+    //信鸽普通版本jar，不包含厂商通道
+//    implementation 'com.tencent.xinge:xinge:4.3.2-beta'
+//    implementation  'com.tencent.wup:wup:1.0.0.E-release'
+//    implementation 'com.tencent.jg:jg:1.1'
+//    implementation 'com.tencent.mid:mid:4.0.7-Release'
+//    implementation 'com.tencent.xinge:xghw:4.3.2-huawei-beta'
+
+    // 高德
+    implementation 'com.amap.api:3dmap:6.7.0'
+    implementation 'com.amap.api:location:4.3.0'
+    implementation 'com.amap.api:search:6.1.0'
+
+    // rxjava
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
+
+    // android-job
+    implementation 'com.evernote:android-job:1.2.6'
+}

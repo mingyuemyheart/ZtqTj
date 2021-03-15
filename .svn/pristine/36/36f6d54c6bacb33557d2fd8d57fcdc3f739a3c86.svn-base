@@ -1,0 +1,24 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+/**
+ * Created by tyaathome on 2019/06/14.
+ */
+public class River {
+
+    public String stcd = "";
+    public String stnm = "";
+    public String rvnm = "";
+    public String hnnm = "";
+    public String bsnm = "";
+    public double lgtd = 0.0d;
+    public double lttd = 0.0d;
+    public String tm = "";
+    public String z = "";
+    public String q = "";
+
+
+    @Override
+    public String toString() {
+        return "水位：" + z + "m\n流量：" + q + "m³/s";
+    }
+}

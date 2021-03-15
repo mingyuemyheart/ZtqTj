@@ -1,0 +1,21 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import org.json.JSONException;
+import org.json.JSONObject;
+/**
+ * 气象影视吐槽下载接口
+ */
+public class PackMediaTauntedDown extends PcsPackDown {
+    public String result = "";
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject obj;
+        try {
+            obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            result = obj.optString("result");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

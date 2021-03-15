@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.satellite;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 卫星云图
+ *
+ * @author chenjh
+ */
+public class PackSatelliteUp extends PcsPackUp {
+
+    public static final String NAME = "wxyt";
+
+    /**
+     * 图片张数(默认为6)
+     **/
+    public String count = "6";
+    /**
+     * 云图类型:type=1.彩色云图、type=2.红外云图、type=3.可见光图、type=4.水汽云图
+     **/
+    public String type = "1";
+
+    public PackSatelliteUp() {
+        //TODO 演示代码
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("count", count);
+            obj.put("type", type);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        if (!TextUtils.isEmpty(type)) {
+            return NAME + "#" + type;
+        }
+        return NAME;
+    }
+
+}

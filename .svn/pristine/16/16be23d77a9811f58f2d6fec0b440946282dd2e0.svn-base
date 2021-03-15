@@ -1,0 +1,63 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象服务-密码修改
+ *
+ * @author chenjh
+ */
+public class PackServiceChangePwdUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_pwd";
+
+    /**
+     * 新密码
+     **/
+    public String newpwd = "";
+
+    /**
+     * 旧密码
+     **/
+    public String oldpwd = "";
+
+    /**
+     * 确认密码
+     **/
+    public String okpwd = "";
+
+    /**
+     * 手机号
+     **/
+    public String mobile = "";
+
+    public PackServiceChangePwdUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("newpwd", newpwd);
+            obj.put("oldpwd", oldpwd);
+            obj.put("okpwd", okpwd);
+            obj.put("mobile", mobile);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+
+        return NAME;
+    }
+
+}

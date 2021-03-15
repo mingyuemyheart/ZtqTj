@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 多个台风路径
+ * Created by tyaathome on 2018/06/08.
+ */
+public class PackMultiTyphoonPathUp extends PcsPackUp {
+
+    public static final String NAME = "tfpathandNew";
+    public String code = "";
+
+    public PackMultiTyphoonPathUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("code", code);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 设置标签类型查询
+ * Created by tyaathome on 2017/8/10.
+ */
+
+public class PackPushQueryTagTypeUp extends PcsPackUp {
+
+    public static final String NAME = "setTag_sub_qur";
+
+    // 标签
+    public String tag = "";
+    // 类型
+    public String type = "";
+
+    public PackPushQueryTagTypeUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("tag", tag);
+            obj.put("type", type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + tag + "_" + type;
+    }
+}

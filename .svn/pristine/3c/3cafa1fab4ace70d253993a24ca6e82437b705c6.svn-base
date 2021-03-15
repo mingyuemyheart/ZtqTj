@@ -1,0 +1,27 @@
+package com.pcs.lib.lib_pcs_v3.model.data;
+
+import java.util.LinkedHashMap;
+
+/**
+ * 限定元素数的LinkedHashMap
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PcsLinkedHashMap<K, V> extends LinkedHashMap<K, V> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1036181015892665130L;
+	private int MAX_SIZE = 50;
+
+	public void setMaxSize(int size) {
+		MAX_SIZE = size;
+	}
+
+	@Override
+	protected boolean removeEldestEntry(Entry<K, V> eldest) {
+		boolean bRemove = size() > MAX_SIZE;
+		return bRemove;
+	}
+}

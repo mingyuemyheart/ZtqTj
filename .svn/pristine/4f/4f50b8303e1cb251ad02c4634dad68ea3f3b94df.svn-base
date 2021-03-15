@@ -1,0 +1,14 @@
+package com.pcs.lib.lib_pcs_v3.model.data;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 接口：数据包工厂类
+ * 
+ * @author JiangZY
+ * 
+ */
+public interface InterPackFactory {
+	public PcsPackDown createDownPack(String key);
+}

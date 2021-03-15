@@ -1,0 +1,77 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.order;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 下载包：支付服务订单
+ * @author E.Sun
+ * 2015年11月10日
+ */
+public class PackPayOrderDown extends PcsPackDown {
+
+	private final String KEY_RESULT = "result";
+	private final String KEY_PAY_TYPE = "pay_type";
+	private final String KEY_WEIXIN_PAY_INFO = "weixin_pay_info";
+	private final String KEY_APP_ID = "appid";
+	private final String KEY_MCH_ID = "mch_id";
+	private final String KEY_NOTIFY_URL = "notify_url";
+	private final String KEY_KEY = "key";
+	private final String KEY_LOG_URL = "log_url";
+	private final String KEY_PRODUCT_NAME = "product_name";
+	private final String KEY_ORDER_DETAIL_ID = "order_detail_id";
+	private final String KEY_AMOUNT = "total_amount";
+	
+	public String result = "";
+	public String payType = "";
+	public String appID = "";
+	public String mchID = "";
+	public String notifyURL = "";
+	public String key = "";
+	public String logURL = "";
+	public String productName = "";
+	public String orderDetailID = "";
+	/** 总额（单位：分） */
+	public int amount = 0;
+	
+	/** 支付成功 */
+	public static final String RESULT_SUCCEED = "1";
+	/** 支付失败 */
+	public static final String RESULT_FAILED = "-1";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject object = new JSONObject(jsonStr);
+			result = object.getString(KEY_RESULT);
+			payType = object.getString(KEY_PAY_TYPE);
+			productName = object.getString(KEY_PRODUCT_NAME);
+			orderDetailID = object.getString(KEY_ORDER_DETAIL_ID);
+			String amountString = object.getString(KEY_AMOUNT);
+			if(!TextUtils.isEmpty(amountString)) {
+				amount = (int) (Double.valueOf(amountString) * 100);
+			}
+			JSONObject obj = object.getJSONObject(KEY_WEIXIN_PAY_INFO);
+			if(obj.length() > 0) {
+				appID = obj.getString(KEY_APP_ID);
+				mchID = obj.getString(KEY_MCH_ID);
+				notifyURL = obj.getString(KEY_NOTIFY_URL);
+				key = obj.getString(KEY_KEY);
+				logURL = obj.getString(KEY_LOG_URL);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

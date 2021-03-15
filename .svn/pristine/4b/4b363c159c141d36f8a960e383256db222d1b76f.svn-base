@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dimen8"
+    android:paddingLeft="@dimen/activity_marginleft_right"
+    android:paddingRight="@dimen/activity_marginleft_right"
+    android:paddingTop="@dimen/dimen8" >
+
+    <Button
+        android:id="@+id/bt_push_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/dimen10"
+        android:layout_marginRight="@dimen/dimen10"
+        android:background="@drawable/btn_all_common"
+        android:text="@string/submit"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"
+        />
+
+    <ScrollView
+        android:layout_above="@+id/bt_push_confirm"
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen8"
+                android:paddingTop="@dimen/dimen8">
+
+                <TextView
+                    android:id="@+id/current_model_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/model"
+                    android:text="@string/pushmodel"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content"/>
+
+                <Button
+                    android:id="@+id/setmodel_city"
+                    android:layout_width="@dimen/btn_with"
+                    android:layout_height="@dimen/btn_higth"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/btn_all_common"
+                    android:text="@string/set"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"/>
+            </RelativeLayout>
+
+            <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1px"-->
+            <!--android:background="@drawable/line_common"/>-->
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingBottom="@dimen/dimen14"-->
+            <!--android:paddingTop="@dimen/dimen14" >-->
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:text="@string/pushcity"-->
+            <!--android:textColor="@color/text_black"-->
+            <!--android:textSize="@dimen/text_content" />-->
+
+            <!--<TextView-->
+            <!--android:id="@+id/setcity"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!---->
+            <!--android:textColor="@color/text_black"-->
+            <!--android:textSize="@dimen/text_content" />-->
+            <!--</LinearLayout>-->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/dimen14"
+                android:paddingTop="@dimen/dimen14">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/pushcity"
+                        android:textColor="#33A5E2"
+                        android:textSize="@dimen/text_content"/>
+
+                    <Button
+                        android:id="@+id/btn_customize_weather"
+                        android:layout_width="@dimen/btn_with"
+                        android:layout_height="@dimen/btn_higth"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/btn_all_common"
+                        android:text="@string/customization"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content"
+                        />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/setcity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen4"
+                    android:text="@string/current_default_push_city"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content"/>
+
+                <com.pcs.ztqtj.view.myview.MyListView
+                    android:id="@+id/custom_push_weather_city_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cacheColorHint="@android:color/transparent"
+                    android:layout_marginTop="@dimen/dimen10"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="@dimen/dimen10"
+                    android:listSelector="@android:color/transparent"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen10"
+                android:paddingTop="@dimen/dimen10" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/weatherwarnpush"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content" />
+
+                <CheckBox
+                    android:id="@+id/morning_switchbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/checkbox_commom"
+                    android:button="@null" />
+            </RelativeLayout>
+
+            <RadioGroup
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/radioButton_two"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:checked="true"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/icon_gendar"
+                    android:paddingLeft="5dp"
+                    android:text="2天预报"
+                    android:textColor="@color/black_b"/>
+
+                <RadioButton
+                    android:id="@+id/radioButton_four"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:text="4天预报"
+                    android:button="@null"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/icon_gendar"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/black_b"
+                    android:layout_height="30dp"/>
+                <RadioButton
+                    android:id="@+id/radioButton_six"
+                    android:layout_weight="1"
+                    android:text="6天预报"
+                    android:button="@null"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@drawable/icon_gendar"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/black_b"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"/>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/tv_weather_push"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_b"
+                android:text="每日早上6:30开始推送"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen10"
+                android:paddingTop="@dimen/dimen10" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="变温提醒"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content" />
+
+                <CheckBox
+                    android:id="@+id/bw_switchbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/checkbox_commom"
+                    android:button="@null" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/tv_weather_bt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black_b" />
+
+                <TextView
+                    android:id="@+id/tv_weather_bt_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_b"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen10"
+                android:paddingTop="@dimen/dimen10" >
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="特殊气温提醒"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content" />
+
+                <CheckBox
+                    android:id="@+id/tsqw_switchbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/checkbox_commom"
+                    android:button="@null" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/tv_weather_tsqw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black_b" />
+
+                <TextView
+                    android:id="@+id/tv_weather_tsqw_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_b"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen10"
+                android:paddingTop="@dimen/dimen10" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="特殊天气提醒"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content" />
+
+                <CheckBox
+                    android:id="@+id/tstq_switchbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/checkbox_commom"
+                    android:button="@null" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/tv_weather_tstq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black_b" />
+
+                <TextView
+                    android:id="@+id/tv_weather_tstq_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_b"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen10"
+                android:paddingTop="@dimen/dimen10" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="空气污染"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content" />
+
+                <CheckBox
+                    android:id="@+id/kqwr_switchbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/checkbox_commom"
+                    android:button="@null" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/tv_weather_kqwr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black_b" />
+
+                <TextView
+                    android:id="@+id/tv_weather_kqwr_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black_b"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common" />
+            <!--<LinearLayout-->
+                <!--android:gravity="bottom"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+                <!--<Button-->
+                    <!--android:id="@+id/bt_push_confirm"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:textColor="@color/text_white"-->
+                    <!--android:text="提交"-->
+                    <!--android:background="@drawable/btn_all_common"-->
+                    <!--android:layout_height="35dp"/>-->
+            <!--</LinearLayout>-->
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

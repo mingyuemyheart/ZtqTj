@@ -1,0 +1,33 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+/**
+ * 空气污染预报图
+ */
+public class PackAirPollutionUp extends PcsPackUp {
+
+	public final static String NAME = "air_pollution";
+
+    public PackAirPollutionUp() {
+        this.intervalMill = 0;
+    }
+
+	@Override
+	public JSONObject toJSONObject() {
+
+			JSONObject obj = new JSONObject();
+
+			return obj;
+
+
+
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

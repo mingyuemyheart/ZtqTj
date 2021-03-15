@@ -1,0 +1,14 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+/**
+ * 实景开拍：评论
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoCommentDown extends PackPhotoSimpleDown {
+    @Override
+    public void fillData(String jsonStr) {
+        super.fillData(jsonStr);
+    }
+}

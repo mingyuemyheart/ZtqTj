@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackAirTrendUp extends PcsPackUp {
+
+    public static final String NAME = "air_trend";
+    public String num = "";
+    public String station_id = "";
+    public String sx = "";
+    public String areatype="";
+    public PackAirTrendUp(){
+    intervalMill=0;
+}
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("num", num);
+            obj.put("station_id", station_id);
+            obj.put("sx", sx);
+            obj.put("areatype",areatype);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME  ;
+    }
+}

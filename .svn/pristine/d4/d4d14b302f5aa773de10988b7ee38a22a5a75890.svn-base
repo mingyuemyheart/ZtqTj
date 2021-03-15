@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 天气综述
+ * @author Z
+ */
+public class PackNearReportUp extends PcsPackUp {
+
+	public static final String NAME = "tq_lj_yb";
+
+
+	@Override
+	public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

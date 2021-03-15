@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ *自动站低温统计表
+ */
+public class PackWdtjLowZdzDown extends PcsPackDown {
+	public List<WdtjLowZdz> datalist;
+	
+	@Override
+	public void fillData(String jsonStr) {
+		datalist = new ArrayList<WdtjLowZdz>();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			if(temp.has("datalist")){
+				JSONArray arr = temp.getJSONArray("datalist");
+				for (int i = 0; i < arr.length(); i++) {
+					JSONObject obj = arr.getJSONObject(i);
+					WdtjLowZdz imgobject = new WdtjLowZdz();
+					imgobject.time = obj.getString("time");
+					imgobject.min_wd = obj.getString("min_wd");
+					imgobject.county = obj.getString("county");
+					datalist.add(imgobject);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	public class WdtjLowZdz{
+		public String time;
+		public String min_wd;
+		public String county;
+	}
+}

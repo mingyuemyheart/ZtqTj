@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+    <CheckBox
+        android:id="@+id/cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_legend"
+        android:button="@null"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:padding="@dimen/dimen4"
+        android:textColor="@color/text_legend"
+        android:textSize="@dimen/text_footnote"
+        />
+</LinearLayout>

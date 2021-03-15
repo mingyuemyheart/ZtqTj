@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 热门应用
+ * @author tya
+ *
+ */
+public class PackHotAppUp extends PcsPackUp {
+
+    public static final String NAME = "hot_app";
+
+	public String app_type = "";
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("app_type", app_type);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + app_type;
+	}
+
+}

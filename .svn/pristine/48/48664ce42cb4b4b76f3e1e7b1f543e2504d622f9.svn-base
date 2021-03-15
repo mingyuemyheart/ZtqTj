@@ -1,0 +1,94 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 网格预报
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackMapForecastDown extends PcsPackDown {
+	public List<MapForecast> list = new ArrayList<MapForecast>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (jsonStr == null || "".equals(jsonStr)) {
+			return;
+		}
+		try {
+            list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			JSONArray arr = obj.getJSONArray("today");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject row = arr.getJSONObject(i);
+				MapForecast pack = new MapForecast();
+
+				/** 图标 **/
+				pack.ico = row.getString("ico");
+				/** 天气情况 **/
+				pack.desc = row.getString("desc");
+				/** 降雨量 **/
+				pack.rainfall = row.getString("rainfall");
+				/** 气温 **/
+				pack.temperature = row.getString("temperature");
+				/** 能见度 **/
+				pack.visibility = row.getString("visibility");
+				/** 时间 **/
+				pack.time = row.getString("time");
+                if (pack.time != null && !"".equals(pack.time)) {
+                    int tempTime = Integer.valueOf(pack.time);
+                    pack.isDayTime = !(tempTime < 7 || tempTime > 18);
+                }
+                /** 风向 **/
+                pack.winddir = row.getString("winddir");
+                /** 风速 **/
+                pack.windspeed = row.getString("windspeed");
+				list.add(pack);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return list.toString();
+	}
+
+	public class MapForecast {
+		/** 图标 **/
+		public String ico;
+		/** 天气情况 **/
+		public String desc;
+		/** 降雨量 **/
+		public String rainfall;
+		/** 气温 **/
+		public String temperature;
+		/** 能见度 **/
+		public String visibility;
+		/** 时间 **/
+		public String time;
+        /** 风向 **/
+        public String winddir;
+        /** 风速 **/
+        public String windspeed;
+        public boolean isDayTime;
+
+        public String getTime() {
+            return TextUtils.isEmpty(time) ? "" : time + "时";
+        }
+	}
+}

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen8"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/white_alpha20" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:orientation="horizontal" >
+
+        <!-- 时间 -->
+
+        <TextView
+            android:id="@+id/text_time"
+            android:layout_width="68dp"
+            android:layout_height="match_parent"
+            android:background="@color/white_alpha10"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+
+        <ImageView
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/white_alpha20" />
+
+        <com.pcs.ztqtj.view.myview.MyHScrollView
+            android:id="@+id/scrollViewContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <!-- 天气现象 -->
+
+                <LinearLayout
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center" >
+
+                    <TextView
+                        android:id="@+id/image_weather_situation"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:singleLine="true"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20" />
+                <!-- 温度 -->
+
+                <TextView
+                    android:id="@+id/text_temperature"
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20" />
+                <!-- 降水量 -->
+
+                <TextView
+                    android:id="@+id/text_rainfall"
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20" />
+                <!-- 能见度 -->
+
+                <TextView
+                    android:id="@+id/text_visibility"
+                    android:layout_width="88dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20"
+                    android:visibility="gone" />
+                <!-- 风速 -->
+
+                <TextView
+                    android:id="@+id/text_windspeed"
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20" />
+                <!-- 风向 -->
+
+                <TextView
+                    android:id="@+id/text_wind_direction"
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20" />
+                <!-- 相对湿度 -->
+
+                <TextView
+                    android:id="@+id/text_humidity_relatively"
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/white_alpha20" />
+                <!-- 气压 -->
+
+                <TextView
+                    android:id="@+id/text_air_presure"
+                    android:layout_width="68dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+            </LinearLayout>
+        </com.pcs.ztqtj.view.myview.MyHScrollView>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_line_h"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/white_alpha20" />
+
+</LinearLayout>

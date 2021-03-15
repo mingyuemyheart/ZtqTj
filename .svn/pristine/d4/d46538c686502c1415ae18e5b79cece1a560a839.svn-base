@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.scene;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+/**
+ * 亲情城市-天气实况
+ * 
+ * @author Chensq
+ * 
+ */
+
+
+public class PackRealUp extends PcsPackUp {
+	public final static String NAME = "real_wt";
+	public String country_id = "";
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("country_id", country_id);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		if(!TextUtils.isEmpty(country_id)){
+			return NAME+country_id;
+		}
+		return NAME;
+	}
+
+}

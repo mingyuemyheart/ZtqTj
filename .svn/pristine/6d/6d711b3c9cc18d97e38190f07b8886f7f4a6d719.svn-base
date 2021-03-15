@@ -1,0 +1,32 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * @author Z 
+ * 
+ * 气象短信
+ */
+public class PackSMSUp extends PcsPackUp {
+
+    public static final String NAME = "qxsms";
+
+	@Override
+	public JSONObject toJSONObject() {
+
+		JSONObject obj = new JSONObject();
+
+		return obj;
+
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

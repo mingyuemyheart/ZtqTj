@@ -1,0 +1,56 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * @author Z 气象短信
+ */
+public class PackSMSDown extends PcsPackDown {
+
+	public List<WeatherSMSBean> smsDataList;
+
+	@Override
+	public void fillData(String jsonStr) {
+		smsDataList = new ArrayList<PackSMSDown.WeatherSMSBean>();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			
+
+			JSONArray jsonArray = obj.getJSONArray("idex");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				WeatherSMSBean bean = new WeatherSMSBean();
+				bean.title = jsonArray.getJSONObject(i).getString("title");
+				bean.money = jsonArray.getJSONObject(i).getString("money");
+				bean.open_msg = jsonArray.getJSONObject(i).getString("open_msg");
+				bean.close_msg = jsonArray.getJSONObject(i).getString("close_msg");
+				bean.type = jsonArray.getJSONObject(i).getString("type");
+				smsDataList.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class WeatherSMSBean {
+		public String title;
+		public String money;
+		public String open_msg;
+		public String close_msg;
+		public String type;
+	}
+}

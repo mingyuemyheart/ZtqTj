@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 实景开拍用户信息
+ *
+ * @author JiangZy
+ */
+public class PackLocalPhotoUser extends PcsPackLocal {
+    public static final String KEY = "PackLocalPhotoUser";
+    public String nickName = "陌生人";
+
+    public String userId = "";
+
+    public String email = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            nickName = obj.getString("nickName");
+            userId = obj.getString("userId");
+            email = obj.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("nickName", nickName);
+            obj.put("userId", userId);
+            obj.put("email", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+}

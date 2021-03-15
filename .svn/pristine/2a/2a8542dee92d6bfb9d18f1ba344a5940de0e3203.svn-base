@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 台风警戒线
+ *
+ * @author JiangZY
+ */
+public class PackTyphoonWarnLineUp extends PcsPackUp {
+    public final static String NAME = "typho_warn_line";
+
+    /**
+     * 0：24小时，1：48小时
+     */
+    public int warn_line_type = 0;
+
+    public PackTyphoonWarnLineUp() {
+        intervalMill = 1000 * 60 * 15;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("warn_line_type", warn_line_type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + warn_line_type;
+    }
+}

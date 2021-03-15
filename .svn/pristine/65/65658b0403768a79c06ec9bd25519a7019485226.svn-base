@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 气象服务-象单位联系方式（qxfw_tel）
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackServiceOrgTelSearchDown extends PcsPackDown {
+
+	public OrgTelInfo orgTelInfo;
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONObject dataJson = temp.getJSONObject("data");
+
+			orgTelInfo = new OrgTelInfo();
+			orgTelInfo.mail = dataJson.getString("mail");
+			orgTelInfo.tel = dataJson.getString("tel");
+			orgTelInfo.name = dataJson.getString("name");
+			orgTelInfo.mobile = dataJson.getString("mobile");
+			orgTelInfo.interduce = dataJson.getString("interduce");
+			orgTelInfo.address = dataJson.getString("address");
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+}

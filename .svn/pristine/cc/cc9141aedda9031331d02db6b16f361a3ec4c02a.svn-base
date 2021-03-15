@@ -1,0 +1,61 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.week;
+
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShortUpdateTimeUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 一周天气
+ *
+ * @author JiangZy
+ */
+public abstract class PackWeekWeatherUp extends PackShortUpdateTimeUp {
+
+    protected String area = "";
+    protected String country = "";
+
+    public PackWeekWeatherUp() {
+        // 间隔毫秒数
+        //intervalMill = 1000 * 60 * 10;
+        // 循环发送
+        //bRepeat = true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("area", area);
+            obj.put("country", country);
+
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 设置城市
+     *
+     * @param city
+     */
+    public void setCity(PackLocalCity city) {
+        if (city == null) {
+            return;
+        }
+//        if (city.isFjCity) {
+//            area = city.PARENT_ID;
+//            country = city.ID;
+//        } else {
+//            area = city.ID;
+//            country = city.ID;
+//        }
+        area = city.ID;
+        country = city.ID;
+
+    }
+}

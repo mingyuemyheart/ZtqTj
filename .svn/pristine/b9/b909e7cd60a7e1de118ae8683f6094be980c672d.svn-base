@@ -1,0 +1,54 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjColumnGradeDown extends PcsPackDown {
+
+    public List<YjZqColumnGrade> list_2 = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+
+        list_2.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            //updateMill = obj.getLong("updateMill");
+            JSONArray jsonArraydz = obj.getJSONArray("column_list");
+            for (int i = 0; i < jsonArraydz.length(); i++) {
+                YjZqColumnGrade yjZqColumnGrade = new YjZqColumnGrade();
+                yjZqColumnGrade.req_url = jsonArraydz.getJSONObject(i).getString("req_url");
+                yjZqColumnGrade.name = jsonArraydz.getJSONObject(i).getString("name");
+                yjZqColumnGrade.type = jsonArraydz.getJSONObject(i).getString("type");
+                yjZqColumnGrade.ioc = jsonArraydz.getJSONObject(i).getString("ioc");
+                JSONArray jsonArray = jsonArraydz.getJSONObject(i).optJSONArray("s_columen_list");
+                if (jsonArray!=null){
+                    for (int j = 0; j < jsonArray.length(); j++) {
+                        YjColumnGradeDown yjColumnGradeDown = new YjColumnGradeDown();
+                        yjColumnGradeDown.name = jsonArray.getJSONObject(j).getString("name");
+                        yjColumnGradeDown.ioc = jsonArray.getJSONObject(j).getString("ioc");
+                        yjColumnGradeDown.req_url = jsonArray.getJSONObject(j).getString("req_url");
+                        yjColumnGradeDown.type = jsonArray.getJSONObject(j).getString("type");
+                        yjZqColumnGrade.list.add(yjColumnGradeDown);
+
+                    }
+                }
+
+                list_2.add(yjZqColumnGrade);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

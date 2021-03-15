@@ -1,0 +1,26 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class YjUserInfo {
+
+    /**
+     *名字
+     */
+    public String fullname;
+    /**
+     * 地址
+     */
+    public String depart_name;
+    /**
+     * 发布时间
+     */
+    public String mobile;
+
+    //用户id
+    public String user_id;
+
+}

@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import java.io.Serializable;
+
+/**
+ * 雨量站点信息
+ * @author tya
+ *
+ */
+public class RainStationInfo implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 序号
+	 */
+	public String num = "";
+	
+	/**
+	 * 地市
+	 */
+	public String city = "";
+	
+	/**
+	 * 县区市
+	 */
+	public String county = "";
+	
+	/**
+	 * 站点名称
+	 */
+	public String station = "";
+	
+	/**
+	 * 雨量mm
+	 */
+	public String rain = "";
+	
+	/**
+	 * 经度
+	 */
+	public String log = "";
+	
+	/**
+	 * 纬度
+	 */
+	public String lat = "";
+	
+	/**
+	 * 站点ID
+	 */
+	public String station_id = "";
+}

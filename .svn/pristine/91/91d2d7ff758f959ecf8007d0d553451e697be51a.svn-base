@@ -1,0 +1,62 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象服务-登陆
+ *
+ * @author chenjh
+ */
+public class PackServiceUserLoginUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_login";
+
+    /**
+     * 用户名
+     **/
+    public String mobile = "";
+
+    /**
+     * 密码
+     **/
+    public String pwd = "";
+
+    /**
+     * 机身编码
+     **/
+    public String imei = "";
+
+    /**
+     * 手机型号
+     **/
+    public String mobile_type = "";
+
+    public PackServiceUserLoginUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("mobile", mobile);
+            obj.put("pwd", pwd);
+            obj.put("imei", imei);
+            obj.put("mobile_type", mobile_type);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+}

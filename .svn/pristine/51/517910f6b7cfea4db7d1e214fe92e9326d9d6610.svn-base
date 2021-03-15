@@ -1,0 +1,77 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 本地缓存的气象服务用户信息
+ *
+ * @author chenjh
+ */
+public class PackLocalUserInfo extends PcsPackLocal {
+
+
+    public static final String KEY = "PackLocalUserInfo";
+
+    public PackLocalUser currUserInfo = new PackLocalUser();
+
+    public PackLocalUser getCurrUserInfo() {
+        return currUserInfo;
+    }
+
+    public void setCurrUserInfo(PackLocalUser currUserInfo) {
+        this.currUserInfo = currUserInfo;
+    }
+
+    @Override
+    public void fillData(String jsonStr) {
+        if ("".equals(jsonStr) || jsonStr == null) {
+            return;
+        }
+        JSONObject obj;
+        try {
+            obj = new JSONObject(jsonStr);
+            PackLocalUser localuser = new PackLocalUser();
+            localuser.user_id = obj.getString("user_id");
+            localuser.mobile = obj.getString("mobile");
+            localuser.pwd = obj.getString("pwd");
+            localuser.nick_name = obj.getString("nick_name");
+            localuser.imei = obj.getString("imei");
+            localuser.mobile_type = obj.getString("mobile_type");
+            localuser.sys_nick_name = obj.optString("sys_nick_name");
+            localuser.sys_head_url = obj.optString("sys_head_url");
+            localuser.sys_user_id = obj.optString("sys_user_id");
+            localuser.type = obj.optString("type");
+            localuser.is_jc = obj.optBoolean("is_jc");
+            currUserInfo = localuser;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            System.out.println("user_id:" + currUserInfo.user_id);
+            obj.put("user_id", currUserInfo.user_id);
+            obj.put("mobile", currUserInfo.mobile);
+            obj.put("pwd", currUserInfo.pwd);
+            obj.put("nick_name", currUserInfo.nick_name);
+            obj.put("imei", currUserInfo.imei);
+            obj.put("mobile_type", currUserInfo.mobile_type);
+            obj.put("sys_nick_name", currUserInfo.sys_nick_name);
+            obj.put("sys_head_url", currUserInfo.sys_head_url);
+            obj.put("sys_user_id", currUserInfo.sys_user_id);
+            obj.put("type", currUserInfo.type);
+            obj.put("is_jc", currUserInfo.is_jc);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+}

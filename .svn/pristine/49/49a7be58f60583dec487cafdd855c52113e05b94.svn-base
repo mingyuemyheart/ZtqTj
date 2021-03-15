@@ -1,0 +1,83 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 实景开拍登陆
+ *
+ * @author JiangZy
+ */
+public class PackPhotoLoginUp extends PcsPackUp {
+
+    public static final String NAME = "scenery_user_login";
+    /**
+     * 第三方平台的用户编号
+     */
+    public String platform_user_id;
+    /**
+     * 平台类型
+     * 1:新浪  2:QQ 3.微信
+     */
+    public String platform_type;
+    /**
+     * 用户昵称
+     */
+    public String nick_name;
+    /**
+     * 头像地址
+     */
+    public String head_url;
+    /**
+     * 用户密码(如果为本地登陆,密码必填,且为MD5加密过的密码)
+     */
+    public String pwd = "";
+    /**
+     * 平台类型：新浪
+     */
+    public static final String PLAFORM_TYPE_SINA = "1";
+
+    /**
+     * 平台类型：QQ
+     */
+    public static final String PLAFORM_TYPE_QQ = "2";
+
+    /**
+     * 平台类型：微信
+     */
+    public static final String PLAFORM_TYPE_WEIXIN = "3";
+
+    /**
+     * 平台类型：知天气
+     */
+    public static final String PLAFORM_TYPE_ZTQ = "4";
+
+    public PackPhotoLoginUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("nick_name", nick_name);
+            obj.put("pwd", pwd);
+            obj.put("platform_type", platform_type);
+            obj.put("head_url", head_url);
+            obj.put("platform_user_id", platform_user_id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+}

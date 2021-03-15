@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.column;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 栏目列表上传包
+ *
+ * @author Chensq
+ */
+public class PackColumnUp extends PcsPackUp {
+    public static String NAME = "column";
+    public String column_type = "";//所属栏目类型
+
+    public PackColumnUp(){
+        intervalMill=0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("column_type", column_type);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME+"#"+column_type;
+    }
+
+}

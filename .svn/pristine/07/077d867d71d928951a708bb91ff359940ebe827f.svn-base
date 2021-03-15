@@ -1,0 +1,18 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+/**
+ * 实景开拍：增加浏览数
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoBrowseUp extends PackPhotoSimpleUp {
+
+    public static final String NAME = "sjkpaddbrowse";
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 首页框架 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_content">
+
+        <!-- 内容布局 -->
+
+        <FrameLayout
+            android:layout_above="@+id/radio_group"
+            android:id="@+id/layout_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+        <!-- Menu按钮组 -->
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/icon_actmain_bac"
+            android:orientation="horizontal">
+
+            <!-- 单选框：首页 -->
+
+            <RadioButton
+                android:id="@+id/radio_home"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:paddingTop="3dp"
+                android:checked="true"
+                android:drawableTop="@drawable/radio_home"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/main"
+                android:textColor="@drawable/text_main_menu2"
+                android:textSize="@dimen/main_menu_textsize" />
+            <!-- 单选框：气象产品 -->
+
+            <RadioButton
+                android:id="@+id/radio_product"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="3dp"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_product"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/weather_product"
+                android:textColor="@drawable/text_main_menu2"
+                android:textSize="@dimen/main_menu_textsize" />
+            <!-- 单选框：气象服务 -->
+
+            <RadioButton
+                android:id="@+id/radio_service"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="3dp"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_service"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/weather_service"
+                android:textColor="@drawable/text_main_menu2"
+                android:textSize="@dimen/main_menu_textsize" />
+            <!-- 单选框：气象生活 -->
+
+            <RadioButton
+                android:id="@+id/radio_live"
+                android:layout_width="0dp"
+                android:paddingTop="3dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:drawableTop="@drawable/radio_live"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/weather_live"
+                android:textColor="@drawable/text_main_menu2"
+                android:textSize="@dimen/main_menu_textsize" />
+        </RadioGroup>
+    </RelativeLayout>
+</FrameLayout>

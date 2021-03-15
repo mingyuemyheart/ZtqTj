@@ -1,0 +1,70 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 实况查询自动统计雨量
+ */
+public class PackYltjRankDown extends PcsPackDown {
+	public List<RainFallRank> dataList = new ArrayList<RainFallRank>();
+	public List<RainFallRank> dataList1 = new ArrayList<RainFallRank>();
+	public List<RainFallRank> dataList3 = new ArrayList<RainFallRank>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			dataList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr1 = temp.getJSONArray("hour1");
+			for (int i = 0; i < arr1.length(); i++) {
+				RainFallRank info = new RainFallRank();
+				JSONObject rainfallJson = arr1.getJSONObject(i);
+				info.time = rainfallJson.getString("time");
+				info.rainfall = rainfallJson.getString("rainfall");
+				info.area_name = rainfallJson.getString("area_name");
+				dataList.add(info);
+
+				dataList1.add(info);
+			}
+			JSONArray arr3 = temp.getJSONArray("hour3");
+			for (int i = 0; i < arr3.length(); i++) {
+				RainFallRank info = new RainFallRank();
+				JSONObject rainfallJson = arr3.getJSONObject(i);
+				info.time = rainfallJson.getString("time");
+				info.rainfall = rainfallJson.getString("rainfall");
+				info.area_name = rainfallJson.getString("area_name");
+				info.isThreeTime = true;
+				dataList.add(info);
+
+				dataList3.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class RainFallRank implements Serializable {
+		public String time;
+		public String rainfall;
+		public String area_name;
+		public boolean isThreeTime = false;
+	}
+
+}

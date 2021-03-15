@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 资料查询我的服务
+ * Created by tyaathome on 2017/11/2.
+ */
+
+public class PackDataQueryServiceUp extends PcsPackUp {
+
+    public static final String NAME = "zlcx_my_pro";
+    public String user_id = "";
+
+    public PackDataQueryServiceUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("user_id", user_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

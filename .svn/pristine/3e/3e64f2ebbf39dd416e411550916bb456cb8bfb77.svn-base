@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 空气质量类型 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/item_bg_citylist_spinner"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp" >
+
+    <!-- 英文 -->
+
+    <TextView
+        android:id="@+id/text_en"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/aqi"
+        android:textColor="@android:color/black"
+        android:textSize="16dp" />
+    <!-- 中文 -->
+
+    <TextView
+        android:id="@+id/text_cn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/aqi"
+        android:textColor="@android:color/black"
+        android:textSize="16dp" />
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 气象要素日数查询
+ * Created by tyaathome on 2017/10/31.
+ */
+
+public class PackWeatherElementYearDown extends PcsPackDown {
+
+    // 天数
+    public String day_sum = "";
+    public List<ElementQueryYear> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            info_list.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            day_sum = object.optString("day_sum");
+            JSONArray jsonArray = object.getJSONArray("info_list");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                ElementQueryYear bean = new ElementQueryYear();
+                bean.year = temp.optString("year");
+                bean.num = temp.optString("num");
+                info_list.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

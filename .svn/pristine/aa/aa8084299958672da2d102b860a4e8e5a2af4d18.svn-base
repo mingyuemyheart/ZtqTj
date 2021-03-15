@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/livequery_bleak2_bg"
+              android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/data_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen2"
+        android:layout_marginTop="@dimen/activity_margintop"
+        android:background="#0897f1"
+        android:paddingBottom="@dimen/activity_margintop"
+        android:paddingLeft="@dimen/activity_margintop"
+        android:paddingTop="@dimen/activity_margintop"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:id="@+id/livequery_city_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview_2"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+
+        <TextView
+            android:id="@+id/livequery_town_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview_2"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/lowtemradiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop"
+        android:weightSum="7"
+        >
+
+        <RadioButton
+            android:id="@+id/lowtemradiogroupleft"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginRight="50dp"
+            android:layout_weight="3"
+            android:background="@drawable/blue_line"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/daily_lowest"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+
+        <RadioButton
+            android:id="@+id/lowtemradiogroupright"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:background="@drawable/blue_line"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/hour_lowest"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/group_hours"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dimen10"
+        android:layout_marginRight="@dimen/dimen10"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop"
+        android:visibility="gone"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_24h"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/radio_livequery_left"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="近24小时最低"
+            android:textColor="@drawable/text_black_while"
+            android:textSize="15dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_hours"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/radio_livequery_right"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/hour_lowest"
+            android:textColor="@drawable/text_black_while"
+            android:textSize="15dp"/>
+    </RadioGroup>
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/livequery_bleak2_bg"
+        android:paddingLeft="@dimen/activity_margintop"
+        android:paddingRight="@dimen/activity_margintop"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_white"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/description_title_low_on"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_white"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingLeft="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:singleLine="true"
+                android:textColor="#0897f1"
+                android:textSize="@dimen/text_footnote"/>
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/livequery_auto_min_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100"/>
+
+            <!--    <TextView
+                    android:id="@+id/description_title_low_sc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/livequery_listtitleclick"
+                    android:paddingBottom="@dimen/activity_margintop"
+                    android:paddingLeft="@dimen/activity_margintop"
+                    android:paddingTop="@dimen/activity_margintop"
+                    android:singleLine="true"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_footnote" />
+
+                <com.pcs.knowing_weather.view.myview.MyListView
+                    android:id="@+id/livequery_day_min_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cacheColorHint="@color/alpha100"
+                    android:divider="@drawable/line_common"
+                    android:listSelector="@color/alpha100" />-->
+
+            <LinearLayout
+                android:id="@+id/lay_tem_a"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_margintop">
+
+                    <LinearLayout
+                        android:id="@+id/table_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dimen4"
+                        android:background="@drawable/btn_livequery_click"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/activity_margintop">
+
+                        <ImageView
+                            android:id="@+id/table_data"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/icon_livequery_table"/>
+
+                        <TextView
+                            android:id="@+id/view_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen4"
+                            android:text="对比表"
+                            android:textColor="@color/text_white"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/description_title_search3_"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/table_layout"
+                        android:background="#0897f1"
+                        android:paddingBottom="@dimen/activity_margintop"
+                        android:paddingLeft="@dimen/activity_margintop"
+                        android:paddingTop="@dimen/activity_margintop"
+                        android:text="气温对比图"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/halfayear_data_introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dimen10"
+                    android:text="数据说明："
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_footnote"/>
+
+                <LinearLayout
+                    android:id="@+id/comp_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bg_white"
+                    android:orientation="vertical">
+
+                    <com.pcs.ztqtj.view.myview.CompleView
+                        android:id="@+id/rainfall_comp_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/activity_margintop"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/activity_margintop"
+                            android:layout_marginTop="@dimen/activity_margintop"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/year_darkblue"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:drawableLeft="@drawable/icon_livequery_a"
+                                android:paddingLeft="@dimen/activity_margintop"
+                                android:singleLine="true"
+                                android:textColor="@color/text_black"
+                                android:textSize="@dimen/text_content"/>
+
+                            <TextView
+                                android:id="@+id/year_green"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:drawableLeft="@drawable/icon_livequery_b"
+                                android:paddingLeft="@dimen/activity_margintop"
+                                android:singleLine="true"
+                                android:textColor="@color/text_black"
+                                android:textSize="@dimen/text_content"/>
+
+                            <TextView
+                                android:id="@+id/year_low_green"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:drawableLeft="@drawable/icon_livequery_c"
+                                android:paddingLeft="@dimen/activity_margintop"
+                                android:singleLine="true"
+                                android:textColor="@color/text_black"
+                                android:textSize="@dimen/text_content"/>
+                        </LinearLayout>
+                        <!--  android:text="@string/rain_history_max"-->
+                        <TextView
+                            android:id="@+id/history_max"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/activity_margintop"
+                            android:layout_marginTop="@dimen/activity_margintop"
+                            android:drawableLeft="@drawable/icon_livequery_max"
+                            android:paddingLeft="@dimen/activity_margintop"
+                            android:singleLine="true"
+
+                            android:textColor="@color/text_black"
+                            android:textSize="@dimen/text_footnote"/>
+
+                        <!--  android:text="@string/rain_history_average"-->
+                        <TextView
+                            android:id="@+id/history_avg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/activity_margintop"
+                            android:layout_marginTop="@dimen/activity_margintop"
+                            android:drawableLeft="@drawable/icon_livequery_avg"
+                            android:paddingLeft="@dimen/activity_margintop"
+                            android:singleLine="true"
+
+                            android:textColor="@color/text_black"
+                            android:textSize="@dimen/text_footnote"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/livequery_rainfall_complete_"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_white"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

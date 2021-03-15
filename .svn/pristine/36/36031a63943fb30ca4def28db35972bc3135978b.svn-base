@@ -1,0 +1,71 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 气象服务-三级栏目下产品展示（qxfw_product）
+ * 
+ * @author chenjx
+ * 
+ */
+public class PackSHThreeProductDown extends PcsPackDown {
+
+	/** 产品列表 **/
+	public List<ServiceProductInfo> serviceProductList = new ArrayList<ServiceProductInfo>();
+
+	/** 传入的每页大小 **/
+	public String page_size = "";
+	/** 上次传入的页数 **/
+	public String page_num = "";
+	/** 总页数 **/
+	public String total_page = "";
+	/** 总条数 **/
+	public String total_count = "";
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			serviceProductList.clear();
+			temp = new JSONObject(jsonStr);
+//			JSONObject dataJson = temp.getJSONObject("datalist");
+			updateMill = temp.optLong("updateMill");
+//			page_size = dataJson.getString("page_size");
+//			page_num = dataJson.getString("page_num");
+//			total_page = dataJson.getString("total_page");
+//			total_count = dataJson.getString("total_count");
+
+			JSONArray arr = temp.getJSONArray("datalist");
+
+			for (int i = 0; i < arr.length(); i++) {
+				ServiceProductInfo info = new ServiceProductInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				info.title = airJson.getString("title");
+				info.html_url = airJson.getString("html_url");
+				info.type = airJson.getString("type");
+				info.create_time = airJson.getString("create_time");
+				info.style = airJson.getString("style");
+				serviceProductList.add(info);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+}

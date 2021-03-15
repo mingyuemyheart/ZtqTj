@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_page_title"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen10"
+        android:paddingBottom="@dimen/dimen10"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="@dimen/dimen10"
+        >
+
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_city_list_search"
+            android:drawableLeft="@drawable/icon_city_list_search"
+            android:gravity="center"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote"
+            android:hint="查询城市"
+            android:textColorHint="@color/bg_white"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_default"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <RadioGroup
+            android:id="@+id/radgroup"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="@dimen/dimen10"
+            android:orientation="horizontal"
+            >
+
+            <RadioButton
+                android:id="@+id/rb_city"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/text_white"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="天津及周边城市"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"
+                />
+
+            <RadioButton
+                android:id="@+id/rb_country"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/text_white"
+                android:button="@null"
+                android:gravity="center"
+                android:text="国内城市列表"
+                android:textColor="@color/text_black_common"
+                android:textSize="@dimen/text_footnote"
+                />
+
+        </RadioGroup>
+
+        <RelativeLayout
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+        <ExpandableListView
+            android:id="@+id/ss_alertgridview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/search_bar"
+            android:cacheColorHint="#00000000"
+            android:childDivider="@drawable/line_common"
+            android:divider="@drawable/line_common"
+            android:dividerHeight="1dp"
+            android:fadingEdge="none"
+            android:focusable="false"
+            android:groupIndicator="@null"
+            android:listSelector="@color/alpha100"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:scrollingCache="false">
+        </ExpandableListView>
+
+    </RelativeLayout>
+
+</LinearLayout>

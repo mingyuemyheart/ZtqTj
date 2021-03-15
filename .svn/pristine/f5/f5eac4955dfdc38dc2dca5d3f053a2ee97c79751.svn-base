@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 预警—首页格点信息下载包
+ * Created by tyaathome on 2016/6/6.
+ */
+public class PackWarningCenterYJXXGridIndexDown extends PcsPackDown {
+
+    /**
+     * 列表
+     */
+    public List<WarnCenterYJXXGridBean> dataList = new ArrayList<WarnCenterYJXXGridBean>();
+
+    /**
+     * 返回的地区ID
+     */
+    public String key = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            dataList.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            key = obj.getString("key");
+            JSONArray ary = obj.getJSONArray("dataList");
+            for (int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                WarnCenterYJXXGridBean info = new WarnCenterYJXXGridBean();
+                info.id = temp.getString("id");
+                info.ico = temp.getString("ico");
+                dataList.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

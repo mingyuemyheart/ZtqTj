@@ -1,0 +1,9 @@
+package com.pcs.lib_ztqfj_v2.model.pack.tool.inter;
+
+/**
+ * Created by tyaathome on 2016/8/8.
+ */
+public interface InterfaceColumn {
+    String getTitle();
+    String getIconPath();
+}

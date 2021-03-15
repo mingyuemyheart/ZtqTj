@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.media;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 气象影视
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackMediaListUp extends PcsPackUp {
+	public String area_id;
+	public static final String NAME = "wt_video";
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("area_id", area_id);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		// return "qxmedia";旧
+		return NAME + "#" + area_id;
+	}
+
+}

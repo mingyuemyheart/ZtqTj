@@ -1,0 +1,24 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import java.io.Serializable;
+
+/**
+ * 地区单位bean
+ * 
+ * @author chenjh
+ */
+@SuppressWarnings("serial")
+public class OrgInfo implements Serializable {
+
+	/** 地区或单位名称 **/
+	public String org_name = "";
+
+	/** 地区ID **/
+	public String org_id = "";
+
+	/** 父类ID **/
+	public String org_pid = "";
+
+	/** 栏目类型:Type 等于1时 是地市气象局 ;等于2时 是省级气象机构 **/
+	public String type = "";
+}

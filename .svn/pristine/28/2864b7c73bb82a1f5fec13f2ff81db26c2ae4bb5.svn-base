@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </com.amap.api.maps.MapView>
+    
+    <!-- 时间段 -->
+    
+    <LinearLayout 
+        android:id="@+id/ll_time_slot"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_choose_time">
+        
+        <TextView 
+            android:id="@+id/tv_time_slot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+        
+        <Button 
+            android:id="@+id/btn_choose_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen4"
+            android:text="@string/choose_time"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            android:background="@drawable/btn_rain_info"/>
+        
+    </LinearLayout>
+    
+    <!-- 底部按钮 -->
+    <LinearLayout 
+        android:id="@+id/ll_bottom_button"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/dimen10" >
+        
+        <RadioGroup
+            android:id="@+id/rg_main"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_unit_time_rain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:checked="true"
+                android:text="@string/unit_time_rain"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"
+                android:gravity="center"
+                android:background="@drawable/btn_unit_time_rain" />
+
+            <RadioButton
+                android:id="@+id/rb_total_time_rain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:text="@string/total_time_rain"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"
+                android:gravity="center"
+                android:background="@drawable/btn_total_time_rain" />
+
+        </RadioGroup>
+        
+        <Button
+            android:id="@+id/btn_legend"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:text="@string/image_example"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote"
+            android:background="@drawable/btn_rain_info" />
+        
+        <Button
+            android:id="@+id/btn_count_rain"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:text="@string/count_rain"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote"
+            android:background="@drawable/btn_rain_info" />
+        
+    </LinearLayout>
+
+</RelativeLayout>

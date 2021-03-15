@@ -1,0 +1,8 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+public class GuideBean {
+    public String id;
+    public String title;
+    public String html_url;
+    public String create_time;
+}

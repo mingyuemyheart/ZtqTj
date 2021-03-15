@@ -1,0 +1,185 @@
+package com.pcs.lib.lib_pcs_v3.model.data;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.PcsInit;
+import com.pcs.lib.lib_pcs_v3.model.db.DBHelper;
+import com.pcs.lib.lib_pcs_v3.model.db.SqliteUtil;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import java.util.Map;
+
+/**
+ * 本地数据管理
+ *
+ * @author JiangZy
+ */
+public class PcsDataManager {
+    /**
+     * 线程锁
+     */
+    public static final Object mLock = new Object();
+    /**
+     * 数据列表
+     */
+    private Map<String, PcsPackDown> mPackMap;
+    /**
+     * 数据包工厂
+     */
+    private InterPackFactory mPackFactory;
+
+    /**
+     * 单例
+     */
+    private static PcsDataManager instance = null;
+
+    /**
+     * 获取单例
+     *
+     * @return
+     */
+    public static PcsDataManager getInstance() {
+        if (instance == null) {
+            instance = new PcsDataManager();
+
+        }
+
+        return instance;
+    }
+
+//    /**
+//     * 获取单例
+//     *
+//     * @return
+//     */
+//    public static PcsDataManager getInstance(Context context) {
+//        if (instance == null) {
+//            instance = new PcsDataManager(context);
+//        }
+//        return instance;
+//    }
+
+    /**
+     * 构造
+     */
+    private PcsDataManager() {
+        mPackMap = new PcsLinkedHashMap<String, PcsPackDown>();
+    }
+
+//    /**
+//     * 构造
+//     */
+//    private PcsDataManager(Context context) {
+//        mContext = context;
+//        mPackMap = new PcsLinkedHashMap<String, PcsPackDown>();
+//    }
+
+    /**
+     * 设置数据包工厂
+     *
+     * @param packFactory
+     */
+    public void setPackFactory(InterPackFactory packFactory) {
+        mPackFactory = packFactory;
+    }
+
+    final PcsPackDown seriesGetPack(String key) {
+        if (TextUtils.isEmpty(key)) {
+            return null;
+        }
+        synchronized (mLock) {
+            if (mPackMap.containsKey(key)) {
+                return mPackMap.get(key);
+            }
+            String json = SqliteUtil.getInstance().getInfo(key);
+            if (json != null) {
+                PcsPackDown pack = mPackFactory.createDownPack(key);
+                if (pack == null) {
+                    return null;
+                }
+                pack.fillData(json);
+                mPackMap.put(key, pack);
+                return pack;
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 多条数据：保存
+     */
+    public void seriesSaveData(SQLiteDatabase db, String key, String json) {
+        PcsPackDown pack = null;
+        if (mPackMap.containsKey(key)) {
+            pack = mPackMap.get(key);
+        }
+        if (pack == null) {
+            pack = mPackFactory.createDownPack(key);
+        }
+        pack.fillData(json);
+        mPackMap.put(key, pack);
+        SqliteUtil.getInstance().setInfo(db, key, json);
+        // LogFile.writeFile(mContext, "insert==" + key, "db");
+    }
+
+    /**
+     * 保存数据
+     *
+     * @param key
+     */
+    public void saveLocalData(String key, PcsPackLocal pack) {
+        synchronized (mLock) {
+            mPackMap.put(key, pack);
+            SQLiteDatabase db = null;
+            Context context = PcsInit.getInstance().getContext();
+            try {
+                db = DBHelper.getInstance(context).getReadableDatabase();
+                SqliteUtil.getInstance().setInfo(db, key, pack.toJsonStr());
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (db != null && db.isOpen()) {
+                    db.close();
+                }
+            }
+            //SqliteUtil.getInstance().closeDB();
+        }
+    }
+
+    /**
+     * 删除本地数据
+     *
+     * @param key
+     */
+    public void removeLocalData(String key) {
+        synchronized (mLock) {
+            mPackMap.remove(key);
+            SqliteUtil.getInstance().deleteData(key);
+            //SqliteUtil.getInstance().closeDB();
+        }
+    }
+
+    /**
+     * 取网络数据包
+     *
+     * @param key
+     * @return
+     */
+    public final PcsPackDown getNetPack(String key) {
+        PcsPackDown pack = seriesGetPack(key);
+        return pack;
+    }
+
+    /**
+     * 取本地数据包
+     *
+     * @param key
+     * @return
+     */
+    public final PcsPackDown getLocalPack(String key) {
+        return getNetPack(key);
+    }
+}

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/livequery_bleak2_bg"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen2"
+            android:background="@drawable/bg_livequerytitle"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingLeft="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="地区基本站风况查询"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:id="@+id/livequery_city_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview"
+            android:drawableRight="@drawable/bg_livequery_drowdown"
+            android:gravity="center"
+            android:paddingRight="@dimen/dimen4"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/livequery_town_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview"
+            android:drawableRight="@drawable/bg_livequery_drowdown"
+            android:gravity="center"
+            android:paddingRight="@dimen/dimen4"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/windradiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <RadioButton
+            android:id="@+id/windradiogroupleft"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_livequery_left"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="整点瞬时风况"
+            android:textColor="@drawable/text_black_while"
+            android:textSize="@dimen/text_content" />
+
+        <RadioButton
+            android:id="@+id/windradiogroupright"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/radio_livequery_right"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/wind_hour_max"
+            android:textColor="@drawable/text_black_while"
+            android:textSize="@dimen/text_content" />
+    </RadioGroup>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/livequery_bleak2_bg"
+        android:paddingLeft="@dimen/activity_margintop"
+        android:paddingRight="@dimen/activity_margintop"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_white"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:id="@+id/gd_wind"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"></RadioGroup>
+
+            <TextView
+                android:id="@+id/description_title_search2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/livequery_listtitleclick"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingLeft="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/livequery_auto_min_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100" />
+
+            <TextView
+                android:id="@+id/description_title_search3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/livequery_listtitleclick"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingLeft="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:singleLine="true"
+                android:text="@string/wind_current_rank"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="gone" />
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/livequery_day_min_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

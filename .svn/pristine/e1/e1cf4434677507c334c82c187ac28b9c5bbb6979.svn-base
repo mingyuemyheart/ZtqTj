@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:id="@+id/tv_respon_company"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:id="@+id/tv_respon_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:id="@+id/tv_respon_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+        <LinearLayout
+            android:id="@+id/lay_disaster_detail"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/disaster_detail"
+                android:gravity="center"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dimen10"
+        android:gravity="center"
+        android:text="正在加载..."
+        android:textColor="@color/text_black_common"
+        android:textSize="@dimen/text_content"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

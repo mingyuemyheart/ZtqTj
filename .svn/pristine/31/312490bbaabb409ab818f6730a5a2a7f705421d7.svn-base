@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 修改用户信息上传包
+ * Created by tyaathome on 2016/9/13.
+ */
+public class PackPhotoChangeUserInfoUp extends PcsPackUp {
+
+    public static final String NAME = "syn_user_info_upd";
+
+    public String user_id = "";
+    public String nick_name = "";
+    public String sex = "";
+    public String address = "";
+    public String mobile = "";
+
+    public PackPhotoChangeUserInfoUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("user_id", user_id);
+            obj.put("nick_name", nick_name);
+            obj.put("sex", sex);
+            obj.put("address", address);
+            obj.put("mobile", mobile);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

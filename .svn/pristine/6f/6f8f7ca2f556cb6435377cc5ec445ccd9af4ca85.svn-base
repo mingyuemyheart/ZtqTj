@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_title" >
+
+        <Button
+            android:id="@+id/close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen5"
+            android:background="@drawable/btn_close_white"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen10"
+            
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_subtitle" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:padding="@dimen/activity_marginleft_right" >
+
+        <TextView
+            android:id="@+id/tvMinValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_marginRight="5dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:singleLine="true"
+            android:text="@string/num_0"
+            android:textColor="@android:color/black"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tvMaxValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:singleLine="true"
+            android:text="@string/num_0"
+            android:textColor="@android:color/black"
+            android:textSize="15dp" />
+
+        <com.pcs.ztqtj.view.myview.MySeekBarThumb
+            android:id="@+id/mySeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="30dp"
+            android:layout_toLeftOf="@id/tvMaxValue"
+            android:layout_toRightOf="@id/tvMinValue"
+            android:maxHeight="12px"
+            android:minHeight="12px"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:progressDrawable="@drawable/my_seekbar_style" />
+
+        <TextView
+            android:id="@+id/tvWeight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_toLeftOf="@id/tvMaxValue"
+            android:layout_toRightOf="@id/tvMinValue"
+            android:gravity="center_vertical"
+            android:text="@string/num_0"
+            android:visibility="gone"
+            android:textColor="@android:color/black"
+            android:textSize="12dp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/submit_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_left"
+            android:text="@string/sure"
+            android:textColor="#5E85BC" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/bg_black_alpha" />
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/dialog_btn_right"
+            android:text="@string/cancel"
+            android:textColor="#5E85BC" />
+    </LinearLayout>
+
+</LinearLayout>

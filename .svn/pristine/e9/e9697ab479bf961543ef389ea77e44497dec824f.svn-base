@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 支付-套餐
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class PackDataQueryPayOrderDown extends PcsPackDown {
+
+    public List<PayOrderInfo> product_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            product_list.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            JSONArray productListArray = object.getJSONArray("product_list");
+            for(int i = 0; i < productListArray.length(); i++) {
+                JSONObject productItem = productListArray.getJSONObject(i);
+                PayOrderInfo info = new PayOrderInfo();
+                info.amount = productItem.optString("amount");
+                info.des = productItem.optString("des");
+                info.id = productItem.optString("id");
+                info.name = productItem.optString("name");
+                List<OrderMealInfo> mealList = new ArrayList<>();
+                JSONArray mealArray = productItem.optJSONArray("set_meal");
+                for(int j = 0; j < mealArray.length(); j++) {
+                    JSONObject mealItem = mealArray.getJSONObject(j);
+                    OrderMealInfo mealInfo = new OrderMealInfo();
+                    mealInfo.id = mealItem.optString("id");
+                    mealInfo.m_type = mealItem.optString("m_type");
+                    mealInfo.m_name = mealItem.optString("m_name");
+                    mealInfo.m_num = mealItem.optString("m_num");
+                    mealInfo.total_amount = mealItem.optString("total_amount");
+                    mealList.add(mealInfo);
+                }
+                info.set_meal = mealList;
+                product_list.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 预警订单列表项 -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dimen10"
+    android:background="@drawable/bg_warning_order" >
+    
+    <!-- ListView 嵌套ListView，item布局最外层必须是LinearLayout布局才能避免显示不全问题 -->
+    
+    <!-- 有效期及操作按钮 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical" >
+        
+        <!-- 订单名称 -->
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_black" />
+        
+        <!-- 支付按钮 -->
+        <Button
+            android:id="@+id/btn_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:text="@string/pay"
+            android:textSize="@dimen/text_content"
+       	    android:textColor="@color/text_white"
+       	    android:background="@drawable/btn_more" />
+        <!-- 续费按钮 -->
+        <Button
+            android:id="@+id/btn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:text="@string/continue_service"
+            android:textSize="@dimen/text_content"
+       	    android:textColor="@color/text_white"
+       	    android:background="@drawable/btn_more"
+       	    android:visibility="gone" />
+        <!-- 修改按钮 -->
+        <Button
+            android:id="@+id/btn_revise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:text="@string/revise"
+            android:textSize="@dimen/text_content"
+       	    android:textColor="@color/text_white"
+       	    android:background="@drawable/btn_more" />
+        <!-- 删除按钮 -->
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:text="@string/delete"
+            android:textSize="@dimen/text_content"
+       	    android:textColor="@color/text_white"
+       	    android:background="@drawable/btn_more" />
+    </LinearLayout>
+    
+    <!-- 订单详情 -->
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen10"
+        android:orientation="vertical" >
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/text_gray_light" />
+        
+        <!-- 开通时间 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen10" >
+            
+            <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/text_effect_date"
+	            android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+            
+            <TextView
+                android:id="@+id/tv_effect_date"
+                android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+        </LinearLayout>
+        <!-- 有效期 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen10" >
+            
+            <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/text_expire_date"
+	            android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+            
+            <TextView
+	            android:id="@+id/tv_expire_date"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:textSize="@dimen/text_content"
+	            android:textColor="@color/text_black" />
+        </LinearLayout>
+        <!-- 服务期限 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen10" >
+            
+            <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/text_service_cycle"
+	            android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+            
+            <TextView
+                android:id="@+id/tv_service_cycle"
+                android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+        </LinearLayout>
+        <!-- 服务区域 -->
+		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:text="@string/text_service_area"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_black" />
+        
+		<ListView
+		    android:id="@+id/listview_area"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/dimen10"
+		    android:listSelector="@null"
+		    android:divider="@null"
+		    android:dividerHeight="@dimen/dimen5" />
+    </LinearLayout>
+</LinearLayout>

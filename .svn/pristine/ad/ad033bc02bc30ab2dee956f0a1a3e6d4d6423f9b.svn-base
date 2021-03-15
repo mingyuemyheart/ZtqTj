@@ -1,0 +1,33 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 雨晴信息-图例上传包
+ * @author tya
+ *
+ */
+public class PackRainInfoLegendUp extends PcsPackUp {
+
+    public static final String NAME = "fx_legend_raininfo";
+
+	public PackRainInfoLegendUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

@@ -1,0 +1,23 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import java.io.Serializable;
+
+/**
+ * 预警信息
+ * 
+ * @author chenjh
+ * 
+ */
+@SuppressWarnings("serial")
+public class PackLocalWarn implements Serializable {
+	/** 排序  **/
+	public String CO = "";
+	/** 类型 **/
+	public String TYPE = "";
+	/** 级别 **/
+	public String LEVEL_STR = "";
+	/** 图标名称 **/
+	public String ICO = "";
+
+
+}

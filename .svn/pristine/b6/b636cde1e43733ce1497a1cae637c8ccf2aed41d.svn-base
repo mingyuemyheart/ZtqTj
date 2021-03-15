@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 高温查询—自动站当前实况或24小时值统计表（wdtj_zdz）
+ */
+public class PackWdtjZdzDown extends PcsPackDown {
+
+	public List<WdtjZdz> datalist;
+
+	@Override
+	public void fillData(String jsonStr) {
+		datalist = new ArrayList<WdtjZdz>();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				WdtjZdz imgobject = new WdtjZdz();
+				imgobject.time = obj.getString("time");
+				imgobject.max_wd = obj.getString("max_wd");
+				imgobject.county = obj.getString("county");
+				datalist.add(imgobject);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public class WdtjZdz {
+		public String time;
+		public String max_wd;
+		public String county;
+	}
+}

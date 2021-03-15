@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 实时天气上传包
+ *
+ * @author JiangZy
+ */
+public class PackSstqUp extends PackShortUpdateTimeUp {
+
+    public static final String NAME = "sstq";
+
+    /**
+     * 城市代码
+     */
+    public String area = "";
+    public boolean is_jc = false;
+
+    public PackSstqUp() {
+        // 循环发送
+        //bRepeat = true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("area", area);
+            if(is_jc) {
+                obj.put("user_type", "0");
+            } else {
+                obj.put("user_type", "1");
+            }
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + area;
+    }
+
+}

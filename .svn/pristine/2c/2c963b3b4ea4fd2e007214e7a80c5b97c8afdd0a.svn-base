@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 定点服务信息
+ * @author E.Sun
+ * 2015年10月29日
+ */
+public class LocationWarningInfo {
+
+	/**
+	 * 预警名称
+	 */
+	public String name = "";
+	
+	/**
+	 * 预警有效期
+	 */
+	public String expiryDate = "";
+
+	/**
+	 * 预警内容
+	 */
+	public String content = "";
+	
+	/** 七级风圈（单位：千米） */
+	public int windSeven = 0;
+	
+	/** 十级风圈（单位：千米） */
+	public int windTen = 0;
+	
+	/** 台风中心坐标纬度 */
+	public double latitude = 0;
+	
+	/** 台风中心坐标经度 */
+	public double longitude = 0;
+
+	/**
+	 * 预警坐标列表
+	 */
+	public List<MyPosition> warningPositions = new ArrayList<MyPosition>();
+
+	/**
+	 * 用户定制坐标列表
+	 */
+	public List<MyPosition> userPositions = new ArrayList<MyPosition>();
+	
+	/**
+	 * 后台设置用户区域坐标列表
+	 */
+	public List<MyPosition> managerPositions = new ArrayList<MyPosition>();
+	
+}

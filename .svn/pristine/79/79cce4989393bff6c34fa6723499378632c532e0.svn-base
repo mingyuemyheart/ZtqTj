@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.agriculture;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 农业灾害提交上传包
+ * Created by tyaathome on 2016/11/15.
+ */
+public class PackAgricultureSubmitUp extends PcsPackUp {
+
+    public static final String NAME = "nyzq_tj";
+    public String channel_id = "";
+    public String user_id = "";
+    public String area_id = "";
+    public String zq_id = "";
+    public String zq_desc = "";
+
+    public PackAgricultureSubmitUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("channel_id", channel_id);
+            obj.put("user_id", user_id);
+            obj.put("area_id", area_id);
+            obj.put("zq_id", zq_id);
+            obj.put("zq_desc", zq_desc);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

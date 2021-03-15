@@ -1,0 +1,215 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_default"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp" >
+
+    <!-- 标题 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+
+        <!-- 按钮：监测站 -->
+
+        <Button
+            android:id="@+id/btn_station"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/btn_air_station"
+            android:gravity="center"
+            android:text="@string/air_city_name"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|right"
+            android:orientation="vertical" >
+
+            <!-- 排行 -->
+
+            <Button
+                android:id="@+id/btn_better"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_alpha_white"
+                android:text="@string/air_better"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_content" />
+            <!-- 更新时间 -->
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:textScaleX="0.9"
+                android:layout_height="wrap_content"
+                android:text="@string/air_time"
+                android:textSize="12dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- 圆圈 -->
+
+                <FrameLayout
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/bg_air_circle"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center">
+
+                    <!-- 指针 -->
+
+                    <com.pcs.ztqtj.view.myview.ViewCirclePoint
+                        android:id="@+id/circle_point"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_air_arrow"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!-- AQI -->
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/aqi"
+                            android:textColor="@color/AQI_0"
+                            android:textSize="@dimen/text_content"/>
+                        <!-- 数字 -->
+
+                        <TextView
+                            android:id="@+id/text_aqi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="-10dp"
+                            android:layout_marginTop="-10dp"
+                            android:text="@string/temp_number"
+                            android:textColor="@color/AQI_0"
+                            android:textSize="@dimen/dimen50"/>
+                        <!-- 城市 -->
+
+                        <TextView
+                            android:id="@+id/text_city_center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/temp_city"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/text_content"/>
+                    </LinearLayout>
+                </FrameLayout>
+                <!-- 健康提示 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:drawableLeft="@drawable/icon_air_heart"
+                    android:gravity="center"
+                    android:text="@string/health_tip"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_content"/>
+
+                <TextView
+                    android:id="@+id/text_health_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="37dp"
+                    android:layout_marginRight="37dp"
+                    android:textColor="@color/text_goledn"
+                    android:textSize="@dimen/text_content"/>
+                <!-- 历史查询 -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/icon_air_history"
+                    android:gravity="center"
+                    android:text="@string/history_query"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_content"/>
+            </LinearLayout>
+            <!-- 历史查询控件 -->
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:layout_marginTop="5dp"
+                android:max="5"
+                android:maxHeight="6dp"
+                android:progress="5"
+                android:progressDrawable="@drawable/bg_seek_bar_air"
+                android:thumb="@drawable/btn_seekbar_air"/>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:background="@drawable/bg_air_seek_progress"/>
+            <!-- 数值列表 -->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:background="#376aa9"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/monitor_detail"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_content"/>
+
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="235dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@android:color/white"
+                android:divider="@null"
+                android:listSelector="@color/alpha100"
+                android:scrollbars="none">
+            </ListView>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

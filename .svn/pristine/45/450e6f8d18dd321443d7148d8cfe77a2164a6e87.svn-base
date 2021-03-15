@@ -1,0 +1,71 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象服务-三级栏目下产品展示（qxfw_product）
+ *
+ * @author chenjx
+ */
+public class PackSHThreeProductUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_tj_product";
+
+    /**
+     * 栏目二级ID
+     **/
+    public String channel_id = "";
+    /**
+     * 用户ID:
+     * 如果不传user_id,则展示该二级栏目下 所有关联的产品信息,显示信息全部用户不可用;
+     * 有user_id,则信息展示数据,有用户不可用与可用区别.
+     **/
+    public String user_id = "";
+    /**
+     * 每页大小
+     **/
+    public String page_size = "";
+    /**
+     * 当前页
+     **/
+    public String page_num = "";
+
+    public PackSHThreeProductUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            if (!TextUtils.isEmpty(page_num)) {
+                obj.put("page_num", page_num);
+            }
+            if (!TextUtils.isEmpty(page_size)) {
+                obj.put("page_size", page_size);
+            }
+            if (!TextUtils.isEmpty(user_id)) {
+                obj.put("user_id", user_id);
+            }
+            obj.put("channel_id", channel_id);
+
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME ;
+    }
+
+}

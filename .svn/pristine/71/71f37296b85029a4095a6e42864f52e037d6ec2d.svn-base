@@ -1,0 +1,13 @@
+package com.pcs.lib.lib_pcs_v3.model.image;
+
+/**
+ * 图片的常量
+ * 
+ * @author JiangZy
+ * 
+ */
+public interface ImageConstant {
+	public static enum ImageShowType {
+		NONE/* 只下载不展示 */, SRC/* ImageView的src */,CIRCLE/** 圆形 **/
+	}
+}

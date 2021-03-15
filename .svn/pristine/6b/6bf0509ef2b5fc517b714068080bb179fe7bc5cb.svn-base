@@ -1,0 +1,41 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * @author Z
+ *         *气象服务我的服务
+ */
+public class PackQxfwAuthenticationProductUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_authentication_product";
+
+    public String product_id = "";
+    public String user_id = "1";
+
+    public PackQxfwAuthenticationProductUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("product_id", product_id);
+            obj.put("user_id", user_id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

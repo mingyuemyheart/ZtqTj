@@ -1,0 +1,16 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.disaster;
+
+import java.io.Serializable;
+
+/**
+ * Created by Administrator on 2017/8/4 0004.
+ * chen_jx
+ */
+
+public class DisasterReporting implements Serializable{
+
+    public String time;
+    public String address;
+    public String status;
+
+}

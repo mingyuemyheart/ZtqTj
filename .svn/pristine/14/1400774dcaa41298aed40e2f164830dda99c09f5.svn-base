@@ -1,0 +1,17 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+/**半年降雨量统计*/
+public class YltjYear{
+	public String month5;
+		public String month_name5="";
+		public String month6;
+		public String month_name6="";
+		public String month4;
+		public String month_name4="";
+		public String month1;
+		public String month_name1="";
+		public String month3;
+		public String month_name3="";
+		public String month2;
+		public String month_name2="";
+		public String year;
+	}

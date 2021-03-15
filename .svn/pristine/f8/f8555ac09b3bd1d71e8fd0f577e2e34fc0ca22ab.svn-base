@@ -1,0 +1,95 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 逐小时预报
+ *
+ * @author JiangZy
+ */
+public class PackHourForecastDown extends PcsPackDown {
+    public List<HourForecast> list = new ArrayList<HourForecast>();
+    public String desc = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        list.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            desc = obj.optString("desc");
+            JSONArray arr = obj.getJSONArray("today");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject row = arr.getJSONObject(i);
+                HourForecast pack = new HourForecast();
+                // 图标
+                pack.ico = row.getString("ico");
+                // 降雨量
+                pack.rainfall = row.getString("rainfall");
+                // 气温
+                pack.temperature = row.getString("temperature");
+                // 风速
+                pack.windspeed = row.getString("windspeed");
+                // 风向
+                pack.winddir = row.getString("winddir");
+                // 气压
+                pack.airpressure = row.getString("airpressure");
+                // 能见度
+                pack.visibility = row.getString("visibility");
+                pack.w_datetime = row.getString("w_datetime");
+                // 相对湿度
+                pack.rh = row.getString("rh");
+                pack.desc = row.optString("desc");
+                // 时间
+                pack.time = row.getString("time");
+                if (pack.time != null && !"".equals(pack.time)) {
+                    int tempTime = Integer.valueOf(pack.time);
+                    pack.isDayTime = !(tempTime < 7 || tempTime > 18);
+                }
+                list.add(pack);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class HourForecast {
+        // 图标
+        public String ico = "";
+        // 降雨量
+        public String rainfall = "";
+        // 气温
+        public String temperature = "";
+        // 风速
+        public String windspeed = "";
+        // 风向
+        public String winddir = "";
+        // 气压
+        public String airpressure = "";
+        // 能见度
+        public String visibility = "";
+        // 相对湿度
+        public String rh = "";
+        // 时间
+        public String time = "";
+        public String desc = "";
+        public String w_datetime = "";//2015041712
+        // 是否白天
+        public boolean isDayTime;
+        public String getTime() {
+            if (time.equals("0")) {
+                String str=w_datetime.substring(6,8);
+                return str+"日";
+            } else {
+                return time + "时";
+            }
+        }
+    }
+}

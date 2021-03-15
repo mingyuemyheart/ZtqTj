@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.observation;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * @author Z
+ *	下店面观察趋势图数据
+ */
+public class PackObservationViewUp extends PcsPackUp {
+    public static final String NAME = "dm_tem_trend";
+	public String station_no="";
+	public PackObservationViewUp(){
+		intervalMill=0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("station_no", station_no);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME+"#"+station_no;
+	}
+
+}

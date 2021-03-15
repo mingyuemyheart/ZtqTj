@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 台风路径信息
+ * @author chenjh
+ *
+ */
+public class TyphoonPathInfo{
+	
+	/** 台风名称 **/
+	public String name;
+	
+	/** 台风简称 **/
+	public String simplename;
+	
+	/** 台风编号  **/
+	public String code;
+	
+	/** 北京预测路径 **/
+	public List<ForecastPoint> BeijingDottedPointList = new ArrayList<ForecastPoint>();
+	
+	/** 东京预测路径 **/
+	public List<ForecastPoint> TokyoDottedPointList = new ArrayList<ForecastPoint>();
+	
+	/** 上海预测路径 **/
+	public List<ForecastPoint> ShangHaiDottedPointList = new ArrayList<ForecastPoint>();
+
+    /** 美国预测路径 **/
+    public List<ForecastPoint> TaiWanDottedPointList = new ArrayList<ForecastPoint>();
+	
+	/** 实线路径信息 **/
+	public List<FulPoint> fulPointList = new ArrayList<FulPoint>();
+	
+}

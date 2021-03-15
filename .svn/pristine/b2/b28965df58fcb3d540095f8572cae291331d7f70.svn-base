@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ocean_weather_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <com.amap.api.maps.TextureMapView
+                android:id="@+id/mapview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <LinearLayout
+                android:id="@+id/layout_data"
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:layout_margin="5dp"
+                android:visibility="gone"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+
+                <!-- 标题栏 -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@color/text_blue"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/text_list_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content"/>
+
+                </LinearLayout>
+                <!-- 列表标题 -->
+
+                <include layout="@layout/include_map_list_item"/>
+                <!-- 列表 -->
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:divider="#00000000"
+                    android:dividerHeight="0dp"
+                    android:visibility="visible"
+                    >
+                </ListView>
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

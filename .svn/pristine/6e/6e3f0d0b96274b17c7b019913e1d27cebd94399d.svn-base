@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：左旋转 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/btn_rotate_r_sel" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/btn_rotate_r_nor" android:state_pressed="false"></item>
+
+</selector>

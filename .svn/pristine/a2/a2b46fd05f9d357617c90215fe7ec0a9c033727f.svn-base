@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 交通气象：公路概况
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackRoadDescUp extends PcsPackUp {
+
+    public static final String NAME = "road_desc";
+
+	public String road_id = "";
+
+	public PackRoadDescUp() {
+		// 间隔毫秒数(30分钟)
+		intervalMill = 1000 * 60 * 30;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("road_id", road_id);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + road_id;
+	}
+
+}

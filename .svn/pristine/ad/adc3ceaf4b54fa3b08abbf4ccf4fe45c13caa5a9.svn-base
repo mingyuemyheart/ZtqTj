@@ -1,0 +1,14 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2018/1/11.
+ */
+
+public class CompareInfo {
+    public String year = "";
+    public String type = "";
+    public List<CompareMonthInfo> sub_list = new ArrayList<>();
+}

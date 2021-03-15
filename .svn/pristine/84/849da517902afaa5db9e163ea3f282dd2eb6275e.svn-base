@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_white"
+                android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/radgroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/air_pollution_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rb_air"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="污染扩散预报图"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+
+        <RadioButton
+            android:id="@+id/air_pollution_distribution"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/rb_air"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen10"
+            android:paddingTop="@dimen/dimen10"
+            android:text="空气质量分布图"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/fragment_forecast"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/radgroup"
+        android:background="@color/bg_white"
+        android:orientation="vertical"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/radgroup"
+        android:background="@color/bg_white"
+        android:orientation="vertical"/>
+
+    <LinearLayout
+        android:id="@+id/layout_rank"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_white"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen10">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:id="@+id/tv_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="城市空气质量分级统计"
+                android:textColor="@color/text_blue_common"
+                android:textSize="@dimen/text_content"/>
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/text_gray_light"
+                android:textSize="12dp"/>
+
+        </RelativeLayout>
+
+        <com.pcs.ztqtj.view.myview.MyGridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:horizontalSpacing="4dp"
+            android:numColumns="2"
+            android:verticalSpacing="4dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_station"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_white"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen10"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--城市名AQI-->
+            <TextView
+                android:id="@+id/text_city_aqi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:textColor="@color/text_blue_common"
+                android:textSize="17dp"/>
+            <!--更新时间-->
+            <TextView
+                android:id="@+id/text_up_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/text_gray_light"
+                android:textSize="12dp"/>
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text_list_tip"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/please_wait"
+                android:textColor="@color/text_gray_light"
+                android:textSize="15dp"/>
+            <!--列表-->
+            <ListView
+                android:id="@+id/list_city_aqi"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="#00000000"
+                android:dividerHeight="0dip"
+                android:listSelector="@android:color/transparent"></ListView>
+
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

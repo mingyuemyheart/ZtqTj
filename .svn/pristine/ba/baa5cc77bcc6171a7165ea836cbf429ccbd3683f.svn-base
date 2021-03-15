@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 气象要素日数查询月份
+ * Created by tyaathome on 2017/10/30.
+ */
+
+public class PackWeatherElementMonthUp extends PcsPackUp {
+
+    public static final String NAME = "zlcx_qxys_month";
+
+    public String type = "";
+    public String id = "";
+    public String year = "";
+    public String s_type = "";
+    public String item_id = "";
+    public String s_item_id = "";
+
+    public PackWeatherElementMonthUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("type", type);
+            object.put("id", id);
+            object.put("year", year);
+            object.put("s_type", s_type);
+            object.put("item_id", item_id);
+            object.put("s_item_id", s_item_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

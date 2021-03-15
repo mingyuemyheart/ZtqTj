@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 设置推送标签
+ * 
+ * @author chenjh
+ * 
+ */
+public class SetPushTagDown extends PcsPackDown {
+	
+	/** 返回结果  **/
+	public String result = "";
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			result = temp.getString("result");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+}
+

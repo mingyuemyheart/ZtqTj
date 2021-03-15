@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen10"
+        android:paddingRight="@dimen/dimen10"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <!-- 站点选择 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_city"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_data_query_drop_down"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_station"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_data_query_drop_down"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                </LinearLayout>
+
+                <!-- 日期选择 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen4"
+                    android:background="@color/grey_bg"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen10"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="6dp"
+                            android:layout_weight="1"
+                            android:gravity="left|center_vertical"
+                            android:orientation="horizontal"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_start_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/bg_white"
+                                android:gravity="center"
+                                android:paddingBottom="@dimen/dimen2"
+                                android:paddingLeft="@dimen/dimen10"
+                                android:paddingRight="@dimen/dimen10"
+                                android:paddingTop="@dimen/dimen2"
+                                android:text="1981"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen6"
+                                android:layout_marginRight="@dimen/dimen6"
+                                android:text="年"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                            <TextView
+                                android:id="@+id/tv_start_month"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:background="@color/bg_white"
+                                android:gravity="center"
+                                android:paddingBottom="@dimen/dimen2"
+                                android:paddingLeft="@dimen/dimen10"
+                                android:paddingRight="@dimen/dimen10"
+                                android:paddingTop="@dimen/dimen2"
+                                android:text="1"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen6"
+                                android:layout_marginRight="@dimen/dimen6"
+                                android:text="月"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="--"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="@dimen/text_footnote"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="6dp"
+                            android:layout_weight="1"
+                            android:gravity="right|center_vertical"
+                            android:orientation="horizontal"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_end_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@color/bg_white"
+                                android:paddingBottom="@dimen/dimen2"
+                                android:paddingLeft="@dimen/dimen10"
+                                android:paddingRight="@dimen/dimen10"
+                                android:paddingTop="@dimen/dimen2"
+                                android:text="2010"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen6"
+                                android:layout_marginRight="@dimen/dimen6"
+                                android:text="年"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                            <TextView
+                                android:id="@+id/tv_end_month"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:background="@color/bg_white"
+                                android:gravity="center"
+                                android:paddingBottom="@dimen/dimen2"
+                                android:paddingLeft="@dimen/dimen10"
+                                android:paddingRight="@dimen/dimen10"
+                                android:paddingTop="@dimen/dimen2"
+                                android:text="12"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/dimen6"
+                                android:layout_marginRight="@dimen/dimen6"
+                                android:text="月"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_tips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/weather_element_query_tips"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="13dp"
+                        />
+
+                </LinearLayout>
+
+                <!-- 查询控件 -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen4"
+                    >
+
+                    <Button
+                        android:id="@+id/btn_query"
+                        android:layout_width="60dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/btn_rain_info"
+                        android:text="@string/query"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"
+                        android:layout_centerInParent="true"
+                        />
+
+                    <LinearLayout
+                        android:id="@+id/layout_query"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@id/btn_query"
+                        android:orientation="horizontal"
+                        android:layout_centerInParent="true"
+                        >
+
+                        <TextView
+                            android:id="@+id/tv_item_single"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="@dimen/dimen10"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="@dimen/text_footnote"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_item_multi"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="@dimen/dimen10"
+                            android:layout_weight="5"
+                            android:background="@drawable/bg_data_query_drop_down"
+                            android:gravity="center_vertical"
+                            android:maxLines="1"
+                            android:textColor="@color/text_black_common"
+                            android:textSize="@dimen/text_footnote"
+                            android:visibility="gone"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="4"
+                            android:orientation="horizontal"
+                            >
+
+                            <TextView
+                                android:id="@+id/tv_sub_item"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginRight="10dp"
+                                android:background="@drawable/bg_data_query_drop_down"
+                                android:gravity="center_vertical"
+                                android:maxLines="1"
+                                android:textColor="@color/text_black_common"
+                                android:textSize="@dimen/text_footnote"
+                                android:visibility="gone"
+                                />
+
+                            <LinearLayout
+                                android:id="@+id/layout_day_num"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                >
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="天数≥"
+                                    android:textColor="@color/text_black_common"
+                                    android:textSize="@dimen/text_footnote"
+                                    />
+
+                                <EditText
+                                    android:id="@+id/et_day_num"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="@dimen/dimen10"
+                                    android:layout_marginRight="@dimen/dimen10"
+                                    android:background="@drawable/border_corner"
+                                    android:gravity="center"
+                                    android:nextFocusLeft="@id/et_day_num"
+                                    android:nextFocusUp="@id/et_day_num"
+                                    android:textColor="@color/text_black_common"
+                                    android:textSize="@dimen/text_footnote"
+                                    />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <!-- 查询结果 -->
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen4"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_time_drop_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/bg_data_query_drop_down"
+                        android:gravity="center"
+                        android:text="按年份排"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/tv_time_drop_down"
+                        android:gravity="center"
+                        >
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="left|center_vertical"
+                            android:text="日数"
+                            android:textColor="@color/text_black_common"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_day_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:gravity="center"
+                            android:text="查询结果：共计0日"
+                            android:textColor="@color/text_blue"
+                            />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/layout_mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+
+        </FrameLayout>
+
+        <!-- 柱状图 -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="175dp"
+            android:layout_marginTop="@dimen/dimen4"
+            >
+
+            <ImageView
+                android:id="@+id/iv_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:src="@drawable/right_data"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+            <com.pcs.ztqtj.view.myview.ElementWeatherView
+                android:id="@+id/elementview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toLeftOf="@id/iv_right"
+                android:layout_marginRight="@dimen/dimen4"
+                />
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/layout_month"
+            android:layout_marginTop="@dimen/dimen4"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/tv_data_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/tv_time_drop_down"
+                android:textColor="@color/text_blue"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="@dimen/dimen4"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                >
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_without_bottom"
+                        android:gravity="center"
+                        android:text="@string/month2"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_count"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:text="@string/day2"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_footnote"
+                        />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    >
+
+                    <ImageView
+                        android:id="@+id/iv_right2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/right_data"
+                        android:visibility="invisible"
+                        />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/list_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="@dimen/dimen4"
+                        android:layout_toLeftOf="@id/iv_right2"
+                        android:descendantFocusability="blocksDescendants"
+                        android:overScrollMode="never"
+                        />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

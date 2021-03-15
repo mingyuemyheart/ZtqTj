@@ -1,0 +1,26 @@
+package com.pcs.lib.lib_pcs_v3.control.tool;
+
+import android.app.ActivityManager;
+import android.content.Context;
+
+import java.util.List;
+
+/**
+ * JiangZy on 2016/6/28.
+ * 进程工具
+ */
+public class ProcessTool {
+    public static String getProcessName(Context cxt, int pid) {
+        ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        if (runningApps == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo procInfo : runningApps) {
+            if (procInfo.pid == pid) {
+                return procInfo.processName;
+            }
+        }
+        return null;
+    }
+}

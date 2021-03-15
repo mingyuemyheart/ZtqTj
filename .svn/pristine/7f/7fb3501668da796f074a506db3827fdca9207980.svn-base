@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 气象栏目对象
+ * 
+ * @author tya
+ *
+ */
+public class TravelWeatherColumn {
+
+	/**
+	 * 图片地址
+	 */
+	public String img_url = "";
+
+	/**
+	 * 栏目链接
+	 */
+	public String link_url = "";
+	
+	/**
+	 * 专题列表
+	 */
+	public List<TravelWeatherSubject> subject_list = new ArrayList<TravelWeatherSubject>();
+}

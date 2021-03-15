@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2017/8/16 0016.
+ * chen_jx
+ */
+
+public class PackYjZqInfoUp extends PcsPackUp {
+
+    public static final String NAME = "yj_zq_info";
+    public String id="";
+
+    public PackYjZqInfoUp() {
+        // 循环发送
+        //bRepeat = true;
+        intervalMill = 0;
+    }
+
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("id", id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取接口名
+     *
+     * @return
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

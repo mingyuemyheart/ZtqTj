@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 个人预警按钮 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/btn_personal_warning_nor" android:state_pressed="false"/>
+    <item android:drawable="@drawable/btn_personal_warning_sel" android:state_pressed="true"/>
+</selector>

@@ -1,0 +1,163 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 下载包：精确定点服务
+ * @author E.Sun
+ * 2015年10月29日
+ */
+public class PackAccurateWarningDown extends PcsPackDown {
+
+	private final String KEY_DATA = "warn_acu_list";
+	private final String KEY_NAME = "name";
+	private final String KEY_EXPIRY_DATE = "end_date";
+	private final String KEY_CONTENT = "content";
+	private final String KEY_WIND_SEVEN = "rad_seven";
+	private final String KEY_WIND_TEN = "rad_ten";
+	private final String KEY_CENTER_LATITUDE = "c_lat";
+	private final String KEY_CENTER_LONGITUDE = "c_log";
+	private final String KEY_WARNING_POSITIONS = "position_list";
+	private final String KEY_USER_POSITIONS = "user_list";
+	private final String KEY_MANAGER_POSITIONS = "manager_list";
+	private final String KEY_LATITUDE = "lat";
+	private final String KEY_LONGITUDE = "log";
+	private final String KEY_IS_AUTH = "is_auth";
+	private final String KEY_AREA_NAME = "area_name";
+	
+	/** 精准定点服务列表 */
+	public List<LocationWarningInfo> accurateList = new ArrayList<LocationWarningInfo>();
+	
+	public String auth = "";
+	
+	/** 未鉴权 */
+	public static final String UNAUTH = "0";
+	/** 已鉴权 */
+	public static final String AUTHED = "1";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		auth = "";
+		accurateList.clear();
+		
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		
+		try {
+			JSONObject object = new JSONObject(jsonStr);
+			auth = object.getString(KEY_IS_AUTH);
+			JSONArray warnArray = object.getJSONArray(KEY_DATA);
+			JSONObject warnObject;
+			for (int i = 0; i < warnArray.length(); i++) {
+				warnObject = warnArray.getJSONObject(i);
+				accurateList.add(getInfo(warnObject));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	/**
+	 * 解析定点服务信息
+	 */
+	private LocationWarningInfo getInfo(JSONObject object) {
+		try {
+			LocationWarningInfo info = new LocationWarningInfo();
+			info.name = object.getString(KEY_NAME);
+			info.expiryDate = object.getString(KEY_EXPIRY_DATE);
+			info.content = object.getString(KEY_CONTENT);
+			String wind = object.getString(KEY_WIND_SEVEN);
+			if(TextUtils.isEmpty(wind)) {
+				info.windSeven = 0;
+			} else {
+				info.windSeven = Integer.valueOf(wind);
+			}
+			wind = object.getString(KEY_WIND_TEN);
+			if(TextUtils.isEmpty(wind)) {
+				info.windTen = 0;
+			} else {
+				info.windTen = Integer.valueOf(wind);
+			}
+			String center = object.getString(KEY_CENTER_LATITUDE);
+			if(TextUtils.isEmpty(center)) {
+				info.latitude = 0;
+			} else {
+				info.latitude = Double.valueOf(center);
+			}
+			center = object.getString(KEY_CENTER_LONGITUDE);
+			if(TextUtils.isEmpty(center)) {
+				info.longitude = 0;
+			} else {
+				info.longitude = Double.valueOf(center);
+			}
+			
+			JSONArray positionArray = object.getJSONArray(KEY_WARNING_POSITIONS);
+			List<MyPosition> list = getPositions(positionArray);
+			if(list != null) {
+				info.warningPositions.addAll(list);
+			}
+			
+			positionArray = object.getJSONArray(KEY_USER_POSITIONS);
+			list = getPositions(positionArray);
+			if(list != null) {
+				info.userPositions.addAll(list);
+			}
+			
+			positionArray = object.getJSONArray(KEY_MANAGER_POSITIONS);
+			list = getPositions(positionArray);
+			if(list != null) {
+				info.managerPositions.addAll(list);
+			}
+			return info;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取坐标
+	 * @param array
+	 * @return
+	 */
+	private List<MyPosition> getPositions(JSONArray array) {
+		if(array == null) {
+			return null;
+		}
+		
+		try {
+			JSONObject object;
+			MyPosition positon = null;
+			List<MyPosition> list = new ArrayList<MyPosition>();
+			for (int i = 0; i < array.length(); i++) {
+				object = array.getJSONObject(i);
+				positon = new MyPosition();
+				positon.latitude = object.getDouble(KEY_LATITUDE);
+				positon.longitude = object.getDouble(KEY_LONGITUDE);
+				positon.name = object.getString(KEY_AREA_NAME);
+				list.add(positon);
+			}
+			return list;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+}

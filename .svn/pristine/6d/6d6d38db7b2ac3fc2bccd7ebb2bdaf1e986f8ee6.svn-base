@@ -1,0 +1,79 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 下载包：定点服务--预警类型
+ * @author E.Sun
+ * 2015年11月3日
+ */
+public class PackWarningTypeDown extends PcsPackDown {
+
+	private final String KEY_WARNING_TYPE_LIST = "warn_position_type_list";
+	private final String KEY_ID = "id";
+	private final String KEY_NAME = "name";
+	
+	/** 预警类型列表 */
+	private List<WarningTypeInfo> infoList = new ArrayList<WarningTypeInfo>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		infoList.clear();
+		
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray array = obj.getJSONArray(KEY_WARNING_TYPE_LIST);
+			JSONObject object;
+			for(int i = 0; i < array.length(); i++) {
+				object = array.getJSONObject(i);
+				infoList.add(getTypeInfo(object));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	/**
+	 * 解析预警类型信息
+	 * @param object
+	 * @return
+	 */
+	private WarningTypeInfo getTypeInfo(JSONObject object) {
+		WarningTypeInfo info = new WarningTypeInfo();
+		try {
+			info.id = object.getString(KEY_ID);
+			info.name = object.getString(KEY_NAME);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return info;
+	}
+	
+	/**
+	 * 获取预警类型列表
+	 * @return
+	 */
+	public List<WarningTypeInfo> getTypeInfoList() {
+		return infoList;
+	}
+
+}

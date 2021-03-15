@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/icon_item_city"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/defaulticon"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:adjustViewBounds="true"
+                android:scaleType="center"
+                android:src="@drawable/icon_citylistmanager_defaultcity"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/img_location"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:adjustViewBounds="true"
+                android:scaleType="center"
+                android:src="@drawable/icon_citylistmanager_icurrectcity"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/deletecity"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:adjustViewBounds="true"
+                android:focusable="false"
+                android:src="@drawable/icon_citylistmanager_delete"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/cityname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="50dp"
+                android:singleLine="true"
+                android:text="@string/fuzhou"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="5dp">
+
+                <ImageView
+                    android:id="@+id/weathericon"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/weathertemperaturenum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:singleLine="true"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content"
+                android:visibility="gone"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

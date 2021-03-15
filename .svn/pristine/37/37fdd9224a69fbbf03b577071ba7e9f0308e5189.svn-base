@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackAirTrendDown extends PcsPackDown {
+
+
+    public List<AirMapBean> skList = new ArrayList<>();
+
+    public String station_name;
+    public String update_time;
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            skList.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            station_name=obj.optString("station_name");
+            update_time=obj.optString("update_time");
+            JSONArray skArray = obj.getJSONArray("data_list");
+            for(int i = 0; i < skArray.length(); i++) {
+                JSONObject temp = skArray.getJSONObject(i);
+                AirMapBean bean = new AirMapBean();
+                bean.time = temp.optString("time");
+                bean.val = temp.optString("val");
+                skList.add(bean);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 风雨查询走势图对象
+     */
+    public class AirMapBean {
+        public String time = "";
+        public String val = "";
+    }
+}

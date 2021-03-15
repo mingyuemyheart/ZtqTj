@@ -1,0 +1,129 @@
+package com.pcs.lib.lib_pcs_v3.control.file;
+
+import android.annotation.TargetApi;
+import android.os.Build;
+import android.os.Environment;
+
+import com.pcs.lib.lib_pcs_v3.PcsInit;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 默认值
+ * 
+ * @author JiangZY
+ * 
+ */
+@TargetApi(Build.VERSION_CODES.GINGERBREAD)
+public class PcsGetPathValue {
+	private static PcsGetPathValue instance = null;
+
+	private String PATH_BASE = null;
+
+	public static PcsGetPathValue getInstance() {
+		if (instance == null) {
+			instance = new PcsGetPathValue();
+		}
+
+		return instance;
+	}
+
+	public String getStorage() {
+		if (PATH_BASE == null) {
+			List<String> list = new ArrayList<String>();
+			list.add(Environment.getExternalStorageDirectory() + "/");
+			list.add(Environment.getExternalStorageDirectory() + "0/");
+			list.add(Environment.getExternalStorageDirectory() + "1/");
+			list.add(Environment.getExternalStorageDirectory() + "2/");
+			list.add("/mnt/usb/sdb1/");
+			list.add("/mnt/usb/sda1/");
+			list.add("/mnt/usb/sdc1/");
+			list.add("/mnt/usb/sdd1/");
+			list.add("/sdcard/");
+			list.add("/sdcard0/");
+			list.add("/sdcard1/");
+			list.add("/sdcard2/");
+			list.add("/storage/sdcard/");
+			list.add("/storage/sdcard0/");
+			list.add("/storage/sdcard1/");
+			list.add("/storage/sdcard2/");
+
+			File file = null;
+			for (int i = 0; i < list.size(); i++) {
+				file = new File(list.get(i));
+				if (file.canWrite()) {
+					PATH_BASE = list.get(i);
+					break;
+				}
+			}
+			if (PATH_BASE == null) {
+				for (int i = 0; i < list.size(); i++) {
+					file = new File(list.get(i));
+					if (file.exists()) {
+						PATH_BASE = list.get(i);
+						break;
+					}
+				}
+			}
+
+			PATH_BASE += PcsInit.getInstance().getContext().getPackageName()
+					+ "/";
+		}
+
+		return PATH_BASE;
+	}
+
+	/**
+	 * 获取图片路径
+	 * 
+	 * @return
+	 */
+	public String getImagePath() {
+		return getStorage() + "image/";
+	}
+
+	/**
+	 * 获取APP路径
+	 * 
+	 * @return
+	 */
+	public String getAppPath() {
+		return getStorage() + "app/";
+	}
+
+	/**
+	 * 获取语音路径
+	 * 
+	 * @return
+	 */
+	public String getVoicePath() {
+		return getStorage() + "voice/";
+	}
+
+	/**
+	 * 获取拍照照片的存放路径
+	 * 
+	 * @return
+	 */
+	public String getMyPhotoPath() {
+		return getStorage() + "photo/";
+	}
+
+    /**
+     * 获取
+     * @return
+     */
+	public String getVideoPath() {
+        return getStorage() + "video/";
+    }
+
+    /**
+     * 获取城市数据库路径
+     * @return
+     */
+    public String getCityDBPath() {
+        return getStorage() + "citydb/";
+    }
+}

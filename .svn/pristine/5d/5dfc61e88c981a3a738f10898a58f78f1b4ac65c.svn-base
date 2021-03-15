@@ -1,0 +1,121 @@
+package com.pcs.ztqtj.control.main_weather;
+
+import android.app.Activity;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.pcs.lib.lib_pcs_v3.control.tool.Util;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown.HourForecast;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.hour_forecast.AdapterXMForecast;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.view.activity.ActivityMain;
+import com.pcs.ztqtj.view.myview.MyGridView;
+import com.pcs.ztqtj.view.myview.MyHScrollView;
+import com.pcs.ztqtj.view.myview.OceanHour24View;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2019/03/21.
+ */
+public class CommandMain24HoursWeather extends CommandMainBase {
+
+    private Activity activity;
+    private ViewGroup rootLayout;
+    private View rowView;
+    private ImageFetcher imageFetcher;
+    private MyGridView gridview24hour;
+    private AdapterXMForecast adapter;
+    private OceanHour24View hour24View;
+    private MyHScrollView scrollView;
+    private TextView tvNodata;
+    private List<HourForecast> forecastList = new ArrayList<>();
+    private View layoutWeather;
+
+    public CommandMain24HoursWeather(Activity activity , ViewGroup rootLayout) {
+        this.activity = activity;
+        this.rootLayout = rootLayout;
+        if(activity instanceof ActivityMain) {
+            imageFetcher = ((ActivityMain) activity).getImageFetcher();
+        }
+    }
+
+    @Override
+    protected void init() {
+        rowView = LayoutInflater.from(activity).inflate(R.layout.layout_main_24hours_weather, rootLayout, false);
+        rootLayout.addView(rowView);
+        gridview24hour = (MyGridView) rowView.findViewById(R.id.gridview24hour);
+        adapter = new AdapterXMForecast(forecastList);
+        gridview24hour.setAdapter(adapter);
+        scrollView = (MyHScrollView) rowView.findViewById(R.id.layout_24house);
+        hour24View = (OceanHour24View) rowView.findViewById(R.id.main24hour);
+        hour24View.setParentScrollView(scrollView);
+        tvNodata = (TextView) rowView.findViewById(R.id.tv_nodata);
+        layoutWeather = rowView.findViewById(R.id.weather_view);
+    }
+
+    @Override
+    protected void refresh() {
+        requestForecast();
+    }
+
+    private void requestForecast() {
+        PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if(city == null) return;
+        //24小时
+        PackHourForecastUp packHourUp = new PackHourForecastUp();
+        packHourUp.county_id = city.ID;
+        PackHourForecastDown down = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packHourUp.getName());
+        if(down != null && down.list != null && down.list.size() > 0) {
+            List<Float> mTopTemp = new ArrayList<>();
+            List<Float> mLowRain = new ArrayList<>();
+            List<HourForecast> list = down.list;
+            int size = list.size();
+            for (int i = 0; i < list.size(); i++) {
+                if (i > 36) {
+                    break;
+                }
+                String rain = list.get(i).rainfall;
+                String temp = list.get(i).temperature;
+                if (!TextUtils.isEmpty(temp)) {
+                    mTopTemp.add(Float.parseFloat(temp));
+                } else {
+                    continue;
+                }
+                if (!TextUtils.isEmpty(rain)) {
+                    mLowRain.add(Float.parseFloat(rain));
+                } else {
+                    mLowRain.add(0f);
+                }
+            }
+            int width = Util.dp2px(60) * size;
+
+            gridview24hour.setNumColumns(size);
+            gridview24hour.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams gradviewParams = gridview24hour.getLayoutParams();
+            gradviewParams.width = width;
+            gridview24hour.setLayoutParams(gradviewParams);
+            forecastList.clear();
+            forecastList.addAll(list);
+            adapter.notifyDataSetChanged();
+            hour24View.setData(forecastList, imageFetcher);
+            //tvNodata.setVisibility(View.INVISIBLE);
+            //layoutWeather.setVisibility(View.VISIBLE);
+            rowView.setVisibility(View.VISIBLE);
+        } else {
+            rowView.setVisibility(View.GONE);
+            //tvNodata.setVisibility(View.VISIBLE);
+            //layoutWeather.setVisibility(View.INVISIBLE);
+        }
+    }
+}

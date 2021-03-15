@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 修改密码上传包
+ * Created by tyaathome on 2016/9/12.
+ */
+public class PackPhotoUserChangePasswordUp extends PcsPackUp {
+
+    public static final String NAME = "syn_pwd_update";
+
+    public String user_id = "";
+    public String mobile = "";
+    public String o_pwd = "";
+    public String n_pwd = "";
+
+    public PackPhotoUserChangePasswordUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("user_id", user_id);
+            obj.put("mobile", mobile);
+            obj.put("o_pwd", o_pwd);
+            obj.put("n_pwd", n_pwd);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

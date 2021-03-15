@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+    >
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#19FFFFFF"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:text="逐时预报"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"
+        android:layout_marginLeft="5dp"
+        android:gravity="center_vertical"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#19FFFFFF"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height24hourall">
+
+        <RelativeLayout
+            android:id="@+id/weather_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.pcs.ztqtj.view.myview.MyHScrollView
+                android:id="@+id/layout_24house"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.pcs.ztqtj.view.myview.MyGridView
+                        android:id="@+id/gridview24hour"
+                        android:layout_width="1200dp"
+                        android:layout_height="wrap_content"
+                        android:listSelector="@android:color/transparent"/>
+
+                </RelativeLayout>
+            </com.pcs.ztqtj.view.myview.MyHScrollView>
+
+            <com.pcs.ztqtj.view.myview.OceanHour24View
+                android:id="@+id/main24hour"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/hight24hour"
+                android:layout_marginTop="@dimen/hight24tophightXM"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_nodata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="暂无数据"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+</LinearLayout>

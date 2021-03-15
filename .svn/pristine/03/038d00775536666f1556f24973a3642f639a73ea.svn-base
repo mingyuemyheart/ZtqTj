@@ -1,0 +1,20 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.MyPosition;
+
+/**
+ * 区域范围信息
+ * @author E.Sun
+ * 2015年9月30日
+ */
+public class AreaPositionInfo {
+	
+	/** 区域经纬度分组编号 */
+	public String id = "";
+	
+	/** 区域经纬度集合 */
+	public List<MyPosition> positionList = new ArrayList<MyPosition>();
+}

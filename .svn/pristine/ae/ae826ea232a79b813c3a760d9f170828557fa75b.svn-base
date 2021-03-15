@@ -1,0 +1,86 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 气象服务用户
+ *
+ * @author chenjh
+ */
+public class PackLocalUser extends PcsPackLocal {
+
+    public static String KEY = "PackLocalUser";
+
+    /**
+     * 用户编号
+     **/
+    public String user_id = "";
+    /**
+     * 用户手机号码,登录名
+     **/
+    public String mobile = "";
+    /**
+     * 用户昵称
+     **/
+    public String nick_name = "";
+    /**
+     * 用户密码
+     **/
+    public String pwd = "";
+    /**
+     * 机身编码
+     **/
+    public String imei = "";
+    /**
+     * 手机型号
+     **/
+    public String mobile_type = "";
+    public String sys_user_id;
+    public String sys_nick_name;
+    public String sys_head_url;
+    public String type;
+
+    public boolean is_jc = false;
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            user_id = obj.getString("user_id");
+            mobile = obj.getString("mobile");
+            nick_name = obj.getString("nick_name");
+            pwd = obj.getString("pwd");
+            imei = obj.getString("imei");
+            mobile_type = obj.getString("mobile_type");
+            sys_user_id = obj.optString("sys_user_id");
+            sys_nick_name = obj.optString("sys_nick_name");
+            sys_head_url = obj.optString("sys_head_url");
+            type = obj.optString("type");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put(user_id, "user_id");
+            obj.put(mobile, "mobile");
+            obj.put(nick_name, "nick_name");
+            obj.put(pwd, "pwd");
+            obj.put(imei, "imei");
+            obj.put(mobile_type, "mobile_type");
+            obj.put(sys_user_id, "sys_user_id");
+            obj.put(sys_nick_name, "sys_nick_name");
+            obj.put(sys_head_url, "sys_head_url");
+            obj.put(type, "type");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+}

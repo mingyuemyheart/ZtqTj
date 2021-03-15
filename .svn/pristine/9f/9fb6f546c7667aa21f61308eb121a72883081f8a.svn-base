@@ -1,0 +1,150 @@
+package com.pcs.lib.lib_pcs_v3.model.db;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.pcs.lib.lib_pcs_v3.PcsInit;
+import com.pcs.lib.lib_pcs_v3.control.log.Log;
+
+public class SqliteUtil {
+    private static SqliteUtil sqlHolder;
+
+    private static Object mLock = new Object();
+
+    private SqliteUtil() {
+
+    }
+
+    public static SqliteUtil getInstance() {
+        synchronized (mLock) {
+            if (sqlHolder == null) {
+                sqlHolder = new SqliteUtil();
+            }
+            return sqlHolder;
+        }
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param pcs_key
+     * @param pcs_value
+     */
+    private void insertTable(SQLiteDatabase db, String pcs_key, String pcs_value) {
+        String sql = "INSERT INTO " + TableZTQ.TABLE_NAME + " ( "
+                + TableZTQ.PCSKEY + " , " + TableZTQ.PCSVALUE
+                + " ) VALUES ( ? , ? );";
+        Object args[] = new Object[]{pcs_key, pcs_value}; // 设置参数
+        db.execSQL(sql, args);
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param pcs_key
+     * @param pcs_value
+     */
+    private void updateTable(SQLiteDatabase db, String pcs_key, String pcs_value) {
+        String update = "UPDATE " + TableZTQ.TABLE_NAME + " set " + TableZTQ.PCSVALUE + " =?" + " where " + TableZTQ.PCSKEY + "=?";
+        Object args[] = new Object[]{pcs_value, pcs_key}; // 设置参数
+        db.execSQL(update, args);
+    }
+
+    /**
+     * 查询数据
+     *
+     * @param pcs_key
+     * @return
+     */
+    public String getInfo(String pcs_key) {
+        String sql = "SELECT * FROM " + TableZTQ.TABLE_NAME + " where "
+                + TableZTQ.PCSKEY + " ='" + pcs_key + "'";
+        SQLiteDatabase db = null;
+        try {
+            Context context = PcsInit.getInstance().getContext();
+            if(context == null) {
+                Log.e("jzy", "context == null");
+            }
+            db = DBHelper.getInstance(context).getReadableDatabase();
+            if (db == null || !db.isOpen()) {
+                return null;
+            }
+            Cursor result = db.rawQuery(sql, null);
+            if (result.getCount() > 0) {
+                result.moveToFirst();
+                String str = result.getString(result
+                        .getColumnIndex(TableZTQ.PCSVALUE));
+                return str;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 查询数据
+     *
+     * @param pcs_key
+     * @return cursor
+     */
+    private Cursor select_info(SQLiteDatabase db, String pcs_key) {
+        String sql = "SELECT * FROM " + TableZTQ.TABLE_NAME + " where "
+                + TableZTQ.PCSKEY + " ='" + pcs_key + "'";
+        Cursor result = db.rawQuery(sql, null);
+        return result;
+    }
+
+    /**
+     * 删除指定表中的指定列
+     */
+    public void deleteData(String pcs_key) {
+        SQLiteDatabase db = null;
+        try {
+            Context context = PcsInit.getInstance().getContext();
+            db = DBHelper.getInstance(context).getReadableDatabase();
+            String delete = "delete from " + TableZTQ.TABLE_NAME + " where "
+                    + TableZTQ.PCSKEY + " ='" + pcs_key + "'";
+            db.execSQL(delete);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+    }
+
+    /**
+     * 插入数据
+     *
+     * @param pcs_key
+     * @param pcs_value
+     */
+    public void setInfo(SQLiteDatabase db, String pcs_key, String pcs_value) {
+        if (db == null || !db.isOpen()) {
+            return;
+        }
+        // 查询是否存在值，存在这更新
+        int count = 0;
+        Cursor cursor = select_info(db, pcs_key);
+        if (cursor == null) {
+            insertTable(db, pcs_key, pcs_value);
+            return;
+        }
+        count = cursor.getCount();
+        cursor.close();
+        if (count > 0) {
+            updateTable(db, pcs_key, pcs_value);
+        } else {
+            insertTable(db, pcs_key, pcs_value);
+        }
+        // db.setTransactionSuccessful();
+        // db.endTransaction();
+    }
+}

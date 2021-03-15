@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.pub;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 下载包-查询用户属性
+ * @author Chensq
+ * 2015年9月24日
+ */
+public class PackPropertyDown extends PcsPackDown {
+	public String value = "";
+	public String key="";
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			value = obj.getString("value");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

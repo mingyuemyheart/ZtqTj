@@ -1,0 +1,75 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 气象影视 所有栏目列表及影视数据
+ * 
+ * @author Z
+ */
+public class PackHealthQxLmDown extends PcsPackDown {
+	public List<HealthType> healthQxType = new ArrayList<>();
+    public String intro = "";
+    public String time_pub = "";
+	@Override
+	public void fillData(String jsonStr) {
+        healthQxType.clear();
+		JSONObject temp;
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("column_list");
+            intro=temp.optString("intro");
+            time_pub=temp.optString("time_pub");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject mediaParentItem = arr.getJSONObject(i);
+                HealthType bean = new HealthType();
+				bean.name = mediaParentItem.getString("name");
+				bean.type = mediaParentItem.getString("type");
+				bean.img_url=mediaParentItem.getString("ioc");
+                JSONArray arrs = mediaParentItem.getJSONArray("info_list");
+                for (int j=0;j<arrs.length();j++){
+                    JSONObject Item = arrs.getJSONObject(j);
+                    HealthTime beans = new HealthTime();
+                    beans.action_time = Item.getString("action_time");
+                    beans.health_level = Item.getString("health_level");
+                    bean.healthQxTime.add(beans);
+                }
+                healthQxType.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class HealthType {
+		public String name = "";
+		public String type = "";
+        public String img_url="";
+        public List<HealthTime> healthQxTime = new ArrayList<>();
+	}
+
+	public class HealthTime{
+        public String action_time = "";
+        public String health_level = "";
+    }
+
+}

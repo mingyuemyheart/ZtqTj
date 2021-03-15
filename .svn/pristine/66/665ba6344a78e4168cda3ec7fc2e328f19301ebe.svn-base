@@ -1,0 +1,64 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.satellite;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 卫星云图
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackSatelliteDown extends PcsPackDown {
+
+	public List<Satellite> satelliteList = new ArrayList<Satellite>();
+
+    @Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			satelliteList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("imgList");
+
+			for (int i = 0; i < arr.length(); i++) {
+				Satellite satellite = new Satellite();
+				JSONObject airJson = arr.getJSONObject(i);
+				satellite.url = airJson.getString("url");
+				satellite.time = airJson.getString("time");
+
+				satelliteList.add(satellite);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+	public class Satellite {
+
+		/**
+		 * 图片地址
+		 */
+		public String url = "";
+		/**
+		 * 时间
+		 */
+		public String time = "";
+
+	}
+}

@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 风况站点信息（ fjfx_wind）
+ * 
+ * @author chenjh
+ */
+public class PackWindInfoDown extends PcsPackDown {
+
+	public List<WindInfo> windList = new ArrayList<WindInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			windList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+
+			for (int i = 0; i < arr.length(); i++) {
+				WindInfo info = new WindInfo();
+
+				JSONObject dataJson = arr.getJSONObject(i);
+				info.stationname = dataJson.getString("stationname");
+				info.time = dataJson.getString("time");
+				info.winddirect = dataJson.getString("winddirect");
+				info.windangle = dataJson.getString("windangle");
+				info.windpower = dataJson.getString("windpower");
+				info.windspeed = dataJson.getString("windspeed");
+				info.latitude = dataJson.getString("latitude");
+				info.longitude = dataJson.getString("longitude");
+
+				windList.add(info);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+}

@@ -1,0 +1,143 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+
+/**
+ * @author Z
+ *气象服务我的服务
+ */
+public class PackQxfuMyproV2Down extends PcsPackDown {
+	/**授权说明*/
+	public boolean auth_pass;
+	/**行业服务列表*/
+	public List<ClassList> classList;
+	
+	@Override
+	public void fillData(String jsonStr) {
+		classList=new ArrayList<PackQxfuMyproV2Down.ClassList>();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			auth_pass = obj.getBoolean("auth_pass");
+			JSONArray channelsArray=obj.getJSONArray("channels");
+			for (int i = 0; i < channelsArray.length(); i++) {
+				ClassList listBean=new ClassList();
+				JSONObject objOne=channelsArray.getJSONObject(i);
+				listBean.channel_name=objOne.getString("channel_name");
+				listBean.channel_id=objOne.getString("channel_id");
+				listBean.channels=new ArrayList<PackQxfuMyproV2Down.SubClassList>();
+				
+				JSONArray subChannel=objOne.getJSONArray("children");
+				for (int j = 0; j < subChannel.length(); j++) {
+					JSONObject objTwo=subChannel.getJSONObject(j);
+					SubClassList channels=new SubClassList();
+					channels.org_name=objTwo.optString("org_name");
+					channels.org_id=objTwo.optString("org_id");
+					channels.channel_name=objTwo.optString("channel_name");
+					channels.channel_id=objTwo.optString("channel_id");
+					channels.pro_list=new ArrayList<PackQxfuMyproV2Down.DesServer>();
+					
+					JSONArray desServer=objTwo.getJSONArray("pro_list");
+					for (int k = 0; k < desServer.length(); k++) {
+						JSONObject objDes=desServer.getJSONObject(k);
+						DesServer des=new DesServer();
+						des.html_url=objDes.optString("html_url");
+						des.title=objDes.optString("title");
+						des.create_time=objDes.optString("create_time");
+						des.type=objDes.optString("type");
+						des.id=objDes.optString("id");
+						des.style = objDes.optString("style");
+						channels.pro_list.add(des);
+					}
+					listBean.channels.add(channels);
+				}
+				classList.add(listBean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	/**一级栏目列表*/
+	public class ClassList{
+		public String channel_name;
+		public String channel_id;
+		public List<SubClassList> channels;
+	}
+/**	子栏目列表*/	
+	public class SubClassList {
+		public String org_name;
+		public String org_id;
+		public String channel_name;
+		public String channel_id;
+		public List<DesServer> pro_list;
+	}
+	
+	/**详细信息*/	
+	public class DesServer{
+		public String html_url;
+		public String title;
+		public String create_time;
+		public String type;
+		public String id;
+		public String style;
+	}
+	
+//	{
+//		  "h" : {
+//		    "is" : 0,
+//		    "error" : ""
+//		  },
+//		  "b" : {
+//		"qxfw_mypro_v2" : {
+//		  "auth_pass" : "true",
+//		      "channels" : [ {
+//		        "channel_name" : "行业气象服务",
+//		        "children" : [ {
+//		          "org_name" : "福建省气象服务中心",
+//		          "org_id" : "201412021007016",
+//		          "channel_name" : "交通气象",
+//		          "pro_list" : [ {
+//		"id" : "1",
+//		            "html_url" : "http://218.85.78.125:8099/ftp/fw/2015-03-13/20150313_092433646_1822.html",
+//		            "title" : "福建省高速公路综合预警预报2015022816",
+//		            "create_time" : "2015年02月28日 16:45",
+//		            "type" : "1"
+//		          }, {
+//		"id" : "1",
+//		            "html_url" : "http://218.85.78.125:8099/ftp/fw/2015-03-09/20150309_144027096_1119.html",
+//		            "title" : "福建省高速公路综合预警预报2015022808",
+//		            "create_time" : "2015年02月28日 09:27",
+//		            "type" : "1"
+//		          }, {
+//		"id" : "1",
+//		            "html_url" : "http://218.85.78.125:8099/ftp/fw/2015-02-27/20150227_163645899_1455.html",
+//		            "title" : "福建省高速公路综合预警预报2015022716",
+//		            "create_time" : "2015年02月27日 16:36",
+//		            "type" : "1"
+//		          } ],
+//		          "channel_id" : "201412081019051"
+//		        } ],
+//		        "channel_id" : "2"
+//		      } ]
+//		    }
+//		  },
+//		  "e" : {
+//		  }
+//		}
+}

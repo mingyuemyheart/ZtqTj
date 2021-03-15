@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 自动站风况统计表（fltj_zd）
+ */
+public class PackFltjHourUp extends PcsPackUp {
+
+    public static final String NAME = "fltj_hour";
+
+	public String province = "";
+	public String county = "";
+	public String falg="";
+    public String city = "";
+    public boolean is_jc = false;
+
+	public PackFltjHourUp(){
+		intervalMill=0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("province", province);
+			obj.put("county", county);
+			obj.put("falg", falg);
+            obj.put("city", city);
+            if(is_jc) {
+                obj.put("user_type", "0");
+            } else {
+                obj.put("user_type", "1");
+            }
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + county + falg+province;
+	}
+}

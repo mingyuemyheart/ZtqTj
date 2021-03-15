@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown.RainFallRank;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 雨量查询—福建省内近1、3小时最大雨量排行
+ */
+public class PackYltj_1_3Down extends PcsPackDown {
+	public List<RainFallRank> dataList = new ArrayList<RainFallRank>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			dataList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr1 = temp.getJSONArray("hour_one_list");
+			PackYltjRankDown down = new PackYltjRankDown();
+			for (int i = 0; i < arr1.length(); i++) {
+				RainFallRank info = down.new RainFallRank();
+				JSONObject rainfallJson = arr1.getJSONObject(i);
+				info.time = rainfallJson.getString("time");
+				info.rainfall = rainfallJson.getString("rainfall");
+				info.area_name = rainfallJson.getString("area_name");
+				info.isThreeTime = false;
+				dataList.add(info);
+			}
+			JSONArray arr3 = temp.getJSONArray("hour_thr_list");
+			for (int i = 0; i < arr3.length(); i++) {
+				RainFallRank info = down.new RainFallRank();
+				JSONObject rainfallJson = arr3.getJSONObject(i);
+				info.time = rainfallJson.getString("time");
+				info.rainfall = rainfallJson.getString("rainfall");
+				info.area_name = rainfallJson.getString("area_name");
+				info.isThreeTime = true;
+				dataList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+}

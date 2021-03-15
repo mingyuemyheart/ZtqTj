@@ -1,0 +1,60 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 本市自动站低温统计表（wdtj_city_low）前6
+ */
+public class PackRainstatNewDown extends PcsPackDown {
+    public List<ItemRainNow> dataList = new ArrayList<ItemRainNow>();
+    public List<ItemRainNow> baseList = new ArrayList<ItemRainNow>();
+
+    public String time_str;
+
+    @Override
+    public void fillData(String jsonStr) {
+        dataList.clear();
+        baseList.clear();
+
+        try {
+            JSONObject temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            time_str = temp.optString("time_str");
+
+            JSONArray arr = temp.getJSONArray("datalist");
+
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                ItemRainNow imgobject = new ItemRainNow();
+                imgobject.rainfall = obj.getString("rainfall");
+                imgobject.stat_name = obj.getString("stat_name");
+                imgobject.maxRain=obj.optString("rain_max");
+//                imgobject.time =  imgobject.maxRain+"mm"+"\n"+obj.getString("time");
+                dataList.add(imgobject);
+            }
+            JSONArray arrC = temp.getJSONArray("baselist");
+
+            for (int i = 0; i < arrC.length(); i++) {
+                JSONObject obj = arrC.getJSONObject(i);
+                ItemRainNow imgobject = new ItemRainNow();
+                imgobject.rainfall = obj.getString("rainfall");
+                imgobject.stat_name = obj.getString("stat_name");
+                imgobject.maxRain=obj.optString("rain_max");
+//                imgobject.time =  imgobject.maxRain+"mm"+"\n"+obj.getString("time");
+                baseList.add(imgobject);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}

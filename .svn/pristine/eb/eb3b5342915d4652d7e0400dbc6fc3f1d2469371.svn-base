@@ -1,0 +1,23 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import java.io.Serializable;
+
+/**
+ * Created by tyaathome on 2016/6/6.
+ */
+public class WarnCenterYJXXGridBean implements Serializable {
+    /**
+     *
+     */
+    public String id = "";
+
+    /**
+     * 信息图标
+     */
+    public String ico = "";
+
+    public String level = "";
+
+    public String put_str = "";
+    public String put_time="";
+}

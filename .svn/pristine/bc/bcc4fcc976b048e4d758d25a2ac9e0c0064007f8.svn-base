@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 气象服务-登录查看下载包
+ * Created by tyaathome on 2016/8/24.
+ */
+public class PackServiceLoginQueryDown extends PcsPackDown {
+
+    public String status = "";
+    public String pid = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            status = obj.getString("status");
+            pid = obj.getString("pid");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,0 +1,50 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 空气质量排行
+ */
+public class PackKeyDescDown extends PcsPackDown {
+    public List<DicListBean> dicList;
+
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject temp;
+        try {
+            dicList = new ArrayList<PackKeyDescDown.DicListBean>();
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            JSONArray arrdic = temp.getJSONArray("dicList");
+            for (int i = 0; i < arrdic.length(); i++) {
+                DicListBean bean = new DicListBean();
+                JSONObject airJson = arrdic.getJSONObject(i);
+                bean.des = airJson.getString("des");
+                bean.name = airJson.getString("name");
+                bean.questions = airJson.getString("questions");
+                bean.rankType = airJson.getString("rankType");
+                bean.sx = airJson.getString("sx");
+                dicList.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public class DicListBean {
+        public String des;
+        public String name;//空气质量指数
+        public String questions;//什么是空气质量指数（AQI）
+        public String rankType;//
+        public String sx;//
+    }
+
+}

@@ -1,0 +1,30 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+/**
+ * 热门应用对象
+ * @author tya
+ *
+ */
+public class HotAppInfo {
+	
+	/**
+	 * 应用名称
+	 */
+	public String name = "";
+	
+	/**
+	 * 应用图标
+	 */
+	public String ico = "";
+	
+	/**
+	 * 应用地址
+	 */
+	public String url = "";
+	
+	/**
+	 * 应用包名
+	 */
+	public String package_name = "";
+
+}

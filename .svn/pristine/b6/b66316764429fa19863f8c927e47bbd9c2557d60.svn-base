@@ -1,0 +1,113 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 实景登陆
+ *
+ * @author JiangZy
+ */
+public class PackPhotoLoginDown extends PcsPackLocal {
+    /**
+     * 知天气平台用户
+     */
+    public String user_id;
+    /**
+     * 返回结果标志
+     */
+    public String result;
+    /**
+     * 平台类型  1:新浪  2:QQ 3.微信  4.本地
+     */
+    public String platform_type;
+    /**
+     * 用户昵称
+     */
+    public String nick_name;
+    /**
+     * 头像地址
+     */
+    public String head_url;
+    /**
+     * 返回说明
+     */
+    public String result_msg;
+
+
+    public String mobile;
+
+    public String fw_user_id;
+
+    public String fw_nick_name;
+
+    public boolean is_jc = false;
+    /**
+     * 登陆平台：新浪
+     */
+    public static final String PLATFORM_SINA = "1";
+    /**
+     * 登陆平台：QQ
+     */
+    public static final String PLATFORM_QQ = "2";
+    /**
+     * 登陆平台：微信
+     */
+    public static final String PLATFORM_WEIXIN = "3";
+    /**
+     * 登陆平台：知天气
+     */
+    public static final String PLATFORM_ZTQ = "4";
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            head_url = obj.optString("head_url");
+            nick_name = obj.optString("nick_name");
+            result = obj.optString("result");
+            result_msg = obj.optString("result_msg");
+            platform_type = obj.optString("platform_type");
+            user_id = obj.optString("user_id");
+            mobile = obj.optString("mobile");
+            fw_user_id=obj.optString("fw_user_id");
+            fw_nick_name=obj.optString("fw_nick_name");
+            String jc = obj.optString("is_jc");
+            is_jc = jc.equals("0");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("updateMill", updateMill);
+            obj.put("head_url", head_url);
+            obj.put("nick_name", nick_name);
+            obj.put("result", result);
+            obj.put("result_msg", result_msg);
+            obj.put("platform_type", platform_type);
+            obj.put("user_id", user_id);
+            obj.put("mobile", mobile);
+            obj.put("fw_user_id",fw_user_id);
+            obj.put("fw_nick_name",fw_nick_name);
+            obj.put("is_jc", is_jc);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj.toString();
+    }
+}

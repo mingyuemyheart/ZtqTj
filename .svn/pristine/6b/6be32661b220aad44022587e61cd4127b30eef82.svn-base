@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.order;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 下载包：新增（修改）订单
+ * @author E.Sun
+ * 2015年11月10日
+ */
+public class PackSetOrderDown extends PcsPackDown {
+
+	private final String KEY_ORDER_ID = "order_id";
+	private final String KEY_RESULT = "result";
+	
+	public String orderID = "";
+	public String result = "";
+	
+	/** 提交订单结果：成功 */
+	public static final String RESULT_SUCCEED = "1";
+	/** 提交订单结果：失败 */
+	public static final String RESULT_FAILED = "-1";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject object = new JSONObject(jsonStr);
+			orderID = object.getString(KEY_ORDER_ID);
+			result = object.getString(KEY_RESULT);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

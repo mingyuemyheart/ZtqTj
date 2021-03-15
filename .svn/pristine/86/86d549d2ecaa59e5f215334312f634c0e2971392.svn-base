@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 高温查询—自动站当前实况或24小时值统计表（wdtj_zdz）
+ */
+public class PackWdtjZdzUp extends PcsPackUp {
+
+    public static final String NAME = "wdtj_zdz";
+
+    public String county = "";
+    public String province = "";
+    public String type = "";
+    public String city = "";
+    public String s_hour = "";
+    public boolean is_jc = false;
+
+    public PackWdtjZdzUp(){
+        intervalMill=0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("province", province);
+            obj.put("county", county);
+            obj.put("type", type);
+            obj.put("city", city);
+            obj.put("s_hour", s_hour);
+            if(is_jc) {
+                obj.put("user_type", "0");
+            } else {
+                obj.put("user_type", "1");
+            }
+            return obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type +"_"+ county + "_"+city +"_"+province + "_" + s_hour;
+    }
+
+}

@@ -1,0 +1,78 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.order;
+
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+
+/**
+ * 请求包：新增（修改）订单
+ * @author E.Sun
+ * 2015年11月7日
+ */
+public class PackSetOrderUp extends PcsPackUp {
+
+	public static final String NAME = "warn_position_order";
+	
+	public String userID = "";
+	public String orderID = "";
+	public String typeID = "";
+	public String productID = "";
+	public String action = "";
+	public List<String> areaIdList;
+	public String sign = "";
+	
+	/** 操作类型：新增 */
+	public static final String ACTION_ADD = "0";
+	/** 操作类型：修改 */
+	public static final String ACTION_UPDATE = "1";
+	
+	public PackSetOrderUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put("user_id", userID);
+			object.put("order_id", orderID);
+			object.put("warn_type_id", typeID);
+			object.put("product_id", productID);
+			object.put("act_type", action);
+			StringBuffer sb = new StringBuffer();
+			sb.append(userID).append("-")
+			.append(PcsDataDownload.getP()).append("-").append(typeID);
+			if(areaIdList == null) {
+				object.put("area_list", "");
+			} else {
+				JSONArray array = new JSONArray();
+				JSONObject obj;
+				for(String areaID : areaIdList) {
+					obj = new JSONObject();
+					obj.put("country_id", areaID);
+					array.put(obj);
+					sb.append("-").append(areaID);
+				}
+				object.put("area_list", array);
+			}
+			sign = PcsMD5.Md5(sb.toString());
+			object.put("sign", sign);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + orderID;
+	}
+
+}

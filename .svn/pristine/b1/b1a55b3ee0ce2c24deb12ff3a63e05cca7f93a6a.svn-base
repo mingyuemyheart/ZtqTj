@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackHotAppDown extends PcsPackDown {
+	
+	public List<HotAppInfo> info = new ArrayList<HotAppInfo>();
+	
+	public PackHotAppDown() {
+		updateMill = 0;
+	}
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			info.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray app_list = obj.getJSONArray("app_list");
+			for(int i = 0; i < app_list.length(); i++) {
+				JSONObject temp = app_list.getJSONObject(i);
+				HotAppInfo hai = new HotAppInfo();
+				hai.name = temp.getString("name");
+				hai.ico = temp.getString("ico");
+				hai.url = temp.getString("url");
+				hai.package_name = temp.getString("package_name");
+				info.add(hai);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

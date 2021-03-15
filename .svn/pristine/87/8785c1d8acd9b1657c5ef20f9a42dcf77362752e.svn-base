@@ -1,0 +1,22 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+/**
+ * Created by tyaathome on 2017/11/1.
+ */
+
+public class WeatherValue {
+
+    public String desc = "";
+    public String value_1 = "";
+    public String value_2 = "";
+
+    public WeatherValue() {
+
+    }
+
+    public WeatherValue(String desc, String value1, String value2) {
+        this.desc = desc;
+        this.value_1 = value1;
+        this.value_2 = value2;
+    }
+}

@@ -1,0 +1,101 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+/**
+ * 空气质量排行(新)
+ * Created by tyaathome on 2017/1/17.
+ */
+
+public class AirRankNew implements Serializable, Parcelable {
+    public String potision="";
+    /**
+     *  省份
+     */
+    public String province = "";
+
+    /**
+     *  城市
+     */
+    public String city = "";
+
+    /**
+     *  数值
+     */
+    public String num = "";
+
+    public String pinyin="";
+    /**
+     *  城市排行
+     */
+    public String ranknum = "";
+
+    /**
+     *  经度
+     */
+    public String lon = "";
+
+    /**
+     *  纬度
+     */
+    public String lat = "";
+
+    /**
+     *  城市ID
+     */
+    public String areaId = "";
+
+    public String map_name = "";
+
+    public String rank_ud = "";
+    public String pub_time = "";
+    //是否是城市（非省份）
+    public boolean isCity=true;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(province);
+        dest.writeString(city);
+        dest.writeString(num);
+        dest.writeString(ranknum);
+        dest.writeString(lon);
+        dest.writeString(lat);
+        dest.writeString(areaId);
+        dest.writeString(map_name);
+        dest.writeString(rank_ud);
+        dest.writeString(pub_time);
+        dest.writeString(potision);
+    }
+
+    public static final Parcelable.Creator<AirRankNew> CREATOR  = new Creator<AirRankNew>() {
+        //实现从source中创建出类的实例的功能
+        @Override
+        public AirRankNew createFromParcel(Parcel source) {
+            AirRankNew parInfo  = new AirRankNew();
+            parInfo.province = source.readString();
+            parInfo.city= source.readString();
+            parInfo.num = source.readString();
+            parInfo.ranknum = source.readString();
+            parInfo.lon= source.readString();
+            parInfo.lat = source.readString();
+            parInfo.areaId = source.readString();
+            parInfo.map_name= source.readString();
+            parInfo.rank_ud = source.readString();
+            parInfo.pub_time = source.readString();
+            return parInfo;
+        }
+        //创建一个类型为T，长度为size的数组
+        @Override
+        public AirRankNew[] newArray(int size) {
+            return new AirRankNew[size];
+        }
+    };
+}

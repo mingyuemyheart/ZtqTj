@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.expert;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 资讯列表
+ *
+ * @author chenjh
+ */
+public class PackExpertDetailTalkDown extends PcsPackDown {
+    public List<ItemTalk> dataList = new ArrayList<ItemTalk>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject temp;
+        try {
+            dataList.clear();
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            JSONArray arr = temp.optJSONArray("info_list");
+            for (int i = 0; i < arr.length(); i++) {
+                ItemTalk title = new ItemTalk();
+                JSONObject airJson = arr.getJSONObject(i);
+                title.nick_name = airJson.getString("nick_name");
+                title.head_url = airJson.getString("head_url");
+                title.content = airJson.getString("content");
+                title.pub_time = airJson.getString("pub_time");
+                dataList.add(title);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class ItemTalk {
+        public String  content;
+        public String   pub_time;
+        public String   nick_name;
+        public String  head_url;
+    }
+
+
+}

@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.week;
+
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+
+import org.json.JSONObject;
+
+/**
+ * Main一周天气
+ */
+public class PackMainWeekWeatherUp extends PackWeekWeatherUp {
+
+    public static final String NAME = "p_new_week";
+
+    @Override
+    public JSONObject toJSONObject() {
+        return super.toJSONObject();
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + area +"_"+ country;
+    }
+
+    @Override
+    public void setCity(PackLocalCity city) {
+        super.setCity(city);
+    }
+}

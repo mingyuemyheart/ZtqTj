@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 空气质量：站点列表
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackAirLevelDown extends PcsPackDown {
+
+	public List<AirLecel> list = new ArrayList<>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		list.clear();
+		JSONObject obj = null;
+		try {
+			obj = new JSONObject(jsonStr);
+			JSONArray arr = obj.getJSONArray("data_list");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject row = arr.getJSONObject(i);
+                AirLecel airLecel = new AirLecel();
+                airLecel.name = row.optString("val");
+                airLecel.type=row.optString("type");
+				list.add(airLecel);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 单个站点
+	 * 
+	 * @author JiangZy
+	 * 
+	 */
+	public static class AirLecel {
+		public String name = "";
+        public String type="";
+	}
+}

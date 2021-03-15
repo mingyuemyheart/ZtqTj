@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 气象服务-地区单位显示
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackServiceOrgDown extends PcsPackDown {
+
+	public List<OrgInfo> orgList = new ArrayList<OrgInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			orgList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+
+			for (int i = 0; i < arr.length(); i++) {
+				OrgInfo info = new OrgInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				info.org_name = airJson.getString("org_name");
+				info.org_id = airJson.getString("org_id");
+				orgList.add(info);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+}

@@ -1,0 +1,50 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * @author Z
+ *         意见反馈上传包
+ */
+public class PackSuggUp extends PcsPackUp {
+
+    public static final String NAME = "sugg";
+
+    public String call_way = "";
+
+    public String msg = "";
+    public String mobile = "";
+    public String user_id = "";
+
+    public String is_bd = "0";
+
+    public PackSuggUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("call_way", call_way);
+            obj.put("user_id", user_id);
+            obj.put("is_bd", is_bd);
+            obj.put("mobile", mobile);
+            obj.put("msg", msg);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+}

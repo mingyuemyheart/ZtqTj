@@ -1,0 +1,25 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.column;
+/**
+ * 栏目列表
+ * 
+ * @author Chensq
+ * 
+ */
+public class ColumnInfo {
+	/** 栏目名称 **/
+	public String name = "";
+	/** 栏目关键类型 **/
+	public String type = "";
+	public String req_url="";
+	public String ioc="";
+
+    public ColumnInfo() {
+        this.name = "";
+        this.type = "";
+    }
+
+    public ColumnInfo(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
+}

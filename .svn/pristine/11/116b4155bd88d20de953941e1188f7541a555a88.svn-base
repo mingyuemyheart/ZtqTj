@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.expert;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 资讯列表
+ *
+ * @author chenjh
+ */
+public class PackExpertDetailDown extends PcsPackDown {
+    public String title;
+    public String  desc;
+    public String  release_time;
+    public String  link;
+    public String  small_img;
+    public String  big_img;
+
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject temp;
+        try {
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            title=temp.optString("title");
+            desc=temp.optString("desc");
+            release_time=temp.optString("release_time");
+            link=temp.optString("link");
+            small_img=temp.optString("small_img");
+            big_img=temp.optString("big_img");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

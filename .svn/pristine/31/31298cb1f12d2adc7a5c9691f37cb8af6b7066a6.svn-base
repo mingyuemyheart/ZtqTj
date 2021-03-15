@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * @author Z
+ *	获取好友推荐内容上传包
+ */
+public class PackgetrecommendfriendsmsgUP extends PcsPackUp {
+
+    public static final String NAME = "getrecommendfriendsmsg";
+
+	@Override
+	public JSONObject toJSONObject() {
+			JSONObject obj = new JSONObject();
+			return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

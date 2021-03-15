@@ -1,0 +1,14 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2017/8/23.
+ */
+
+public class FycxFbtLdBean {
+    public String img_url = "";
+    public String pub_time = "";
+    public List<FycxFbtBean> s_info_list = new ArrayList<>();
+}

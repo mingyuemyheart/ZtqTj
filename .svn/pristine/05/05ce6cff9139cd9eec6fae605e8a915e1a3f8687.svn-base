@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/livequery_bleak2_bg"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_margintop"
+    android:paddingRight="@dimen/activity_margintop"
+    android:paddingTop="@dimen/dimen4">
+
+    <RadioGroup
+        android:id="@+id/lowtemradiogroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop"
+        android:weightSum="7"
+        >
+
+        <RadioButton
+            android:id="@+id/lowtemradiogroupleft"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginRight="50dp"
+            android:layout_weight="3"
+            android:background="@drawable/blue_line"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="@string/daily_lowest"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+
+        <RadioButton
+            android:id="@+id/lowtemradiogroupright"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:background="@drawable/blue_line"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/hour_lowest"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/group_hours"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dimen10"
+        android:layout_marginRight="@dimen/dimen10"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop"
+        android:visibility="gone"
+        >
+
+        <RadioButton
+            android:id="@+id/rb_24h"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/radio_livequery_left"
+            android:button="@null"
+            android:checked="true"
+            android:gravity="center"
+            android:text="近24小时最高"
+            android:textColor="@drawable/text_black_while"
+            android:textSize="15dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_hours"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/radio_livequery_right"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/hour_lowest"
+            android:textColor="@drawable/text_black_while"
+            android:textSize="15dp"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/description_title_search2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_livequerytitle"
+        android:paddingBottom="@dimen/activity_margintop"
+        android:paddingLeft="@dimen/activity_margintop"
+        android:paddingTop="@dimen/activity_margintop"
+        android:text="@string/detail_wind_title1"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"/>
+
+    <ListView
+        android:id="@+id/livequery_auto_min_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:listSelector="@color/alpha100"/>
+
+    <TextView
+        android:id="@+id/description_title_search3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_livequerytitle"
+        android:paddingBottom="@dimen/activity_margintop"
+        android:paddingLeft="@dimen/activity_margintop"
+        android:paddingTop="@dimen/activity_margintop"
+        android:text="@string/detail_wind_title2"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"/>
+
+    <ListView
+        android:id="@+id/livequery_day_min_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:listSelector="@color/alpha100"/>
+</LinearLayout>

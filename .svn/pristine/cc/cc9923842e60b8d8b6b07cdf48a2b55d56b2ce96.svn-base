@@ -1,0 +1,88 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * 设置推送标签
+ * 
+ * @author chenjh
+ * 
+ */
+public class SetPushTagUp extends PcsPackUp {
+
+    public static final String NAME = "setpushtag";
+
+	/** 推送平台的用户标识 信鸽推送返回的设备token 必填 **/
+	public String token = "";
+	/** 标签Map 必填 **/
+	public Map<String, String> params = new HashMap<String, String>();
+
+	public String key = "";
+	public String pushType="";
+    public String isarea="";
+
+    /** 城市列表 **/
+    public List<String> areas = new ArrayList<>();
+
+	public SetPushTagUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+
+			JSONObject tags = new JSONObject();
+			Iterator<String> iter = params.keySet().iterator();
+
+            JSONArray areasJson = new JSONArray();
+
+			while (iter.hasNext()) {
+				String key = iter.next();
+				String value = params.get(key);
+				tags.put(key, value);
+			}
+
+			for(String str : areas) {
+                JSONObject temp = new JSONObject();
+                temp.put("areaid", str);
+                areasJson.put(temp);
+            }
+
+			obj.put("tags", tags);
+			obj.put("token", token);
+            obj.put("areas", areasJson);
+            obj.put("pushType",pushType);
+            obj.put("isarea",isarea);
+
+
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		if (!TextUtils.isEmpty(key)) {
+			return NAME + "#" + key;
+		}
+		return NAME;
+	}
+
+}

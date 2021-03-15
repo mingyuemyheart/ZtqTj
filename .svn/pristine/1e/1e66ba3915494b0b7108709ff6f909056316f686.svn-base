@@ -1,0 +1,99 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 下载包：服务产品
+ * @author E.Sun
+ * 2015年11月9日
+ */
+public class PackProductDown extends PcsPackDown {
+
+	private final String KEY_PRODUCE_LIST = "product_list";
+	private final String KEY_ID = "id";
+	private final String KEY_NAME = "name";
+	private final String KEY_DES = "des";
+	private final String KEY_AMOUNT = "amount";
+	private final String KEY_SET_MEAL_LIST = "set_meal";
+	private final String KEY_SET_MEAL_ID = "month_key";
+	private final String KEY_SET_MEAL_NAME = "month_name";
+	private final String KEY_SET_MEAL_AMOUNT = "total_amount";
+	
+	private List<ProductInfo> productList = new ArrayList<ProductInfo>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		productList.clear();
+		try {
+			JSONArray array = new JSONObject(jsonStr).getJSONArray(KEY_PRODUCE_LIST);
+			JSONObject object;
+			ProductInfo produceInfo;
+			for(int i = 0; i < array.length(); i++) {
+				object = array.getJSONObject(i);
+				produceInfo = new ProductInfo();
+				produceInfo.id = object.getString(KEY_ID);
+				produceInfo.name = object.getString(KEY_NAME);
+				produceInfo.des = object.getString(KEY_DES);
+				produceInfo.amount = object.getDouble(KEY_AMOUNT);
+				produceInfo.setMealList = getSetMealInfos(object.getJSONArray(KEY_SET_MEAL_LIST));
+				productList.add(produceInfo);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	/**
+	 * 获取套餐列表
+	 * @param array
+	 * @return
+	 */
+	private List<ProductSetMealInfo> getSetMealInfos(JSONArray array) {
+		if(array == null) {
+			return null;
+		}
+		List<ProductSetMealInfo> setMealList = new ArrayList<ProductSetMealInfo>();
+		JSONObject obj;
+		ProductSetMealInfo info;
+		try {
+			for(int i = 0; i < array.length(); i++) {
+				obj = array.getJSONObject(i);
+				info = new ProductSetMealInfo();
+				info.id = obj.getString(KEY_SET_MEAL_ID);
+				info.name = obj.getString(KEY_SET_MEAL_NAME);
+				info.amount = obj.getDouble(KEY_SET_MEAL_AMOUNT);
+				setMealList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return setMealList;
+	}
+	
+	/**
+	 * 获取指定位置的预警套餐
+	 * @param location
+	 * @return
+	 */
+	public ProductInfo getProductInfo(int location) {
+		if(location < 0 || location >= productList.size()) {
+			return null;
+		}
+		return productList.get(location);
+	}
+
+}

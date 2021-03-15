@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.agriculture;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 农业气象上传包
+ * Created by tyaathome on 2016/11/14.
+ */
+public class PackAgricultureUp extends PcsPackUp {
+
+    public static final String NAME = "nyqx_fw";
+    public String type = "";
+
+    public PackAgricultureUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type;
+    }
+}

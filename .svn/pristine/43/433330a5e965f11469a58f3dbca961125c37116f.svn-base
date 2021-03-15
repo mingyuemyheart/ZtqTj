@@ -1,0 +1,14 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import java.io.Serializable;
+
+public class BannerInfo implements Serializable {
+	/** 图片路径 **/
+	public String img_path=""; // 
+	/** 超链接 **/
+	public String url=""; // 
+	/** 标题 **/
+	public String title=""; //
+	/**分享内容*/
+	public String fx_content="";
+}

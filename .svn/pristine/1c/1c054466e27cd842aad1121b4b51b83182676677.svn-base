@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：刷新 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 默认时的图片 -->
+    <item android:drawable="@drawable/btn_refresh_nor" android:state_pressed="false"/>
+    <!-- 选择时的图片 -->
+    <item android:drawable="@drawable/btn_refresh_sel" android:state_pressed="true"/>
+</selector>

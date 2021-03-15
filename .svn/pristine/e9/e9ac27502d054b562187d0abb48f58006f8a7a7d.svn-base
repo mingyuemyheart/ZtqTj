@@ -1,0 +1,23 @@
+package com.pcs.ztqtj.view.activity.main;
+
+/**
+ * Created by Z on 2017/6/19.
+ */
+
+public class PresenterMain {
+    private UiMain uiMain;
+    private ModelMain modelMain;
+    public PresenterMain(ActivityMainNew uiMain){
+        this.uiMain=uiMain;
+        modelMain=new ModelMain(uiMain);
+    }
+
+    public void checkVersion(){
+        if(modelMain.checkVersionIsOld()){
+            uiMain.showDownLoadNewApp(modelMain.getVersionIntro());
+        }
+    }
+
+
+
+}

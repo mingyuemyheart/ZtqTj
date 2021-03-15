@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 问题
+ * 
+ */
+public class PackUseGuideDown extends PcsPackDown {
+	public List<GuideBean> guideList;
+
+	@Override
+	public void fillData(String jsonStr) {
+		guideList=new ArrayList<GuideBean>();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			
+			JSONArray jsonArray=obj.getJSONArray("quest_list");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				GuideBean bean=new GuideBean();
+				JSONObject jb=jsonArray.getJSONObject(i);
+				bean.id=jb.optString("id");
+				bean.title=jb.optString("title");
+				bean.html_url=jb.optString("html_url");
+				bean.create_time=jb.optString("create_time");
+				guideList.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+}

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/ll_title"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="@color/white_alpha5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen4"
+            android:text="@string/map_forecast2"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:singleLine="false"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen5"
+            android:src="@drawable/line_map_forecast_v"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_im_here"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"
+                android:singleLine="true"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/text_tip"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/map_forecast_tip"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"
+                android:singleLine="true"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical">
+
+        <com.amap.api.maps.TextureMapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/btn_maps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="@dimen/dimen8"
+            android:layout_marginRight="@dimen/dimen8"
+            android:background="@drawable/btn_map_click" />
+
+        <GridView
+            android:id="@+id/gridview_warning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_alignParentLeft="true"
+            android:horizontalSpacing="4dp"
+            android:verticalSpacing="4dp"
+            android:numColumns="6"
+            android:listSelector="@android:color/transparent">
+
+        </GridView>
+
+    </RelativeLayout>
+
+</LinearLayout>

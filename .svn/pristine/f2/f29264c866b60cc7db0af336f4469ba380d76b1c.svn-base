@@ -1,0 +1,18 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+
+/**
+ * 水位信息-站点水库站水位信息
+ * */
+public class PackReservoirWaterInfoUp extends PackWaterInfoUp {
+
+    public static final String NAME = "fx_reservoir_waterinfo";
+
+//	public PackReservoirWaterInfoUp() {
+//        super();
+//	}
+    @Override
+    public String getName() {
+        return NAME+"#"+station_id;
+    }
+}

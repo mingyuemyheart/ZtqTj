@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="@dimen/activity_marginleft_right">
+
+    <RelativeLayout
+        android:layout_width="160dp"
+        android:layout_height="160dp">
+
+        <ImageView
+            android:id="@+id/iv_voice"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:background="@drawable/mic_2"/>
+
+        <TextView
+            android:layout_alignParentBottom="true"
+            android:text="请回答城市名称"
+            android:textColor="@color/text_white"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout>

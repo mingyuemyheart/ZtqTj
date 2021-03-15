@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.agriculture;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 农业气象下载包
+ * Created by tyaathome on 2016/11/14.
+ */
+public class PackAgricultureDown extends PcsPackDown {
+
+    public List<AgricultureInfo> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            info_list.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("info_list");
+            for(int i = 0; i < ary.length(); i++) {
+                AgricultureInfo info = new AgricultureInfo();
+                JSONObject temp = ary.getJSONObject(i);
+                info.channel_id = temp.getString("channel_id");
+                info.title = temp.getString("title");
+                info.Img_url = temp.getString("Img_url");
+                info.type = temp.getString("type");
+                info_list.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

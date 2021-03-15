@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_centerVertical="true"
+              android:orientation="vertical"
+              android:background="@drawable/icon_health_bac"
+              android:paddingBottom="@dimen/activity_margintop"
+              android:paddingLeft="@dimen/activity_marginleft_right"
+              android:paddingRight="@dimen/activity_marginleft_right">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_health_t"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_health_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom"
+                    android:layout_marginBottom="5dp"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="50dp"
+                        android:text="低"
+                        android:gravity="center"
+                        android:background="@drawable/corner_view_green"
+                        android:layout_height="20dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_marginLeft="1dp"
+                        android:text="轻微"
+                        android:gravity="center"
+                        android:background="@drawable/corner_view_blue"
+                        android:layout_height="20dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_marginLeft="1dp"
+                        android:text="中等"
+                        android:gravity="center"
+                        android:background="@drawable/corner_view_yellow"
+                        android:layout_height="20dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_marginLeft="1dp"
+                        android:text="较高"
+                        android:gravity="center"
+                        android:background="@drawable/corner_view_orange"
+                        android:layout_height="20dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+                    <TextView
+                        android:layout_width="50dp"
+                        android:layout_marginLeft="1dp"
+                        android:text="高"
+                        android:gravity="center"
+                        android:background="@drawable/corner_view_red"
+                        android:layout_height="20dp"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_below="@+id/ll_top"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <com.pcs.ztqtj.view.myview.MyListView
+                        android:id="@+id/lv_health_weather"
+                        android:layout_width="match_parent"
+                        android:divider="#00000000"
+                        android:dividerHeight="15dp"
+                        android:layout_height="wrap_content">
+
+                    </com.pcs.ztqtj.view.myview.MyListView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

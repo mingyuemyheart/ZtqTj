@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+/**
+ * 水位信息
+ * @author tya
+ *
+ */
+public class WaterInfo {
+	/**
+	 * 颜色
+	 */
+	public String color = "color";
+	
+	/**
+	 * 经度
+	 */
+	public String log = "log";
+	
+	/**
+	 * 纬度
+	 */
+	public String lat = "lat";
+	
+	/**
+	 * 站点ID
+	 */
+	public String station_id = "station_id";
+}

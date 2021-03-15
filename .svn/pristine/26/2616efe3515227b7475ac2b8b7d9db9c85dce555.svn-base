@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+/**
+ * 超汛限对象
+ * @author tya
+ *
+ */
+public class WaterOverInfo {
+	/**
+	 * 序号
+	 */
+	public String num = "";
+	
+	/**
+	 * 市县区
+	 */
+	public String county = "";
+	
+	/**
+	 * 水库站名称/河道站名称
+	 */
+	public String station = "";
+	
+	/**
+	 * 超汛限值m/超警戒值m
+	 */
+	public String beyond = "";
+	
+	/**
+	 * 站点ID
+	 */
+	public String station_id = "";
+	
+	/**
+	 * 站点经度
+	 */
+	public String longitude = "";
+	
+	/**
+	 * 站点纬度
+	 */
+	public String latitude = "";
+}

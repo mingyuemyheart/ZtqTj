@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 找回密码上传包
+ * Created by tyaathome on 2016/9/12.
+ */
+public class PackPhotoFindPasswordUp extends PcsPackUp {
+
+    public static final String NAME = "syn_pwd_found";
+
+    public String mobile = "";
+    public List<UserQuestion> req_list = new ArrayList<>();
+
+    public PackPhotoFindPasswordUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("mobile", mobile);
+            JSONArray ary = new JSONArray();
+            for(UserQuestion bean : req_list) {
+                int index = req_list.indexOf(bean);
+                JSONObject temp = new JSONObject();
+                temp.put("que_id", bean.que_id);
+                temp.put("ans_info", bean.ans_info);
+                ary.put(index, temp);
+            }
+            obj.put("req_list", ary);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

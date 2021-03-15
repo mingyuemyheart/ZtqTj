@@ -1,0 +1,12 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.expert;
+
+/**
+ * Created by Z on 2016/11/14.
+ */
+
+public class ItemExpert {
+  public String id;
+    public String  title;
+    public String  release_time;
+    public String  small_img;
+}

@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 市/区/县自动站降雨量统计
+ */
+public class PackYltjHourUp extends PcsPackUp {
+
+    public static final String NAME = "yltj_hour";
+
+    public String county = "";
+    public String province = "";
+    public String city = "";
+    public String flag = "";
+    public boolean is_jc = false;
+
+    public PackYltjHourUp() {
+        //TODO 演示代码
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("province", province);
+            obj.put("county", county);
+            obj.put("city", city);
+            obj.put("falg", flag);
+            if(is_jc) {
+                obj.put("user_type", "0");
+            } else {
+                obj.put("user_type", "1");
+            }
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + county+"_"+city+"_"+province+"_"+flag;
+    }
+}

@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjZqUserDown extends PcsPackDown {
+
+    public List<YjUserInfo> list_2=new ArrayList<>();
+    public String result,result_msg;
+    @Override
+    public void fillData(String jsonStr) {
+
+        list_2.clear();
+
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            result=obj.optString("result");
+            result_msg=obj.optString("result_msg");
+            JSONArray jsonArraydz = obj.optJSONArray("info_list");
+            if (jsonArraydz!=null) {
+                for (int i = 0; i < jsonArraydz.length(); i++) {
+                    YjUserInfo yjUserInfo = new YjUserInfo();
+                    yjUserInfo.fullname = jsonArraydz.getJSONObject(i).optString("fullname");
+                    yjUserInfo.depart_name = jsonArraydz.getJSONObject(i).optString("depart_name");
+                    yjUserInfo.mobile = jsonArraydz.getJSONObject(i).optString("mobile");
+                    list_2.add(yjUserInfo);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

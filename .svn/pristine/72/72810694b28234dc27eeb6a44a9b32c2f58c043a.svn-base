@@ -1,0 +1,70 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 空气质量排行
+ */
+public class PackAirPollutionDown extends PcsPackDown {
+    public String title="";
+    public String desc="";
+    public List<ForecustItem> dataList = new ArrayList<ForecustItem>();
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject temp;
+        try {
+            dataList.clear();
+            temp = new JSONObject(jsonStr);
+            title = temp.optString("title");
+            desc = temp.optString("desc");
+            JSONArray arr = temp.getJSONArray("info_list");
+            for (int i = 0; i < arr.length(); i++) {
+                ForecustItem bean = new ForecustItem();
+                JSONObject airJson = arr.getJSONObject(i);
+
+
+                bean.lm = airJson.optString("lm");
+
+                try{
+
+                    int lm=Integer.parseInt(bean.lm);
+                    Calendar calendar=Calendar.getInstance();
+                    calendar.setTime(new Date());
+                    calendar.add(Calendar.HOUR_OF_DAY,lm);
+                    Date d=new Date(calendar.getTimeInMillis());
+                    SimpleDateFormat df=new SimpleDateFormat("MM月dd日");
+                    bean.mTime =df.format(d) ;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                bean.title = airJson.optString("title");
+                bean.img_url = airJson.optString("img_url");
+                dataList.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    public class ForecustItem {
+        public String lm="";
+        public String title="";
+        public String img_url="";
+        public String mTime="";
+    }
+}

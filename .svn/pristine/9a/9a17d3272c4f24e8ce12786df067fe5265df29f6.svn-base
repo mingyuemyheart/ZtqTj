@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 设置标签类型查询
+ * Created by tyaathome on 2017/8/10.
+ */
+
+public class PackPushQueryTagTypeDown extends PcsPackDown {
+
+    public List<PushTagTypeBean> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            info_list.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("info_list");
+            for(int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                PushTagTypeBean bean = new PushTagTypeBean();
+                bean.id = temp.optString("id");
+                bean.name = temp.optString("name");
+                bean.ischeck = temp.optString("ischeck");
+                info_list.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class PushTagTypeBean {
+        public String id = "";
+        public String name = "";
+        public String ischeck = "";
+    }
+}

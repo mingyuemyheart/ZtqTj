@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/**
+ * 下载包：海洋天气--区域信息
+ *
+ * @author E.Sun
+ * 2015年9月30日
+ */
+public class PackAreaPositionDown extends PcsPackDown {
+
+
+    public ArrayList<OceanAreaInfo> list_info = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        list_info.clear();
+        try {
+            JSONArray array = new JSONObject(jsonStr).getJSONArray("info_list");
+            JSONObject object;
+            for (int i = 0; i < array.length(); i++) {
+                object = array.getJSONObject(i);
+                OceanAreaInfo info = new OceanAreaInfo();
+                info.area_id = object.optString("area_id");
+                info.area_name = object.optString("area_name");
+                info.lat = object.optString("lat");
+                info.lon = object.optString("lon");
+                list_info.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+
+}

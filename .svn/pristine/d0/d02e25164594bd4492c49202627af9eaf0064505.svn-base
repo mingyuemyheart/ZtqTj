@@ -1,0 +1,129 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 下载包：雷电监测--地市地区查询
+ *
+ * @author Chensq 2015年11月9日
+ */
+
+public class PackThunderQuireDown extends PcsPackDown {
+    /**
+     * 闪电活动综述
+     */
+    public String des;
+    /**
+     * 地区列表
+     */
+    public List<CityInfo> area_list = new ArrayList<CityInfo>();
+    public List<ThunderListInfo> area_list1 = new ArrayList<ThunderListInfo>();
+
+    public PackThunderQuireDown() {
+    }
+
+    @Override
+    public void fillData(String jsonStr) {
+        area_list.clear();
+        area_list1.clear();
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            des = obj.getString("des");
+            JSONArray channelsArray = obj.getJSONArray("area_list");
+            for (int i = 0; i < channelsArray.length(); i++) {
+                JSONObject areaListObject = channelsArray.getJSONObject(i);
+                int length = areaListObject.length();
+                if (length == 4) {
+                    CityInfo cityInfo = new CityInfo();
+                    cityInfo.area_name = areaListObject.getString("area_name");
+                    cityInfo.area_id = areaListObject.getString("area_id");
+                    cityInfo.count = areaListObject.getString("count");
+                    cityInfo.thunder_list = new ArrayList<>();
+                    JSONArray thunderListObject = areaListObject.getJSONArray("thunder_list");
+                    for (int j = 0; j < thunderListObject.length(); j++) {
+                        JSONObject thunderObject = thunderListObject.getJSONObject(j);
+                        ThunderListInfo thunderListInfo = new ThunderListInfo();
+                        thunderListInfo.time = thunderObject.getString("datetime");
+                        thunderListInfo.longitude = thunderObject.getString("longitude");
+                        thunderListInfo.latitude = thunderObject.getString("latitude");
+                        thunderListInfo.type = thunderObject.getString("type");
+                        thunderListInfo.intens = thunderObject.getString("intens");
+                        cityInfo.thunder_list.add(thunderListInfo);
+                    }
+                    area_list.add(cityInfo);
+                } else if (length == 5) {
+                    ThunderListInfo thunderListInfo = new ThunderListInfo();
+                    thunderListInfo.time = areaListObject.getString("datetime");
+                    thunderListInfo.longitude = areaListObject.getString("longitude");
+                    thunderListInfo.latitude = areaListObject.getString("latitude");
+                    thunderListInfo.type = areaListObject.getString("type");
+                    thunderListInfo.intens = areaListObject.getString("intens");
+                    area_list1.add(thunderListInfo);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    // 地区雷电信息
+    public class CityInfo {
+        /**
+         * 地区或城市名称
+         */
+        public String area_name = "";
+        /**
+         * 地区或城市名称id
+         */
+        public String area_id = "";
+        /**
+         * 地区雷电个数
+         */
+        public String count = "";
+        /**
+         * 雷电列表
+         */
+        public List<ThunderListInfo> thunder_list = new ArrayList<ThunderListInfo>();
+    }
+
+    // 雷电列表
+    public class ThunderListInfo {
+        /**
+         * 时间
+         */
+        public String time = "";
+        /**
+         * 经度
+         */
+        public String longitude = "";
+        /**
+         * 纬度
+         */
+        public String latitude = "";
+        /**
+         * 类型
+         */
+        public String type = "";
+        /**
+         * 强度
+         */
+        public String intens = "";
+    }
+}

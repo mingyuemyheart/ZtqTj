@@ -1,0 +1,50 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 水位信息-水库站与河道站水位信息上传包
+ * @author tya
+ *
+ */
+public class PackWaterInfoAllUp extends PcsPackUp {
+
+    public static final String NAME = "fx_all_waterinfo";
+
+	/**
+	 * 查询时间（默认取上一时段雨量信息）
+	 */
+	public String time = "";
+	
+	/**
+	 * 类型(3为水库站;1为河道站 )
+	 */
+	public String type = "";
+	
+	public PackWaterInfoAllUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("time", time);
+			obj.put("type", type);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

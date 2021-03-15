@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * @author Z
+ * 
+ *         气象预警
+ */
+public class PackWarningCenterTfggsjUp extends PcsPackUp {
+
+    public static final String NAME = "pub_warn_acci_health";
+
+	/**
+	 *  1为事故灾难
+	 *  2为公共卫生事件
+	 *  3台风预警报告单
+	 *  4地质灾害预警
+	 *  5山鸿沟预警 
+	 *  6中小流域
+	 */
+	public String type = "";
+
+    public PackWarningCenterTfggsjUp() {
+        this.intervalMill = 0;
+    }
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("type", type);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + type;
+	}
+}

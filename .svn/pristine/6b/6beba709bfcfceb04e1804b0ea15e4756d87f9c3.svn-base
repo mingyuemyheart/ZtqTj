@@ -1,0 +1,56 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.text.TextUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 首页显示的城市信息
+ *
+ * @author JiangZY
+ */
+public class PackLocalCityMain extends PackLocalCity {
+    public static String KEY = "PackLocalCityMain";
+
+    //是定位出来的城市？
+    public boolean isLocationCity = false;
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        super.fillData(jsonStr);
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            if (obj.has("isLocationCity")) {
+                isLocationCity = obj.getBoolean("isLocationCity");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        try {
+            JSONObject obj = new JSONObject(super.toJsonStr());
+            obj.put("isLocationCity", isLocationCity);
+
+            return obj.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+    public String getName(String key) {
+        return KEY;
+    }
+
+    public void copyCity(PackLocalCityMain city) {
+        fillData(city.toJsonStr());
+    }
+}

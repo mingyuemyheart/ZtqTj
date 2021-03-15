@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown.RainFallRank;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 省内24小时内最大降雨量排名
+ */
+public class PackYltjMaxHourDown extends PcsPackDown {
+	public List<RainFallRank> datalist;
+	@Override
+	public void fillData(String jsonStr) {
+		datalist = new ArrayList<RainFallRank>();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+			PackYltjRankDown aaa=new PackYltjRankDown();
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				RainFallRank imgobject = aaa.new RainFallRank();
+				imgobject.rainfall = obj.getString("rainfall");
+				imgobject.area_name = obj.getString("area_name");
+				imgobject.time = obj.getString("time");
+				datalist.add(imgobject);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

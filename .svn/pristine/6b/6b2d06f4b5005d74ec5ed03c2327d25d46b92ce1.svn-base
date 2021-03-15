@@ -1,0 +1,34 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ *分时段雨量查询
+ */
+public class PackYltjTimeDown extends PcsPackDown {
+	public String tj_time="";
+	public String jyzl="";
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONObject arr = temp.getJSONObject("yltj_time");
+			tj_time=arr.getString("tj_time");
+			jyzl=arr.getString("jyzl");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+}

@@ -1,0 +1,21 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+/** 
+ * 台风预测路径
+ * @author chenjh
+ */
+public class ForecastPoint {
+
+	/** 时间 **/
+	public String time;
+	/** 经度 **/
+	public String jd;
+	/** 纬度 **/
+	public String wd;
+	/** 路径表述 **/
+	public String tip;
+	public String fl;// 风力
+	public String  fs;//风速  ,
+	public String qx;// (，气旋);
+	
+}

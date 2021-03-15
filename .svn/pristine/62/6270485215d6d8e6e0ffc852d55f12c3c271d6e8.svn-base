@@ -1,0 +1,59 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 雨晴信息-图例下载包
+ * @author Administrator
+ *
+ */
+public class PackRainInfoLegendDown extends PcsPackDown {
+
+	/**
+	 * 单时次雨量图例列表
+	 */
+	public List<String> one_list = new ArrayList<String>();
+	
+	/**
+	 * 累计雨量图例列表
+	 */
+	public List<String> add_list = new ArrayList<String>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			one_list.clear();
+			add_list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray ary = obj.getJSONArray("one_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+				String section = temp.getString("section");
+				one_list.add(section);
+			}
+			ary = obj.getJSONArray("add_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+				String section = temp.getString("section");
+				add_list.add(section);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

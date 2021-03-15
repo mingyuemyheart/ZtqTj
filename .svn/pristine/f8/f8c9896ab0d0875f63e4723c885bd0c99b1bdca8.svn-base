@@ -1,0 +1,10 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+/**
+ * Created by tyaathome on 2018/1/11.
+ */
+
+public class CompareMonthInfo {
+    public String month = "";
+    public String val = "";
+}

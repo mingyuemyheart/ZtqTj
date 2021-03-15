@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 所在地市最高温排名前6
+ */
+public class PackWdtjCityMaxUp extends PcsPackUp {
+
+    public static final String NAME = "wdtj_city_max";
+
+    public String province;
+    public String country;
+    public String type;
+
+    public PackWdtjCityMaxUp(){intervalMill=0;}
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("province", province);
+            obj.put("country", country);
+            obj.put("type", type);
+            return obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + country + "_" + type+province;
+    }
+}

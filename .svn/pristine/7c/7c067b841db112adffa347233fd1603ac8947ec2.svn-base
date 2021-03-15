@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 气象要素日数查询
+ * Created by tyaathome on 2017/10/31.
+ */
+
+public class PackWeatherElementYearUp extends PcsPackUp {
+
+    public static final String NAME = "zlcx_qxys";
+    public String type = "";
+    public String id = "";
+    public String s_time = "";
+    public String e_time = "";
+    public String item_id = "";
+    public String s_item_id = "";
+    public String falg = "";
+
+    public PackWeatherElementYearUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("type", type);
+            object.put("id", id);
+            object.put("s_time", s_time);
+            object.put("e_time", e_time);
+            object.put("item_id", item_id);
+            object.put("s_item_id", s_item_id);
+            object.put("falg", falg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

@@ -1,0 +1,20 @@
+package com.pcs.lib.lib_pcs_v3.model.pack;
+
+/**
+ * 本地数据包
+ *
+ * @author JiangZY
+ */
+public abstract class PcsPackLocal extends PcsPackDown {
+
+    @Override
+    public abstract void fillData(String jsonStr);
+
+    /**
+     * 转成Json字符串
+     *
+     * @return
+     */
+    public abstract String toJsonStr();
+
+}

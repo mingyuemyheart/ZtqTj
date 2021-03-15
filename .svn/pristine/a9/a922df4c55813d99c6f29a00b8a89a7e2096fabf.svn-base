@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 空气质量—排行_new
+ * Created by tyaathome on 2017/1/17.
+ */
+
+public class PackAirRankNewUp extends PcsPackUp {
+
+    public static final String NAME = "air_rank_new";
+    public String rank_type = "aqi";
+    public String time = "1";
+
+    public PackAirRankNewUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("rankType", rank_type);
+            obj.put("time", time);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

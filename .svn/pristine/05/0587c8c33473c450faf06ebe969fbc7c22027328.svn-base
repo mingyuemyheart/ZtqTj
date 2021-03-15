@@ -1,0 +1,92 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 实景登陆
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoRegisterDown extends PcsPackDown {
+	/**
+	 * 用户ID
+	 */
+	public String user_id = "";
+	
+	/**
+	 * 昵称
+	 */
+	public String nick_name = "";
+	
+	/**
+	 * 头像地址
+	 */
+	public String head_url = "";
+	
+	/**
+	 * 结果编号
+	 */
+	public String result = "";
+	
+	/**
+	 * 异常结果描述
+	 */
+	public String result_msg = "";
+
+	public String sys_head_url;
+
+	public String sys_nick_name;
+
+	public String sys_user_id;
+
+    public String type;
+
+    public boolean is_jc = false;
+
+	/**
+	 * 注册成功
+	 */
+	public static final String RESULT_SUCCEED = "1";
+	
+	/**
+	 * 注册失败
+	 */
+	public static final String RESULT_FAIL = "-1";
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			head_url = obj.getString("head_url");
+			nick_name = obj.getString("nick_name");
+			result = obj.getString("result");
+			result_msg = obj.getString("result_msg");
+			user_id = obj.getString("user_id");
+            sys_nick_name=obj.optString("sys_nick_name");
+            sys_head_url=obj.optString("sys_head_url");
+            sys_user_id=obj.optString("sys_user_id");
+            type=obj.optString("type");
+            String jc = obj.optString("is_jc");
+            is_jc = jc.equals("0");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+}

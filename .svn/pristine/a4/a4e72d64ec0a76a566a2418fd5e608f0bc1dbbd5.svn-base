@@ -1,0 +1,56 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 逐小时预报
+ *
+ * @author JiangZy
+ */
+public class PackHourForecastUp extends PackShortUpdateTimeUp {
+
+    public static final String NAME = "forecast";
+
+    public PackHourForecastUp() {
+        //bRepeat = true;
+    }
+
+    /**
+     * 乡镇ID
+     */
+    public String county_id = "";
+    /**
+     * 每页条数
+     */
+    private static final String COUNT = "36";
+    /**
+     * 第几页（从1开始）
+     */
+    private static final int page = 1;
+    /**
+     * 页数上限
+     */
+    public final int MAX_PAGE = 3;
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("count", "36");
+            obj.put("county_id", county_id);
+            obj.put("page", "1");
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + county_id;
+    }
+
+}

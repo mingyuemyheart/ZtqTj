@@ -1,0 +1,19 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+/**
+ * 坐标
+ * @author E.Sun
+ * 2015年10月22日
+ */
+public class MyPosition {
+
+	/** 纬度 */
+	public double latitude;
+
+	/** 经度 */
+	public double longitude;
+	
+	/** 区域名称 */
+	public String name = "";
+
+}

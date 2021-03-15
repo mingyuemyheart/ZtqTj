@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 气象服务-气象单位搜索（qxfw_sel）
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackServiceOrgSearchDown extends PcsPackDown {
+
+	public List<OrgInfo> orgSearchList = new ArrayList<OrgInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			orgSearchList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("qxfw_sel");
+
+			for (int i = 0; i < arr.length(); i++) {
+				OrgInfo info = new OrgInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				info.org_name = airJson.getString("org_name");
+				info.org_id = airJson.getString("org_id");
+				info.org_pid = airJson.getString("org_pid");
+				info.type = airJson.getString("type");
+				orgSearchList.add(info);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+}

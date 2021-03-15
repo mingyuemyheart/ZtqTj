@@ -1,0 +1,33 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+
+/**
+ * 水位信息-站点河道站水位信息
+ * */
+public class PackRiverWaterInfoUp extends PackWaterInfoUp {
+    public static final String NAME = "fx_river_waterinfo";
+
+//    public String time = "";
+//    public String station_id = "";
+
+//    public PackRiverWaterInfoUp() {
+//        intervalMill = 0;
+//    }
+
+    @Override
+    public String getName() {
+        return NAME+"#"+station_id;
+    }
+//    @Override
+//    public JSONObject toJSONObject() {
+//        JSONObject obj = new JSONObject();
+//        try {
+//            obj.put("time", time);
+//            obj.put("station_id", station_id);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return obj;
+//    }
+
+}

@@ -1,0 +1,73 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.media;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 气象影视 所有栏目列表及影视数据
+ * 
+ * @author Z
+ */
+public class PackMediaListDown extends PcsPackDown {
+	public List<ParentMedia> mediaParentList = new ArrayList<ParentMedia>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		mediaParentList.clear();
+		JSONObject temp;
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("all_video_list");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject mediaParentItem = arr.getJSONObject(i);
+				ParentMedia bean = new ParentMedia();
+				bean.column_name = mediaParentItem.getString("column_name");
+				bean.is_first = mediaParentItem.getString("is_first");
+				if (mediaParentItem.has("video_list")) {
+					JSONArray arrInItem = mediaParentItem.getJSONArray("video_list");
+					for (int j = 0; j < arrInItem.length(); j++) {
+						JSONObject item = arrInItem.getJSONObject(j);
+						MediaInfo info = new MediaInfo();
+						info.title = item.optString("title");
+						info.title_two = item.optString("title_two");
+						info.mediaurl = item.optString("mediaurl");
+						info.imageurl = item.optString("imageurl");
+						info.desc = item.optString("desc");
+						info.channel_id = item.optString("channel_id");
+						info.time = item.optString("time");
+                        info.fxurl = item.optString("fxurl");
+						bean.video_list.add(info);
+					}
+				}
+				mediaParentList.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class ParentMedia {
+		public String column_name = "";
+		public String is_first = "";
+		public List<MediaInfo> video_list = new ArrayList<MediaInfo>();
+	}
+
+}

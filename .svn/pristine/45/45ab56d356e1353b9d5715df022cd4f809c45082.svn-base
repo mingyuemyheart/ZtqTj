@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 实景图片Item项 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- 照片 -->
+
+    <ImageView
+        android:id="@+id/image_photo"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_pic" />
+    <!-- 浏览数 -->
+
+    <TextView
+        android:id="@+id/text_num"
+        android:layout_width="55dp"
+        android:layout_height="20dp"
+        android:layout_gravity="top|right"
+        android:background="@drawable/btn_competition_enter_nor"
+        android:drawableLeft="@drawable/icon_browse"
+        android:gravity="center"
+        android:paddingLeft="2dp"
+        android:paddingRight="0dp"
+        android:text="@string/num_0"
+        android:textColor="@color/text_gray_light"
+        android:textSize="12dp" />
+    <!-- 地址 -->
+
+    <TextView
+        android:id="@+id/text_addr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_photo_addr"
+        android:gravity="bottom"
+        android:paddingBottom="4dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:singleLine="true"
+        android:textColor="@color/text_gray_light"
+        android:textSize="@dimen/text_footnote" />
+
+</FrameLayout>

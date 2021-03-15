@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 密保问题查询
+ * Created by tyaathome on 2016/10/8.
+ */
+public class PackPhotoQueryQuestionDown extends PcsPackDown {
+
+    public List<UserQuestion> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        info_list.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("info_list");
+            for(int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                UserQuestion bean = new UserQuestion();
+                bean.que_id = temp.getString("que_id");
+                bean.ans_info = temp.getString("ans_info");
+                info_list.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

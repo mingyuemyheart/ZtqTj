@@ -1,0 +1,74 @@
+package com.pcs.lib.lib_pcs_v3.model.data;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+
+/**
+ * 数据下载的广播接收器
+ * 
+ * @author JiangZy
+ * 
+ */
+public abstract class PcsDataBrocastReceiver extends BroadcastReceiver {
+
+	private static final String ACTION = "PCS_DATA_ACTION_TJ";
+	private static final String NAME_STR = "NAME_STR";
+	private static final String ERROR_STR = "ERROR_STR";
+
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		String nameStr = intent.getStringExtra(NAME_STR);
+		String errorStr = intent.getStringExtra(ERROR_STR);
+		onReceive(nameStr, errorStr);
+	}
+
+	/**
+	 * 
+	 * @param nameStr
+	 *            出错时名字可能为null
+	 * @param errorStr
+	 *            正常时为null
+	 */
+	abstract public void onReceive(String nameStr, String errorStr);
+
+	/**
+	 * 注册接收
+	 * 
+	 * @param context
+	 * @param receiver
+	 */
+	public static void registerReceiver(Context context,
+			PcsDataBrocastReceiver receiver) {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ACTION);
+		context.registerReceiver(receiver, filter);
+	}
+
+	/**
+	 * 取消注册
+	 * 
+	 * @param context
+	 * @param receiver
+	 */
+	public static void unregisterReceiver(Context context,
+			PcsDataBrocastReceiver receiver) {
+		context.unregisterReceiver(receiver);
+	}
+
+	/**
+	 * 发送广播
+	 * 
+	 * @param nameList
+	 */
+	public static void sendBroadcast(Context context, String nameStr,
+			String errorStr) {
+		Intent intent = new Intent();
+		intent.putExtra(NAME_STR, nameStr);
+		intent.putExtra(ERROR_STR, errorStr);
+		intent.setAction(ACTION);
+		context.sendBroadcast(intent);
+	}
+
+}

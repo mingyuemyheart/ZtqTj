@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 水位信息-水库站与河道站超讯限下载包
+ * @author tya
+ *
+ */
+public class PackWaterInfoOverAllDown extends PcsPackDown {
+
+	public List<WaterOverInfo> waterinfo_list = new ArrayList<WaterOverInfo>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			waterinfo_list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray ary = obj.getJSONArray("waterinfo_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+				WaterOverInfo woi = new WaterOverInfo();
+				woi.num = temp.getString("num");
+				woi.county = temp.getString("county");
+				woi.station = temp.getString("station");
+				woi.beyond = temp.getString("beyond");
+				woi.station_id = temp.getString("station_id");
+				woi.longitude = temp.getString("longitude");
+				woi.latitude = temp.getString("latitude");
+				waterinfo_list.add(woi);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

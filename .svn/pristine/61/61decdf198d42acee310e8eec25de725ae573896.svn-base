@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.art;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 
+ * 资讯栏目列表
+ * @author chenjh
+ *
+ */
+public class PackArtChannelUp extends PcsPackUp {
+	public  static final String NAME="art_channel";
+	public String count = "";
+	public PackArtChannelUp(String count) {
+		super();
+		this.count = count;
+	}
+
+	public PackArtChannelUp() {
+		super();
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("count", count);
+
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

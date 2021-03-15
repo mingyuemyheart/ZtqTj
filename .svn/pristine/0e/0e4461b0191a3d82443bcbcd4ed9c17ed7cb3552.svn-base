@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * @author Chensq
+ *         数值预报栏目上传包
+ */
+public class PackNumericalForecastColumnUp extends PcsPackUp {
+
+    public static final String NAME = "forecast_column_n2";
+    public String type="";
+    public PackNumericalForecastColumnUp() {
+        //间隔15分钟
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("type", type);
+            return obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+}

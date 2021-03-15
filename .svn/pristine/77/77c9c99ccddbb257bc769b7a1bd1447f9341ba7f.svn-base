@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import java.io.Serializable;
+
+/**
+ * 雨量站点信息
+ * @author tya
+ *
+ */
+public class WaterMonitorStationInfo implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 站点号
+	 */
+	public String num = "";
+	/**
+	 * 站点名称
+	 */
+	public String station = "";
+	
+	/**
+	 * 积水程度
+	 */
+	public String lev = "";
+	
+	/**
+	 * 经度
+	 */
+	public String log = "";
+	
+	/**
+	 * 纬度
+	 */
+	public String lat = "";
+}

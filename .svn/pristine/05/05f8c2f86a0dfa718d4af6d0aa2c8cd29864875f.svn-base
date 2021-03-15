@@ -1,0 +1,77 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 雨量分析统计----详情
+ */
+public class PackYltj_level_ranking_detailDown extends PcsPackDown {
+	public String pub_time;
+	public String stat_grading;
+	public List<RainStation> rain_list = new ArrayList<RainStation>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			rain_list.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+
+			pub_time = temp.getString("pub_time");
+			stat_grading = temp.getString("stat_grading");
+
+			JSONArray arr1 = temp.getJSONArray("rain_list");
+
+			PackYltjRankDown down = new PackYltjRankDown();
+			for (int i = 0; i < arr1.length(); i++) {
+				RainStation info = new RainStation();
+				JSONObject rainfallJson = arr1.getJSONObject(i);
+				info.name = rainfallJson.getString("name");
+				JSONArray arr2 = rainfallJson.getJSONArray("rain_station_list");
+				for (int j = 0; j < arr2.length(); j++) {
+					JSONObject subObj = arr2.getJSONObject(j);
+					StationData subInfo = new StationData();
+					subInfo.rainfall = subObj.getString("rainfall");
+					subInfo.area_name = subObj.getString("area_name");
+					subInfo.order_id = subObj.getString("order_id");
+					info.rain_station_list.add(subInfo);
+				}
+				rain_list.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	/**
+	 * @author Z 小时列表项
+	 */
+	public class RainStation {
+		public String name = "";
+		public List<StationData> rain_station_list = new ArrayList<StationData>();
+	}
+
+	/**
+	 * @author Z 小时对应的雨量区间
+	 */
+	public class StationData {
+		public String rainfall = "";
+		public String area_name = "";
+		public String order_id = "";
+	}
+}

@@ -1,0 +1,943 @@
+package com.pcs.ztqtj.view.activity;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownload;
+import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownloadListener;
+import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
+import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.inter.InterfaceRefresh;
+import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
+import com.pcs.ztqtj.control.tool.CommUtils;
+import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.control.tool.NetTask;
+import com.pcs.ztqtj.control.tool.ZtqAppWidget;
+import com.pcs.ztqtj.control.tool.ZtqLocationTool;
+import com.pcs.ztqtj.control.tool.ZtqPushTool;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
+import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
+import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
+import com.pcs.ztqtj.view.dialog.DialogFactory;
+import com.pcs.ztqtj.view.dialog.DialogOneButton;
+import com.pcs.ztqtj.view.dialog.DialogTwoButton;
+import com.pcs.ztqtj.view.fragment.FragmentCityManager;
+import com.pcs.ztqtj.view.fragment.FragmentHomeWeather;
+import com.pcs.ztqtj.view.fragment.FragmentLife;
+import com.pcs.ztqtj.view.fragment.FragmentProduct;
+import com.pcs.ztqtj.view.fragment.FragmentService;
+import com.pcs.ztqtj.view.fragment.FragmentSet;
+import com.umeng.analytics.MobclickAgent;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ActivityMain extends SlidingFragmentActivity {
+
+    // 图片获取类
+    public ImageFetcher mImageFetcher = null;
+    // ImageFetcher已恢复？
+    private boolean mFetcherResumed = false;
+    // 滑动菜单
+    private SlidingMenu mSlidingMenu = null;
+
+    // 左滑动Fragment
+    private FragmentCityManager mFragmentLeft;
+    // 右边滑动Fragment
+    private FragmentSet mFragmentRight;
+    //首页
+    private FragmentHomeWeather mFragmentHomeWeather;
+    // 底部菜单监听
+    private MyRadioListener mRadioListener = null;
+    private DialogTwoButton checkDialogdescribe;
+    private PackCheckVersionUp packcheckversiona;
+    private PackCheckVersionDown packcheckversion;
+    private DialogOneButton checkDialogdownload;
+    private TextView desc_download;
+    private ProgressBar progerssBar;
+    // 回退目标
+    private int mIntBackTarget = -1;
+
+    // 等待对话框
+    private ProgressDialog mProgressDialog = null;
+    // 首页刷新间隔
+    private long REFRESH_INTERVAL = 60 * 1000;
+
+    private WeatherReceiver mWeatherReceiver = null;
+
+    // 上传包：实时天气
+    private PackSstqUp mPackSstqUp = new PackSstqUp();
+    //文件下载
+    private PcsFileDownload mFileDownload;
+    //点击回退时间
+    private long mBackTime = 0;
+
+//    //TODO 下载演示数据
+//    private TempAutoData mTempAutoData = new TempAutoData();
+
+    /**
+     * 处理升级
+     */
+    private Handler handlerVersion = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            try {
+                if (mFileDownload == null) {
+                    mFileDownload = new PcsFileDownload();
+                }
+                View viewdownload = LayoutInflater.from(ActivityMain.this)
+                        .inflate(R.layout.dialog_download, null);
+                desc_download = (TextView) viewdownload
+                        .findViewById(R.id.desc_download);
+                progerssBar = (ProgressBar) viewdownload
+                        .findViewById(R.id.progressbar);
+                checkDialogdownload = new DialogOneButton(ActivityMain.this,
+                        viewdownload, "取消", new DialogFactory.DialogListener() {
+                    @Override
+                    public void click(String str) {
+                        checkDialogdownload.dismiss();
+                        mFileDownload.cancel();
+                    }
+                });
+                checkDialogdownload.setTitle("正在下载");
+                checkDialogdownload.show();
+                String[] appname = packcheckversion.file.split("/");
+                mFileDownload.downloadFile(
+                        downloadlistener,
+                        getString(R.string.file_download_url)
+                                + packcheckversion.file,
+                        PcsGetPathValue.getInstance().getAppPath()
+                                + appname[appname.length - 1]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+//        AnalyticsConfig.enableEncrypt(true);
+
+//        try {
+//            getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
+//        } catch (NoSuchFieldException e) {
+//        } catch (IllegalAccessException e) {
+//        }
+        createImageFetcher(this.getResources()
+                .getDimensionPixelSize(R.dimen.dimen480));
+        // 创建fragment
+        createFragment();
+        // 初始化滑动菜单
+        initSlidingMenu();
+        //刷新小部件
+        reflushWidget();
+        //下载主题插图
+        downloadImage();
+        //检查城市
+        checkCity();
+        // 打开动画
+        if (getIntent().getBooleanExtra("back", false)) {
+            overridePendingTransition(R.anim.slide_left_in,
+                    R.anim.slide_right_out);
+        }
+        Bundle bundle = getIntent().getBundleExtra(MyConfigure.EXTRA_BUNDLE);
+        if(bundle != null) {
+            String type = bundle.getString("type");
+            if(!TextUtils.isEmpty(type)) {
+                if(type.equals("warn")) {
+//                    String title = bundle.getString("t");
+//                    String icon = bundle.getString("i");
+//                    String id = bundle.getString("id");
+//                    Intent intent = new Intent(this, ActivityWarnDetails.class);
+//                    intent.putExtra("t", title);
+//                    intent.putExtra("i", icon);
+//                    intent.putExtra("id", id);
+                    Intent intent = new Intent(this, ActivityWarnDetails.class);
+                    intent.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
+                    startActivity(intent);
+                } else if (type.equals("widget_warn")) {
+                    WarnBean bean = (WarnBean) bundle.getSerializable("warninfo");
+                    if(bean.currentCity != null) {
+                        ZtqCityDB.getInstance().setCityMain(bean.currentCity, false);
+                    }
+                    String cityid = bundle.getString("cityid");
+                    boolean isfj = bundle.getBoolean("isfj");
+                    String unitType = bundle.getString("yj_type");
+                    Intent intent = new Intent();
+                    intent.setClass(this, ActivityWarningCenterNotFjCity.class);
+                    intent.putExtra("warninfo", bean);
+                    intent.putExtra("cityid", cityid);
+                    intent.putExtra("yj_type", unitType);
+                    startActivity(intent);
+                }
+            }
+            getIntent().removeExtra(MyConfigure.EXTRA_BUNDLE);
+        }
+    }
+
+    private void initMenu() {
+        // 初始化底部菜单
+        initBottomMenu();
+        checkBottomMenu();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mImageFetcher != null && !mFetcherResumed) {
+            mFetcherResumed = true;
+            mImageFetcher.setExitTasksEarly(false);
+        }
+        MobclickAgent.onResume(this);
+        // 天气广播接收
+        if (mWeatherReceiver == null) {
+            mWeatherReceiver = new WeatherReceiver();
+            PcsDataBrocastReceiver.registerReceiver(ActivityMain.this,mWeatherReceiver);
+        }
+
+        // 添加定位监听
+        ZtqLocationTool.getInstance().addListener(mLocationListener);
+        if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
+            // 未选中首页
+            return;
+        }
+        //下载数据
+        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+        if (cityMain != null) {
+            AutoDownloadWeather.getInstance().setMainDataPause(false);
+            AutoDownloadWeather.getInstance().beginMainData();
+            AutoDownloadWeather.getInstance().setDefaultCity(cityMain);
+        }
+        // 刷新数据
+        FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
+        param.isChangedCity = true;
+        refreshData(param, true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mImageFetcher != null) {
+            mFetcherResumed = false;
+            mImageFetcher.setPauseWork(false);
+            mImageFetcher.setExitTasksEarly(true);
+            mImageFetcher.flushCache();
+        }
+        // 天气广播
+        if (mWeatherReceiver != null) {
+            PcsDataBrocastReceiver.unregisterReceiver(ActivityMain.this,mWeatherReceiver);
+            mWeatherReceiver = null;
+        }
+        //定位监听
+        ZtqLocationTool.getInstance().removeListener(mLocationListener);
+        //停止首页数据下载
+        AutoDownloadWeather.getInstance().setMainDataPause(true);
+        AutoDownloadWeather.getInstance().stopMainData();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mImageFetcher != null) {
+            mImageFetcher.closeCache();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
+        if (mImageFetcher != null && !mFetcherResumed) {
+            mFetcherResumed = true;
+            mImageFetcher.setExitTasksEarly(false);
+        }
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            if (data.getBooleanExtra("finish", false)) {
+                finish();
+                System.exit(0);
+            }
+            if (data.getBooleanExtra("checkVersion", false)) {
+                checkVerSion();
+            }
+            //initMenu();
+        }
+    }
+
+    protected void createImageFetcher(int imageThumbSize) {
+        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(this);
+        cacheParams.setMemCacheSizePercent(0.25f);
+        mImageFetcher = new ImageFetcher(this);
+        mImageFetcher.addImageCache(this.getSupportFragmentManager(),cacheParams);
+    }
+
+    /**
+     * 初始化滑动菜单
+     */
+    private void initSlidingMenu() {
+        mSlidingMenu = getSlidingMenu();
+        mSlidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        mSlidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
+        mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        // 设置菜单布局
+        setBehindContentView(R.layout.sliding_behind);
+        // 左边
+        mSlidingMenu.setMenu(R.layout.sliding_left);
+        // 右边
+        mSlidingMenu.setSecondaryMenu(R.layout.sliding_right);
+        mSlidingMenu.setSecondaryOnOpenListner(rightOpenListener);
+        //创建Fragment
+        FragmentTransaction tran = getSupportFragmentManager().beginTransaction();
+        tran.replace(R.id.sliding_left, mFragmentLeft);
+        tran.replace(R.id.sliding_right, mFragmentRight);
+        tran.commitAllowingStateLoss();
+    }
+
+    /**
+     * 创建fragment
+     */
+    private void createFragment() {
+        // 左滑动Fragment
+        mFragmentLeft = new FragmentCityManager();
+        // 右边滑动Fragment
+        mFragmentRight = new FragmentSet();
+    }
+
+    /**
+     * 初始化底部菜单
+     */
+    private void initBottomMenu() {
+        RadioButton radio;
+        mRadioListener = new MyRadioListener();
+
+        radio = (RadioButton) findViewById(R.id.radio_home);
+        radio.setOnCheckedChangeListener(mRadioListener);
+
+        radio = (RadioButton) findViewById(R.id.radio_product);
+        radio.setOnCheckedChangeListener(mRadioListener);
+
+        radio = (RadioButton) findViewById(R.id.radio_service);
+        radio.setOnCheckedChangeListener(mRadioListener);
+
+        radio = (RadioButton) findViewById(R.id.radio_live);
+        radio.setOnCheckedChangeListener(mRadioListener);
+    }
+
+    private void reflushWidget() {
+        ZtqAppWidget.getInstance().updateAllWidget(this);
+    }
+
+    private class MyRadioListener implements CompoundButton.OnCheckedChangeListener {
+        private int mCurrIndex = -1;
+        private List<Fragment> mFragmentList = new ArrayList<Fragment>();
+
+        public MyRadioListener() {
+            // 首页
+            mFragmentHomeWeather = new FragmentHomeWeather();
+            mFragmentList.add(mFragmentHomeWeather);
+            // 气象产品
+            mFragmentList.add(new FragmentProduct());
+            // 气象服务
+            mFragmentList.add(new FragmentService());
+            // 气象生活
+            mFragmentList.add(new FragmentLife());
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+            if (!isChecked) {
+                return;
+            }
+
+            switch (buttonView.getId()) {
+                case R.id.radio_home:
+                    // 首页
+                    changeFragment(0);
+                    FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
+                    param.isChangedCity = true;
+                    refreshData(param, true);
+                    //侧边栏
+                    setSlidingModel(true);
+//                    mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                    break;
+                case R.id.radio_product:
+                    // 气象产品
+                    changeFragment(1);
+                    setSlidingModel(false);
+//                    mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    break;
+                case R.id.radio_service:
+                    // 气象服务
+                    changeFragment(2);
+                    setSlidingModel(false);
+//                    mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    break;
+                case R.id.radio_live:
+                    // 气象生活
+                    changeFragment(3);
+                    setSlidingModel(false);
+//                    mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    break;
+            }
+        }
+
+        // 切换Fragment
+        public void changeFragment(int index) {
+            if (index == mCurrIndex) {
+                return;
+            }
+            FragmentTransaction tran = ActivityMain.this.getSupportFragmentManager().beginTransaction();
+            // 切换动画
+            if (mCurrIndex == -1) {
+
+            } else if (index > mCurrIndex) {
+                tran.setCustomAnimations(R.anim.slide_right_in,R.anim.slide_left_out);
+            } else {
+                tran.setCustomAnimations(R.anim.slide_left_in,R.anim.slide_right_out);
+            }
+            tran.replace(R.id.layout_content, mFragmentList.get(index));
+            tran.commitAllowingStateLoss();
+            mCurrIndex = index;
+        }
+
+        /**
+         * 获取当前index
+         *
+         * @return
+         */
+        public final int getCurrentIndex() {
+            return mCurrIndex;
+        }
+    }
+
+    public void setSlidingModel(boolean isCanSlid) {
+        if (isCanSlid) {
+            mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        } else {
+            mSlidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        }
+    }
+
+
+    /**
+     * 实时天气广播
+     *
+     * @author JiangZY
+     */
+    private class WeatherReceiver extends PcsDataBrocastReceiver {
+        @Override
+        public void onReceive(String name, String errorStr) {
+            if (TextUtils.isEmpty(name)) {
+                // 名字NULL
+                return;
+            }
+            if (!TextUtils.isEmpty(errorStr)) {
+                // 出错
+                return;
+            }
+            if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
+                // 未选中首页
+                return;
+            }
+            if (name.startsWith(PackSstqUp.NAME)) {
+                //refreshData(null, false);
+                // 更新桌面小部件
+                ZtqAppWidget.getInstance().updateAllWidget(ActivityMain.this);
+            }
+        }
+    }
+
+    private void refreshData(InterfaceRefresh.RefreshParam param, boolean isShowProgress) {
+        if (mRefreshView == null) {
+            return;
+        }
+        // 刷新首页
+        mFragmentHomeWeather.myRefreshView.refresh(param);
+        // 侧边栏
+        mFragmentLeft.refresh(param);
+        // 推送
+        ZtqPushTool.getInstance().refreshPush();
+        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+        if (cityMain == null) {
+            if (isShowProgress) {
+                //showProgressDialog();
+            }
+            return;
+        }
+        mPackSstqUp.area = cityMain.ID;
+        PackSstqDown down = (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
+        if (down == null) {
+            if (isShowProgress) {
+                //showProgressDialog();
+            }
+            return;
+        }
+        // 取消等待对话框
+        dismissProgressDialog();
+    }
+
+    /**
+     * 显示等待对话框
+     */
+    public void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setCancelable(true);
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.setOnCancelListener(mProgressOnCancel);
+        }
+        if (mProgressDialog.isShowing()) {
+
+        } else {
+            mProgressDialog.show();
+        }
+        mProgressDialog.setMessage(getResources().getString(
+                R.string.please_wait));
+    }
+
+    /**
+     * 取消等待对话框
+     */
+    public void dismissProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+    }
+
+    /**
+     * 等待框OnCancel
+     */
+    private DialogInterface.OnCancelListener mProgressOnCancel = new DialogInterface.OnCancelListener() {
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            if (mRadioListener.getCurrentIndex() == 2) {
+                // 气象服务
+            } else {
+                new AlertDialog.Builder(ActivityMain.this)
+                        .setTitle(R.string.tip)
+                        .setMessage(R.string.exit_confirm)
+                        .setPositiveButton(
+                                R.string.exit,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        exit();
+                                    }
+                                })
+                        .setNegativeButton(
+                                R.string.cancel,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        //showProgressDialog();
+                                        dialog.dismiss();
+                                    }
+                                }).create().show();
+            }
+        }
+    };
+
+    /**
+     * 下载主题插图
+     */
+    private void downloadImage() {
+        PackZtqImageDown packImage = (PackZtqImageDown) PcsDataManager.getInstance().getNetPack(PackZtqImageUp.NAME);
+        if (packImage == null) {
+            return;
+        }
+
+        packImage.beginDownload(getString(R.string.file_download_url), mImageFetcher);
+    }
+
+    /**
+     * 检查城市
+     */
+    private void checkCity() {
+        //首页城市
+        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+        //定位城市
+        PackLocalCityLocation cityLocation = ZtqLocationTool.getInstance().getLocationCity();
+        if (cityMain == null) {
+            // 选择城市
+            toCityListActivity();
+//        } else if (cityLocation != null && !cityLocation.isFjCity) {
+//            // 亲情城市
+//            toFamilyCityActivity(cityLocation);
+        } else {
+            // 检查版本
+            checkVerSion();
+            initMenu();
+            checkUserInfo();
+        }
+    }
+
+    /**
+     * 跳转到城市列表
+     */
+    private void toCityListActivity() {
+        Intent it = new Intent(this, ActivityCityList.class);
+        it.putExtra("home_to_add", true);
+        it.putExtra("checkVersion", true);
+        startActivityForResult(it, MyConfigure.RESULT_CITY_LIST);
+    }
+
+    // 检测版本
+    private void checkVerSion() {
+        packcheckversion = (PackCheckVersionDown) PcsDataManager.getInstance().getNetPack(PackCheckVersionUp.NAME);
+        if (packcheckversion == null) {
+            return;
+        }
+        if (packcheckversion.nv == null || "".equals(packcheckversion.nv)) {
+            // Toast.makeText(getApplication(), "版本号为空", 0).show();
+            return;
+        }
+
+        PackageManager packageManager = getPackageManager();
+        // getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageInfo packInfo;
+        int version = 0;
+        try {
+            packInfo = packageManager.getPackageInfo(
+                    ActivityMain.this.getPackageName(), 0);
+            version = packInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (Integer.parseInt(packcheckversion.nv) > version) {
+            View view = LayoutInflater.from(ActivityMain.this).inflate(
+                    R.layout.dialog_message, null);
+            ((TextView) view.findViewById(R.id.dialogmessage))
+                    .setText(packcheckversion.des);
+
+            if(packcheckversion.leve.equals("4")) {
+                checkDialogdescribe = new DialogTwoButton(ActivityMain.this,
+                        view, "立即升级", "退出客户端", new DialogFactory.DialogListener() {
+                    @Override
+                    public void click(String str) {
+                        //checkDialogdescribe.dismiss();
+                        if (str.equals("立即升级")) {
+                            if (!isWiFiNewWord()) {
+                                reminDialog();
+                            } else {
+                                handlerVersion.sendEmptyMessage(0);
+                            }
+                        } else if (str.equals("退出客户端")) {
+                            checkDialogdescribe.dismiss();
+                            exit();
+                        }
+                    }
+                });
+            } else {
+                checkDialogdescribe = new DialogTwoButton(ActivityMain.this,
+                        view, "立即升级", "以后再说", new DialogFactory.DialogListener() {
+                    @Override
+                    public void click(String str) {
+                        checkDialogdescribe.dismiss();
+                        if (str.equals("立即升级")) {
+                            if (!isWiFiNewWord()) {
+                                reminDialog();
+                            } else {
+                                handlerVersion.sendEmptyMessage(0);
+                            }
+                        } else if (str.equals("以后再说")) {
+                            checkDialogdescribe.dismiss();
+                        }
+                    }
+                });
+            }
+            checkDialogdescribe.setCancelable(false);
+            checkDialogdescribe.setTitle("天津气象提示");
+            checkDialogdescribe.show();
+        }
+    }
+
+    /* 判断是否是处于wifi状态下*/
+    protected boolean isWiFiNewWord() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private DialogTwoButton dialogRemain;
+
+    private void reminDialog() {
+        View view = LayoutInflater.from(ActivityMain.this).inflate(R.layout.download_remind, null);
+        dialogRemain = new DialogTwoButton(ActivityMain.this,
+                view, "确定", "取消", new DialogFactory.DialogListener() {
+            @Override
+            public void click(String str) {
+                dialogRemain.dismiss();
+                if (str.equals("确定")) {
+                    handlerVersion.sendEmptyMessage(0);
+                }
+            }
+        });
+        dialogRemain.setTitle("天津气象提示");
+        dialogRemain.show();
+    }
+
+    public InterfaceRefresh getRefreshView() {
+        return mRefreshView;
+    }
+
+    public ImageFetcher getImageFetcher() {
+        return mImageFetcher;
+    }
+
+    /**
+     * 版本升级下载监听
+     */
+    PcsFileDownloadListener downloadlistener = new PcsFileDownloadListener() {
+        @Override
+        public void progress(String url, String fileName, long netSize,
+                             long downSize) {
+            if (checkDialogdownload.isShowing()) {
+                progerssBar.setMax((int) netSize);
+                progerssBar.setProgress((int) downSize);
+//               float press = ((downSize / (1024f * 1024f)) / (netSize / (1024f * 1024f))) * 100f;
+                float press = ((float) downSize / (float) netSize) * 100f;
+                desc_download.setText(String.format("%.2f", press) + "%");
+
+//              desc_download.setText(String.format("%.1f", downSize/ (1024f * 1024f))+ "M/" + String.format("%.1f", netSize / (1024f * 1024f))+ "M");
+            }
+        }
+
+        @Override
+        public void downloadSucc(String url, String fileName) {
+            try {
+                if (checkDialogdownload.isShowing()) {
+                    checkDialogdownload.dismiss();
+                }
+                String[] appname = packcheckversion.file.split("/");
+                File file = new File(PcsGetPathValue.getInstance().getAppPath()
+                        + appname[appname.length - 1]);
+                CommUtils.openIfAPK(file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void downloadErr(String url, String fileName, String errMsg) {
+            if (checkDialogdownload.isShowing()) {
+                checkDialogdownload.dismiss();
+            }
+        }
+    };
+
+
+    /**
+     * 定位改变监听
+     */
+    private ZtqLocationTool.PcsLocationListener mLocationListener = new ZtqLocationTool.PcsLocationListener() {
+
+        @Override
+        public void onLocationChanged() {
+            if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
+                // 未选中首页
+                return;
+            }
+            // 刷新定位数据
+            mHandler.sendEmptyMessage(0);
+            //refreshData(null, false);
+        }
+    };
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void dispatchMessage(Message msg) {
+            super.dispatchMessage(msg);
+            refreshData(null, false);
+        }
+    };
+
+    /**
+     * 刷新视图
+     */
+    private InterfaceRefresh mRefreshView = new InterfaceRefresh() {
+        @Override
+        public void refresh(RefreshParam param) {
+            refreshData(param, false);
+        }
+    };
+
+    /**
+     * 检查底部菜单选中
+     */
+    private void checkBottomMenu() {
+        mIntBackTarget = getIntent().getIntExtra("BackTarget",
+                FragmentActivityZtqBase.BackTarget.NORMAL.ordinal());
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.PRODUCT.ordinal()) {
+            // 气象产品
+            mRadioListener.changeFragment(1);
+            radioGroup.check(R.id.radio_product);
+        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.SERVICE.ordinal()) {
+            // 气象服务
+            mRadioListener.changeFragment(2);
+            radioGroup.check(R.id.radio_service);
+        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.LIVE.ordinal()) {
+            // 气象生活
+            mRadioListener.changeFragment(3);
+            radioGroup.check(R.id.radio_live);
+        } else {
+            // 默认选中首页
+            mRadioListener.changeFragment(0);
+            radioGroup.check(R.id.radio_home);
+        }
+    }
+
+    private SlidingMenu.OnOpenListener rightOpenListener = new SlidingMenu.OnOpenListener() {
+        @Override
+        public void onOpen() {
+            if(mFragmentRight != null && mFragmentRight instanceof InterfaceRefresh) {
+                mFragmentRight.refresh(null);
+            }
+        }
+    };
+
+    /*
+     * 返回键监听处理
+     */
+    @Override
+    public void onBackPressed() {
+        if ((System.currentTimeMillis() - mBackTime) > 2000) {
+            Toast.makeText(this, getString(R.string.once_again_exit),
+                    Toast.LENGTH_SHORT).show();
+            mBackTime = System.currentTimeMillis();
+        } else {
+            exit();
+        }
+    }
+
+    /**
+     * 退出程序
+     */
+    public void exit() {
+        finish();
+    }
+
+    private void checkUserInfo() {
+        SharedPreferences shared = getSharedPreferences("userinfologin", Context.MODE_PRIVATE);
+        boolean first = shared.getBoolean("first", true);
+        if(first) {
+            if(!ZtqCityDB.getInstance().isLoginService()) {
+                showLoginDialog();
+            }
+            SharedPreferences.Editor editor = shared.edit();
+            editor.putBoolean("first", false);
+            editor.commit();
+        }
+    }
+
+    private DialogOneButton loginDialog;
+    private void showLoginDialog() {
+        View view = LayoutInflater.from(this).inflate(R.layout.layout_main_login, null);
+        final EditText etUserName = view.findViewById(R.id.et_username);
+        final EditText etPassword = view.findViewById(R.id.et_password);
+        loginDialog = new DialogOneButton(this, view, "登录", new DialogFactory.DialogListener() {
+            @Override
+            public void click(String str) {
+                if (str.equals("登录")) {
+                    PackPhotoLoginUp up = new PackPhotoLoginUp();
+                    up.platform_user_id = etUserName.getText().toString();
+                    up.pwd = PcsMD5.Md5(etPassword.getText().toString());
+                    up.platform_type = PackPhotoLoginUp.PLAFORM_TYPE_ZTQ;
+                    NetTask task = new NetTask(ActivityMain.this, new NetTask.NetListener() {
+                        @Override
+                        public void onComplete(PcsPackDown down) {
+                            if(down instanceof PackPhotoLoginDown) {
+                                PackPhotoLoginDown loginDown = (PackPhotoLoginDown) down;
+                                if(loginDown.result.equals("1")) {
+                                    PackLocalUser myUserInfo = new PackLocalUser();
+                                    myUserInfo.user_id = loginDown.fw_user_id;
+                                    myUserInfo.sys_user_id=loginDown.user_id;
+                                    myUserInfo.sys_nick_name=loginDown.nick_name;
+                                    myUserInfo.sys_head_url=loginDown.head_url;
+                                    myUserInfo.mobile=loginDown.mobile;
+                                    myUserInfo.is_jc = loginDown.is_jc;
+                                    PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
+                                    packLocalUserInfo.currUserInfo = myUserInfo;
+                                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+                                    Toast.makeText(ActivityMain.this,
+                                            getString(R.string.login_succ), Toast.LENGTH_SHORT)
+                                            .show();
+                                    if(loginDialog != null) {
+                                        loginDialog.dismiss();
+                                    }
+                                } else {
+                                    Toast.makeText(ActivityMain.this, loginDown.result_msg, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    });
+                    task.execute(up);
+                } else if(str.equals("close")) {
+                    if(loginDialog != null) {
+                        loginDialog.dismiss();
+                    }
+                }
+            }
+        });
+        loginDialog.setCanceledOnTouchOutside(true);
+        loginDialog.showCloseBtn();
+        loginDialog.show();
+    }
+}

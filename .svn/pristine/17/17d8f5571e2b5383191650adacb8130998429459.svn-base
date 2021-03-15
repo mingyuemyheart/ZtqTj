@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackTouristSpotUp extends PcsPackUp {
+
+    public static final String NAME = "ly_city_list";
+
+	public String area_id = "";
+
+	public PackTouristSpotUp() {
+	    this.intervalMill = 0;
+    }
+
+	@Override
+	public JSONObject toJSONObject() {
+		try{
+			JSONObject jsonObject=new JSONObject();
+			jsonObject.put("area_id" , area_id);
+			return jsonObject;
+		}catch(JSONException je){
+			je.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

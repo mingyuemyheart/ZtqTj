@@ -1,0 +1,54 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.graphics.Bitmap;
+
+/**
+ * 旅游气象专题信息
+ * @author tya
+ *
+ */
+public class TravelSubjectInfo {
+	
+	/**
+	 * 图片地址
+	 */
+	public String img_url = "";
+	
+	/**
+	 * 经度
+	 */
+	public String log     = "";
+	
+	/**
+	 * 纬度
+	 */
+	public String lat     = "";
+	
+	/**
+	 * 景点ID
+	 */
+	public String tour_id = "";
+	
+	/**
+	 * 景点名称
+	 */
+	public String tour_name = "";
+	
+	/**
+	 * 景点图片
+	 */
+	public Bitmap bm = null;
+	
+	public TravelSubjectInfo(TravelSubjectInfo tsi) {
+		this.img_url = tsi.img_url;
+		this.log = tsi.log;
+		this.lat = tsi.lat;
+		this.tour_id = tsi.tour_id;
+		this.tour_name = tsi.tour_name;
+		this.bm = tsi.bm;
+
+	}
+	
+	public TravelSubjectInfo() {
+	}
+}

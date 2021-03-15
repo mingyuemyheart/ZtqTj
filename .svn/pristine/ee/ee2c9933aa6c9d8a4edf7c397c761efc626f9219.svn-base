@@ -1,0 +1,137 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+
+/**
+ * 防汛WebView链接管理
+ * 
+ * @author Administrator
+ * 
+ */
+public class FxWebViewUrlManager {
+	private static FxWebViewUrlManager urlmanager = null;
+	private String host = "http://jxweatherintf.aikanonline.com/";
+	private String host_dev = "http://112.5.138.42:8099/";
+	private String host_test = "http://112.5.138.42:9080/";
+	private String curHost = "http://jxweatherintf.aikanonline.com/";
+
+	private FxWebViewUrlManager(int flag) {
+		this.curHost = getHost(flag);
+	}
+
+	public static FxWebViewUrlManager getInstance(int flag) {
+		if (urlmanager == null) {
+			urlmanager = new FxWebViewUrlManager(flag);
+		}
+
+		return urlmanager;
+	}
+
+	/**
+	 * 切换地址
+	 * 
+	 * @param flag
+	 *            标志： 0 线上 1 开发 2 测试
+	 * @return
+	 */
+	private String getHost(int flag) {
+		String host = this.host;
+
+		switch (flag) {
+		case 0:
+			host = this.host;// 线上
+			break;
+		case 1:
+			host = this.host_dev;// 开发
+			break;
+		case 2:
+			host = this.host_test;// 测试
+			break;
+		}
+
+		return host;
+	}
+
+	/**
+	 * 汛情摘要页面url
+	 * 
+	 * @return
+	 */
+	public String getXqzyWapUrl() {
+		return curHost + "/fjfx_wap/xqzy_XqzyIndex.do";
+	}
+
+	/**
+	 * 降雨统计页面url
+	 * 
+	 * @return
+	 */
+	public String getYqxxWapUrl() {
+		return curHost + "/fjfx_wap/yqxx_YqxxIndex.do";
+	}
+
+	/**
+	 * 等值面页面url
+	 * 
+	 * @return
+	 */
+	public String getYqxxDzmWapUrl() {
+		return curHost + "/fjfx_wap/yqxx_DzmIndex.do";
+	}
+
+	/**
+	 * 重要水位站页面url
+	 * 
+	 * @return
+	 */
+	public String getShuiWeiZYWapUrl() {
+		return curHost + "/fjfx_wap/shuiwei_ShuiWeiZY.do";
+	}
+
+	/**
+	 * 其他水位站页面url
+	 * 
+	 * @return
+	 */
+	public String getShuiWeiQTWapUrl() {
+		return curHost + "/fjfx_wap/shuiwei_ShuiWeiQT.do";
+	}
+
+	/**
+	 * 超警戒水位站页面url
+	 * 
+	 * @return
+	 */
+	public String getShuiWeiCjjWapUrl() {
+		return curHost + "/fjfx_wap/shuiwei_ShuiWeiCJJ.do";
+	}
+
+	/**
+	 * 水库页面url
+	 * 
+	 * @param reservoirType
+	 *            水库类型
+	 * @return
+	 */
+	public String getShuiKuWapurl(int reservoirType) {
+		return curHost + "fjfx_wap/shuiku_ShuiKu.do?reservoirType="
+				+ reservoirType;
+	}
+
+	/**
+	 * 超汛期页面url
+	 * 
+	 * @return
+	 */
+	public String getShuiKuCJJWapUrl() {
+		return curHost + "/fjfx_wap/shuiku_ShuiKuCJJ.do";
+	}
+
+	/**
+	 * 风情信息页面url
+	 * 
+	 * @return
+	 */
+	public String getFengQingWapUrl() {
+		return curHost + "/fjfx_wap/fengqing_FengQingIndex.do";
+	}
+}

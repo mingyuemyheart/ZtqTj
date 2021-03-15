@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+/**
+ * Created by tyaathome on 2017/8/23.
+ */
+
+public class FycxFbtBean {
+    public String l_type = "";
+    public String lon = "";
+    public String lat = "";
+    public String sta_name = "";
+    public String val = "";
+    public String stationid = "";
+    public String fx = "";
+}

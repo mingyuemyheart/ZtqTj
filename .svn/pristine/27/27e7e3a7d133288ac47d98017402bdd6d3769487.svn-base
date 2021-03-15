@@ -1,0 +1,25 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 我在这里天气温馨提示下载包
+ * Created by tyaathome on 2016/6/7.
+ */
+public class PackForecastWeatherTipDown extends PcsPackDown {
+
+    public String tip = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            tip = obj.getString("tip");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

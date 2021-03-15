@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我的预警-定制页 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/bg_white" >
+
+   	<!-- 个人中心 -->
+   	<LinearLayout
+        android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/dimen20"
+		android:orientation="vertical"
+		android:background="@drawable/image_warning_customize" >
+	      
+	   	<LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:gravity="center_vertical" >
+	       
+	        <TextView
+	            android:id="@+id/tv_welcome"
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:text="@string/hint_welcome_unlogin"
+	            android:textSize="@dimen/text_content"
+	       	    android:textColor="@color/text_white" />
+	       
+	        <!-- 登陆 -->
+	        <TextView
+	            android:id="@+id/btn_login"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:padding="@dimen/dimen5"
+	            android:gravity="center"
+	            android:text="@string/login"
+	            android:textSize="@dimen/text_content"
+	       	    android:textColor="@color/text_black"
+	       	    android:background="@drawable/btn_login_03" />
+		</LinearLayout>
+	      
+		<LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:layout_marginTop="@dimen/dimen10"
+	        android:orientation="vertical"
+	        android:gravity="center" >
+	          
+	        <!-- 用户头像 -->
+	       	<ImageView
+	            android:id="@+id/image_user"
+	            android:layout_width="87dp"
+	            android:layout_height="87dp"
+	            android:src="@drawable/head_default"
+	            android:visibility="gone" />
+	    </LinearLayout>
+	</LinearLayout>
+   
+   	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:padding="@dimen/dimen10"
+		android:orientation="vertical"
+		android:background="#FFF" >
+       
+        <!-- 登录提示 -->
+        <TextView
+            android:id="@+id/tv_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hint_customize_unlogin"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_gray" />
+       
+        <!-- 预警类型 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+           
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_select_warning_type"
+                android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+           
+            <TextView
+                android:id="@+id/btn_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dimen5"
+                android:text="@string/text_select_warning_type"
+                android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black"
+                android:background="@drawable/btn_warning_type" />
+		</LinearLayout>
+       
+        <!-- 预警区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+           
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/text_select_warning_area"
+                android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black" />
+           
+            <TextView
+                android:id="@+id/btn_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/dimen5"
+                android:text="@string/text_add_warning_area"
+                android:textSize="@dimen/text_content"
+                android:textColor="@color/text_black"
+                android:background="@drawable/btn_add_area" />
+		</LinearLayout>
+       
+        <!-- 定制区域数量提示 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:text="@string/hint_warning_count"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_gray" />
+       
+        <!-- 资费说明 -->
+        <TextView
+            android:id="@+id/tv_tariff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:text="@string/hint_tariff"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_black" />
+       
+        <!-- 预警区域列表 -->
+        <ListView
+            android:id="@+id/list_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+           	android:layout_weight="1"
+            android:padding="@dimen/dimen10"
+            android:dividerHeight="10dp"
+            android:divider="@null"
+            android:layout_marginTop="@dimen/dimen10"
+          	android:background="@drawable/bg_warning_area"
+          	android:fadeScrollbars="true" />
+       
+        <!-- 确认按钮 -->
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/dimen10"
+            android:layout_marginBottom="@dimen/dimen10"
+            android:text="@string/text_save_pay"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_white"
+            android:background="@drawable/btn_login_02" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+/**
+ * Created by tyaathome on 2016/6/6.
+ */
+public class WarnCenterYJXXBean {
+
+    /**
+     * 信息简短描述
+     */
+    public String desc = "";
+
+    /**
+     * 信息内容
+     */
+    public String info = "";
+
+    /**
+     * 信息图标
+     */
+    public String ico = "";
+
+    /**
+     * 预警颜色
+     */
+    public String color = "";
+
+    /**
+     * 开始显示时间
+     */
+    public String pt = "";
+
+    /**
+     * 结束显示时间
+     */
+    public String et = "";
+
+    /**
+     * 返回接收数据
+     */
+    public String key = "";
+
+    /**
+     * 防御指南
+     */
+    public String defend = "";
+}

@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 台风列表
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackTyphoonListUp extends PcsPackUp {
+
+    public static final String NAME = "tflist";
+
+	public String year = "";
+
+	public PackTyphoonListUp() {
+		//intervalMill = 1000 * 60 * 5;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("year", year);
+
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+
+		return NAME + "#" + year;
+	}
+
+}

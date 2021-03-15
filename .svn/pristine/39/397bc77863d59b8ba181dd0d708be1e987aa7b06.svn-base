@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 首页天气第2行（一周天气） -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/bg_home_week"
+              android:descendantFocusability="blocksDescendants"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_marginleft_right"
+              android:paddingTop="@dimen/dimen5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/radio_group_week_24"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/main_24hour"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_week_bg"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="for 7 days"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content"/>
+
+            <RadioButton
+                android:id="@+id/main_location"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_week_bg"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingLeft="5dp"
+                android:text="for location"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content"/>
+        </RadioGroup>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout_24house"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/btn_home_entry"
+        android:orientation="vertical">
+
+
+        <com.pcs.ztqtj.view.myview.MyListView
+            android:id="@+id/lv_for_7day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@color/alpha100"
+            android:divider="@null">
+
+        </com.pcs.ztqtj.view.myview.MyListView>
+
+
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/lay_fra_location"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.pcs.ztqtj.view.myview.MapContainer
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.amap.api.maps.MapView
+                android:id="@+id/map"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
+
+        </com.pcs.ztqtj.view.myview.MapContainer>
+
+        <LinearLayout
+            android:id="@+id/lay_main_address"
+            android:layout_width="match_parent"
+            android:gravity="center_vertical"
+            android:visibility="gone"
+            android:background="@drawable/icon_en_back"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/tv_main_address"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/text_white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_footnote"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/lay_image_up"
+                android:gravity="center_vertical|right"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/icon_map_up"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_grid_content"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:background="@drawable/icon_en_back"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/tv_time"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal|bottom"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_name_ti"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_footnote"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1250dp"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/white_alpha50">
+
+                </View>
+
+                <com.pcs.ztqtj.view.myview.MyHScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_toRightOf="@+id/tv_time"
+                    android:scrollbars="none">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="@dimen/dimen10">
+
+                        <com.pcs.ztqtj.view.myview.MyGridView
+                            android:id="@+id/gridview24hour"
+                            android:layout_width="1200dp"
+                            android:layout_height="wrap_content"
+                            android:listSelector="@android:color/transparent"/>
+
+                        <com.pcs.ztqtj.view.myview.Hour24View_En
+                            android:id="@+id/main24hour"
+                            android:layout_width="1200dp"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="@dimen/dimen30"/>
+
+                        <TextView
+                            android:id="@+id/not_time_data"
+                            android:layout_width="match_parent"
+                            android:layout_height="205dp"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:text="暂无数据"
+                            android:textColor="@color/text_white"
+                            android:textSize="@dimen/text_content"
+                            android:visibility="gone"/>
+                    </RelativeLayout>
+                </com.pcs.ztqtj.view.myview.MyHScrollView>
+
+
+                <LinearLayout
+                    android:id="@+id/lay_nulldata"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@android:color/white"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="暂无数据"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_content"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

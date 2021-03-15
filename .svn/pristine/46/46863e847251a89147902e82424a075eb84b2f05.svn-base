@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：服务产品
+ * @author E.Sun
+ * 2015年11月9日
+ */
+public class PackProductUp extends PcsPackUp {
+
+	public static final String NAME = "product";
+	
+	public String type = "";
+	
+	/** 产品类型：定点服务 */
+	public static final String TYPE_LOCATION_WARNING = "3";
+	
+	public PackProductUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put("product_type", type);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + type;
+	}
+
+}

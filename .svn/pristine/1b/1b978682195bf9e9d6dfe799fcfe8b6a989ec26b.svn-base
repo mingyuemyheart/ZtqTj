@@ -1,0 +1,57 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 天气栏目下载包
+ * Created by tyaathome on 2016/8/8.
+ */
+public class PackWeatherColumnDown extends PcsPackDown {
+
+    public List<WeatherColumnInfo> lm_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            lm_list.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("lm_list");
+            for(int i = 0; i < ary.length(); i++) {
+                WeatherColumnInfo info = new WeatherColumnInfo();
+                JSONObject temp = ary.getJSONObject(i);
+                info.name = temp.getString("name");
+                info.key_type = temp.getString("key_type");
+                info.ioc = temp.getString("ioc");
+                info.req_url = temp.getString("req_url");
+                lm_list.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class WeatherColumnInfo implements InterfaceColumn {
+       public String name = "";
+       public String key_type = "";
+       public String ioc = "";
+       public String req_url = "";
+
+        @Override
+        public String getTitle() {
+            return name;
+        }
+
+        @Override
+        public String getIconPath() {
+            return ioc;
+        }
+    }
+}

@@ -1,0 +1,87 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Z 数值预报
+ */
+public class PackNumericalForecastDown extends PcsPackDown {
+    public List<LmListBean> lmBeanList = new ArrayList<LmListBean>();
+    public List<TitleListBean> TitleBeanList = new ArrayList<TitleListBean>();
+    @Override
+    public void fillData(String jsonStr) {
+        lmBeanList.clear();
+        TitleBeanList.clear();
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray arrlmList = obj.getJSONArray("lmList");
+            for (int i = 0; i < arrlmList.length(); i++) {
+                JSONObject jsonb = arrlmList.getJSONObject(i);
+                LmListBean bean = new LmListBean();
+                bean.id = jsonb.getString("id");
+                bean.name = jsonb.getString("name");
+                bean.pname = jsonb.getString("pname");
+                bean.remark=jsonb.optString("remark");
+                lmBeanList.add(bean);
+            }
+
+            JSONArray arrtitleList = obj.getJSONArray("titleList");
+            for (int i = 0; i < arrtitleList.length(); i++) {
+                JSONObject jsonb = arrtitleList.getJSONObject(i);
+                TitleListBean bean = new TitleListBean();
+                bean.title = jsonb.getString("title");
+                bean.time = jsonb.getString("time");
+                bean.lm = jsonb.getString("lm");
+                bean.str = jsonb.getString("str");
+                bean.img = jsonb.getString("img");
+                bean.type = jsonb.getString("type");
+                bean.html = jsonb.getString("html");
+                TitleBeanList.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    public class LmListBean {
+        public String id = "";
+        public String name = "";
+        public String pname = "";
+        public String remark="";
+        // "id" : "10501",
+        // "name" : "福建省短期天气形势分析",
+        // "pname" : "福建省气象台指导预报->福建省短期天气形势分析"
+    }
+
+    public class TitleListBean {
+        public String title = "";
+        public String time = "";
+        public String lm = "";
+        public String str = "";
+        public String img = "";
+        public String type = "";
+        public String html = "";
+        // "title" : "图片测试",
+        // "time" : "12月08日 00时",
+        // "lm" : "10501",
+        // "str" : "",
+        // "img" : "http://192.168.15.86:8080/image/zsfj/wwww.baidu.com",
+        // "type" : "2"
+    }
+}

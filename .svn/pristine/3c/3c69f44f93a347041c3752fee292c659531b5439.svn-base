@@ -1,0 +1,74 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.scene;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+/**
+ * 亲情城市-天气实况
+ * 
+ * @author Chensq
+ * 
+ */
+public class PackRealDown extends PcsPackDown {
+	public List<RealwtList> realwtList=new ArrayList<RealwtList>();
+	/**
+	 * 城镇ID
+	 */
+	public String key = "";
+	@Override
+	public void fillData(String jsonStr) {
+		realwtList.clear();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			key = temp.getString("key");
+			JSONArray arrRealwt = temp.getJSONArray("realwt");
+			for (int i = 0; i < arrRealwt.length(); i++) {
+				JSONObject joIn=arrRealwt.getJSONObject(i);
+				RealwtList realwt=new RealwtList();
+				realwt.city_name=joIn.getString("city_name");
+				realwt.sys_time=joIn.getString("sys_time");
+				realwt.humidity=joIn.getString("humidity");
+				realwt.visibility=joIn.getString("visibility");
+				realwt.wind_dir=joIn.getString("wind_dir");
+				realwt.wind_speed=joIn.getString("wind_speed");
+				realwt.upt=joIn.getString("city_name");
+				realwt.ct=joIn.getString("sys_time");
+				realwtList.add(realwt);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	
+	public class RealwtList{
+		/** 城市名称 **/
+		public String city_name = "";
+		/** 系统时间 **/
+		public String sys_time = "";
+		/** 相对湿度 **/
+		public String humidity = "";
+		/** 能见度 **/
+		public String visibility = "";
+		/** 风向 **/
+		public String wind_dir = "";
+		/** 风速**/
+		public String wind_speed = "";
+		/** 更新 **/
+		public String upt = "";
+		/** 实时温度 **/
+		public String ct = "";
+	}
+}

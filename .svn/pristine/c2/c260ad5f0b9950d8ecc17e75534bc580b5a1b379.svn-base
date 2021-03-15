@@ -1,0 +1,73 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.order;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+
+/**
+ * 请求包：支付服务订单
+ * @author E.Sun
+ * 2015年11月10日
+ */
+public class PackPayOrderUp extends PcsPackUp {
+
+	public static final String NAME = "warn_position_order_pay";
+	
+	/** 订单ID */
+	public String orderID = "";
+	/** 用户ID */
+	public String userID = "";
+	/** 套餐ID */
+	public String setMealID = "";
+	/** 支付方式 */
+	public String payType = "";
+	/** 密文 */
+	public String sign = "";
+	
+	/** 支付方式：微信支付 */
+	public static final String PAY_TYPE_WEIXIN = "2";
+//	/** 支付方式：支付宝支付 */
+//	public static final String PAY_TYPE_ALIPAY= "2";
+//	/** 支付方式：银联支付 */
+//	public static final String PAY_TYPE_UNIONPAY  = "3";
+//	/** 支付方式：短信支付 */
+//	public static final String PAY_TYPE_SMS = "4";
+	
+	public PackPayOrderUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put("order_id", orderID);
+			object.put("user_id", userID);
+			object.put("month", setMealID);
+			object.put("pay_type", payType);
+			fillSign();
+			object.put("sign", sign);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + orderID;
+	}
+	
+	private void fillSign() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(orderID).append("-")
+		.append(userID).append("-")
+		.append(setMealID).append("-")
+		.append(payType);
+		sign = PcsMD5.Md5(sb.toString());
+	}
+
+}

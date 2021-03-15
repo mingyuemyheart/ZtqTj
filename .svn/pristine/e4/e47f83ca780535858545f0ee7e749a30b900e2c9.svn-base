@@ -1,0 +1,72 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：雷电查询—数据更多查询列表
+ * 
+ * @author Chensq 2015年11月9日
+ */
+public class PackThunderMoreListUp extends PcsPackUp {
+	/**
+	 * 1表示地区，2表示城市
+	 */
+	public String type;
+	/**
+	 * 开始年月日时分
+	 */
+	public String start_time;
+	/**
+	 * 结束年月日时分
+	 */
+	public String end_time;
+	/**
+	 * 城市id或地区id
+	 */
+	public String code;
+	/**
+	 * 闪电类型:ic:云闪 cg:地闪
+	 */
+	public String cg_ic;
+	/**
+	 * 极性:1:正闪 -1:负闪
+	 */
+	public String processflag;
+	/**
+	 * 页数
+	 */
+	public String page;
+	public static final String NAME = "thunder_more_list";
+
+	public PackThunderMoreListUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("page", page);
+			obj.put("end_time", end_time);
+			obj.put("start_time", start_time);
+			obj.put("code", code);
+			obj.put("type", type);
+			obj.put("cg_ic", cg_ic);
+			obj.put("processflag", processflag);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

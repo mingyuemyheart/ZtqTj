@@ -1,0 +1,24 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import java.io.Serializable;
+
+/**
+ * 福建防汛 降雨量站点信息bean
+ * 
+ * @author chenjh
+ */
+@SuppressWarnings("serial")
+public class RainInfo implements Serializable {
+	/** 经度 **/
+	public String longitude = "";
+	/** 纬度 **/
+	public String latitude = "";
+	/** 站点名称 **/
+	public String stationname = "";
+	/** 市 **/
+	public String cityname = "";
+	/** 县 **/
+	public String country = "";
+	/** 降雨量单位mm **/
+	public String value = "";
+}

@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 分享
+ *
+ * @author
+ */
+public class PackShareAboutDown extends PcsPackDown {
+    public String share_content = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        JSONObject jo;
+        try {
+            jo = new JSONObject(jsonStr);
+            share_content = jo.getString("share_content");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("share_content", share_content);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj.toString();
+    }
+}

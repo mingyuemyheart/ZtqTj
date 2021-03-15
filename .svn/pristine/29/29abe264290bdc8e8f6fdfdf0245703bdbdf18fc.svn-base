@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class YjZqInfo {
+
+
+    public String nickname;
+
+    public String mobile;
+
+    public String pub_time;
+
+    public String zq_title;
+
+    public String lon;
+
+    public String lat;
+
+    public String zq_addr;
+
+    public String zq_name;
+
+    public String zq_desc;
+
+    public String zq_time;
+
+    public String pic_url;
+
+    public String voi_url;
+
+    public String vid_url;
+
+    public String tub_url;
+
+}

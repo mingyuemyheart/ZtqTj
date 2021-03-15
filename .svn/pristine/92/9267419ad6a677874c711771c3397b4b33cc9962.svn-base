@@ -1,0 +1,41 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/8/16 0016.
+ * chen_jx
+ */
+
+public class PackYjZRPersonInfoDown extends PcsPackDown {
+    public List<YjMyReport> list_2=new ArrayList<YjMyReport>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        list_2.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            JSONArray jsonArraydz = obj.getJSONArray("info_list");
+            if (jsonArraydz!=null) {
+                for (int i = 0; i < jsonArraydz.length(); i++) {
+                    YjMyReport yjMyReport = new YjMyReport();
+                    yjMyReport.id = jsonArraydz.getJSONObject(i).getString("id");
+                    yjMyReport.zq_addr = jsonArraydz.getJSONObject(i).getString("zq_addr");
+                    yjMyReport.pub_time = jsonArraydz.getJSONObject(i).getString("pub_time");
+                    yjMyReport.status = jsonArraydz.getJSONObject(i).getString("status");
+                    list_2.add(yjMyReport);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

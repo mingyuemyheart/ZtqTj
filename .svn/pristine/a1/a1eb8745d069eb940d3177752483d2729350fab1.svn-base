@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.art;
+
+import java.io.Serializable;
+
+/**
+ * @author chenjh
+ * @version 创建时间：2015-1-14 上午11:18:09 类说明
+ */
+public class ArtTitleInfo implements Serializable {
+
+	// /** 文章编号 **/
+	// public String tid = "";
+	/** 文章标题 **/
+	public String title = "";
+	/** 简短描述 **/
+	public String desc = "";
+	// /** 文章类型,主要用于区分类型为通过接口获取内容或者是打开url获取内容.默认为0 **/
+	// public String type = "";
+	/** 发布时间 **/
+	public String pubt = "";
+	/** 缩略图 **/
+	public String small_ico = "";
+	/** 大图 **/
+	public String big_ico = "";
+	/** 链接 **/
+	public String url = "";
+}

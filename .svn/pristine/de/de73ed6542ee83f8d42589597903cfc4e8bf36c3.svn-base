@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ *自动站风况统计表（fltj_zd）
+ */
+public class PackFltjZdDown extends PcsPackDown {
+	public List<FltjZd> datalist;
+	@Override
+	public void fillData(String jsonStr) {
+		datalist = new ArrayList<FltjZd>();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				FltjZd imgobject = new FltjZd();
+				imgobject.time = obj.getString("time");
+				imgobject.county = obj.getString("county");
+				imgobject.windpower = obj.getString("windpower");
+				imgobject.winddirection = obj.getString("winddirection");
+				imgobject.windFengLi = obj.getString("fl");
+				datalist.add(imgobject);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	public class FltjZd{
+		public String time;
+		public String county;
+		public String windpower;//风速度
+		public String winddirection;
+		public String windFengLi;//风力
+	}
+}

@@ -1,0 +1,23 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import java.io.Serializable;
+
+/**
+ * 区域信息
+ * @author E.Sun
+ * 2015年11月10日
+ */
+public class AreaInfo implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 796073601388997292L;
+	/** 区域编号 */
+	public String id ="";
+	/** 区域名称 */
+	public String areaName = "";
+	/** 所属城市名称 */
+	public String cityName = "";
+	
+}

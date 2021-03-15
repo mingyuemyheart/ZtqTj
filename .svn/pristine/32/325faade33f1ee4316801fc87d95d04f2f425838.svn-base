@@ -1,0 +1,59 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 空气质量—排行_new
+ * Created by tyaathome on 2017/1/17.
+ */
+
+public class PackAirRankNewDown extends PcsPackDown {
+
+    public String updateTime = "";
+
+    public List<AirRankNew> rank_list = new ArrayList<>();
+    public Map<String,AirRankNew> allProvince=new HashMap<String,AirRankNew>();
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            rank_list.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            //updateTime = obj.getString("updateTime");
+            JSONArray ary = obj.getJSONArray("rankList");
+            for (int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                AirRankNew bean = new AirRankNew();
+                bean.potision=i+1+"";
+                bean.province = temp.getString("province");
+                bean.city = temp.getString("city");
+                bean.num = temp.getString("num");
+                bean.ranknum = temp.getString("ranknum");
+                bean.lon = temp.getString("lon");
+                bean.lat = temp.getString("lat");
+                bean.areaId = temp.getString("areaId");
+                bean.map_name = temp.optString("map_name", "");
+                bean.rank_ud = temp.optString("rank_ud", "");
+                bean.pub_time = temp.optString("pub_time", "");
+                bean.pinyin = temp.optString("pinyin");
+                rank_list.add(bean);
+
+                AirRankNew beanMap = new AirRankNew();
+                beanMap.province= temp.optString("province");
+                beanMap.isCity=false;
+                allProvince.put(beanMap.province,beanMap);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+}

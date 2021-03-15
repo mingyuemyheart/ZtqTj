@@ -1,0 +1,61 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 旅游—气象栏目
+ * @author tya
+ *
+ */
+public class PackTravelWeatherColumnDown extends PcsPackDown {
+
+	public List<TravelWeatherColumn> column_list = new ArrayList<TravelWeatherColumn>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			column_list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray columnAry = obj.getJSONArray("column_list");
+			for(int i = 0; i < columnAry.length(); i++) {
+				TravelWeatherColumn tlc = new TravelWeatherColumn();
+				JSONObject temp = columnAry.getJSONObject(i);
+				tlc.img_url = temp.getString("img_url");
+				tlc.link_url = temp.getString("link_url");
+				JSONArray subjectAry = temp.getJSONArray("subject_list");
+				for(int j = 0; j < subjectAry.length(); j++) {
+					TravelWeatherSubject tws = new TravelWeatherSubject();
+					JSONObject temp2 = subjectAry.getJSONObject(j);
+					tws.name = temp2.getString("name");
+					tws.title = temp2.getString("title");
+					tws.key_type = temp2.getString("key_type");
+					tws.link_url = temp2.getString("link_url");
+					tws.is_line = temp2.getString("is_line");
+					tws.traffic_ico = temp2.getString("traffic_ico");
+					tws.subject_id = temp2.getString("subject_id");
+					tws.log = temp2.getString("log");
+					tws.lat = temp2.getString("lat");
+					tlc.subject_list.add(tws);
+				}
+				column_list.add(tlc);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

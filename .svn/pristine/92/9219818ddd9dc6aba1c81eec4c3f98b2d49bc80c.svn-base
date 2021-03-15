@@ -1,0 +1,32 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 推送帮助
+ */
+public class PackPushHelpUp extends PcsPackUp {
+
+    public static final String NAME = "send_help";
+
+    public String type = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("type", type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

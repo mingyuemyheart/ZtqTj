@@ -1,0 +1,66 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 雨量分析统计---下拉选项
+ */
+public class PackYltj_level_rankingDown extends PcsPackDown {
+	public List<ItemHour> dataList = new ArrayList<ItemHour>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			dataList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr1 = temp.getJSONArray("hour_extent_list");
+			PackYltjRankDown down = new PackYltjRankDown();
+			for (int i = 0; i < arr1.length(); i++) {
+				ItemHour info = new ItemHour();
+				JSONObject rainfallJson = arr1.getJSONObject(i);
+				info.name = rainfallJson.getString("name");
+				JSONArray arr2 = rainfallJson.getJSONArray("rain_extent_list");
+				for (int j = 0; j < arr2.length(); j++) {
+					SubItemHour subInfo = new SubItemHour();
+					JSONObject subObj = arr2.getJSONObject(j);
+					subInfo.name = subObj.getString("name");
+					subInfo.sign = subObj.getString("sign");
+					info.subDataList.add(subInfo);
+				}
+				dataList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	/**
+	 * @author Z 小时列表项
+	 */
+	public class ItemHour {
+		public String name = "";
+		public List<SubItemHour> subDataList = new ArrayList<SubItemHour>();
+	}
+
+	/**
+	 * @author Z 小时对应的雨量区间
+	 */
+	public class SubItemHour {
+		public String name = "";
+		public String sign = "";
+	}
+}

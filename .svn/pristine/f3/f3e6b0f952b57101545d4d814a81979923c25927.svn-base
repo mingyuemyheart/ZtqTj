@@ -1,0 +1,137 @@
+package com.pcs.ztqtj.control.main_weather;
+
+import android.app.Activity;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridView;
+
+import com.pcs.lib.lib_pcs_v3.control.tool.Util;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.Adapter7DaysGridView;
+import com.pcs.ztqtj.control.inter.InterfaceShowBg;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.view.activity.ActivityMain;
+import com.pcs.ztqtj.view.myview.TemperatureView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2019/03/22.
+ */
+public class CommandMain7DaysWeather extends CommandMainBase {
+
+    private Activity activity;
+    private ViewGroup rootLayout;
+    private View rowView;
+    private ImageFetcher imageFetcher;
+    private Adapter7DaysGridView adapter;
+    private List<WeekWeatherInfo> weekList = new ArrayList<>();
+    //一周高温列表
+    private List<Float> mHighList = new ArrayList<Float>();
+    //一周低温列表
+    private List<Float> mLowList = new ArrayList<Float>();
+    //改变城市
+    private boolean mChangeCity = true;
+    // 天气内容
+    private GridView gridViewWeek;
+    private TemperatureView tempertureview;
+    private InterfaceShowBg mShowBg;
+
+    public CommandMain7DaysWeather(Activity activity , ViewGroup rootLayout, InterfaceShowBg mShowBg) {
+        this.activity = activity;
+        this.rootLayout = rootLayout;
+        if(activity instanceof ActivityMain) {
+            imageFetcher = ((ActivityMain) activity).getImageFetcher();
+        }
+        this.mShowBg = mShowBg;
+    }
+
+    @Override
+    protected void init() {
+        rowView = LayoutInflater.from(activity).inflate(R.layout.layout_main_7days_weather, rootLayout, false);
+        rootLayout.addView(rowView);
+        tempertureview = (TemperatureView) rowView.findViewById(R.id.tempertureview);
+        gridViewWeek = (GridView) rowView.findViewById(R.id.maingridview);
+        adapter = new Adapter7DaysGridView(activity,imageFetcher, weekList, mShowBg);
+        gridViewWeek.setAdapter(adapter);
+    }
+
+    public void setChangeCity() {
+        mChangeCity = true;
+    }
+
+
+    @Override
+    protected void refresh() {
+        requestWeek();
+        if (mChangeCity) {
+            if (adapter != null) {
+                adapter.setClickPositon(0);
+            }
+            mChangeCity = false;
+        }
+    }
+
+    private void requestWeek() {
+        PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
+        if (packCity == null) {
+            return;
+        }
+        PackMainWeekWeatherUp packWeekUp = new PackMainWeekWeatherUp();
+        packWeekUp.setCity(packCity);
+        PackMainWeekWeatherDown packWeekDown = (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack(packWeekUp.getName());
+        if (packWeekDown != null && packWeekDown.getWeek() != null
+                && packWeekDown.getWeek().size() != 0) {
+            weekList = new ArrayList<>(packWeekDown.getWeek());
+            if(weekList.size() > 0) {
+                weekList.remove(0);
+            }
+            int size = weekList.size();
+            int width = getWeekItemWidth()*size;
+            ViewGroup.LayoutParams params = gridViewWeek.getLayoutParams();
+            params.width = width;
+            adapter.setView(rowView);
+            gridViewWeek.setNumColumns(size);
+            gridViewWeek.setLayoutParams(params);
+            gridViewWeek.setColumnWidth(getWeekItemWidth());
+            adapter.setUpdate(weekList);
+            mHighList.clear();
+            mLowList.clear();
+            for (int i = 0; i < weekList.size(); i++) {
+                WeekWeatherInfo info = weekList.get(i);
+                //最后一个高温或低温为空这可以单一添加，否者直接丢弃整个高低温数据
+                if (i == weekList.size() - 1) {
+                    if (!TextUtils.isEmpty(info.higt)) {
+                        mHighList.add(Float.parseFloat(info.higt));
+                    }
+                    if (!TextUtils.isEmpty(info.lowt)) {
+                        mLowList.add(Float.parseFloat(info.lowt));
+                    }
+                } else {
+                    if (!TextUtils.isEmpty(info.higt) && !TextUtils.isEmpty(info.lowt)) {
+                        mHighList.add(Float.parseFloat(info.higt));
+                        mLowList.add(Float.parseFloat(info.lowt));
+                    }
+                }
+            }
+            tempertureview.setTemperture(mHighList, mLowList, size);
+            params = tempertureview.getLayoutParams();
+            params.width = width;
+            tempertureview.setLayoutParams(params);
+        }
+    }
+
+    private int getWeekItemWidth() {
+        int width = (int) (Util.getScreenWidth(activity)/7.0f);
+        return width;
+    }
+}

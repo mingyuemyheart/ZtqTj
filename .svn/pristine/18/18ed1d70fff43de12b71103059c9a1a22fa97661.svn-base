@@ -1,0 +1,30 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 风况站点信息（ fjfx_wind）
+ * 
+ * @author chenjh
+ */
+public class PackWindInfoUp extends PcsPackUp {
+
+	public static final String NAME="fjfx_wind";
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+
+		return NAME;
+	}
+
+}

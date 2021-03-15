@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * JiangZy on 2016/11/30.
+ * 测试定位
+ */
+
+public class PackLocalTestLocation extends PcsPackLocal {
+
+    public static final String KEY = "PackLocalTestLocation";
+
+    public double latitude = 0d;
+    public double longitude = 0d;
+    public String province = "";
+    public String city = "";
+    public String district = "";
+
+    public String show_text = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            latitude = obj.getDouble("latitude");
+            longitude = obj.getDouble("longitude");
+            province = obj.getString("province");
+            city = obj.getString("city");
+            district = obj.getString("district");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+
+        try {
+            obj.put("latitude", latitude);
+            obj.put("longitude", longitude);
+            obj.put("province", province);
+            obj.put("city", city);
+            obj.put("district", district);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj.toString();
+    }
+}

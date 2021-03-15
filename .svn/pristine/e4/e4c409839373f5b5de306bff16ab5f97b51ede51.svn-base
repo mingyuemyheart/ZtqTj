@@ -1,0 +1,26 @@
+package com.pcs.lib.lib_pcs_v3.control.file;
+
+/**
+ * 文件下载监听
+ *
+ * @author JiangZy
+ */
+public interface PcsFileDownloadListener {
+    /**
+     * 更新进度
+     **/
+    public void progress(String url, String fileName, long netSize,
+                         long downSize);
+
+    /**
+     * 下载成功
+     */
+    public void downloadSucc(String url, String fileName);
+
+    /**
+     * 下载失败
+     *
+     * @param errMsg
+     */
+    public void downloadErr(String url, String fileName, String errMsg);
+}

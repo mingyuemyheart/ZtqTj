@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 气象影视吐槽上传接口
+ */
+public class PackMediaTauntedUp extends PcsPackUp {
+    public static final String NAME = "wt_v_sugg";
+    public String call_way;
+    public String user_id;
+    public String nick_name;
+    public String channel_id;
+    public String mobile;
+    public String msg;
+    public String is_bd = "0";
+
+    public PackMediaTauntedUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("call_way", call_way);
+            obj.put("user_id", user_id);
+            obj.put("nick_name", nick_name);
+            obj.put("channel_id", channel_id);
+            obj.put("mobile", mobile);
+            obj.put("is_bd", is_bd);
+            obj.put("msg", msg);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

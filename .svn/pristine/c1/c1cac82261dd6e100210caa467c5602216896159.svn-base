@@ -1,0 +1,11 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.observation;
+
+public class ItemObservationTable {
+
+    public String tem;
+    public String time;
+    public String h_tem;
+    public String h_time;
+    public String l_tem;
+    public String l_time;
+}

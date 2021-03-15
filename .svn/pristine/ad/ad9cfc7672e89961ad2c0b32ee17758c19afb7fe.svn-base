@@ -1,0 +1,241 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.week;
+
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 一周天气
+ *
+ * @author chenjh
+ */
+public abstract class PackWeekWeatherDown extends PcsPackDown {
+
+    /**
+     * 返回的信息
+     **/
+    public String key;
+    /**
+     * 服务器时间
+     **/
+    public String sys_time;
+    /**
+     * 服务器时间long型
+     **/
+    public long sys_time_l;
+
+    /**
+     * 省份名称
+     */
+    public String p_name = "";
+
+    protected List<WeekWeatherInfo> weekWeatherList = new ArrayList<WeekWeatherInfo>();
+    //三天天气列表
+    protected List<WeekWeatherInfo> threeWeatherList = new ArrayList<WeekWeatherInfo>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (jsonStr == null || "".equals(jsonStr)
+                || jsonStr.indexOf("week") < 0) {
+            return;
+        }
+        JSONObject temp;
+        try {
+            weekWeatherList.clear();
+            temp = new JSONObject(jsonStr);
+            /** 服务器时间 **/
+            sys_time = temp.optString("sys_time");
+            /** 服务器时间long型 **/
+            if (sys_time != null && !"".equals(sys_time)) {
+                sys_time_l = Long.valueOf(sys_time);
+            } else {
+                sys_time_l = System.currentTimeMillis();
+            }
+            p_name = temp.optString("p_name");
+            JSONArray arrWeek = temp.getJSONArray("week");
+
+            for (int i = 0; i < arrWeek.length(); i++) {
+                WeekWeatherInfo info = new WeekWeatherInfo();
+                JSONObject json = arrWeek.getJSONObject(i);
+                /** 公历日期 **/
+                info.gdt = json.optString("gdt");
+                /** 星期 **/
+                info.week = json.optString("week");
+                /** 最高温 **/
+                info.higt = json.optString("higt");
+                /** 最低温 **/
+                info.lowt = json.optString("lowt");
+                /** 全天天气情况 **/
+                info.weather = json.optString("weather");
+                /** 白天天气情况 **/
+                info.wd_day = json.optString("wd_day");
+                /** 白天天气图标 **/
+                info.wd_day_ico = json.optString("wd_day_ico");
+                /** 夜间天气情况 **/
+                info.wd_night = json.optString("wd_night");
+                /** 夜间天气图标 **/
+                info.wd_night_ico = json.optString("wd_night_ico");
+                /** 白天风向 **/
+                info.wind_dir_day = json.optString("wind_dir_day");
+                /** 夜间风向 **/
+                info.wind_dir_night = json.optString("wind_dir_night");
+                /** 白天风速 **/
+                info.wind_speed_day = json.optString("wind_speed_day");
+                /** 夜间风速 **/
+                info.wind_speed_night = json.optString("wind_speed_night");
+                /** 是否晚上 **/
+                info.is_night = json.optString("is_night");
+                /** 一周天气描述 **/
+                info.yb_desc=json.optString("yb_desc");
+                /** 一周天气时间 **/
+                info.yb_time=json.optString("yb_time");
+                /** 时间（英） **/
+                info.us_day=json.optString("us_day");
+                /** 日期（英） **/
+                info.us_gdt=json.optString("us_gdt");
+                /** 天气（英） **/
+                info.us_weather=json.optString("us_weather");
+                /** 星期（英） **/
+                info.us_week=json.optString("us_week");
+                /** 设置显示的气温 **/
+                info.setShowTemperature();
+
+
+
+                weekWeatherList.add(info);
+            }
+            //填充三天天气
+            fillThreeDay();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取图标路径
+     *
+     * @param index
+     * @return
+     */
+    public String getIconPath(int index) {
+        String path = "";
+        if (index > weekWeatherList.size() - 1) {
+            return path;
+        }
+
+        WeekWeatherInfo info = weekWeatherList.get(index);
+        path = "weather_icon/daytime/w" + info.wd_day_ico + ".png";
+        if (index == getTodayIndex() && "1".equals(info.is_night)) {
+            path = "weather_icon/night/n" + info.wd_night_ico + ".png";
+        }
+
+        return path;
+    }
+
+    /**
+     * 今天天气的位置
+     *
+     * @return
+     */
+    public abstract int getTodayIndex();
+
+    /**
+     * 取今天天气
+     *
+     * @return
+     */
+    public WeekWeatherInfo getToday() {
+        if (getTodayIndex() > weekWeatherList.size() - 1) {
+            return null;
+        }
+
+        return weekWeatherList.get(getTodayIndex());
+    }
+
+    /**
+     * 填充三天列表
+     */
+    private void fillThreeDay() {
+        threeWeatherList.clear();
+        int index = getTodayIndex();
+        if (index > weekWeatherList.size() - 1) {
+            return;
+        }
+
+        if (index <= weekWeatherList.size() - 1) {
+            threeWeatherList.add(weekWeatherList.get(index));
+        }
+
+        index = getTodayIndex() + 1;
+        if (index <= weekWeatherList.size() - 1) {
+            threeWeatherList.add(weekWeatherList.get(index));
+        }
+
+        index = getTodayIndex() + 2;
+        if (index <= weekWeatherList.size() - 1) {
+            threeWeatherList.add(weekWeatherList.get(index));
+        }
+    }
+
+    /**
+     * 取从今天开始的3天天气列表
+     *
+     * @return
+     */
+    public List<WeekWeatherInfo> getThreeDay() {
+        return threeWeatherList;
+    }
+
+    /**
+     * 取一周天气列表
+     *
+     * @return
+     */
+    public List<WeekWeatherInfo> getWeek() {
+        return weekWeatherList;
+    }
+
+    /**
+     * 获取分享字符串
+     *
+     * @return
+     */
+    public String getShareStr(String cityName) {
+        StringBuffer shareC = new StringBuffer();
+        List<WeekWeatherInfo> list = getThreeDay();
+        shareC.append(cityName + ":");
+        if (list.size() > 0) {
+            shareC.append(list.get(0).gdt + ",");
+            shareC.append(list.get(0).weather + ",");
+            shareC.append(list.get(0).higt + "~");
+            shareC.append(list.get(0).lowt + "°,");
+        }
+        if (list.size() > 1) {
+            shareC.append(list.get(1).gdt + ",");
+            shareC.append(list.get(1).weather + ",");
+            shareC.append(list.get(1).higt + "~");
+            shareC.append(list.get(1).lowt + "°,");
+        }
+        if (list.size() > 2) {
+            shareC.append(list.get(2).gdt + ",");
+            shareC.append(list.get(2).weather + ",");
+            shareC.append(list.get(2).higt + "~");
+            shareC.append(list.get(2).lowt + "°");
+        }
+        PackShareAboutDown shareDown =
+                (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
+        shareC.append(shareDown.share_content);
+
+        return shareC.toString();
+    }
+}

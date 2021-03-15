@@ -1,0 +1,70 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+/**
+ * 三维监测信息
+ * @author E.Sun
+ * 2015年10月12日
+ */
+public class ThirdMonitorInfo {
+
+	/**
+	 * 颜色
+	 */
+	public String color;
+	
+	/**
+	 * 纬度
+	 */
+	public double latitude;
+	
+	/**
+	 * 经度
+	 */
+	public double longitude;
+	
+	/**
+	 * 区域
+	 */
+	public String area = "";
+	
+	/**
+	 *  时间
+	 */
+	public String time = "";
+	
+	/**
+	 * 级别
+	 */
+	public int flag;
+	
+	/**
+	 * 闪电类型
+	 */
+	public String lightning = "";
+
+    /**
+     * 强度
+     */
+	public String intens = "";
+	
+	/**
+	 * 闪电类型：云闪
+	 */
+	public static final String CLOUD_LIGHTNING = "IC";
+	
+	/**
+	 * 闪电类型：地闪
+	 */
+	public static final String GROUND_LIGHTNING = "CG";
+	
+	/**
+	 * 地闪级别：正闪
+	 */
+	public static final int FLAG_POSITIVE = 1;
+	
+	/**
+	 * 地闪级别：负闪
+	 */
+	public static final int FLAG_NEGATIVE = -1;
+	
+}

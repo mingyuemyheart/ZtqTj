@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 支付-套餐
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class PackDataQueryPayOrderUp extends PcsPackUp {
+
+    public static final String NAME = "product_n";
+    public String product_type = "";
+
+    public PackDataQueryPayOrderUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("product_type", product_type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

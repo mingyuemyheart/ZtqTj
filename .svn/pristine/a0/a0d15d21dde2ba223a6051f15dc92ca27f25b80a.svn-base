@@ -1,0 +1,68 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxTrendDown extends PcsPackDown {
+
+    // 实况列表
+    public List<FycxMapBean> skList = new ArrayList<>();
+    // 预报列表
+    public List<FycxMapBean> ybList = new ArrayList<>();
+
+    public String yb_time;
+    public String sk_time;
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            skList.clear();
+            ybList.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            yb_time=obj.optString("yb_time");
+            sk_time=obj.optString("sk_time");
+            JSONArray skArray = obj.getJSONArray("sk_list");
+            JSONArray ybArray = obj.getJSONArray("yb_list");
+            for(int i = 0; i < skArray.length(); i++) {
+                JSONObject temp = skArray.getJSONObject(i);
+                FycxMapBean bean = new FycxMapBean();
+                bean.dt = temp.optString("dt");
+                bean.val = temp.optString("val");
+                bean.fulldt = temp.optString("fulldt");
+                bean.wind_dir = temp.optString("wind_dir");
+                skList.add(bean);
+            }
+            for(int j = 0; j < ybArray.length(); j++) {
+                JSONObject temp = ybArray.getJSONObject(j);
+                FycxMapBean bean = new FycxMapBean();
+                bean.dt = temp.optString("dt");
+                bean.val = temp.optString("val");
+                bean.fulldt = temp.optString("fulldt");
+                bean.wind_dir = temp.optString("wind_dir");
+                ybList.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 风雨查询走势图对象
+     */
+    public class FycxMapBean {
+        public String dt = "";
+        public String val = "";
+        public String fulldt="";
+        public String wind_dir="";
+    }
+}

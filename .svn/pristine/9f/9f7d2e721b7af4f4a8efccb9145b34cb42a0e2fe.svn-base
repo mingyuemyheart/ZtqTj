@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="30dp"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/tv_index"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_footnote" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="30dp"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/tv_city"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_footnote" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="30dp"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/tv_county"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_footnote" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="30dp"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/tv_station_name"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_footnote" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="30dp"
+        android:background="@drawable/line_common_v" />
+
+    <TextView
+        android:id="@+id/tv_rain"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_footnote" />
+
+    <View
+        android:layout_width="1px"
+        android:layout_height="30dp"
+        android:background="@drawable/line_common_v" />
+
+</LinearLayout>

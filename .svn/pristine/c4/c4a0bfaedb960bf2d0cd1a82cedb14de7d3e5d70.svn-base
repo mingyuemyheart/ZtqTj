@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 交通气象：公路概况
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackRoadDescDown extends PcsPackDown {
+	/** 标题 **/
+	public String title = "";
+	/** 综述 **/
+	public String weather_disc = "";
+	/** 公路ID **/
+	public String road_id = "";
+	/** Word路径 **/
+	public String word_path = "";
+
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject obj = new JSONObject(jsonStr).getJSONObject("data");
+			title = obj.getString("title");
+			weather_disc = obj.getString("weather_disc");
+			road_id = obj.getString("road_id");
+			word_path = obj.getString("word_path");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

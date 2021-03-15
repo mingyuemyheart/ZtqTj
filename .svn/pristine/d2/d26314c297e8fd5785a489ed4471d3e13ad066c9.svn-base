@@ -1,0 +1,77 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 下载包：雷电监测--三维监测
+ * @author E.Sun
+ * 2015年10月12日
+ */
+public class PackThirdMonitorDown extends PcsPackDown {
+
+	private final String KEY_MSG = "result_msg";
+	private final String KEY_DATA = "third_monitor_list";
+	private final String KEY_COLOR = "color";
+	private final String KEY_LATITUDE = "lat";
+	private final String KEY_LONGITUDE = "log";
+	private final String KEY_AREA = "area_name";
+	private final String KEY_FLAG = "processflag";
+	private final String KEY_LIGHTNING = "lightning";
+	private final String KEY_TIME = "time";
+	private final String KEY_INTENS = "intens";
+	private final String KEY_SYSTEM_TIME = "systime";
+	
+	public static final String COLOR_RED = "R";
+	public static final String COLOR_ORANGE = "O";
+	public static final String COLOR_YELLOW = "Y";
+	public static final String COLOR_GREEN = "G";
+	public static final String COLOR_BLUE = "B";
+	public static final String COLOR_PURPLE = "P";
+	
+	public List<ThirdMonitorInfo> list = new ArrayList<ThirdMonitorInfo>();
+	public String msg = "";
+	public String systemTime = "";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		list.clear();
+		try {
+			JSONObject obj =  new JSONObject(jsonStr);
+			msg = obj.getString(KEY_MSG);
+			systemTime = obj.getString(KEY_SYSTEM_TIME);
+			JSONArray array = obj.getJSONArray(KEY_DATA);
+			JSONObject object;
+			ThirdMonitorInfo info;
+			for (int i = 0; i < array.length(); i++) {
+				object = array.getJSONObject(i);
+				info = new ThirdMonitorInfo();
+				info.color = object.getString(KEY_COLOR);
+				info.latitude = object.getDouble(KEY_LATITUDE);
+				info.longitude = object.getDouble(KEY_LONGITUDE);
+				info.area = object.getString(KEY_AREA);
+				info.flag = object.getInt(KEY_FLAG);
+				info.lightning = object.getString(KEY_LIGHTNING);
+				info.time = object.getString(KEY_TIME);
+				info.intens = object.getString(KEY_INTENS);
+				list.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

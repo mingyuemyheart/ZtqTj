@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 订单支付
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class PackDataQueryPayUp extends PcsPackUp {
+    public static final String NAME = "zlcx_order_pay";
+    public String order_id = "";
+    public String user_id = "";
+    public String pay_type = "";
+    public String sign = "";
+    public String product_id = "";
+
+    public PackDataQueryPayUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("order_id", order_id);
+            object.put("user_id", user_id);
+            object.put("pay_type", pay_type);
+            object.put("sign", sign);
+            object.put("product_id", product_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 实景开拍：评论列表
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoCommentListUp extends PcsPackUp {
+
+    public static final String NAME = "sjkpcommentslist";
+
+	private final String count = "500";
+	public String page = "";
+	public String itemId = "";
+
+	public PackPhotoCommentListUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("count", count);
+			obj.put("page", page);
+			obj.put("itemId", itemId);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

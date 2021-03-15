@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 预警信息上传
+ *
+ * @author JiangZy
+ */
+public class PackPullYJXXUP extends PcsPackUp {
+
+    public static final String NAME = "push_yjxx";
+
+    /**
+     * 城市代码
+     */
+    public String author = "";
+    public String ptime = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("author", author);
+            obj.put("ptime", ptime);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + ptime + "_" + author;
+    }
+
+}

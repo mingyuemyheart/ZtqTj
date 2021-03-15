@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_rank"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_listtitle_rank"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/rank"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content"
+            />
+
+        <Button
+            android:id="@+id/pm_province"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_listtitle"
+            android:text="@string/province"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content"/>
+
+        <Button
+            android:id="@+id/pm_city"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_listtitle"
+            android:text="@string/city"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_content"/>
+
+        <Button
+            android:id="@+id/pm_rank_name"
+            android:layout_width="0dp"
+            android:layout_height="28dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_air_aqi"
+            android:text="@string/aqi"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_content"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_rank"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:orientation="vertical"/>
+
+</LinearLayout>

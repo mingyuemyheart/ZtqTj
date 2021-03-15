@@ -1,0 +1,62 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.DesServer;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PackQxfwMyproMoreDown extends PcsPackDown {
+	/** 授权说明 */
+	public boolean auth_pass;
+	/** 行业服务列表 */
+	public List<DesServer> pro_list= new ArrayList<DesServer>();
+	public Pager pager;
+	@Override
+	public void fillData(String jsonStr) {
+		pro_list.clear();
+		pager=new Pager();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			auth_pass = obj.getBoolean("auth_pass");
+
+			PackQxfuMyproV2Down down = new PackQxfuMyproV2Down();
+			JSONArray desServer = obj.getJSONArray("pro_list");
+			for (int k = 0; k < desServer.length(); k++) {
+				JSONObject objDes = desServer.getJSONObject(k);
+				DesServer des = down.new DesServer();
+				des.html_url = objDes.optString("html_url");
+				des.title = objDes.optString("title");
+				des.create_time = objDes.optString("create_time");
+				des.type = objDes.optString("type");
+				des.id=objDes.optString("id");
+				des.style = objDes.optString("style");
+				pro_list.add(des);
+			}
+			JSONObject jsonPager=obj.getJSONObject("pager");
+			pager.page_size=jsonPager.getString("page_size");
+			pager.total_page=jsonPager.getString("total_page");
+			pager.page_num=jsonPager.getString("page_num");
+			pager.total_count=jsonPager.getString("total_count");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	class Pager{
+	   public String page_size;
+	   public String total_page;
+	   public String page_num;
+	   public String total_count;
+	}
+	
+}

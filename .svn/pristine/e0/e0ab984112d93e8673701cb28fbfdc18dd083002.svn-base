@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+public class PackLocalCityUnit {
+
+	/**
+	 * 城市名
+	 */
+	public String CITY = "";
+	
+	/**
+	 * 单位名
+	 */
+	public String UNIT = "";
+	
+}

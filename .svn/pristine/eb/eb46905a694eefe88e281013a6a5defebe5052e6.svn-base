@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import java.io.Serializable;
+
+/**
+ * 福建防汛 风情信息bean
+ * 
+ * @author chenjh
+ */
+@SuppressWarnings("serial")
+public class WindInfo implements Serializable {
+	/** 经度 **/
+	public String longitude = "";
+	/** 纬度 **/
+	public String latitude = "";
+	/** 站点名称 **/
+	public String stationname = "";
+	/** 风速 **/
+	public String windspeed = "";
+	/** 风力 **/
+	public String windpower = "";
+	/** 风向 **/
+	public String winddirect = "";
+	/** 风力角度 **/
+	public String windangle = "";
+	/** 时间 **/
+	public String time = "";
+}

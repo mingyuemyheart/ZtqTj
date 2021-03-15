@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 雨量查询—地区半年高低温对比
+ * type:1代表高温统计，2代表低温统计
+ */
+public class PackYltjYearTempUp extends PcsPackUp {
+    public static final String NAME = "yltj_wd_year";
+    public String area_id = "";
+    public String type = "1";
+
+    public PackYltjYearTempUp(){
+        intervalMill=0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("area_id", area_id);
+            obj.put("type", type);
+            return obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type + "_" + area_id;
+    }
+}

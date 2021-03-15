@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 气象服务第二页 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_white"
+                android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/rg_bac"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@drawable/bg_city_manager_title">
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/radio_decision_sel"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:text="决策"
+                android:textColor="@color/text_white"
+                android:textSize="18dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="2dp"
+                android:text="报告"
+                android:textColor="@color/text_white"
+                android:textSize="15dp"/>
+
+
+        </LinearLayout>
+
+        <!-- 单选按钮组 -->
+        <RadioGroup
+            android:id="@+id/rb"
+            android:layout_width="match_parent"
+            android:layout_height="27dp"
+            android:orientation="horizontal">
+            <!-- 单选按钮：决策 -->
+            <RadioButton
+                android:id="@+id/radio_decision"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:checked="true"
+                android:paddingTop="3dp"
+                android:drawableTop="@drawable/radio_industry"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/text_white"
+                android:text="决策报告"/>
+
+            <!-- 单选按钮：行业 -->
+            <RadioButton
+                android:id="@+id/radio_industry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:checked="true"
+                android:paddingTop="3dp"
+                android:drawableTop="@drawable/radio_industry"
+                android:gravity="center"
+                android:textColor="@color/text_white"
+                android:singleLine="true"
+                android:text="行业气象"/>
+
+
+            <!-- 单选按钮：临近 -->
+            <RadioButton
+                android:id="@+id/radio_near"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/radio_main_menu"
+                android:button="@null"
+                android:visibility="gone"
+                android:checked="true"
+                android:paddingTop="3dp"
+                android:drawableTop="@drawable/radio_industry"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="@color/text_white"
+                android:text="临近报告"/>
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_below="@+id/rb"
+            android:layout_width="match_parent"
+            android:layout_height="3dp">
+
+            <ImageView
+                android:id="@+id/iv_decision"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_service_change"/>
+
+            <ImageView
+                android:id="@+id/iv_industry"
+                android:layout_marginRight="20dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:layout_height="wrap_content"
+                android:background="@drawable/icon_service_change"/>
+
+
+        </LinearLayout>
+    </RelativeLayout>
+    <!-- 三角箭头 -->
+
+    <LinearLayout
+        android:id="@+id/ll_bac"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rg_bac"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/arrow_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_blue"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/arrow_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_blue"
+                android:visibility="invisible"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/arrow_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow_blue"
+                android:visibility="invisible"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_bac"
+        android:layout_marginBottom="55dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical">
+
+
+            <!-- 分割线 -->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/line_service_lv2"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/text_myservice_introduce"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingMultiplier="1"
+                    android:visibility="gone"
+                    android:text="@string/decision_introduce"
+                    android:textColor="#363636"
+                    android:textSize="@dimen/text_content"/>
+                <!-- 简介 -->
+
+                <TextView
+                    android:id="@+id/text_myservice_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen10"
+                    android:lineSpacingExtra="4dp"
+                    android:lineSpacingMultiplier="1"
+                    android:textColor="#363636"
+                    android:textSize="16dp"/>
+            </LinearLayout>
+
+            <com.pcs.ztqtj.view.myview.MyGridView
+                android:id="@+id/gridview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:numColumns="3"/>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_myserver_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/btn_myserver_second"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="专项服务首页"
+                android:textColor="@color/text_white"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_myserver_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/btn_myserver_second"
+                android:gravity="center"
+                android:padding="0dp"
+                android:text="我的全部服务"
+                android:textColor="@color/text_white"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

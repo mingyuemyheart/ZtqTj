@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_white"
+        android:orientation="vertical"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="85dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <RadioGroup
+                    android:id="@+id/rg_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/dimen10"
+                    android:paddingRight="@dimen/dimen10"
+                    android:paddingTop="@dimen/activity_margintop"
+                    android:weightSum="6"
+                    >
+
+                    <RadioButton
+                        android:id="@+id/rb_value"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="3"
+                        android:background="@drawable/blue_line"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:text="@string/climate_value_query"
+                        android:textColor="@color/text_black_common"
+                        android:layout_marginRight="30dp"
+                        android:textSize="@dimen/text_content"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_day"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="3"
+                        android:background="@drawable/blue_line"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/weather_elements_day_query"
+                        android:textColor="@color/text_black_common"
+                        android:textSize="@dimen/text_content"/>
+                </RadioGroup>
+
+                <RadioGroup
+                    android:id="@+id/rg_column"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="@dimen/dimen10"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:layout_marginTop="@dimen/dimen4"
+                    android:orientation="horizontal"
+                    >
+
+                    <RadioButton
+                        android:id="@+id/rb_disaster"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_data_query_column"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="气候事件"
+                        android:textColor="@color/text_legend"
+                        android:textSize="@dimen/text_content"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/rb_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_data_query_column"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/temperature"
+                        android:textColor="@color/text_legend"
+                        android:textSize="@dimen/text_content"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/rb_rain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_data_query_column"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/precipitation"
+                        android:textColor="@color/text_legend"
+                        android:textSize="@dimen/text_content"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/rb_wind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_data_query_column"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/wind"
+                        android:textColor="@color/text_legend"
+                        android:textSize="@dimen/text_content"
+                        />
+
+                    <RadioButton
+                        android:id="@+id/rb_sunshine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/btn_data_query_column"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/sunshine"
+                        android:textColor="@color/text_legend"
+                        android:textSize="@dimen/text_content"
+                        />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/layout_mask"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            />
+
+    </LinearLayout>
+
+</FrameLayout>

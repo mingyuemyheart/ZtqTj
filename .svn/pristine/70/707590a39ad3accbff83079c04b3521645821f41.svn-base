@@ -1,0 +1,58 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjZqUserUp extends PcsPackUp {
+
+    public static final String NAME = "yj_zq_user";
+    public String page="";
+    public String p_id="";
+    public String sub_id="";
+    public String town_id="";
+    public String key_str="";
+    public String p_type="";
+    public String mobile="";
+    public PackYjZqUserUp() {
+        // 循环发送
+        //bRepeat = true;
+        intervalMill = 0;
+    }
+
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("page", page);
+            obj.put("p_id", p_id);
+            obj.put("sub_id", sub_id);
+            obj.put("key_str", key_str);
+            obj.put("p_type", p_type);
+            obj.put("mobile",mobile);
+            obj.put("town_id",town_id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取接口名
+     *
+     * @return
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}
+

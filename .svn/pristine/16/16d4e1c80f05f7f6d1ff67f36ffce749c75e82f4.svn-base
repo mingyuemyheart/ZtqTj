@@ -1,0 +1,32 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 雨量分析统计---详情
+ */
+public class PackYltj_level_ranking_detailUp extends PcsPackUp {
+	public static final String NAME = "rainstat_pro_grading";
+	public String sign="";
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("sign", sign);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME+"#"+sign;
+	}
+}

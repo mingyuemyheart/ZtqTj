@@ -1,0 +1,96 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.observation;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Z 数值预报
+ */
+public class PackObservationViewDown extends PcsPackDown {
+    public List<ItemObservation> listData = new ArrayList<ItemObservation>();
+
+    public float maxValueH;
+    public float minValueH;
+    public float maxValueL;
+    public float minValueL;
+
+    @Override
+    public void fillData(String jsonStr) {
+        listData.clear();
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray arrlmList = obj.getJSONArray("info_list");
+            for (int i = 0; i < arrlmList.length(); i++) {
+                JSONObject jsonb = arrlmList.getJSONObject(i);
+                ItemObservation bean = new ItemObservation();
+                bean.type = jsonb.getString("type");
+                JSONArray jrIn = jsonb.getJSONArray("sub_list");
+                for (int j = 0; j < jrIn.length(); j++) {
+                    ItemObDetail subItem = new ItemObDetail();
+                    JSONObject jsonbSub = jrIn.getJSONObject(j);
+                    subItem.hour_time = jsonbSub.optString("hour_time");
+                    subItem.h_tem = jsonbSub.optString("h_tem");
+                    subItem.l_tem = jsonbSub.optString("l_tem");
+                    subItem.day = jsonbSub.optString("day");
+
+                    try {
+                        float h = Float.parseFloat(subItem.h_tem);
+                        float l = Float.parseFloat(subItem.l_tem);
+                        if (i == j && j == 0) {
+                            maxValueH = h;
+                            minValueH = h;
+                            maxValueL = l;
+                            minValueL = l;
+                        } else {
+                            if (Float.compare(maxValueH, h) < 0) {
+                                maxValueH = h;
+                            }
+                            if (Float.compare(minValueH, h) > 0) {
+                                minValueH = h;
+                            }
+                            if (Float.compare(maxValueL, l) < 0) {
+                                maxValueL = l;
+                            }
+                            if (Float.compare(minValueL, l) > 0) {
+                                minValueL = l;
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    bean.detailListData.add(subItem);
+                }
+                listData.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    public class ItemObservation {
+        public String type;
+        public List<ItemObDetail> detailListData = new ArrayList<>();
+    }
+
+    public class ItemObDetail {
+        public String hour_time;
+        public String day;
+        public String h_tem;
+        public String l_tem;
+    }
+}

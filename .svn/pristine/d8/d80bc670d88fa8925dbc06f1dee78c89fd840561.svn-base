@@ -1,0 +1,26 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.traffic;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+/**
+ * Created by chenjx
+ * on 2018/3/19.
+ */
+
+public class PackTrafficUp extends PcsPackUp {
+    public static final String NAME = "jtqx_desc";
+
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

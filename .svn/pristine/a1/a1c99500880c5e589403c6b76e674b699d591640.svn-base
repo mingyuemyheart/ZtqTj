@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 首页预警信息
+ *
+ * @author JiangZy
+ */
+
+public class PackYjzqtjDown extends PcsPackDown {
+    /**
+     *待审核
+     */
+    public String ds_num;
+    /**
+     * 通过
+     */
+    public String tg_num;
+    /**
+     * 驳回
+     */
+    public String bh_num;
+
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            ds_num = obj.getString("ds_num");
+            tg_num = obj.getString("tg_num");
+            bh_num = obj.getString("bh_num");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

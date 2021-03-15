@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/btn_border_disaster"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="灾情综述:"
+            android:textColor="@color/text_blue"
+            android:textSize="@dimen/text_content"/>
+
+        <TextView
+            android:id="@+id/tv_info_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/text_blue"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_disaster_county"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_disaster_time"
+                android:drawableRight="@drawable/bg_livequery_drowdown_small"
+                android:gravity="center"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingRight="@dimen/dimen4"
+                android:paddingTop="@dimen/activity_margintop"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|right"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_info_search"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_livequery_commom"
+                android:gravity="center"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:text="查询"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/text_gray_light">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="发布时间"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="发布人"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="发布地点"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="详情"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_info_list"
+            android:visibility="gone"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textColor="@color/text_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/dimen16"
+            android:text="灾情信息为0条"/>
+        <ListView
+            android:id="@+id/lv_disaster_info"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="30dp"
+            android:background="@color/bg_white"
+            android:cacheColorHint="@color/alpha100"
+            android:divider="@drawable/line_common"
+            android:footerDividersEnabled="true"
+            android:listSelector="@color/alpha100"/>
+
+        <TextView
+            android:id="@+id/tv_repson_name"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:visibility="gone"
+            android:background="@drawable/btn_disaster_up"
+            android:gravity="center"
+            android:text="应急责任人名单>>"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

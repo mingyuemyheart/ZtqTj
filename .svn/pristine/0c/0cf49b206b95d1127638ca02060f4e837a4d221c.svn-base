@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjZqInfoListDown extends PcsPackDown {
+
+    public List<YjZqInfoList> list_2=new ArrayList<>();
+    public String desc;
+    @Override
+    public void fillData(String jsonStr) {
+
+        list_2.clear();
+
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            desc=obj.optString("desc");
+            JSONArray jsonArraydz = obj.optJSONArray("info_list");
+            if(jsonArraydz != null) {
+                for (int i = 0; i < jsonArraydz.length(); i++) {
+                    YjZqInfoList yjZqInfoList = new YjZqInfoList();
+                    yjZqInfoList.id = jsonArraydz.getJSONObject(i).optString("id");
+                    yjZqInfoList.nickname = jsonArraydz.getJSONObject(i).optString("nickname");
+                    yjZqInfoList.pub_time = jsonArraydz.getJSONObject(i).optString("pub_time");
+                    yjZqInfoList.statu = jsonArraydz.getJSONObject(i).optString("area");
+                    list_2.add(yjZqInfoList);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

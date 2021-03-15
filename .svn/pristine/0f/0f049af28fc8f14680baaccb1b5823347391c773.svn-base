@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.pub;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包-查询用户属性
+ * @author Chensq
+ * 2015年9月24日
+ */
+public class PackPropertyUp extends PcsPackUp {
+	public final static String NAME = "jc_queryconfig";
+	/**
+	 * key-知天气决策版用户注册协议地址
+	 */
+	public final static String KEY_AGREEMENT = "jc_regist_agreement";
+	public String key = "";
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("key", key);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

@@ -1,0 +1,17 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.observation;
+
+public class ItemObservationCompTable {
+        public String show_time;
+        public String soil_tem;
+        public String soil_time;
+        public String cement_tem;
+        public String cement_time;
+        public String asphalt_tem;
+        public String asphalt_time;
+        public String brick_tem;
+        public String brick_time;
+        public String sandgravel_tem;
+        public String sandgravel_time;
+        public String tem;
+        public String time;
+    }

@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 风雨查询_实时天气
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxSstqDown extends PcsPackDown {
+
+    public String ct = "";
+    public String humidity = "";
+    public String visibility = "";
+    public String vaporpressuser = "";
+    public String rainfall = "";
+    public String upt = "";
+    public String wind_dir = "";
+    public String wind_speed = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            ct = obj.getString("ct");
+            humidity = obj.getString("humidity");
+            visibility = obj.getString("visibility");
+            vaporpressuser = obj.getString("vaporpressuser");
+            rainfall = obj.getString("rainfall");
+            upt = obj.getString("upt");
+            wind_dir = obj.getString("wind_dir");
+            wind_speed = obj.getString("wind_speed");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

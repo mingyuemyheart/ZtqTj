@@ -1,0 +1,134 @@
+package com.pcs.lib.lib_pcs_v3.control.tool;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.TextUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2016/3/24.
+ */
+public class ToolSharedPreferences {
+
+    // SharedPreferences名
+    public final static String SHARED_PREFERENCES_MAIN = "shared_preferences_main_key";
+
+    // Key名
+    /**
+     * 消息提醒
+     */
+    public final static String KEY_USER_MESSAGE = "key_user_msg_tx";
+
+    /**
+     * 反馈信息列表
+     */
+    public final static String KEY_USER_FEEDBACK_LIST = "key_user_feedback_message_list";
+
+    /**
+     * 意见反馈
+     */
+    public final static String KEY_USER_CONSULT_INDEX = "key_user_consult_index";
+
+    /**
+     * 远程监控的地址
+     */
+    public final static String KEY_REMOTE_CONTROL_SERVER_ADDRESS = "key_remote_control_server_address";
+
+    /**
+     * 获取本地整型缓存
+     * @param context
+     * @param preferencesName
+     * @param key
+     * @return
+     */
+    public final static int getInt(Context context, String preferencesName, String key) {
+        SharedPreferences shared = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        return shared.getInt(key, 0);
+    }
+
+    /**
+     * 设置本地整型缓存
+     * @param context
+     * @param preferencesName
+     * @param key
+     * @param value
+     */
+    public final static void setInt(Context context, String preferencesName, String key, int value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+
+    /**
+     * 获取本地字符串缓存
+     * @param context
+     * @param preferencesName
+     * @param key
+     * @return
+     */
+    public final static String getString(Context context, String preferencesName, String key) {
+        SharedPreferences shared = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        return shared.getString(key, "");
+    }
+
+    /**
+     * 设置本地缓存
+     * @param context
+     * @param preferencesName
+     * @param key
+     * @param value
+     */
+    public final static void setString(Context context, String preferencesName, String key, String value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public final static void setList(Context context, String preferencesName, String key, ArrayList<?> list) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+        try {
+            editor.putString(key, ObjectSerializer.serialize(list));
+            editor.apply();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final static ArrayList<?> getList(Context context, String preferencesName, String key) {
+        SharedPreferences shared = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        String result = shared.getString(key, "");
+        if(TextUtils.isEmpty(result)) {
+            return null;
+        }
+        try {
+            return (ArrayList<?>) ObjectSerializer.deserialize(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 清除单个SharedPreferences缓存
+     * @param context
+     * @param preferencesName
+     */
+    public final static void clearCache(Context context, String preferencesName, String key) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+        editor.putString(key, "");
+        editor.apply();
+    }
+
+    /**
+     * 清除所有SharedPreferences缓存
+     * @param context
+     */
+    public final static void clearAllCache(Context context) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(SHARED_PREFERENCES_MAIN, Context.MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
+    }
+}

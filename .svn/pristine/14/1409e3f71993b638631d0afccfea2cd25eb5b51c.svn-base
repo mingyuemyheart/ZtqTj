@@ -1,0 +1,62 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象服务-我的服务（qxfw_mypro）
+ *
+ * @author chenjh
+ */
+public class PackServiceMyProductUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_mypro";
+
+    /**
+     * 用户id
+     **/
+    public String user_id = "";
+    /**
+     * 每页大小
+     **/
+    public String page_size = "";
+    /**
+     * 当前页
+     **/
+    public String page_num = "";
+
+    public PackServiceMyProductUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            if (!TextUtils.isEmpty(page_num)) {
+                obj.put("page_num", page_num);
+            }
+            if (!TextUtils.isEmpty(page_size)) {
+                obj.put("page_size", page_size);
+            }
+            if (!TextUtils.isEmpty(user_id)) {
+                obj.put("user_id", user_id);
+            }
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + page_num + "_" + page_size + "_" + user_id;
+    }
+
+}

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/linear_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <Button
+                android:id="@+id/data_more_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen30"
+                android:layout_margin="@dimen/dimen2"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dimen2"
+                android:background="@drawable/btn_lightning_search"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/more"
+                android:textColor="@color/text_white" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common_v" />
+
+        <com.pcs.ztqtj.view.myview.MyListView
+            android:id="@+id/data_lightning_list2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:cacheColorHint="@color/alpha100"
+            android:divider="@drawable/line_common"
+            android:listSelector="@color/alpha100" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:visibility="gone"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:id="@+id/tv_data_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:id="@+id/tv_data_longitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:id="@+id/tv_data_latitude"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:id="@+id/tv_data_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:id="@+id/tv_data_strength"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+    </LinearLayout>
+
+</LinearLayout>

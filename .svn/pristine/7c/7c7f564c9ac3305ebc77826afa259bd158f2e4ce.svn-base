@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 分享
+ */
+public class PackShareAboutUp extends PcsPackUp {
+
+
+	public final static String NAME = "wt_share";
+	public PackShareAboutUp() {
+		// 间隔毫秒数(30分钟)
+		intervalMill = 0;
+	}
+
+	/**
+	 * 
+	 * ABOUT_WT	获取关于知天气
+	 * */
+	public String keyword="";
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("keyword", keyword);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public String getName() {
+		return NAME+"#"+keyword;
+	}
+
+	public static String getNameCom() {
+		return NAME+"#ABOUT_JC_DOWN";
+	}
+}

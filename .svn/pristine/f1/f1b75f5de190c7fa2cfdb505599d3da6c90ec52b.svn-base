@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 风雨查询_分布图
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxFbtDown extends PcsPackDown {
+
+    public String img_url = "";
+    public String pub_time = "";
+    public List<FycxFbtBean> list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            list.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            img_url = obj.optString("img_url");
+            pub_time = obj.optString("pub_time");
+            JSONArray array = obj.getJSONArray("info_list");
+            for(int i = 0; i < array.length(); i++) {
+                JSONObject temp = array.getJSONObject(i);
+                FycxFbtBean bean = new FycxFbtBean();
+                bean.l_type = temp.optString("l_type");
+                bean.lon = temp.optString("lon");
+                bean.lat = temp.optString("lat");
+                bean.sta_name = temp.optString("sta_name");
+                bean.val = temp.optString("val");
+                bean.stationid = temp.optString("stationid");
+                bean.fx = temp.optString("fx");
+                list.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

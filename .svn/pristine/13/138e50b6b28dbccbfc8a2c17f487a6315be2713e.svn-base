@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 风雨查询_雷达分布图
+ * Created by tyaathome on 2017/8/23.
+ */
+
+public class PackFycxFbtLdUp extends PcsPackUp {
+
+    public static final String NAME = "fycx_fbt_ld";
+
+    public String type = "";
+    public String img_type = "";
+    public String area_id = "";
+
+    public PackFycxFbtLdUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", type);
+            obj.put("img_type", img_type);
+            obj.put("area_id", area_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type + "___" + img_type + "__" + area_id;
+    }
+}

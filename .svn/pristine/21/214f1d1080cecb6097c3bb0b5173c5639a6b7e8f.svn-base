@@ -1,0 +1,20 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class YjZqInfoAreaStreetDown {
+
+    /**
+     *
+     */
+    public String s_id;
+    /**
+     * 名字
+     */
+    public String s_name;
+
+
+}

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen5"
+            android:text="@string/text_thunder_lightning_title"
+            android:textColor="@color/text_blue"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/tv_lightning_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/dimen5"
+            android:paddingLeft="@dimen/dimen5"
+            android:paddingRight="@dimen/dimen5"
+            
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <!-- 第三部分 查询列表 -->
+
+        <LinearLayout
+            android:id="@+id/lightning_quire_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen30"
+            android:background="@color/tv_lightning_listtitle"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/line_common_v" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/time"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_footnote" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/line_common_v" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/longitude"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_footnote" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/line_common_v" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/latitude"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_footnote" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/line_common_v" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/type"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_footnote" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/line_common_v" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@string/strenth"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_footnote" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@drawable/line_common_v" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/data_lightning_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:cacheColorHint="@color/alpha100"
+            android:divider="@drawable/line_common"
+            android:listSelector="@color/alpha100" />
+    </LinearLayout>
+    <!-- 底部：正在加载 -->
+
+    <TextView
+        android:id="@+id/text_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom"
+        android:background="@color/bg_black_alpha70"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/text_content"
+        android:visibility="gone" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/text_nopicture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="200dp"
+        android:gravity="center"
+        android:text="@string/no_picture"
+        android:textColor="@color/text_gray"
+        android:textSize="@dimen/text_subtitle"
+        android:visibility="gone" >
+    </TextView>
+
+    <!-- 下拉刷新视图 -->
+
+    <LinearLayout
+        android:id="@+id/layout_pulldowns"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_marginTop="-1px"
+        android:background="@color/bg_black_alpha50"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <!-- 图标 -->
+
+        <ImageView
+            android:id="@+id/image_pulldown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/icon_pullwodn_arrow" />
+        <!-- 文字 -->
+
+        <TextView
+            android:id="@+id/text_pulldown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refresh_pulldown"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_content" />
+    </LinearLayout>
+
+</FrameLayout>

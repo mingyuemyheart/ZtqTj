@@ -1,0 +1,17 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+/**
+ * 服务产品套餐信息
+ * @author E.Sun
+ * 2015年11月10日
+ */
+public class ProductSetMealInfo {
+
+	/** 套餐编号 */
+	public String id = "";
+	/** 套餐名称 */
+	public String name = "";
+	/** 套餐资费 */
+	public double amount = 0;
+	
+}

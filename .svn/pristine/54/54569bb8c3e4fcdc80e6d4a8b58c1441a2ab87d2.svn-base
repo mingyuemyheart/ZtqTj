@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 健康气象
+ * 
+ * @author chenjx
+ * 
+ */
+public class PackHealthQxLmUp extends PcsPackUp {
+	public String column_type;
+	public static final String NAME = "health_qx_lm";
+    public PackHealthQxLmUp() {
+        intervalMill = 0;
+    }
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("column_type", column_type);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME ;
+	}
+
+}

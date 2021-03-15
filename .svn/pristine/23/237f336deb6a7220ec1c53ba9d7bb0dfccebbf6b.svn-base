@@ -1,0 +1,91 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 订单支付
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class PackDataQueryPayDown extends PcsPackDown {
+
+    /**
+     * 1：成功；-1：失败
+     */
+    public String result = "";
+
+    /**
+     * 订单详情ID
+     */
+    public String order_detail_id = "";
+
+    /**
+     * 套餐名称
+     */
+    public String product_name = "";
+
+    /**
+     * 套餐详情
+     */
+    public String product_detail = "";
+
+    /**
+     * 总费用
+     */
+    public String total_amount = "";
+
+    /**
+     * 支付方式
+     */
+    public String pay_type = "";
+
+    /**
+     * 微信支付
+     */
+    public WechatInfo weixin_pay_info = new WechatInfo();
+
+    /**
+     * 支付宝支付
+     */
+    public AlipayInfo ali_pay_info = new AlipayInfo();
+
+    /**
+     * 返回加密值
+     */
+    public String re_sign = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            result = obj.optString("result");
+            order_detail_id = obj.optString("order_detail_id");
+            product_name = obj.optString("product_name");
+            product_detail = obj.optString("product_detail");
+            total_amount = obj.optString("total_amount");
+            pay_type = obj.optString("pay_type");
+            re_sign = obj.optString("re_sign");
+            if(pay_type.equals("2")) { // 微信
+                JSONObject wx = obj.optJSONObject("weixin_pay_info");
+                weixin_pay_info.appid = wx.optString("appid");
+                weixin_pay_info.mch_id = wx.optString("mch_id");
+                weixin_pay_info.notify_url = wx.optString("notify_url");
+                weixin_pay_info.key = wx.optString("key");
+                weixin_pay_info.log_url = wx.optString("log_url");
+            } else if(pay_type.equals("4")) { // 支付宝
+                JSONObject ali = obj.optJSONObject("ali_pay_info");
+                ali_pay_info.appid = ali.optString("appid");
+                ali_pay_info.mch_id = ali.optString("mch_id");
+                ali_pay_info.notify_url = ali.optString("notify_url");
+                ali_pay_info.key = ali.optString("key");
+                ali_pay_info.log_url = ali.optString("log_url");
+                ali_pay_info.it_b_pay = ali.optString("it_b_pay");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

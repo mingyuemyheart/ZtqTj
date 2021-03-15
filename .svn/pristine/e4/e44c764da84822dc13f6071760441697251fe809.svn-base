@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：雷电监测--地市地区列表
+ * 
+ * @author Chensq 2015年11月9日
+ */
+public class PackThunderListUp extends PcsPackUp {
+	public static final String NAME = "thunder_area_list";
+
+	@Override
+	public JSONObject toJSONObject() {
+		return new JSONObject();
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

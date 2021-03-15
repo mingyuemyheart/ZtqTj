@@ -1,0 +1,13 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+/**
+ * 定位到的城市信息
+ *
+ * @author JiangZY
+ */
+public class PackLocalCityLocation extends PackLocalCity {
+
+    public static String KEY = "PackLocalCityLocation";
+
+    public static String LOCATING = "定位中...";
+}

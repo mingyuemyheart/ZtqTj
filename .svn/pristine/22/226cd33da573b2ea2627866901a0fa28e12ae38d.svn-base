@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 天气综述
+ * 
+ * @author chenjh
+ */
+public class PackUserPictureDown extends PcsPackDown {
+	public String result;
+	public String result_msg;
+	public String url;
+	@Override
+	public void fillData(String jsonStr) {
+
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			result=temp.getString("result");
+			result_msg=temp.getString("result_msg");
+			url=temp.getString("url");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+
+}

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/livequery_bleak2_bg"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:id="@+id/livequery_city_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview_2"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+
+        <TextView
+            android:id="@+id/livequery_town_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen2"
+            android:layout_weight="1"
+            android:background="@drawable/bg_likespinnertextview_2"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <com.pcs.ztqtj.view.myview.FontFitTextView
+            android:id="@+id/livequery_begintime"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/bg_likespinnertextview"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/dimen14"/>
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_likespinnertextview"
+            android:gravity="center"
+            android:text="至"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/dimen14"
+            />
+
+        <com.pcs.ztqtj.view.myview.FontFitTextView
+            android:id="@+id/livequery_endtime"
+            android:layout_width="0dp"
+            android:layout_marginLeft="2dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/bg_likespinnertextview"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/dimen14"/>
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content"
+            />
+
+        <Button
+            android:id="@+id/livequery_search_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="2dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_livequery_commom"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:singleLine="true"
+            android:text="@string/query"
+            android:textColor="@color/text_white"
+            android:textSize="13dp"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/livequery_bleak2_bg"
+        android:paddingLeft="@dimen/activity_margintop"
+        android:paddingRight="@dimen/activity_margintop"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_white"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/data_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingLeft="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/description_title_low_on"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/bg_white"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingLeft="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"/>
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/livequery_town"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100"/>
+
+            <TextView
+                android:id="@+id/description_title_low_sc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/livequery_listtitleclick"
+                android:paddingBottom="@dimen/activity_margintop"
+                android:paddingLeft="@dimen/activity_margintop"
+                android:paddingTop="@dimen/activity_margintop"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="gone"/>
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/description_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100"
+                android:visibility="gone"
+                />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

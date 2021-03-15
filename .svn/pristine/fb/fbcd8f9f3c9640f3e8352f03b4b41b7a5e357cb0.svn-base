@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 风雨查询_对比图
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxComparisonDown extends PcsPackDown {
+    public List<ItemComparison> listData = new ArrayList<>();
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            listData.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray jr = obj.getJSONArray("info_list");
+            for (int i = 0; i < jr.length(); i++) {
+                JSONObject joIn = jr.getJSONObject(i);
+                ItemComparison itemO = new ItemComparison();
+                itemO.dt = joIn.optString("dt");
+                itemO.sk_val = joIn.optString("sk_val");
+                itemO.yb_val = joIn.optString("yb_val");
+                listData.add(itemO);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class ItemComparison {
+        public String dt = "";
+        public String sk_val = "";
+        public String yb_val = "";
+    }
+
+}

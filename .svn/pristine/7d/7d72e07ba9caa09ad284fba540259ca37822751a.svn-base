@@ -1,0 +1,32 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 支付订单
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class PackDataQueryOrderDown extends PcsPackDown {
+
+    public String result = "";
+    public String order_id = "";
+    public String user_id = "";
+    public String product_id = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject object = new JSONObject(jsonStr);
+            result = object.optString("result");
+            order_id = object.optString("order_id");
+            user_id = object.optString("user_id");
+            product_id = object.optString("product_id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

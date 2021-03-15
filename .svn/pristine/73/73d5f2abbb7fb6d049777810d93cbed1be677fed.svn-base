@@ -1,0 +1,18 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_level_ranking_detailDown.StationData;
+
+/**
+ * @author Z
+ *	降雨量等级统计分析列表数据显示
+ */
+public class LevelListBean {
+	public boolean isTitle = false;
+	public String titleName = "";
+	public List<StationData> rain_station_list = new ArrayList<StationData>();
+	public StationData stationData;
+	public boolean isSmallTen=true;
+}

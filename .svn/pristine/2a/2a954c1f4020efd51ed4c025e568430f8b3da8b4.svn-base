@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 气象服务-密码修改
+ * 
+ * @author chenjh
+ */
+public class PackServiceChangePwdDown extends PcsPackDown {
+
+	/** 成功或失败判断 **/
+	public String type = "";
+	/** 返回提示内容 **/
+	public String msg = "";
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			JSONObject jsonArr = temp.getJSONObject("qxfw_pwd");
+			updateMill = temp.optLong("updateMill");
+			type = jsonArr.getString("type");
+			msg = jsonArr.getString("msg");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+}

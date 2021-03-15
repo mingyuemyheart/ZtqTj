@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ *地区半年降雨量对比
+ */
+public class PackYltjYearUp extends PcsPackUp {
+	public static final String NAME="yltj_year";
+	public String area_id="";
+
+	public PackYltjYearUp() {
+		//TODO 演示代码
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("area_id", area_id);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public String getName() {
+		return NAME+"#"+area_id;
+	}
+}

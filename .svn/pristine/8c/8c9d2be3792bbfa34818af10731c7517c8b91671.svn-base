@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_white"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:id="@+id/tv_otherself_status"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/btn_disaster_time"
+            android:drawableRight="@drawable/bg_livequery_drowdown_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="审核状态"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_otherself_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/btn_disaster_time"
+            android:drawableRight="@drawable/bg_livequery_drowdown_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+        <View
+            android:layout_width="20dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_other_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@drawable/btn_disaster_up"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="查询"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+
+        <TextView
+            android:id="@+id/tv_other_name"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="责任人:zhangsan"
+            android:textSize="@dimen/dimen14"
+            android:textColor="@color/text_black"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_other_phone"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="电话号码:13564543646"
+            android:textSize="@dimen/dimen14"
+            android:textColor="@color/text_black"
+            android:gravity="center_vertical|right"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:background="@color/text_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="发布时间"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="发布地点"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:text="审核状态"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="详情"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_respon_list"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:textColor="@color/text_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dimen16"/>
+
+    <ListView
+        android:id="@+id/lv_otherself"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/bg_white"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:footerDividersEnabled="true"
+        android:listSelector="@color/alpha100"/>
+</LinearLayout>

@@ -1,0 +1,19 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+/**
+ * 气象站的雨情信息
+ * @author tya
+ *
+ */
+public class RainInfo {
+	
+	/**
+	 * 时间
+	 */
+	public String time = "";
+	
+	/**
+	 * 单次雨量mm
+	 */
+	public String rain = "";
+}

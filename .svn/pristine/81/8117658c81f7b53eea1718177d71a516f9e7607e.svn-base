@@ -1,0 +1,34 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 初始化
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackInitDown extends PcsPackDown {
+
+	public String pid = "";
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			pid = obj.getString("pid");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+}

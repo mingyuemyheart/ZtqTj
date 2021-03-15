@@ -1,0 +1,527 @@
+package com.pcs.lib.lib_pcs_v3.model.data;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.text.TextUtils;
+import android.text.format.Time;
+
+import com.pcs.lib.lib_pcs_v3.PcsInit;
+import com.pcs.lib.lib_pcs_v3.control.log.Log;
+import com.pcs.lib.lib_pcs_v3.model.db.DBHelper;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class PcsDataDownload {
+    /**
+     * json包开头的p
+     */
+    private static String mP = "";
+
+    /**
+     * 请求地址
+     */
+    private static String mUrl = "";
+
+    /**
+     * 请求列表
+     */
+    private Map<String, PcsPackUp> requestsMap = new HashMap<String, PcsPackUp>();
+    /**
+     * 接口发送时间
+     */
+    private Map<String, Long> sendTimeMap = new HashMap<String, Long>();
+    /**
+     * 无网络的时间
+     */
+    private long mNoNetTime = 0;
+    /**
+     * 超时时间：30秒
+     */
+    private final long TIME_OUT = 30 * 1000;
+    /**
+     * 最后运行时间
+     */
+    private static long mLastRunTime = 0;
+    /**
+     * 暂停
+     */
+    private static boolean mIsPaused = false;
+    //暂停时的刷新间隔
+    private final long PAUSED_INTERVAL = 1000 * 60 * 30;
+
+    private MyRun mMyRun;
+
+    private static PcsDataDownload instance = null;
+
+    private PcsDataDownload() {
+        mLastRunTime = System.currentTimeMillis();
+    }
+
+    private void executeRun() {
+        if (mMyRun != null) {
+            mMyRun.stop();
+        }
+        mMyRun = new MyRun();
+        PcsInit.getInstance().getExecutorService().execute(mMyRun);
+    }
+
+    /**
+     * 启动线程
+     */
+    public static void start() {
+        if (instance == null) {
+            instance = new PcsDataDownload();
+        }
+
+        instance.executeRun();
+    }
+
+    /**
+     * 设置head里的p
+     *
+     * @param p
+     */
+    public static void setP(String p) {
+        mP = p;
+    }
+
+    public static String getP() {
+        return mP;
+    }
+
+    /**
+     * 设置URL
+     *
+     * @param url
+     */
+    public static void setUrl(String url) {
+        mUrl = url;
+    }
+
+    /**
+     * 添加下载
+     *
+     * @param upPack
+     */
+    public static void addDownload(PcsPackUp upPack) {
+        if (upPack == null) {
+            throw new RuntimeException("upPack is null !");
+        }
+        try {
+            instance.requestsMap.put(upPack.getName(), upPack);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /**
+     * 移除一个下载
+     *
+     * @param upPack
+     */
+    public static void removeDownload(PcsPackUp upPack) {
+        if (upPack == null) {
+            return;
+        }
+        try {
+            instance.requestsMap.remove(upPack.getName());
+            instance.sendTimeMap.remove(upPack.getName());
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /**
+     * 移除一个下载
+     */
+    public static void removeDownload(String key) {
+        if (TextUtils.isEmpty(key)) {
+            return;
+        }
+        try {
+            instance.requestsMap.remove(key);
+        } catch (Exception ex) {
+
+        }
+    }
+
+    // 线程
+    private class MyRun implements Runnable {
+        /**
+         * 已请求列表
+         */
+        private ArrayList<String> mRequestedList = null;
+        /**
+         * 删除列表
+         */
+        private ArrayList<String> mRemoveList = null;
+
+        private boolean mStop = false;
+
+        private Time time = new Time();
+
+        public MyRun() {
+            Log.e("jzy", "创建数据下载");
+            mRequestedList = new ArrayList<String>();
+            mRemoveList = new ArrayList<String>();
+        }
+
+        public void stop() {
+            mStop = true;
+        }
+
+        @Override
+        public void run() {
+            Context context = PcsInit.getInstance().getContext();
+            while (true && !mStop) {
+                if (requestsMap.size() > 0 && !getIsPaused()) {
+                    mLastRunTime = System.currentTimeMillis();
+                    // 上传字符串
+                    String upStr = null;
+                    upStr = getUpJson();
+                    if (upStr != null) {
+                        Log.e("jzy", "up_json" + upStr);
+                        if (isNetworkConnected(context)) {
+                            // POST下载
+                            try {
+                                String downJson = postDownload(upStr);
+                                if (downJson != null) {
+                                    // 处理下载Json
+                                    procDownJson(downJson);
+                                } else {
+                                    // 错误广播
+                                    errBroadcastRemove("net error");
+                                }
+                            } catch (ClientProtocolException e) {
+                                // 错误广播
+                                errBroadcastRemove(e.getMessage());
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                // 错误广播
+                                errBroadcastRemove(e.getMessage());
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                // 错误广播
+                                errBroadcastRemove(e.getMessage());
+                                e.printStackTrace();
+                            } catch (Exception e) {
+                                // 错误广播
+                                errBroadcastRemove(e.getMessage());
+                                e.printStackTrace();
+                            }
+                        } else {
+                            // 检查无网络状态超时
+                            checkNoNetTimeout();
+                        }
+                    }
+                    // 清空已请求列表
+                    clearRequested();
+                }
+                // 休眠
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        /**
+         * 是否暂停（0点15不暂停，超过1小时不暂停）
+         *
+         * @return
+         */
+        private boolean getIsPaused() {
+            if (!mIsPaused) {
+                return false;
+            }
+
+            time.setToNow();
+            if (time.hour == 0 && time.minute > 10 && time.minute < 15) {
+                return false;
+            }
+
+            if (System.currentTimeMillis() - mLastRunTime > PAUSED_INTERVAL) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * 清空已请求列表
+         */
+        private void clearRequested() {
+            Context context = PcsInit.getInstance().getContext();
+            for (int i = 0; i < mRequestedList.size(); i++) {
+                String key = mRequestedList.get(i);
+                PcsPackUp pack = requestsMap.get(key);
+                if (pack != null && !pack.bRepeat) {
+                    requestsMap.remove(key);
+                }
+                // 发送广播
+                PcsDataBrocastReceiver.sendBroadcast(context, key, null);
+            }
+            mRequestedList.clear();
+        }
+
+        /**
+         * 检查超时并广播
+         */
+        private void checkNoNetTimeout() {
+            long currTime = System.currentTimeMillis();
+            if (mNoNetTime == 0) {
+                mNoNetTime = currTime;
+            }
+
+            if (currTime - mNoNetTime < TIME_OUT) {
+                return;
+            }
+
+            mNoNetTime = 0;
+            // 错误广播
+            errBroadcastRemove("net error");
+        }
+
+        /**
+         * 广播错误，并从列表删除
+         */
+        private void errBroadcastRemove(String msg) {
+            Set<String> keys = requestsMap.keySet();
+            Iterator<String> it = keys.iterator();
+            for (; it.hasNext(); ) {
+                String key = it.next();
+                PcsPackUp pack = requestsMap.get(key);
+                if (pack.bRepeat) {
+                    continue;
+                }
+                mRemoveList.add(key);
+            }
+
+            Context context = PcsInit.getInstance().getContext();
+            for (int i = 0; i < mRemoveList.size(); i++) {
+                PcsDataBrocastReceiver.sendBroadcast(context,
+                        mRemoveList.get(i), msg);
+                requestsMap.remove(mRemoveList.get(i));
+            }
+        }
+
+        /**
+         * 获取完整JSON
+         *
+         * @return
+         * @throws JSONException
+         */
+        private String getUpJson() {
+            try {
+                Map<String, PcsPackUp> requestsMapCopy = new HashMap<String, PcsPackUp>();
+//			复制一份HashMap列表，防止在循环的时候requestsMap新增加数据---java.util.ConcurrentModificationException----异常
+                requestsMapCopy.putAll(requestsMap);
+                // 当前系统毫秒
+                long currMill = System.currentTimeMillis();
+                // json
+                JSONObject json = new JSONObject();
+                // head
+                JSONObject head = new JSONObject();
+                Object key = null;
+                // 计数
+                int count = 0;
+                head.put("p", mP);
+                json.put("h", head);
+                // body
+                JSONObject body = new JSONObject();
+                // 遍历
+                Set<String> keys = requestsMapCopy.keySet();
+                Iterator<String> it = keys.iterator();
+                while (it.hasNext()) {
+                    key = it.next();
+                    PcsPackUp pack = requestsMap.get(key.toString());
+                    if (pack == null || TextUtils.isEmpty(pack.getName())) {
+                        continue;
+                    }
+                    // 发送间隔判断
+                    long sendMill = getSendTime(pack);
+                    if ((sendMill + pack.getIntervalMill() > currMill) || isZeroRefresh(sendMill)) {
+                        if (!pack.bRepeat) {
+                            // 添加到请求列表
+                            mRequestedList.add(key.toString());
+                        }
+                        continue;
+                    }
+                    // 发送时间
+                    setSendTime(pack, currMill);
+                    body.put(pack.getName(), pack.toJSONObject());
+                    // 添加到已请求列表
+                    mRequestedList.add(key.toString());
+                    // 计数
+                    count++;
+                }
+                json.put("b", body);
+                if (count > 0) {
+                    return json.toString();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        /**
+         * 获取发送时间
+         *
+         * @param upPack
+         * @return
+         */
+        private long getSendTime(PcsPackUp upPack) {
+            if (!sendTimeMap.containsKey(upPack.getName())) {
+                return 0;
+            }
+            return sendTimeMap.get(upPack.getName()).longValue();
+        }
+
+        /**
+         * 设置发送时间
+         */
+        private void setSendTime(PcsPackUp upPack, long mill) {
+            sendTimeMap.put(upPack.getName(), Long.valueOf(mill));
+        }
+
+        /**
+         * POST下载
+         *
+         * @param upJson
+         * @return
+         * @throws IOException
+         * @throws ClientProtocolException
+         */
+        private String postDownload(String upJson)
+                throws Exception {
+            List<BasicNameValuePair> httpParams = new LinkedList<BasicNameValuePair>();
+            httpParams.add(new BasicNameValuePair("p", upJson));
+            HttpPost postMethod = new HttpPost(mUrl);
+            postMethod.setEntity(new UrlEncodedFormEntity(httpParams, "utf-8"));
+            HttpResponse response = PcsInit.getInstance().getHttpClient()
+                    .execute(postMethod);
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                String json = EntityUtils.toString(response.getEntity(),
+                        "utf-8");
+                Log.e("jzy", "down_json:" + json);
+                return json;
+            }
+
+            return null;
+        }
+
+        /**
+         * 处理下载Json
+         *
+         * @param json
+         * @throws JSONException
+         */
+        private void procDownJson(String json) throws JSONException {
+            String key = null;
+            JSONObject jsonObject = new JSONObject(json);
+            // Head
+            JSONObject h = jsonObject.getJSONObject("h");
+            int is = h.getInt("is");
+            if (is < 0) {
+                String error = h.getString("error");
+                Log.e("NetError", error);
+                return;
+            }
+            // Body
+            JSONObject b = jsonObject.getJSONObject("b");
+            //PcsDataManager.getInstance().seriesDataBegin();
+            // 保存
+            SQLiteDatabase db = null;
+            synchronized (PcsDataManager.mLock) {
+                try {
+                    Context context = PcsInit.getInstance().getContext();
+                    if (context == null) {
+                        Log.e("jzy", "数据库，procDownJson，context=null");
+                    }
+                    db = DBHelper.getInstance(context).getReadableDatabase();
+                    for (int i = 0; i < mRequestedList.size(); i++) {
+                        key = mRequestedList.get(i);
+                        if (b.has(key)) {
+                            JSONObject obj = b.getJSONObject(key);
+                            obj.put("updateMill", System.currentTimeMillis());
+                            PcsDataManager.getInstance().seriesSaveData(db, key,
+                                    obj.toString());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
+                }
+            }
+        }
+
+        /**
+         * 零点更新一次？
+         *
+         * @return
+         */
+        @SuppressLint("NewApi")
+        private boolean isZeroRefresh(long sendTime) {
+            // 零点10秒
+            time.setToNow();
+            return time.hour == 0 && time.minute == 0 && time.second <= 10
+                    && System.currentTimeMillis() - sendTime > 10000;
+        }
+    }
+
+    /**
+     * 网络是否可用
+     *
+     * @param context
+     * @return
+     */
+    private boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager
+                    .getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 设置暂停
+     *
+     * @param isPause
+     */
+    public static void setPause(boolean isPause) {
+        mIsPaused = isPause;
+    }
+}

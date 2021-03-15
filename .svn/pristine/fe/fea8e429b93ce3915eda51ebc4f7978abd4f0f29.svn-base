@@ -1,0 +1,73 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.observation;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Z 数值预报
+ */
+public class PackObservationCompTableDown extends PcsPackDown {
+    public List<ItemObservationCompTable> listDataH = new ArrayList<ItemObservationCompTable>();
+    public List<ItemObservationCompTable> listDataL = new ArrayList<ItemObservationCompTable>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        listDataH.clear();
+        listDataL.clear();
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray arrlmList = obj.getJSONArray("h_list");
+            for (int i = 0; i < arrlmList.length(); i++) {
+                JSONObject jsonb = arrlmList.getJSONObject(i);
+                ItemObservationCompTable bean = new ItemObservationCompTable();
+                bean.show_time = jsonb.optString("show_time")+"\n\r最高温\n\r出现时间";
+                bean.soil_tem = jsonb.optString("soil_tem");
+                bean.soil_time = jsonb.optString("soil_time");
+                bean.cement_tem = jsonb.optString("cement_tem");
+                bean.cement_time = jsonb.optString("cement_time");
+                bean.asphalt_tem = jsonb.optString("asphalt_tem");
+                bean.asphalt_time = jsonb.optString("asphalt_time");
+                bean.brick_tem = jsonb.optString("brick_tem");
+                bean.brick_time = jsonb.optString("brick_time");
+                bean.sandgravel_tem = jsonb.optString("sandgravel_tem");
+                bean.sandgravel_time = jsonb.optString("sandgravel_time");
+                bean.tem = jsonb.optString("tem");
+                bean.time = jsonb.optString("time");
+                listDataH.add(bean);
+            }
+            JSONArray arrlmListL = obj.getJSONArray("l_list");
+            for (int i = 0; i < arrlmListL.length(); i++) {
+                JSONObject jsonb = arrlmListL.getJSONObject(i);
+                ItemObservationCompTable bean = new ItemObservationCompTable();
+                bean.show_time = jsonb.optString("show_time")+"\n\r最低温\n\r出现时间";
+                bean.soil_tem = jsonb.optString("soil_tem");
+                bean.soil_time = jsonb.optString("soil_time");
+                bean.cement_tem = jsonb.optString("cement_tem");
+                bean.cement_time = jsonb.optString("cement_time");
+                bean.asphalt_tem = jsonb.optString("asphalt_tem");
+                bean.asphalt_time = jsonb.optString("asphalt_time");
+                bean.brick_tem = jsonb.optString("brick_tem");
+                bean.brick_time = jsonb.optString("brick_time");
+                bean.sandgravel_tem = jsonb.optString("sandgravel_tem");
+                bean.sandgravel_time = jsonb.optString("sandgravel_time");
+                bean.tem = jsonb.optString("tem");
+                bean.time = jsonb.optString("time");
+                listDataL.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}

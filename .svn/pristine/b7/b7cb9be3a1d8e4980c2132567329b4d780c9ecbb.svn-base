@@ -1,0 +1,58 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShortUpdateTimeUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjxxIndexFbUp extends PackShortUpdateTimeUp {
+
+    public static final String NAME = "yjxx_index_fb_list";
+
+    private String area = "";
+
+    public PackYjxxIndexFbUp() {
+        // 循环发送
+        //bRepeat = true;
+        intervalMill = 0;
+    }
+
+
+    public void setCity(PackLocalCity cityInfo){
+//        if(cityInfo.isFjCity){
+//            area = cityInfo.PARENT_ID;
+//        }else{
+//            area = cityInfo.ID;
+//        }
+        area = cityInfo.ID;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("area", area);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取接口名
+     *
+     * @return
+     */
+    @Override
+    public String getName() {
+        return NAME + "#" + area;
+    }
+}
+

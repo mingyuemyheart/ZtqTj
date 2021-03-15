@@ -1,0 +1,41 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+//重要天气
+public class PackImWeatherUp extends PcsPackUp {
+
+    public static final String NAME = "word_list";
+
+	public String type="HY_HYTQ";
+
+    public String count="8";
+    public String page="";
+
+    public PackImWeatherUp() {
+        this.intervalMill = 0;
+    }
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("type", type);
+            obj.put("count", count);
+            obj.put("page", page);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME ;
+	}
+
+}

@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+/**
+ * 台风实线路径信息
+ *
+ * @author chenjh
+ *
+ */
+public class FulPoint {
+
+	/** 台风时间 **/
+	public String time;
+	/** 经度 **/
+	public String jd;
+	/** 纬度 **/
+	public String wd;
+	/** 气压 **/
+	public String qy;
+	/** 风力 **/
+	public String fl;
+	/** 最大风速 **/
+	public String fs_max;
+	/** 风速 **/
+	public String fs;
+	/** 10级风圈 **/
+	public String fl_10;
+	/** 7级风圈 **/
+	public String fl_7;
+	/** 路径表述 **/
+	public String tip;
+    /** 七级风圈(东北) **/
+    public double ne_7 = 0;
+    /** 七级风圈(东南) **/
+    public double se_7 = 0;
+    /** 七级风圈(西南) **/
+    public double sw_7 = 0;
+    /** 七级风圈(西北) **/
+    public double nw_7 = 0;
+    /** 十级风圈(东北) **/
+    public double ne_10 = 0;
+    /** 十级风圈(东南) **/
+    public double se_10 = 0;
+    /** 十级风圈(西南) **/
+    public double sw_10 = 0;
+    /** 十级风圈(西北) **/
+    public double nw_10 = 0;
+    /** 十二级风圈(东北) **/
+    public double ne_12 = 0;
+    /** 十二级风圈(东南) **/
+    public double se_12 = 0;
+    /** 十二级风圈(西南) **/
+    public double sw_12 = 0;
+    /** 十二级风圈(西北) **/
+    public double nw_12 = 0;
+}

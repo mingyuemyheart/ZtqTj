@@ -1,0 +1,127 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class PackAirInfoDown extends PcsPackDown {
+	/** AQI值 **/
+	public String aqi = "";
+	/** AQI最大值 **/
+	private final float AQI_MAX[] = { 50f, 50f, 50f, 50f, 100f, 200f };
+	/** AQI百分比 **/
+	public float aqi_percent = 0f;
+	/** 更新时间 **/
+	public String updateTime = "";
+	/** 城市排名 **/
+	public String city_num = "";
+	//城市总量
+	public String totalCity="";
+	/** 城市中文 **/
+	public String area = "";
+    /** aqi等级 **/
+    public String quality = "";
+
+    /** 细微颗粒物 **/
+	public String pm2_5 = "";
+	/** 可吸入颗粒物 **/
+	public String pm10 = "";
+	/** 一氧化碳 **/
+	public String no2 = "";
+	/** 二氧化碳 **/
+	public String co = "";
+	/** 臭氧1小时平均值 **/
+	public String o3 = "";
+	/** 臭氧8小时平均值 **/
+	public String o3_8h = "";
+	/** 二氧化硫 **/
+	public String so2 = "";
+    /** 百分比 **/
+    public String per = "";
+    /** 更新时间 **/
+    public String pub_time = "";
+    public String pub_unit="";
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (jsonStr == null || "".equals(jsonStr)) {
+			return;
+		}
+
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+
+			/** 城市排名 **/
+			city_num = obj.getString("city_num");
+			/** 更新时间 **/
+			updateTime = obj.getString("updateTime");
+            /** 百分比**/
+            per = obj.getString("per");
+            /** 更新时间 **/
+            pub_time = obj.getString("pub_time");
+            //总城市量
+            totalCity=obj.getString("totalCity");
+            pub_unit=obj.optString("pub_unit");
+
+			JSONObject objSix = obj.getJSONObject("six_data");
+			/** AQI值 **/
+			aqi = objSix.getString("aqi");
+			if (TextUtils.isEmpty(aqi)) {
+				aqi = "0";
+			}
+			/** AQI百分比 **/
+			aqi_percent = calcPercent(Float.valueOf(aqi));
+			/** 细微颗粒物 **/
+			pm2_5 = objSix.getString("pm2_5");
+			/** 可吸入颗粒物 **/
+			pm10 = objSix.getString("pm10");
+			/** 一氧化碳 **/
+			no2 = objSix.getString("no2");
+            /** aqi等级 **/
+            quality = objSix.getString("quality");
+			/** 二氧化碳 **/
+			co = objSix.getString("co");
+			/** 臭氧1小时平均值 **/
+			o3 = objSix.getString("o3");
+			/** 臭氧8小时平均值 **/
+			o3_8h = objSix.getString("o3_8h");
+			/** 二氧化硫 **/
+			so2 = objSix.getString("so2");
+
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 计算百分比
+	 * 
+	 * @return
+	 */
+	protected float calcPercent(float aqi) {
+		if (aqi <= 0f) {
+			return 0f;
+		} else if (aqi >= 500f) {
+			return 1f;
+		}
+
+		float per = 0f;
+		final int COUNT = 6;
+		final float ONE_PER = 1f / 6f;
+		float tempAqi = aqi;
+		for (int i = 0; i < 6; i++) {
+			if (tempAqi > AQI_MAX[i]) {
+				per += ONE_PER;
+				tempAqi -= AQI_MAX[i];
+			} else {
+				per += (tempAqi / AQI_MAX[i]) * ONE_PER;
+				return per;
+			}
+		}
+		return per;
+	}
+}

@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.observation;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Z 数值预报
+ */
+public class PackObservationTableDown extends PcsPackDown {
+    public List<ItemObservationTable> listData = new ArrayList<ItemObservationTable>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        listData.clear();
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray arrlmList = obj.getJSONArray("info_list");
+            for (int i = 0; i < arrlmList.length(); i++) {
+                JSONObject jsonb = arrlmList.getJSONObject(i);
+                ItemObservationTable bean = new ItemObservationTable();
+                bean.tem = jsonb.optString("tem");
+                bean.time = jsonb.optString("time");
+                bean.h_tem = jsonb.optString("h_tem");
+                bean.h_time = jsonb.optString("h_time");
+                bean.l_tem = jsonb.optString("l_tem");
+                bean.l_time = jsonb.optString("l_time");
+                listData.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+}

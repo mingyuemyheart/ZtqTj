@@ -1,0 +1,102 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 本地包：更新频率
+ *
+ * @author JiangZy
+ */
+public class PackLocalSetUpdate extends PcsPackLocal {
+
+    public static final String KEY = "PackLocalSetUpdate";
+
+    private final int MINUTE = 60 * 1000;
+    private final int HOUR = 60 * 60 * 1000;
+    /**
+     * 选中项目
+     */
+    public int choiceItem = 0;
+    /**
+     * 更新时间
+     */
+    private long updateTime = 0;
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(jsonStr);
+            choiceItem = obj.getInt("choiceItem");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("choiceItem", choiceItem);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+    /**
+     * 清空更新时间
+     */
+    public void clearUpdateTime() {
+        updateTime = 0;
+    }
+
+    /**
+     * 保存更新时间
+     */
+    public void saveUpdateTime() {
+        updateTime = System.currentTimeMillis();
+    }
+
+    /**
+     * 是否需要更新
+     *
+     * @return
+     */
+    public boolean isNeedUpdate() {
+        long currTime = System.currentTimeMillis();
+
+        switch (choiceItem) {
+            case 0:
+                // 实时更新
+                return currTime - updateTime > 3 * MINUTE;
+            case 1:
+                // 半小时更新
+                return currTime - updateTime > 30 * MINUTE;
+            case 2:
+                // 2小时更新
+                return currTime - updateTime > 2 * HOUR;
+            case 3:
+                // 6小时更新
+                return currTime - updateTime > 6 * HOUR;
+            case 4:
+                // 12小时更新
+                return currTime - updateTime > 12 * HOUR;
+            case 5:
+                // 24小时更新
+                return currTime - updateTime > 24 * HOUR;
+        }
+
+        return false;
+    }
+}

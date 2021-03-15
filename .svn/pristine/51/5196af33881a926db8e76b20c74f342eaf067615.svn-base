@@ -1,0 +1,24 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by tyaathome on 2016/9/20.
+ */
+public class PackPhotoDeleteItemDown extends PcsPackDown {
+
+    public String result = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            result = obj.getString("result");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_marginleft_right"
+    android:paddingRight="@dimen/activity_marginleft_right" >
+
+    <TextView
+        android:id="@+id/myserver_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen10"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_content" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/line_common" />
+
+</RelativeLayout>

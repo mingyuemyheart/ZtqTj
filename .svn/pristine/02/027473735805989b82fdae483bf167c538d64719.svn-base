@@ -1,0 +1,146 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 多个台风路径
+ * Created by tyaathome on 2018/06/08.
+ */
+public class PackMultiTyphoonPathDown extends PcsPackDown {
+
+    public List<TyphoonPathInfo> typhoonList = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            typhoonList.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            JSONArray typhoonArray = object.getJSONArray("typhoon");
+            for(int i = 0; i < typhoonArray.length(); i++) {
+                TyphoonPathInfo typhoonPathInfo = new TyphoonPathInfo();
+                JSONObject typhoonJson = typhoonArray.getJSONObject(i);
+//                if (temp.has("updateMill")) {
+//                    updateMill = temp.optLong("updateMill");
+//                }
+//
+//                JSONObject typhoonJson = new JSONObject(typhoon);
+
+                typhoonPathInfo.BeijingDottedPointList.clear();
+                typhoonPathInfo.TokyoDottedPointList.clear();
+                typhoonPathInfo.ShangHaiDottedPointList.clear();
+                typhoonPathInfo.TaiWanDottedPointList.clear();
+                typhoonPathInfo.fulPointList.clear();
+                typhoonPathInfo.name = typhoonJson.getString("name");
+                typhoonPathInfo.simplename = typhoonJson.getString("simple_name");
+                typhoonPathInfo.code = typhoonJson.getString("code");
+
+                if (typhoonJson.optJSONArray("dotted_points").length() > 0) {
+                    JSONArray dottedPoints = typhoonJson
+                            .getJSONArray("dotted_points");// 北京预测路径
+                    for (int j = 0; j < dottedPoints.length(); j++) {
+                        ForecastPoint info = new ForecastPoint();
+                        JSONObject dottedPointJson = dottedPoints.getJSONObject(j);
+                        info.time = dottedPointJson.getString("time");
+                        info.jd = dottedPointJson.getString("jd");
+                        info.wd = dottedPointJson.getString("wd");
+                        info.tip = dottedPointJson.getString("tip");
+                        info.fl= dottedPointJson.optString("fl");// 风力
+                        info.fs= dottedPointJson.optString("fs");//风速  ,
+                        info.qx= dottedPointJson.optString("qx");// (，气旋);
+                        typhoonPathInfo.BeijingDottedPointList.add(info);
+                    }
+                }
+                if (typhoonJson.optJSONArray("dotted_1_points").length() > 0) {
+                    JSONArray dottedPoints1 = typhoonJson
+                            .getJSONArray("dotted_1_points");// 东京预测路径
+                    for (int j = 0; j < dottedPoints1.length(); j++) {
+                        ForecastPoint info = new ForecastPoint();
+                        JSONObject dottedPointJson1 = dottedPoints1
+                                .getJSONObject(j);
+                        info.time = dottedPointJson1.getString("time");
+                        info.jd = dottedPointJson1.getString("jd");
+                        info.wd = dottedPointJson1.getString("wd");
+                        info.tip = dottedPointJson1.getString("tip");
+                        info.fl= dottedPointJson1.optString("fl");// 风力
+                        info.fs= dottedPointJson1.optString("fs");//风速  ,
+                        info.qx= dottedPointJson1.optString("qx");// (，气旋);
+                        typhoonPathInfo.TokyoDottedPointList.add(info);
+                    }
+                }
+                if (typhoonJson.optJSONArray("dotted_2_points").length() > 0) {
+                    JSONArray dottedPoints2 = typhoonJson
+                            .getJSONArray("dotted_2_points");// 福州预测路径
+                    for (int j = 0; j < dottedPoints2.length(); j++) {
+                        ForecastPoint info = new ForecastPoint();
+                        JSONObject dottedPointJson2 = dottedPoints2
+                                .getJSONObject(j);
+                        info.time = dottedPointJson2.getString("time");
+                        info.jd = dottedPointJson2.getString("jd");
+                        info.wd = dottedPointJson2.getString("wd");
+                        info.tip = dottedPointJson2.getString("tip");
+                        info.fl= dottedPointJson2.optString("fl");// 风力
+                        info.fs= dottedPointJson2.optString("fs");//风速  ,
+                        info.qx= dottedPointJson2.optString("qx");// (，气旋);
+                        typhoonPathInfo.ShangHaiDottedPointList.add(info);
+                    }
+                }
+                if(typhoonJson.optJSONArray("dotted_3_points").length() > 0) {
+                    JSONArray dottedPoints3 = typhoonJson.getJSONArray("dotted_3_points"); // 台湾预测路径
+                    for(int j = 0; j < dottedPoints3.length(); j++) {
+                        ForecastPoint info = new ForecastPoint();
+                        JSONObject dottedPointJson3 = dottedPoints3
+                                .getJSONObject(j);
+                        info.time = dottedPointJson3.getString("time");
+                        info.jd = dottedPointJson3.getString("jd");
+                        info.wd = dottedPointJson3.getString("wd");
+                        info.tip = dottedPointJson3.getString("tip");
+                        info.fl= dottedPointJson3.optString("fl");// 风力
+                        info.fs= dottedPointJson3.optString("fs");//风速  ,
+                        info.qx= dottedPointJson3.optString("qx");// (，气旋);
+                        typhoonPathInfo.TaiWanDottedPointList.add(info);
+                    }
+                }
+                if (typhoonJson.optJSONArray("ful_points").length() > 0) {
+                    JSONArray fulPoints = typhoonJson.getJSONArray("ful_points");// 实线路径信息
+                    for (int j = 0; j < fulPoints.length(); j++) {
+                        FulPoint info = new FulPoint();
+                        JSONObject fulPointJson = fulPoints.getJSONObject(j);
+                        info.time = fulPointJson.getString("time");
+                        info.jd = fulPointJson.getString("jd");
+                        info.wd = fulPointJson.getString("wd");
+                        info.qy = fulPointJson.getString("qy");
+                        info.fs_max = fulPointJson.getString("fs_max");
+                        info.fs = fulPointJson.getString("fs");
+                        info.fl = fulPointJson.getString("fl");
+                        info.fl_10 = fulPointJson.getString("fl_10");
+                        info.fl_7 = fulPointJson.getString("fl_7");
+                        info.tip = fulPointJson.getString("tip");
+                        info.ne_7 = fulPointJson.optDouble("ne_7", 0d);
+                        info.se_7 = fulPointJson.optDouble("se_7", 0d);
+                        info.sw_7 = fulPointJson.optDouble("sw_7", 0d);
+                        info.nw_7 = fulPointJson.optDouble("nw_7", 0d);
+                        info.ne_10 = fulPointJson.optDouble("ne_10", 0d);
+                        info.se_10 = fulPointJson.optDouble("se_10", 0d);
+                        info.sw_10 = fulPointJson.optDouble("sw_10", 0d);
+                        info.nw_10 = fulPointJson.optDouble("nw_10", 0d);
+                        info.ne_12 = fulPointJson.optDouble("ne_12", 0d);
+                        info.se_12 = fulPointJson.optDouble("se_12", 0d);
+                        info.sw_12 = fulPointJson.optDouble("sw_12", 0d);
+                        info.nw_12 = fulPointJson.optDouble("nw_12", 0d);
+                        typhoonPathInfo.fulPointList.add(info);
+                    }
+                }
+                typhoonList.add(typhoonPathInfo);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

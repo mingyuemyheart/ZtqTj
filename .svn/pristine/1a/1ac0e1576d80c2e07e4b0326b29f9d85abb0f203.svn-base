@@ -1,0 +1,81 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 实景开拍：用户中心
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoCenterDown extends PcsPackDown {
+
+	public List<PackPhotoSingle> mList = new ArrayList<PackPhotoSingle>();
+
+	private String mUserId = "";
+	private String mNickName = "";
+
+	public void setUserInfo(String userId, String nickName) {
+		mUserId = userId;
+		mNickName = nickName;
+	}
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+
+		mList.clear();
+
+		try {
+			JSONObject temp = new JSONObject(jsonStr);
+			JSONArray arr = temp.getJSONArray("idx");
+
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				PackPhotoSingle data = new PackPhotoSingle();
+
+				data.userId = mUserId;
+				data.nickName = mNickName;
+				data.des = obj.getString("des");
+				data.address = obj.getString("address");
+				data.weather = obj.getString("weather");
+				data.itemId = obj.getString("itemId");
+				data.praise = obj.getString("praise");
+				data.date_time = obj.getString("date_time");
+                data.browsenum = obj.getString("browsenum");
+				// 图片地址
+				JSONArray imageArr = obj.getJSONArray("images");
+				if (imageArr.length() > 0) {
+					data.imageUrl = imageArr.getJSONObject(0).getString("url");
+				}
+				// 缩略图
+				data.thumbnailUrl = data.imageUrl;
+				// 已点赞？
+				data.isPraised = true;
+
+				mList.add(data);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

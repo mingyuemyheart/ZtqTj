@@ -1,0 +1,29 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+/**
+ * 正在活动的台风列表
+ * Created by tyaathome on 2017/5/16.
+ */
+
+public class PackTyphoonListCurrentActivityUp extends PcsPackUp {
+
+    public static final String NAME = "tflist_act";
+
+    public PackTyphoonListCurrentActivityUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        return new JSONObject();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

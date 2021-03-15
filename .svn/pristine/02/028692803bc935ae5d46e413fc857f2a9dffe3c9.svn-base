@@ -1,0 +1,54 @@
+<!-- 实景：用户中心头部 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_usercenter">
+
+        <LinearLayout
+            android:id="@+id/head_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_usercenter"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_head"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/icon_head_default"/>
+
+            <TextView
+                android:id="@+id/my_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="4dp"
+                android:background="@drawable/btn_focus_cancel"
+                android:gravity="center_vertical|center_horizontal"
+
+                android:textColor="#ffffff"
+                android:textSize="18dp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</FrameLayout>

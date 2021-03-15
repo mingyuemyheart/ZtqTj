@@ -1,0 +1,13 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+/**
+ * 逐小时预报
+ *
+ * @author JiangZy
+ */
+public class Pack36HourForecastUp extends PackHourForecastUp {
+    public Pack36HourForecastUp() {
+        bRepeat = false;
+    }
+
+}

@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 整点实况
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackIntegralPointUp extends PcsPackUp {
+
+    public static final String NAME = "zd_sk";
+
+	public String area_id = "";
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("area_id", area_id);
+
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 获取接口名
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getName() {
+		return NAME + "#" + area_id;
+	}
+
+}

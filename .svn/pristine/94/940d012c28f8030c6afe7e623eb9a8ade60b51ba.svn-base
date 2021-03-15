@@ -1,0 +1,50 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 降雨量站点信息（fjfx_rain）
+ * 
+ * @author chenjh
+ */
+public class PackRainInfoDown extends PcsPackDown {
+
+	public List<RainInfo> rainList = new ArrayList<RainInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			rainList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+
+			for (int i = 0; i < arr.length(); i++) {
+				RainInfo info = new RainInfo();
+
+				JSONObject dataJson = arr.getJSONObject(i);
+				info.stationname = dataJson.getString("stationname");
+				info.cityname = dataJson.getString("cityname");
+				info.country = dataJson.getString("country");
+				info.value = dataJson.getString("value");
+				info.latitude = dataJson.getString("latitude");
+				info.longitude = dataJson.getString("longitude");
+
+				rainList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

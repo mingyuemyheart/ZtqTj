@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="@drawable/bg_integralpointlive"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen10">
+
+            <ImageView
+                android:id="@+id/btn_table"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/icon_to_table" />
+
+            <TextView
+                android:id="@+id/city_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/btn_table"
+                android:text="福建省气象台乌山站点各下垫面温度"
+                android:textColor="@color/text_white"
+                android:layout_marginTop="@dimen/dimen4"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/station_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/city_name"
+                android:text="数据来源：乌山站"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="gone" />
+
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@drawable/line_common" />
+
+
+        <RadioGroup
+            android:id="@+id/radio_group_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/highttemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radio_ovservation"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen4"
+                android:paddingLeft="@dimen/dimen16"
+                android:paddingRight="@dimen/dimen16"
+                android:paddingTop="@dimen/dimen4"
+                android:text="高温走势图"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote" />
+
+            <RadioButton
+                android:id="@+id/lowtemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/radio_ovservation"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen4"
+                android:paddingLeft="@dimen/dimen16"
+                android:paddingRight="@dimen/dimen16"
+                android:paddingTop="@dimen/dimen4"
+                android:text="低温走势图"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote" />
+        </RadioGroup>
+
+        <com.pcs.ztqtj.view.myview.ObservationView
+            android:id="@+id/ob_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="-20dp" />
+
+    </LinearLayout>
+
+
+    <GridView
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.3"
+        android:background="@color/bg_white"
+        android:numColumns="3"></GridView>
+
+</LinearLayout>

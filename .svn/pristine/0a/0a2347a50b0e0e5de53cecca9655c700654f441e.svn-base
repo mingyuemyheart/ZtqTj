@@ -1,0 +1,25 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import java.io.Serializable;
+
+/** 空气质量排行榜信息 **/
+public class RankInfo implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1339525702534290656L;
+	/** 省份 **/
+	public String province;
+	/** 城市 **/
+	public String city;
+	/** 数值 **/
+	public String num;
+	/** 城市排行 **/
+	public String ranknum;
+	/** 城市ID **/
+	public String areaId;
+	/** 城市拼音 **/
+	public String pinyin;
+
+}

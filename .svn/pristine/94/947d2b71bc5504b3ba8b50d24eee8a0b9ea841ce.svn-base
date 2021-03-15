@@ -1,0 +1,73 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 台风列表
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackTyphoonListDown extends PcsPackDown {
+
+    /**
+     * 是否有台风
+     */
+    public String is_ty = "";
+
+    /**
+     * 台风描述
+     */
+    public String desc = "";
+
+	public List<TyphoonInfo> typhoonList = new ArrayList<TyphoonInfo>();
+
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		JSONObject temp;
+		try {
+			typhoonList.clear();
+			temp = new JSONObject(jsonStr);
+			
+			if(temp.has("updateMill")){
+				updateMill = temp.optLong("updateMill");
+			}
+
+            is_ty = temp.optString("is_ty");
+            desc = temp.optString("desc");
+
+			JSONArray arr = temp.getJSONArray("typhoons");
+
+			for (int i = 0; i < arr.length(); i++) {
+				TyphoonInfo info = new TyphoonInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				info.name = airJson.getString("name");
+				info.code = airJson.getString("code");
+				info.date = airJson.getString("date");
+				typhoonList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

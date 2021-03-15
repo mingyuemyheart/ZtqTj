@@ -1,0 +1,29 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 本市自动站低温统计表（wdtj_city_low）前6
+ */
+public class PackRainstatHourTimeDown extends PcsPackDown {
+
+    public String time_str;
+
+    @Override
+    public void fillData(String jsonStr) {
+
+        try {
+            JSONObject temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            time_str = temp.optString("time_str");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}

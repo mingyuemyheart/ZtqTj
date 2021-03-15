@@ -1,0 +1,60 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象服务-二级栏目展示（qxfw_two_channel）
+ *
+ * @author chenjh
+ */
+public class PackServiceTwoChannelUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_two_channel";
+
+    /**
+     * 地区ID:未登陆 可以不传
+     **/
+    public String area_id = "";
+    /** 用户ID:未登陆 可以不传 **/
+//	public String user_id = "";
+    /**
+     * 栏目一级ID
+     **/
+    public String channel_id = "";
+
+    public PackServiceTwoChannelUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+
+            if (!TextUtils.isEmpty(area_id)) {
+                obj.put("area_id", area_id);
+            }
+//			if (!TextUtils.isEmpty(user_id)) {
+//				obj.put("user_id", user_id);
+//			}
+            obj.put("channel_id", channel_id);
+
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME+"#"+area_id+"_"+channel_id;
+    }
+
+}

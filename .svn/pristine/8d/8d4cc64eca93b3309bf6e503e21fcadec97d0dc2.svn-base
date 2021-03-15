@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.banner_share;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 实况趋势
+ *
+ * @author Z
+ */
+public class PackShareToServerUp extends PcsPackUp {
+    public final static String NAME = "qdcj_fx";
+    public String user_id = "";
+    public String req_mid;
+    public String fx_qd;
+    public String type;
+    public String md5;
+    public String act_id;
+
+    public PackShareToServerUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("user_id", user_id);
+            obj.put("act_id", act_id);
+            obj.put("type", type);
+            obj.put("md5", md5);
+            obj.put("fx_qd", fx_qd);
+            obj.put("req_mid", req_mid);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + md5;
+    }
+
+}

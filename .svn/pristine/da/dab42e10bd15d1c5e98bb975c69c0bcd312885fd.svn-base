@@ -1,0 +1,17 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.week;
+
+/**
+ * 一周天气
+ *
+ * @author chenjh
+ */
+public class PackWeekWeatherFamilyDown extends PackMainWeekWeatherDown {
+    /**
+     * 城市名称
+     **/
+    public String cityName;
+    /**
+     * 城市ID
+     **/
+    public String cityID;
+}

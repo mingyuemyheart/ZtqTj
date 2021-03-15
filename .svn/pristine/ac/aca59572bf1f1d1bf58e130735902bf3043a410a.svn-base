@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+/**
+ * 用户问题
+ * Created by tyaathome on 2016/9/9.
+ */
+public class UserQuestion {
+    /**
+     * 问题ID
+     */
+    public String que_id = "";
+
+    /**
+     * 问题类型(1：问题1，2：问题2)
+     */
+    public String type = "";
+
+    /**
+     * 问题
+     */
+    public String que_title = "";
+
+    /**
+     * 答案
+     */
+    public String ans_info = "";
+}

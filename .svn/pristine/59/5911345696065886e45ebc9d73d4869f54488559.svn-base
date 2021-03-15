@@ -1,0 +1,61 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 节日
+ */
+public class PackHolidayInfoDown extends PcsPackDown {
+
+    public List<ItemHoliday> holiday_list = new ArrayList<>();
+    public List<ItemHoliday> work_list = new ArrayList<>();
+
+    public List<String> holiday_list_String = new ArrayList<>();
+    public List<String> work_list_String = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            work_list.clear();
+            holiday_list.clear();
+            holiday_list_String.clear();
+            work_list_String.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            if (obj.has("holiday_list")) {
+                JSONArray jrHoliday = obj.getJSONArray("holiday_list");
+                for (int i = 0; i < jrHoliday.length(); i++) {
+                    JSONObject jo = jrHoliday.getJSONObject(i);
+                    ItemHoliday item = new ItemHoliday();
+                    item.datetime = jo.optString("datetime");
+                    holiday_list.add(item);
+                    holiday_list_String.add(item.datetime);
+                }
+            }
+            if (obj.has("work_list")) {
+                JSONArray jrWork_list = obj.optJSONArray("work_list");
+                for (int i = 0; i < jrWork_list.length(); i++) {
+                    JSONObject jo = jrWork_list.getJSONObject(i);
+                    ItemHoliday item = new ItemHoliday();
+                    item.datetime = jo.optString("datetime");
+                    work_list.add(item);
+                    work_list_String.add(item.datetime);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public class ItemHoliday {
+        public String datetime;
+    }
+
+}

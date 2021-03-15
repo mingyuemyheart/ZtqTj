@@ -1,0 +1,63 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 气象影视 所有栏目列表及影视数据
+ * 
+ * @author Z
+ */
+public class PackHealthQxDown extends PcsPackDown {
+	public List<HealthQx> healthQxList = new ArrayList<HealthQx>();
+    public String intro = "";
+    public String time_pub = "";
+	@Override
+	public void fillData(String jsonStr) {
+        healthQxList.clear();
+		JSONObject temp;
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("info_list");
+//            intro=temp.optString("intro");
+//            time_pub=temp.optString("time_pub");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject mediaParentItem = arr.getJSONObject(i);
+                HealthQx bean = new HealthQx();
+				bean.action_time = mediaParentItem.getString("action_time");
+				bean.health_level = mediaParentItem.getString("health_level");
+                bean.guard = mediaParentItem.getString("guard");
+                bean.advise = mediaParentItem.getString("advise");
+                healthQxList.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class HealthQx {
+		public String action_time = "";
+		public String health_level = "";
+        public String guard = "";
+        public String advise = "";
+	}
+
+}

@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 气象要素同期比较
+ * Created by tyaathome on 2018/1/11.
+ */
+
+public class PackDataQueryCompareDown extends PcsPackDown {
+
+    public String unit = "";
+    public List<CompareInfo> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            info_list.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            unit = object.optString("unit");
+            JSONArray jsonInfoArray = object.optJSONArray("info_list");
+            for(int i = 0; i < jsonInfoArray.length(); i++) {
+                JSONObject infoJson = jsonInfoArray.getJSONObject(i);
+                CompareInfo info = new CompareInfo();
+                info.year = infoJson.optString("year");
+                info.type = infoJson.optString("type");
+                JSONArray jsonSubinfoArray = infoJson.getJSONArray("sub_list");
+                for(int j = 0; j < jsonSubinfoArray.length(); j++) {
+                    JSONObject subinfoJson = jsonSubinfoArray.getJSONObject(j);
+                    CompareMonthInfo monthInfo = new CompareMonthInfo();
+                    monthInfo.month = subinfoJson.optString("month");
+                    monthInfo.val = subinfoJson.optString("val");
+                    info.sub_list.add(monthInfo);
+                }
+                info_list.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

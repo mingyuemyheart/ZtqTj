@@ -1,0 +1,185 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.AreaInfo;
+
+/**
+ * 下载包：定点服务--用户定制列表
+ * @author E.Sun
+ * 2015年11月5日
+ */
+public class PackPersonalWarningDown extends PcsPackDown {
+
+	private final String KEY_PAID_LIST = "pay_list";
+	private final String KEY_UNPAID_LIST = "no_pay_list";
+	private final String KEY_ORDER_ID = "order_id";
+	private final String KEY_NAME = "name";
+	private final String KEY_USER_ID = "user_id";
+	private final String KEY_TYPE_ID = "warn_type_id";
+	private final String KEY_CYCLE = "months";
+	private final String KEY_EFFECT_DATE = "expire_date";
+	private final String KEY_EXPIRE_DATE = "dead_date";
+	private final String KEY_IS_RENEW = "is_renew";
+	private final String KEY_AREA_LIST = "area_list";
+	private final String KEY_AREA_ID = "country_id";
+	private final String KEY_AREA_NAME = "country_name";
+	private final String KEY_CITY_NAME = "city_name";
+	private final String KEY_TIP = "empty_tip";
+	
+	private List<WarningOrderInfo> unpaidOrderList = new ArrayList<WarningOrderInfo>();
+	private List<WarningOrderInfo> paidOrderList = new ArrayList<WarningOrderInfo>();
+	private ArrayList<String> typeIdList = new ArrayList<String>();
+	private boolean isEmpty = false;
+	private String tip = "";
+	
+	/** 订单状态：提醒续费 */
+	private final String TYPE_RENEW = "1";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		unpaidOrderList.clear();
+		paidOrderList.clear();
+		typeIdList.clear();
+		try {
+			JSONObject object = new JSONObject(jsonStr);
+			tip = object.getString(KEY_TIP);
+            isEmpty = TextUtils.isEmpty(tip);
+			JSONArray array = object.getJSONArray(KEY_UNPAID_LIST);
+			JSONObject obj;
+			WarningOrderInfo info;
+			for(int i = 0; i < array.length(); i++) {
+				obj = array.getJSONObject(i);
+				info = getOrderInfo(obj);
+				if(info != null) {
+					info.isPaid = false;
+					info.isRenew = false;
+					unpaidOrderList.add(info);
+					typeIdList.add(info.typeID);
+				}
+			}
+			
+			array = object.getJSONArray(KEY_PAID_LIST);
+			String isRenew;
+			for(int i = 0; i < array.length(); i++) {
+				obj = array.getJSONObject(i);
+				info = getOrderInfo(obj);
+				if(info != null) {
+					info.isPaid = true;
+					isRenew = obj.getString(KEY_IS_RENEW);
+                    info.isRenew = TYPE_RENEW.equals(isRenew);
+					paidOrderList.add(info);
+					typeIdList.add(info.typeID);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	/**
+	 * 获取订单信息
+	 * @param object
+	 * @return
+	 */
+	private WarningOrderInfo getOrderInfo(JSONObject object) {
+		if(object == null) {
+			return null;
+		}
+		
+		WarningOrderInfo info = new WarningOrderInfo();
+		try {
+			info.orderID = object.getString(KEY_ORDER_ID);
+			info.name = object.getString(KEY_NAME);
+			info.userID = object.getString(KEY_USER_ID);
+			info.typeID = object.getString(KEY_TYPE_ID);
+			info.cycle = object.getString(KEY_CYCLE);
+			info.effectDate = object.getString(KEY_EFFECT_DATE);
+			info.expiredDate = object.getString(KEY_EXPIRE_DATE);
+			JSONArray array = object.getJSONArray(KEY_AREA_LIST);
+			for(int i = 0; i < array.length(); i++) {
+				info.areaList.add(getAreaInfo(array.getJSONObject(i)));
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return info;
+	}
+	
+	/**
+	 * 获取区域信息
+	 * @param object
+	 * @return
+	 */
+	private AreaInfo getAreaInfo(JSONObject object) {
+		if(object == null) {
+			return null;
+		}
+		
+		AreaInfo info = new AreaInfo();
+		try {
+			info.id = object.getString(KEY_AREA_ID);
+			info.areaName = object.getString(KEY_AREA_NAME);
+			info.cityName = object.getString(KEY_CITY_NAME);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return info;
+	}
+
+	/**
+	 * 获取已支付预警订单列表
+	 * @return
+	 */
+	public List<WarningOrderInfo> getPaidOrderList() {
+		return paidOrderList;
+	}
+	
+	/**
+	 * 获取未支付预警订单列表
+	 * @return
+	 */
+	public List<WarningOrderInfo> getUnpaidOrderList() {
+		return unpaidOrderList;
+	}
+	
+	/**
+	 * 获取已定制预警类型编号列表
+	 * @return
+	 */
+	public ArrayList<String> getTypeIdList() {
+		return typeIdList;
+	}
+	
+	/**
+	 * 是否无预警
+	 * @return
+	 */
+	public boolean isWarningEmpty() {
+		return isEmpty;
+	}
+	
+	/**
+	 * 获取提示信息
+	 * @return
+	 */
+	public String getTip() {
+		return tip;
+	}
+	
+}

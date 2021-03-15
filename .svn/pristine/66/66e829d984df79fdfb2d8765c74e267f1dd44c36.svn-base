@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：跳过主题插图 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/btn_image_skip_sel" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/btn_image_skip_nor" android:state_pressed="false"></item>
+
+</selector>

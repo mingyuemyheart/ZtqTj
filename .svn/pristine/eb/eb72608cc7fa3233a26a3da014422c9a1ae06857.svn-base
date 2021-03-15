@@ -1,0 +1,26 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+/**
+ * 气象服务-三级栏目下产品bean
+ * 
+ * @author chenjh
+ */
+public class ServiceProductInfo {
+
+	/** 产品名称 **/
+	public String title = "";
+
+	/** 用户是否能用: 0,不可用 ;1,可用. **/
+	public String type = "";
+
+	/** Html地址 **/
+	public String html_url = "";
+	
+	public String create_time = "";
+	
+	/**
+	 * 字体是否进行放大处理 1放大0不放大
+	 */
+	public String style = "";
+
+}

@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.radar;
+
+/**
+ * 气象雷达图片类
+ * 
+ * @author chenjh
+ */
+public class RadarNewDataDown {
+	/** 时间 **/
+	public String time = "";
+	/** 图片url **/
+	public String url = "";
+
+
+}

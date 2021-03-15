@@ -1,0 +1,19 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+/**
+ * 气象服务-二级栏目bean
+ * 
+ * @author chenjh
+ */
+public class ServiceChannelInfo {
+
+	/** 栏目ID **/
+	public String id = "";
+
+	/** 图标 **/
+	public String icon = "";
+
+	/** 栏目名称 **/
+	public String ch_name = "";
+
+}

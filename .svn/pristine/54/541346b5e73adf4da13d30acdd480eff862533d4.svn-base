@@ -1,0 +1,54 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 海洋天气
+ *
+ * @author chenjh
+ * @author E.Sun
+ * 2015年11月2日
+ */
+public class PackOceanWeatherDown extends PcsPackDown {
+
+    public String pub_time;
+    public List<OceanWeatherInfo> oceanWeatherList = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            oceanWeatherList.clear();
+                JSONObject object = new JSONObject(jsonStr);
+                pub_time= object.getString("pub_time");
+                JSONArray array = object.getJSONArray("info_list");
+                for (int j = 0; j < array.length(); j++) {
+                    OceanWeatherInfo info = new OceanWeatherInfo();
+                    JSONObject airJson = array.getJSONObject(j);
+                    info.date = airJson.getString("hour");
+                    info.weather = airJson.getString("weather_desc");
+                    info.wind = airJson.getString("windspeed");
+                    info.vis = airJson.optString("visibility");
+                    info.windDir = airJson.optString("winddir");
+                    oceanWeatherList.add(info);
+                }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+}

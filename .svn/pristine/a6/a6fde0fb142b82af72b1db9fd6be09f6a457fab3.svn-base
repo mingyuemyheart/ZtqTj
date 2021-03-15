@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/weather_top_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="2dp"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingLeft="@dimen/dimen8"
+        android:paddingRight="@dimen/dimen8"
+        android:paddingTop="@dimen/dimen10"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_content" />
+
+    <com.pcs.ztqtj.view.myview.WeatherView
+        android:id="@+id/weatherfload_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/line_usuall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:drawableLeft="@drawable/line_weather"
+            android:text="@string/water_level"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <TextView
+            android:id="@+id/line_warn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:drawableLeft="@drawable/line_weatherflood_warn"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <TextView
+            android:id="@+id/line_protect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:drawableLeft="@drawable/line_weather_flood"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/weather_buttom_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen10"
+        android:lineSpacingExtra="2dp"
+        android:lineSpacingMultiplier="1.2"
+        android:paddingLeft="@dimen/dimen8"
+        android:paddingRight="@dimen/dimen8"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_content" />
+
+</LinearLayout>

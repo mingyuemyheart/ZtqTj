@@ -1,0 +1,34 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackWaterInfoUp extends PcsPackUp {
+	public static String NAME = "";
+	public String time = "";
+	public String station_id = "";
+	
+	public PackWaterInfoUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public String getName() {
+		return NAME+"#"+station_id;
+	}
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("time", time);
+			obj.put("station_id", station_id);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+}

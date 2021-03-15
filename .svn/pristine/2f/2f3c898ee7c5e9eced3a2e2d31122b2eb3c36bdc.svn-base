@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackLocalThunderQuireDown extends PcsPackDown {
+	/**
+	 * 闪电类型
+	 */
+	public String cg_ic;
+	/**
+	 * 开始时间
+	 */
+	public String start_time;
+	/**
+	 * 极性
+	 */
+	public String processflag;
+	/**
+	 * 结束时间
+	 */
+	public String end_time;
+	/**
+	 * 区县ID
+	 */
+	public String area_id;
+	/**
+	 * 市ID
+	 */
+	public String city_id;
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			city_id = obj.getString("city_id");
+			cg_ic = obj.getString("cg_ic");
+			start_time = obj.getString("start_time");
+			area_id = obj.getString("area_id");
+			processflag = obj.getString("processflag");
+			end_time = obj.getString("end_time");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

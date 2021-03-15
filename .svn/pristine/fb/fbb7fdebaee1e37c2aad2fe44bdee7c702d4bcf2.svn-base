@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjZdDown.FltjZd;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *风况查询—省级排名 前9名
+ */
+public class PackFltjProDown extends PcsPackDown {
+	public List<FltjZd> datalist;
+	@Override
+	public void fillData(String jsonStr) {
+		datalist = new ArrayList<FltjZd>();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+			PackFltjZdDown fb=new PackFltjZdDown();
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				FltjZd imgobject = fb.new FltjZd();
+				imgobject.time = obj.optString("time");
+				imgobject.county = obj.optString("county");
+				imgobject.windpower = obj.optString("windpower");
+				imgobject.winddirection = obj.optString("winddirection");
+				imgobject.windFengLi = obj.optString("fl");
+				datalist.add(imgobject);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

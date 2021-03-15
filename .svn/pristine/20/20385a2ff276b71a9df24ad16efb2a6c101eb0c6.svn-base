@@ -1,0 +1,14 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+/**
+ * 订单套餐信息
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class OrderMealInfo {
+    public String id = "";
+    public String m_type = "";
+    public String m_name = "";
+    public String m_num = "";
+    public String total_amount = "";
+}

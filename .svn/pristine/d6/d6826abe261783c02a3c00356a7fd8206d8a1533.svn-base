@@ -1,0 +1,16 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+
+import java.io.Serializable;
+
+public class WarnBean implements Serializable {
+	public String time = "";// 时间
+	public String level = "";// 级别
+	public String ico = "";// 图片
+	public String msg = "";// 内容
+	public String pt = "";
+	public String put_str = "";
+	public String defend = "";//防御内容
+    public PackLocalCity currentCity;
+}

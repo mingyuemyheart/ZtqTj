@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 单选框：气象产品 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 默认时的图片 -->
+    <item android:drawable="@mipmap/rb_observa_sel" android:state_checked="true"/>
+    <!-- 选择时的图片 -->
+    <item android:drawable="@mipmap/rb_observa_nor" android:state_checked="false"/>
+</selector>

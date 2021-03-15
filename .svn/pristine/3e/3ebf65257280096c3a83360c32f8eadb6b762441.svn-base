@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 修改密码提示问题上传包
+ * Created by tyaathome on 2016/9/20.
+ */
+public class PackPhotoSetUserQuestionUp extends PcsPackUp {
+
+    public static final String NAME = "syn_user_que_set";
+
+    public String user_id = "";
+    public String platform_user_id = "";
+    public List<UserQuestion> req_list = new ArrayList<>();
+
+    public PackPhotoSetUserQuestionUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("user_id", user_id);
+            obj.put("platform_user_id", platform_user_id);
+            JSONArray ary = new JSONArray();
+            for(UserQuestion bean : req_list) {
+                int index = req_list.indexOf(bean);
+                JSONObject temp = new JSONObject();
+                temp.put("que_id", bean.que_id);
+                temp.put("ans_info", bean.ans_info);
+                ary.put(index, temp);
+            }
+            obj.put("req_list", ary);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

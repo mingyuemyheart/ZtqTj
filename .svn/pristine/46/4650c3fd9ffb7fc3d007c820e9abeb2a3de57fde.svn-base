@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/text_white"
+        android:gravity="center"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_subtitle" />
+    
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_title" >
+    </com.amap.api.maps.MapView>
+    
+    <ListView
+        android:id="@+id/lv_spots"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_alignParentRight="true"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@color/alpha100"
+        android:dividerHeight="5dp"
+        android:listSelector="@color/alpha100"
+        android:scrollbars="none"
+        android:orientation="vertical" >
+        
+    </ListView>
+
+</RelativeLayout>

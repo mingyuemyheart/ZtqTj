@@ -1,0 +1,83 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+
+public class PackLocalCityInfo extends PcsPackLocal {
+    public static String KEY = "PackLocalCityInfo";
+    public List<PackLocalCity> localCityList = new ArrayList<PackLocalCity>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        if ("".equals(jsonStr) || jsonStr == null) {
+            return;
+        }
+        localCityList.clear();
+        JSONObject obj;
+        try {
+            SimpleDateFormat f = new SimpleDateFormat("HH:ss");
+            obj = new JSONObject(jsonStr);
+            JSONArray jsonarrayCityList = obj.getJSONArray("dataList");
+            for (int i = 0; i < jsonarrayCityList.length(); i++) {
+                String strSub = jsonarrayCityList.getString(i);
+                PackLocalCity localcity = new PackLocalCity();
+                localcity.fillData(strSub);
+
+                localCityList.add(localcity);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        JSONArray jsonarray = new JSONArray();
+        try {
+            for (PackLocalCity cityid : localCityList) {
+                try {
+                    JSONObject jsoncityinfo = new JSONObject(cityid.toJsonStr());
+                    jsonarray.put(jsoncityinfo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            obj.put("dataList", jsonarray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+    /**
+     * 删除城市
+     *
+     * @param cityId
+     */
+    public void removeCity(String cityId) {
+        if (TextUtils.isEmpty(cityId)) {
+            return;
+        }
+
+        for (Iterator it = localCityList.iterator(); it.hasNext(); ) {
+            PackLocalCity city = (PackLocalCity) it.next();
+            if (city.ID.equals(cityId)) {
+                it.remove();
+                break;
+            }
+        }
+    }
+}

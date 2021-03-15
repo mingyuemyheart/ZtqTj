@@ -1,0 +1,84 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 下载包：雷电查询—数据更多查询列表
+ * 
+ * @author Chensq 2015年11月9日
+ */
+public class PackThunderMoreListDown extends PcsPackDown {
+	/**
+	 * 地区列表
+	 */
+	public List<AreaInfo> area_info_list = new ArrayList<AreaInfo>();
+	/**
+	 * 闪电活动综述
+	 */
+	public String des = "";
+
+	@Override
+	public void fillData(String jsonStr) {
+		area_info_list.clear();
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonStr);
+			des = obj.getString("des");
+			JSONArray channelsArray = obj.getJSONArray("area_list");
+			for (int i = 0; i < channelsArray.length(); i++) {
+				JSONObject objTwo = channelsArray.getJSONObject(i);
+				AreaInfo areainfo = new AreaInfo();
+				areainfo.intens = objTwo.optString("intens");
+				areainfo.longitude = objTwo.optString("longitude");
+				areainfo.latitude = objTwo.optString("latitude");
+				areainfo.type = objTwo.optString("type");
+				areainfo.time = objTwo.optString("datetime");
+				area_info_list.add(areainfo);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class AreaInfo {
+		/**
+		 * 时间
+		 */
+		public String time = "";
+		/**
+		 * 经度
+		 */
+		public String longitude = "";
+		/**
+		 * 纬度
+		 */
+		public String latitude = "";
+		/**
+		 * 类型
+		 */
+		public String type = "";
+		/**
+		 * 强度
+		 */
+		public String intens = "";
+	}
+}

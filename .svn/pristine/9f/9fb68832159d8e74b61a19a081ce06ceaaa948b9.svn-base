@@ -1,0 +1,63 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 雨晴信息-站点的累积雨量信息下载包
+ * @author tya
+ *
+ */
+public class PackRainInfoStationAddDown extends PcsPackDown {
+
+	/**
+	 * 雨量列表
+	 */
+	public List<RainInfo> raininfo_list = new ArrayList<RainInfo>();
+	
+	/**
+	 * 地区雨量描述
+	 */
+	public String des = "";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			raininfo_list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			des = obj.getString("des");
+			JSONArray ary = obj.getJSONArray("raininfo_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+				RainInfo ri = new RainInfo();
+				String hour = temp.getString("hour");
+				String time = temp.getString("time");
+				String rain = temp.getString("rain");
+				if(TextUtils.isEmpty(hour)) {
+					ri.time = time;
+				} else {
+					ri.time = hour + "\n" + time;
+				}
+				ri.rain = rain;
+				raininfo_list.add(ri);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 空气质量：站点列表
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackAirStationUp extends PcsPackUp {
+
+	public static final String NAME="air_city_station";
+
+	public String area_id = "";
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("area_id", area_id);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME+"#" + area_id;
+	}
+
+}

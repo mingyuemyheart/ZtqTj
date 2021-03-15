@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 自动站低温统计表
+ */
+public class PackWdtjLowZdzUp extends PcsPackUp {
+
+    public static final String NAME = "wdtj_low_zdz";
+
+    public String county;
+    public String province;
+    public String type = "2";
+    public String city = "";
+    public String s_hour = "";
+    public boolean is_jc = false;
+
+    public PackWdtjLowZdzUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("county", county);
+            obj.put("province", province);
+            obj.put("type", type);
+            obj.put("city", city);
+            obj.put("s_hour", s_hour);
+            if(is_jc) {
+                obj.put("user_type", "0");
+            } else {
+                obj.put("user_type", "1");
+            }
+            return obj;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type + "_" + county + "_" + city + "_" + province;
+    }
+}

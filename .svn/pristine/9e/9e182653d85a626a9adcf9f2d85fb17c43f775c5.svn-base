@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 正在活动的台风列表
+ * Created by tyaathome on 2017/5/16.
+ */
+
+public class PackTyphoonListCurrentActivityDown extends PcsPackDown {
+
+    public List<TyphoonInfo> typhoonList = new ArrayList<TyphoonInfo>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            typhoonList.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray arr = obj.getJSONArray("typhoons");
+            for (int i = 0; i < arr.length(); i++) {
+                TyphoonInfo info = new TyphoonInfo();
+                JSONObject airJson = arr.getJSONObject(i);
+                info.name = airJson.getString("name");
+                info.code = airJson.getString("code");
+                info.date = airJson.getString("date");
+                typhoonList.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

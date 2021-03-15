@@ -1,0 +1,30 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.typhoon;
+
+/**
+ * 台风信息
+ * 
+ * @author chenjh
+ * 
+ */
+public class TyphoonInfo {
+	
+	/** 台风名称 **/
+	public String name = "";
+	/** 台风编号 **/
+	public String code = "";
+	/** 生成时间 **/
+	public String date = "";
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+}

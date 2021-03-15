@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjZqInfoAreaDown extends PcsPackDown {
+
+    public List<YjZqInfoArea> list_2=new ArrayList<>();
+    public List<YjZqInfoAreaDown> list_3=new ArrayList<>();
+    @Override
+    public void fillData(String jsonStr) {
+
+        list_2.clear();
+        list_3.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            JSONArray jsonArraydz = obj.getJSONArray("p_list");
+            if (jsonArraydz!=null) {
+                for (int i = 0; i < jsonArraydz.length(); i++) {
+                    list_3.clear();
+                    YjZqInfoArea yjZqInfoArea = new YjZqInfoArea();
+                    yjZqInfoArea.id = jsonArraydz.getJSONObject(i).getString("id");
+                    yjZqInfoArea.name = jsonArraydz.getJSONObject(i).getString("name");
+                    yjZqInfoArea.type = jsonArraydz.getJSONObject(i).getString("type");
+
+                    JSONArray jsonArray = jsonArraydz.getJSONObject(i).getJSONArray("sub_list");
+                    for (int j = 0; j < jsonArray.length(); j++) {
+                        YjZqInfoAreaDown yjZqInfoAreaDown = new YjZqInfoAreaDown();
+                        yjZqInfoAreaDown.s_id = jsonArray.getJSONObject(j).getString("s_id");
+                        yjZqInfoAreaDown.s_name = jsonArray.getJSONObject(j).getString("s_name");
+                        yjZqInfoArea.list.add(yjZqInfoAreaDown);
+                    }
+                    list_2.add(yjZqInfoArea);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

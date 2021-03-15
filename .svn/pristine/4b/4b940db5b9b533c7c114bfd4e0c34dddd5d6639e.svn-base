@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 数据查询 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/livequery_bleak_bg"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_lightning_top"
+        android:gravity="center_horizontal"
+        android:text="@string/text_thunder_lightning_prompt"
+        android:textColor="@color/text_black"
+        android:textSize="@dimen/text_footnote" />
+    <!-- 第一部分  查询条件 -->
+    <!-- 开始时间 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/bg_lightning_top"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dimen5"
+        android:paddingRight="@dimen/dimen5" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen2"
+            android:paddingTop="@dimen/dimen2" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/start_time_"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_start_year"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="7"
+                android:background="@drawable/et_lightning_year_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/year"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_start_month"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/month"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen2"
+            android:paddingTop="@dimen/dimen2" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/start_time_"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/data_quire_start_date"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/day"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_start_time"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/hour"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_start_todata"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/minute"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+        </LinearLayout>
+
+        <!-- 结束时间 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen2"
+            android:paddingTop="@dimen/dimen2" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/end_time_"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_end_year"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="7"
+                android:background="@drawable/et_lightning_year_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/year"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_end_month"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/month"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen2"
+            android:paddingTop="@dimen/dimen2" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/end_time_"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/data_quire_end_date"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/day"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_end_time"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/hour"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_end_todata"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_day_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="@string/minute"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+        </LinearLayout>
+
+        <!-- 省市信息 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen2"
+            android:paddingTop="@dimen/dimen2" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/fujian_"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_quire_province"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="5.4"
+                android:background="@drawable/et_lightning_area_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:text="@string/unlimited_city"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                 />
+
+            <TextView
+                android:id="@+id/data_quire_city"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="5.4"
+                android:background="@drawable/et_lightning_area_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:text="@string/unlimited_county"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                 />
+        </LinearLayout>
+
+        <!-- 闪电类型 -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen2"
+            android:paddingTop="@dimen/dimen2" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/lighting_type"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_lightning_type"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="5"
+                android:background="@drawable/et_lightning_area_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:text="@string/text_thunder_lightning"
+                android:textColor="@color/text_black" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                 />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.8"
+                android:gravity="center"
+                android:text="@string/polarity"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote" />
+
+            <TextView
+                android:id="@+id/data_lightning__polarity"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen35"
+                android:layout_weight="3"
+                android:background="@drawable/et_lightning_polarity_nor"
+                android:drawableRight="@drawable/bg_lightning_drowdown_small"
+                android:gravity="center"
+                android:paddingRight="@dimen/dimen4"
+                android:text="@string/text_thunder_lightning"
+                android:textColor="@color/text_black" />
+
+            <Button
+                android:id="@+id/data_search_btn"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dimen30"
+                android:layout_marginLeft="@dimen/dimen2"
+                android:layout_weight="2"
+                android:background="@drawable/btn_lightning_search"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/query"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_footnote" />
+        </LinearLayout>
+    </LinearLayout>
+    <!-- 第二部分 闪电活动综述 -->
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen5"
+                android:text="@string/text_thunder_lightning_title"
+                android:textColor="@color/text_blue"
+                android:textSize="@dimen/text_content" />
+
+            <TextView
+                android:id="@+id/tv_lightning_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/dimen5"
+                android:paddingLeft="@dimen/dimen5"
+                android:paddingRight="@dimen/dimen5"
+                
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_content" />
+
+            <!-- 第三部分 查询列表 -->
+
+            <LinearLayout
+                android:id="@+id/lightning_quire_list"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen30"
+                android:background="@color/tv_lightning_listtitle"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone" >
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/line_common_v" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/time"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_footnote" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/line_common_v" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/longitude"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_footnote" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/line_common_v" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/latitude"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_footnote" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/line_common_v" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/type"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_footnote" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/line_common_v" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="@string/strenth"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_footnote" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/line_common_v" />
+            </LinearLayout>
+
+            <com.pcs.ztqtj.view.myview.MyListView
+                android:id="@+id/data_lightning_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:cacheColorHint="@color/alpha100"
+                android:divider="@drawable/line_common"
+                android:listSelector="@color/alpha100"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@drawable/line_common_v" />
+
+            <TextView
+                android:id="@+id/tv_data_more"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen30"
+                android:background="@color/tv_lightning_listtitle"
+                android:gravity="center"
+                android:padding="@dimen/dimen5"
+                android:text="@string/more"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_footnote"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

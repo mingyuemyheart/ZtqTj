@@ -1,0 +1,67 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
+
+
+/**
+ * 预警信息详情
+ * 
+ * @author z
+ * 
+ */
+public class PackPullYJXXDown extends PcsPackDown implements Serializable {
+	/**
+	 * 文字
+	 */
+	public String desc;
+	/**
+	 * 黄色预警、蓝色预警等
+	 */
+	public String color;
+	/**
+	 * 图标
+	 */
+	public String ico;
+	/**
+	 * 内容
+	 */
+	public String content;
+	public String defend;
+	public String pt;
+	public String et;
+	public String put_str;
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			if (jsonStr == null)
+				return;
+			JSONObject temp = new JSONObject(jsonStr);
+			if (temp.has("updateMill")) {
+				updateMill = temp.optLong("updateMill");
+			}
+			JSONObject warnJson=temp.getJSONObject("dws");
+			desc = warnJson.optString("desc");
+			color = warnJson.optString("color");
+			ico = warnJson.optString("ico");
+			content = warnJson.optString("info");
+			defend = warnJson.optString("defend");
+			pt = warnJson.optString("pt");
+			et = warnJson.optString("et");
+			put_str = warnJson.optString("put_str");
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+}

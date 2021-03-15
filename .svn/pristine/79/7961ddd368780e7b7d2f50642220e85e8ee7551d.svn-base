@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.column;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 栏目列表下载包
+ * 
+ * @author Chensq
+ * 
+ */
+public class PackColumnDown extends PcsPackDown {
+	public List<ColumnInfo> arrcolumnInfo=new ArrayList<ColumnInfo>();
+	@Override
+	public void fillData(String jsonStr) {
+		arrcolumnInfo.clear();
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("column_list");
+            if(arr!=null) {
+                for (int i = 0; i < arr.length(); i++) {
+                    ColumnInfo columnInfo = new ColumnInfo();
+                    JSONObject airJson = arr.getJSONObject(i);
+                    columnInfo.name = airJson.getString("name");
+                    columnInfo.type = airJson.getString("type");
+                    columnInfo.req_url=airJson.optString("req_url");
+                    columnInfo.ioc=airJson.optString("ioc");
+                    arrcolumnInfo.add(columnInfo);
+                }
+            }
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+}

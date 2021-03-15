@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class PackRainStandardDown extends PcsPackDown {
+    public List<ItemRainStandard> dataList = new ArrayList<ItemRainStandard>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        dataList.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray desServer = obj.getJSONArray("info_list");
+            for (int k = 0; k < desServer.length(); k++) {
+                JSONObject objDes = desServer.getJSONObject(k);
+                ItemRainStandard bean = new ItemRainStandard();
+                bean.level = objDes.optString("level");
+                bean.val = objDes.optString("val");
+                dataList.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public class ItemRainStandard {
+        public String level;
+        public String val;
+    }
+}

@@ -1,0 +1,22 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.radar;
+
+/**
+ * 气象雷达图片类
+ * 
+ * @author chenjh
+ */
+public class RadarImgInfo {
+	/** 时间 **/
+	public String actiontime = "";
+	/** 图片url **/
+	public String img = "";
+	/** 最大经度 **/
+	public String max_lon = "";
+	/** 最小经度 **/
+	public String min_lon = "";
+	/** 最大维度 **/
+	public String max_lat = "";
+	/** 最小维度 **/
+	public String min_lat = "";
+
+}

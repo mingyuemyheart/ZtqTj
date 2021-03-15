@@ -1,0 +1,55 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 初始化
+ *
+ * @author JiangZy
+ */
+public class PackInitUp extends PcsPackUp {
+    public static final String NAME = "init";
+    public String app;
+    public String imei;
+    public String sv;
+    public String xh;
+    public String sys;
+    public String sim;
+    public String meid;
+    public String androidCode;
+    public PackInitUp() {
+        intervalMill = 0;
+    }
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("app", app);
+            obj.put("imei", imei);
+            obj.put("sv", sv);
+            obj.put("xh", xh);
+            obj.put("sys", sys);
+            obj.put("sim", sim);
+            obj.put("meid", meid);
+            obj.put("androidCode", androidCode);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取接口名
+     *
+     * @return
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

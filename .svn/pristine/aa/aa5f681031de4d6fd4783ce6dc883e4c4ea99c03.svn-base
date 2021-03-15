@@ -1,0 +1,59 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 实景开拍提交
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoSubmitUp extends PcsPackUp {
+
+    public static final String NAME = "sjkppublicitem";
+
+	// 描述
+	public String des;
+	// 时间
+	public String dateTime;
+	// 地址
+	public String address;
+	// 用户ID
+	public String userId;
+	// 天气
+	public String weather;
+	// 地区ID
+	public String areaId;
+
+	public PackPhotoSubmitUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("des", des);
+			obj.put("dateTime", dateTime);
+			obj.put("address", address);
+			obj.put("userId", userId);
+			obj.put("weather", weather);
+			obj.put("areaId", areaId);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

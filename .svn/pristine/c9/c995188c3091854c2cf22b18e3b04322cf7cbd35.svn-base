@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 风况查询—省级排名 前9名
+ */
+public class PackFltjProUp extends PcsPackUp {
+
+    public static final String NAME = "fltj_pro";
+
+	public String type="1";
+    public String flag = "";
+
+    public PackFltjProUp() {
+        this.intervalMill = 0;
+    }
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("type", type);
+            obj.put("falg", flag);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + type;
+	}
+}

@@ -1,0 +1,70 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2017/8/16 0016.
+ * chen_jx
+ */
+
+public class PackYjZqReleaseUp extends PcsPackUp {
+
+    public static final String NAME = "yj_sh_zq_tj";
+    public String user_id="";
+    public String city_id="";
+    public String county_id="";
+    public String zq_addr="";
+    public String lon="";
+    public String lat="";
+    public String zq_id="";
+    public String zq_desc="";
+    public String zq_time="";
+    public String pic_id="";
+    public String voi_id="";
+    public String vid_id="";
+    public String tub_id="";
+    public String town_id="";
+
+    public PackYjZqReleaseUp() {
+        // 循环发送
+        //bRepeat = true;
+        intervalMill = 0;
+    }
+
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("user_id", user_id);
+            obj.put("county_id", town_id);
+            obj.put("zq_addr", zq_addr);
+            obj.put("lon", lon);
+            obj.put("lat", lat);
+            obj.put("zq_id", zq_id);
+            obj.put("zq_desc", zq_desc);
+            obj.put("zq_time", zq_time);
+            obj.put("pic_id", pic_id);
+            obj.put("voi_id", voi_id);
+            obj.put("vid_id", vid_id);
+            obj.put("tub_id", tub_id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取接口名
+     *
+     * @return
+     */
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

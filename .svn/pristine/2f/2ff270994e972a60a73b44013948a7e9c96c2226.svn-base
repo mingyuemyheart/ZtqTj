@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+/**
+ * 气象单位联系方式bean
+ * 
+ * @author chenjh
+ */
+public class OrgTelInfo {
+
+	/** 邮箱 **/
+	public String mail = "";
+
+	/** 固定电话 **/
+	public String tel = "";
+
+	/** 名称 **/
+	public String name = "";
+
+	/** 移动电话 **/
+	public String mobile = "";
+	
+	/** 单位介绍 **/
+	public String interduce = "";
+	
+	/** 单位地址 **/
+	public String address = "";
+	
+}

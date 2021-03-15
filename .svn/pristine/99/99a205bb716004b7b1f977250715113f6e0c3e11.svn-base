@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dimen10"
+    android:background="@drawable/bg_choose_time"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/unit_time_icon"
+            android:textColor="@color/text_blue"
+            android:textSize="@dimen/text_content"/>
+        
+		<TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="@string/total_time_icon"
+            android:textColor="@color/text_blue"
+            android:textSize="@dimen/text_content"/>
+        
+    </LinearLayout>
+		
+	<com.pcs.ztqtj.view.myview.MyGridView
+	    android:id="@+id/gridview"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="@dimen/dimen10"
+	    android:layout_gravity="center"
+	    android:gravity="center"
+	    android:listSelector="@android:color/transparent"
+	    android:numColumns="2" />
+
+</LinearLayout>

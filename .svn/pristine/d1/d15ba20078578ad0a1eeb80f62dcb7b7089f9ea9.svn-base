@@ -1,0 +1,26 @@
+package com.pcs.lib_ztqfj_v2.model.pack.tool;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class GetJSONObject {
+	private JSONObject jsonobject;
+	public GetJSONObject(JSONObject jsonobject){
+		this.jsonobject=jsonobject;
+	}
+
+	/**
+	 * @param key
+	 * 			jsonobject中的key
+	 * @return
+	 * 			Object--value，如果为空则返回null
+	 * @throws JSONException
+	 */
+	public Object getJSONObjectValue(String key) throws JSONException{
+		if(jsonobject.has(key)){
+			return jsonobject.getString(key);
+		}else{
+			return "";
+		}
+	}
+}

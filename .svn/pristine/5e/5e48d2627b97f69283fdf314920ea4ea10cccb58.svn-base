@@ -1,0 +1,41 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.order;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：删除订单
+ * @author E.Sun
+ * 2015年11月16日
+ */
+public class PackDeleteOrderUp extends PcsPackUp {
+
+	public static final String NAME = "warn_position_order_del";
+	
+	public String orderID = "";
+	
+	public PackDeleteOrderUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject object = new JSONObject();
+		try {
+			object.put("order_id", orderID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + orderID;
+	}
+
+}

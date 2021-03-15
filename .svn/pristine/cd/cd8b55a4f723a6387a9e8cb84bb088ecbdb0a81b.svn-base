@@ -1,0 +1,20 @@
+package com.pcs.lib.lib_pcs_v3.model.pack;
+
+/**
+ * 下载包
+ *
+ * @author JiangZy
+ */
+public abstract class PcsPackDown {
+    /**
+     * 更新毫秒数
+     */
+    public long updateMill = 0;
+
+    /**
+     * 填充数据
+     *
+     * @param jsonStr
+     */
+    abstract public void fillData(String jsonStr);
+}

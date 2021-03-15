@@ -1,0 +1,61 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import java.io.Serializable;
+
+/**
+ * 旅游气象专题对象
+ * @author tya
+ *
+ */
+public class TravelWeatherSubject implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 栏目专题名称
+	 */
+	public String name = "";
+	
+	/**
+	 * 专题标题（用于景点专题推荐类）
+	 */
+	public String title = "";
+	
+	/**
+	 * 栏目专题类型
+	 */
+	public String key_type = "";
+	
+	/**
+	 * WAP链接地址（用于链接类专题栏目）
+	 */
+	public String link_url = "";
+	
+	/**
+	 * 景点专题推荐类别
+	 */
+	public String is_line = "";
+	
+	/**
+	 * 景点专题起点交通图标（用于线路推荐类）
+	 */
+	public String traffic_ico = "";
+	
+	/**
+	 * 专题ID（用于线路推荐类）
+	 */
+	public String subject_id = "";
+	
+	/**
+	 * 起点经度（用于线路推荐类）
+	 */
+	public String log = "";
+	
+	/**
+	 * 起点纬度（用于线路推荐类）
+	 */
+	public String lat = "";
+}

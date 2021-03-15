@@ -1,0 +1,25 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.citylist;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+/**
+ * 周边城市
+ * Created by tyaathome on 2018/3/21.
+ */
+
+public class PackAroundCityUp extends PcsPackUp {
+
+    public static final String NAME = "around_area";
+
+    @Override
+    public JSONObject toJSONObject() {
+        return new JSONObject();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

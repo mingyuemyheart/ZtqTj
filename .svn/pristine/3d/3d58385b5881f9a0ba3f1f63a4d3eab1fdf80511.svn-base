@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * JiangZy on 2016/7/7.
+ */
+public class PackWarnPubDetailUp extends PcsPackUp {
+    public static final String NAME = "yjxx_info_query";
+
+    public String id = "";
+    public String type = "";
+
+    public PackWarnPubDetailUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("id", id);
+            obj.put("type", type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + id;
+    }
+}

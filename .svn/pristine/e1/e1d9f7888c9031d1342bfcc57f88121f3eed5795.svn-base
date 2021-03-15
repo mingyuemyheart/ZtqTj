@@ -1,0 +1,60 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 用户登录
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackServiceUserLoginDown extends PcsPackDown {
+
+	/** 返回结果:状态码(0成功 -1失败) **/
+	public String type = "";
+	/** 提示内容 **/
+	public String msg = "";
+	/** 用户ID **/
+	public String user_id = "";
+	/** 用户昵称 **/
+	public String nick_name = "";
+	/** 标题 **/
+	public String title = "";
+
+    public String sys_user_id;
+    public String sys_nick_name;
+    public String sys_head_url;
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONObject jsonArr = temp.getJSONObject("qxfw_login");
+
+			type = jsonArr.getString("type");
+			msg = jsonArr.getString("msg");
+			user_id = jsonArr.getString("user_id");
+			nick_name = jsonArr.getString("nick_name");
+			title = jsonArr.getString("title");
+            sys_user_id=jsonArr.optString("sys_user_id");
+            sys_nick_name=jsonArr.optString("sys_nick_name");
+            sys_head_url=jsonArr.optString("sys_head_url");
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+}

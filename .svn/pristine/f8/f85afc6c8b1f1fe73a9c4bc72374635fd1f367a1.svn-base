@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+/**
+ * 风情信息对象
+ * @author tya
+ *
+ */
+public class WindInfo {
+	/**
+	 * 水库站名称/河道站名称
+	 */
+	public String station = "";
+	
+	/**
+	 * 时间
+	 */
+	public String time = "";
+	
+	/**
+	 * 经度
+	 */
+	public String log = "";
+	
+	/**
+	 * 纬度
+	 */
+	public String lat = "";
+	
+	/**
+	 * 风力
+	 */
+	public String power = "";
+	
+	/**
+	 * 风速
+	 */
+	public String speed = "";
+	
+	/**
+	 * 风向
+	 */
+	public String position = "";
+}

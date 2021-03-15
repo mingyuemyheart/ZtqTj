@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 所在地市最高温排名
+ */
+public class PackWdtjProMaxUp extends PcsPackUp {
+
+    public static final String NAME = "wdtj_pro_max";
+
+	public String type="1";
+    public String s_hour = "";
+
+    public PackWdtjProMaxUp() {
+        intervalMill = 0;
+    }
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+            obj.put("type", type);
+            obj.put("s_hour", s_hour);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#"+type;
+	}
+}

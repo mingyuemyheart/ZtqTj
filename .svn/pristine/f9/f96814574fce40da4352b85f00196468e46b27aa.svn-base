@@ -1,0 +1,77 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+
+/**
+ * 实景开拍：单个图片
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoSingle {
+
+	/** 条目ID **/
+	public String itemId = "";
+
+	/** 用户ID **/
+	public String userId = "";
+
+	/** 用户昵称 **/
+	public String nickName = "";
+
+	/** 描述 **/
+	public String des = "";
+
+	/** 地址 **/
+	public String address = "";
+
+	/** 天气 **/
+	public String weather = "";
+
+	/** 用户头像 **/
+	public String userImageUrl = "";
+
+	/** 点赞数 **/
+	public String praise = "";
+
+	/** 图片 **/
+	public String imageUrl = "";
+	/**
+	 * 缩略图
+	 */
+	public String thumbnailUrl = "";
+
+	/** 评论数 **/
+	public String comment_num = "";
+
+	/** 浏览数 **/
+	public String browsenum = "";
+
+	/** 已点赞？ **/
+	public boolean isPraised = false;
+
+	/** 发布时间 **/
+	public String date_time = "";
+
+    /** 用户头像 **/
+    public String head_url = "";
+
+	public String toString() {
+		return "address: " + address + "\n des: " + des;
+	}
+
+	public void copy(PackPhotoSingle info) {
+		itemId = info.itemId;
+		userId = info.userId;
+		nickName = info.nickName;
+		des = info.des;
+		address = info.address;
+		weather = info.weather;
+		userImageUrl = info.userImageUrl;
+		praise = info.praise;
+		imageUrl = info.imageUrl;
+		comment_num = info.comment_num;
+		browsenum = info.browsenum;
+		isPraised = info.isPraised;
+		date_time = info.date_time;
+	}
+}

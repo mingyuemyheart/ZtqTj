@@ -1,0 +1,10 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+/**
+ * 实时天气
+ *
+ * @author JiangZy
+ */
+public class PackFamilySstqDown extends PackSstqDown{
+
+}

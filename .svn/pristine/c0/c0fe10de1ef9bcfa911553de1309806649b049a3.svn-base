@@ -1,0 +1,56 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.radar;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象雷达
+ *
+ * @author chenjh
+ */
+public class PackRadarUp extends PcsPackUp {
+
+    public static final String NAME = "leida";
+
+    /**
+     * 张数
+     **/
+    public String count = "";
+
+    /**
+     * 站台号
+     **/
+    public String station_id = "";
+
+    public PackRadarUp() {
+        //TODO 演示代码
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("count", count);
+            obj.put("station_id", station_id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        if (!TextUtils.isEmpty(station_id)) {
+            return NAME + "#" + station_id;
+        }
+        return NAME;
+    }
+
+}

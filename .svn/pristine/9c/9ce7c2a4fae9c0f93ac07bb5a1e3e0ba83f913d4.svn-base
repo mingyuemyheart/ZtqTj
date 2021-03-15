@@ -1,0 +1,203 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.week;
+
+import android.text.TextUtils;
+
+/**
+ * JiangZy on 2016/6/30.
+ */
+public class WeekWeatherInfo {
+    /**
+     * 公历日期
+     **/
+    public String gdt = "";
+    /**
+     * 星期
+     **/
+    public String week = "";
+    /**
+     * 最高温
+     **/
+    public String higt = "";
+    /**
+     * 最低温
+     **/
+    public String lowt = "";
+    /**
+     * 全天天气情况
+     **/
+    public String weather = "";
+    /**
+     * 白天天气情况
+     **/
+    public String wd_day = "";
+    /**
+     * 白天天气图标
+     **/
+    public String wd_day_ico = "";
+    /**
+     * 夜间 天气情况
+     **/
+    public String wd_night = "";
+    /**
+     * 夜间 天气图标
+     **/
+    public String wd_night_ico = "";
+    /**
+     * 白天风向
+     **/
+    public String wind_dir_day = "";
+    /**
+     * 夜间风向
+     **/
+    public String wind_dir_night = "";
+    /**
+     * 白天风速
+     **/
+    public String wind_speed_day = "";
+    /**
+     * 夜间风速
+     **/
+    public String wind_speed_night = "";
+    /**
+     * 显示的气温1
+     **/
+    public String showTemperature1 = "";
+    /**
+     * 显示的气温2
+     **/
+    public String showTemperature2 = "";
+    /**
+     * 是否晚上：0白天，1晚上
+     **/
+    public String is_night = "";
+    /**
+     * 一周天气的描述
+     */
+    public String yb_desc="";
+    /**
+     * 一周天气的时间
+     */
+    public String yb_time="";
+
+    public String us_day="";
+
+    public String us_gdt="";
+
+    public String us_week="";
+
+    public String us_weather="";
+
+    public String getSpeed() {
+        if ("1".equals(is_night)) {
+            return wind_speed_night;
+        } else {
+            return wind_speed_day;
+        }
+    }
+
+    private String getWeatherIcon() {
+        String realIcon = wd_day_ico;
+        if ("1".equals(is_night)) {
+            realIcon = wd_night_ico;
+        }
+
+        if ("00".equals(realIcon) || "01".equals(realIcon)
+                || "02".equals(realIcon) || "18".equals(realIcon)) {
+
+        } else if ("07".equals(realIcon) || "03".equals(realIcon)) {
+            // 07小鱼、03阵雨
+            realIcon = "07";
+        } else if ("04".equals(realIcon) || "05".equals(realIcon)) {
+            realIcon = "04";
+        } else if ("08".equals(realIcon) || "21".equals(realIcon)) {
+            realIcon = "08";
+        } else if ("09".equals(realIcon) || "22".equals(realIcon)) {
+            realIcon = "09";
+        } else if ("10".equals(realIcon) || "11".equals(realIcon)
+                || "12".equals(realIcon) || "23".equals(realIcon)
+                || "24".equals(realIcon) || "25".equals(realIcon)) {
+            realIcon = "09";
+        } else if ("14".equals(realIcon) || "06".equals(realIcon)
+                || "19".equals(realIcon)) {
+            // 14小雪、06雨夹雪、19冻雨
+            realIcon = "14";
+        } else if ("15".equals(realIcon) || "26".equals(realIcon)
+                || "13".equals(realIcon)) {
+            // 15中雪、26小雪-中雪、13阵雪
+            realIcon = "15";
+        } else if ("16".equals(realIcon) || "27".equals(realIcon)
+                || "17".equals(realIcon) || "28".equals(realIcon)) {
+            // 16大雪、27中雪-大雪、17暴雪、28大雪-暴雪
+            realIcon = "16";
+        } else if ("29".equals(realIcon) || "30".equals(realIcon)) {
+            realIcon = "29";
+        } else if ("20".equals(realIcon) || "31".equals(realIcon)) {
+            // 20沙尘暴、31强沙尘暴
+            realIcon = "31";
+        } else if ("32".equals(realIcon)) {
+            // 雾霾
+            realIcon = "32";
+        }
+
+        return realIcon;
+    }
+
+    /**
+     * 获取天气背景
+     *
+     * @return
+     */
+    public String getWeatherBg() {
+        String str = null;
+        String icon = getWeatherIcon();
+
+        if (!TextUtils.isEmpty(icon)) {
+            str = "weather_bg/" + icon + ".png";
+        }else{
+            str = "weather_bg/00.png";
+        }
+
+        return str;
+    }
+
+    /**
+     * 获取天气缩略图
+     *
+     * @return
+     */
+    public String getWeatherThumb() {
+        String str = null;
+        String icon = getWeatherIcon();
+
+        if (!TextUtils.isEmpty(icon)) {
+            str = "weather_bg/" + icon + "_thumb.png";
+        }
+
+        return str;
+    }
+
+    /**
+     * 获取天气内容，根据数据拼接而成
+     *
+     * @param cityName
+     * @return
+     */
+    public String getWeatherContent(String cityName) {
+        // 鼓楼区白天阴，最高气温20℃，夜间至凌晨多云，最低气温11℃。
+       /* String str = cityName
+                + "白天" + wd_day
+                +"，夜间至凌晨" + wd_night
+                +"；气温"+higt+ "至"+ lowt + "℃"
+                +"。";*/
+        String str=yb_desc+yb_time;
+        return str;
+    }
+
+    /**
+     * 设置显示的气温
+     */
+    public void setShowTemperature() {
+        showTemperature1 = higt + "°";
+        showTemperature2 = lowt + "°";
+    }
+}

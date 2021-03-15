@@ -1,0 +1,31 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 雨量分析统计---下拉选项
+ */
+public class PackYltj_level_rankingUp extends PcsPackUp {
+	public static final String NAME = "rainstat_pro_grading_way";
+
+	public PackYltj_level_rankingUp() {
+		//TODO 演示代码
+		//intervalMill = 1000 * 60 * 5;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		return obj;
+
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

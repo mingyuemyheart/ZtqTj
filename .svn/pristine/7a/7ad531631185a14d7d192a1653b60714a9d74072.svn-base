@@ -1,0 +1,75 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 本地缓存的亲情城市
+ *
+ * @author chenjh
+ */
+public class PackLocalFamilyCityInfo extends PcsPackLocal {
+    public List<PackLocalCity> localCityList = new ArrayList<PackLocalCity>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        if ("".equals(jsonStr) || jsonStr == null) {
+            return;
+        }
+        localCityList.clear();
+        JSONObject obj;
+        try {
+            obj = new JSONObject(jsonStr);
+            JSONArray jsonarrayCityList = obj.getJSONArray("familyCityList");
+            for (int i = 0; i < jsonarrayCityList.length(); i++) {
+                JSONObject objsub = jsonarrayCityList.getJSONObject(i);
+                PackLocalCity localcity = new PackLocalCity();
+                localcity.ID = objsub.getString("ID");
+                localcity.PARENT_ID = objsub.getString("PARENT_ID");
+                localcity.NAME = objsub.getString("NAME");
+                localcity.PINGYIN = objsub.getString("PINGYIN");
+                localcity.PY = objsub.getString("PY");
+                localCityList.add(localcity);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static final String KEY = "PackLocalFamilyCityInfo";
+
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        JSONArray jsonarray = new JSONArray();
+        try {
+            for (PackLocalCity cityid : localCityList) {
+                try {
+                    JSONObject jsoncityinfo = new JSONObject();
+                    jsoncityinfo.put("ID", cityid.ID);
+                    jsoncityinfo.put("PARENT_ID", cityid.PARENT_ID);
+                    jsoncityinfo.put("NAME", cityid.NAME);
+                    jsoncityinfo.put("PINGYIN", cityid.PINGYIN);
+                    jsoncityinfo.put("PY", cityid.PY);
+                    jsonarray.put(jsoncityinfo);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            obj.put("familyCityList", jsonarray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+}

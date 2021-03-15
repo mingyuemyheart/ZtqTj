@@ -1,0 +1,79 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 实景开拍首页(照片墙)
+ *
+ * @author chenjh
+ */
+public class PackPhotoShowUp extends PcsPackUp {
+
+    public static final String NAME = "sjkpindex";
+
+    /**
+     * 地区id
+     **/
+    public String area_id = "";
+
+    /**
+     * 数量
+     **/
+    private final String COUNT = "24";
+
+    /**
+     * 页数
+     **/
+    public String page = "";
+
+    /**
+     * 用户id
+     **/
+    public String user_id = "";
+
+    /**
+     * 设备编号
+     **/
+    public String imei = "";
+
+    /**
+     * 等于“preity_pic”则精美图片，其他为首页
+     **/
+    public String keyword = "";
+
+    public PackPhotoShowUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("user_id", user_id);
+            obj.put("imei", imei);
+            obj.put("area_id", area_id);
+            obj.put("page", page);
+            obj.put("count", COUNT);
+            obj.put("keyword", keyword);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        if (!TextUtils.isEmpty(page)) {
+            return NAME + "#" + keyword + "_" + page + "_" + area_id;
+        }
+        return NAME;
+    }
+
+}

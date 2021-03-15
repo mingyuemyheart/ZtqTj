@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot;
+
+public class HotTouristSpot {
+	private String name;
+	private String id;
+	private String imageUrl;
+	
+	public HotTouristSpot(String name, String id, String imageUrl) {
+		this.name = name;
+		this.id = id;
+		this.imageUrl = imageUrl;
+	}
+	
+	public String toString(){
+		return "{name: "+name+"\nid: "+id+"\nUrl: "+imageUrl+"\n}";
+	}
+	
+	public HotTouristSpot(){}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+}

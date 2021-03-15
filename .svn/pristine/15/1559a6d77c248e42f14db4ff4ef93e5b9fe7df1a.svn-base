@@ -1,0 +1,18 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+/**
+ * 海洋区域信息
+ * @author E.Sun
+ * 2015年10月30日
+ */
+public class OceanAreaInfo {
+
+    public String area_id;
+
+    public String area_name;
+
+    public String lon;
+
+    public String lat;
+	
+}

@@ -1,0 +1,66 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ * chen_jx
+ */
+
+public class PackYjxxIndexFbDown extends PcsPackDown {
+    public List<String> list=new ArrayList<>();
+    public List<YjxxInfo> list_2=new ArrayList<YjxxInfo>();
+    public List<YjxxInfo> list_3=new ArrayList<YjxxInfo>();
+    @Override
+    public void fillData(String jsonStr) {
+
+        list.clear();
+        list_2.clear();
+        list_3.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONObject obj2=null;
+            updateMill = obj.optLong("updateMill");
+            //JSONObject objs=obj.getJSONObject("yjxx_index_fb_list");
+            JSONArray jsonArraydz = obj.getJSONArray("dataList");
+            for (int i=0;i<jsonArraydz.length();i++){
+                obj2=jsonArraydz.getJSONObject(i);
+//                yjxxInfo.id = jsonArraydz.getJSONObject(i).getString("id");
+//                yjxxInfo.desc=jsonArraydz.getJSONObject(i).getString("desc");
+//                yjxxInfo.ico=jsonArraydz.getJSONObject(i).getString("ico");
+//                yjxxInfo.content=jsonArraydz.getJSONObject(i).getString("content");
+                String yj_type=obj2.getString("yj_type");
+                list.add(yj_type);
+                JSONArray jsonArray=obj2.getJSONArray("sub_list");
+                if (i==0){
+                    for (int j=0;j<jsonArray.length();j++){
+                        YjxxInfo yjxxInfo=new YjxxInfo();
+                        yjxxInfo.id = jsonArray.getJSONObject(j).getString("id");
+                        yjxxInfo.desc = jsonArray.getJSONObject(j).getString("desc");
+                        yjxxInfo.ico = jsonArray.getJSONObject(j).getString("ico");
+                        yjxxInfo.content = jsonArray.getJSONObject(j).getString("content");
+                        list_2.add(yjxxInfo);
+                    }
+                }else{
+                    for (int j=0;j<jsonArray.length();j++){
+                        YjxxInfo yjxxInfo=new YjxxInfo();
+                        yjxxInfo.id = jsonArray.getJSONObject(j).getString("id");
+                        yjxxInfo.desc = jsonArray.getJSONObject(j).getString("desc");
+                        yjxxInfo.ico = jsonArray.getJSONObject(j).getString("ico");
+                        yjxxInfo.content = jsonArray.getJSONObject(j).getString("content");
+                        list_3.add(yjxxInfo);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

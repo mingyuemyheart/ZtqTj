@@ -1,0 +1,32 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class PackSubscriptionAccountDown extends PcsPackDown {
+
+    public String title = "";
+    public String Img1 = "";
+    public String Img2 = "";
+    public String wxh = "";
+    public String zt  = "";
+    public String gnjs = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            JSONObject temp = jsonObject.getJSONObject("titles");
+            title = temp.getString("title");
+            Img1 = temp.getString("img1");
+            Img2 = temp.getString("img2");
+            wxh = temp.getString("wxh");
+            zt = temp.getString("zt");
+            gnjs = temp.getString("gnjs");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

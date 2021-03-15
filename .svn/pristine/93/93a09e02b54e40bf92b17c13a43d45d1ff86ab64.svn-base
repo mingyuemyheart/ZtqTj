@@ -1,0 +1,26 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+/**
+ * 区域名称信息
+ * @author E.Sun
+ * 2015年10月30日
+ */
+public class AreaNameInfo {
+	
+	/** 海洋地区名 **/
+	public String name = "";
+	
+	/** 经度1 **/
+	public double longitude;
+	
+	/** 纬度1 **/
+	public double latitude;
+
+    /** 图片经度1 **/
+    public double ioclongitude;
+
+    /** 图片纬度1 **/
+    public double ioclatitude;
+
+    public String ioc;
+}

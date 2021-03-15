@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 用户注册问题下载包
+ * Created by tyaathome on 2016/9/9.
+ */
+public class PackPhotoUserQuestionDown extends PcsPackDown {
+
+    //public List<UserQuestion> info_list = new ArrayList<>();
+    public List<UserQuestion> info_list_1 = new ArrayList<>();
+    public List<UserQuestion> info_list_2 = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            //info_list.clear();
+            info_list_1.clear();
+            info_list_2.clear();
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("info_list");
+            for(int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                UserQuestion bean = new UserQuestion();
+                bean.que_id = temp.getString("id");
+                bean.type = temp.getString("type");
+                bean.que_title = temp.getString("que_title");
+                //info_list.add(bean);
+                if(bean.type.equals("1")) {
+                    info_list_1.add(bean);
+                } else {
+                    info_list_2.add(bean);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

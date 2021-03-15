@@ -1,0 +1,24 @@
+package com.pcs.lib.lib_pcs_v3.model.image;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.FileDescriptor;
+
+/**
+ * Created by tyaathome on 2017/7/31.
+ */
+
+public class ImageUtil {
+    public static Bitmap resizeBitmap(FileDescriptor fd) {
+        Bitmap result;
+        try {
+            BitmapFactory.Options opts = new BitmapFactory.Options();
+            opts.inSampleSize = 2;
+            return BitmapFactory.decodeFileDescriptor(fd, null, opts);
+        } catch (OutOfMemoryError e) {
+            result = resizeBitmap(fd);
+        }
+        return result;
+    }
+}

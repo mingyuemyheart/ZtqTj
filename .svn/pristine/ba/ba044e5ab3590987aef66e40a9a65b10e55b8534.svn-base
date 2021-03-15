@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+/**
+ * Created by ${jx_chen}
+ * on 2019-4-12.
+ */
+public class AirInfoYb {
+
+    public String aqi;
+    public String aqi_index;
+    public String pri_pollutant;
+    public String pollutant_index;
+    public String haze;
+    public String sandstorm;
+}

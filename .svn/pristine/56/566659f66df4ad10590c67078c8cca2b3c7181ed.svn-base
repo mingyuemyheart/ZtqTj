@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 预警—预警信息上传包
+ * Created by tyaathome on 2016/6/6.
+ */
+public class PackWarningCenterYJXXUp extends PcsPackUp {
+
+    public static final String NAME = "yjxx";
+
+    /**
+     * 要查询预警的城市
+     */
+    public String area = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("area", area);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + area;
+    }
+}

@@ -1,0 +1,41 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.traffic;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by chenjx
+ * on 2018/3/19.
+ */
+
+public class PackTrafficDown extends PcsPackDown{
+
+    public String html_path,des,questions;
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        JSONObject temp;
+        JSONArray jsonArray;
+        try {
+            temp = new JSONObject(jsonStr);
+            jsonArray=temp.getJSONArray("Jtqx_list");
+            for (int i=0; i<jsonArray.length();i++){
+                JSONObject airJson = jsonArray.getJSONObject(0);
+                des=airJson.optString("des");
+                questions=airJson.optString("questions");
+                html_path = airJson.optString("html_path");
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

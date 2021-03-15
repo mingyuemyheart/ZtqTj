@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 历史上的今天
+ * Created by tyaathome on 2017/11/6.
+ */
+
+public class PackDataQueryHistoryTodayUp extends PcsPackUp {
+
+    public static final String NAME = "zlcx_h_today";
+    public String type = "";
+    public String id = "";
+
+    public PackDataQueryHistoryTodayUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("type", type);
+            object.put("id", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

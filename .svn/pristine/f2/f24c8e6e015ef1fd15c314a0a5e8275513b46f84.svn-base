@@ -1,0 +1,112 @@
+package com.pcs.lib.lib_pcs_v3.control.log;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.text.TextUtils;
+import android.text.format.Time;
+
+import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
+
+public class LogFile {
+	@SuppressLint("NewApi") public static void writeFile(Context context, String info, String name) {
+		if (context == null) {
+			return;
+		}
+		if (!TextUtils.isEmpty(name)) {
+			name = PcsGetPathValue.getInstance().getStorage() + "/" + name
+					+ ".plog";
+		} else {
+			name = PcsGetPathValue.getInstance().getStorage() + "/ztqw.plog";
+		}
+
+		File file = new File(name);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		OutputStream op = null;
+		try {
+			Time time = new Time();
+			time.setToNow();
+			info = context.getPackageName() + "-->"
+					+ time.format("%Y-%m-%d %H:%M:%S") + ":" + info
+					+ "\n\r      ";
+			byte[] bytes = info.getBytes();
+			op = new FileOutputStream(file, true);
+			op.write(bytes);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (op != null) {
+				try {
+					op.close();
+					op.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void writeFile(Context context, Throwable ex, String name) {
+		if (context == null) {
+			return;
+		}
+		if (!TextUtils.isEmpty(name)) {
+			name = PcsGetPathValue.getInstance().getStorage() + "/" + name
+					+ ".plog";
+		} else {
+			name = PcsGetPathValue.getInstance().getStorage() + "/ztqw.plog";
+		}
+
+		File file = new File(name);
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(file, true);
+			PrintStream ps = new PrintStream(os);
+			ex.printStackTrace(ps);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			if (os != null) {
+				try {
+					os.close();
+					os.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	public static void deleteFile(String name) {
+		if (!TextUtils.isEmpty(name)) {
+			name = PcsGetPathValue.getInstance().getStorage() + "/" + name
+					+ ".plog";
+		} else {
+			name = PcsGetPathValue.getInstance().getStorage() + "/ztqw.plog";
+		}
+
+		File file = new File(name);
+		file.deleteOnExit();
+	}
+}

@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 风况查询—本市自动站统计表（fltj_city）前6
+ */
+public class PackFltjCityUp extends PcsPackUp {
+
+    public static final String NAME = "fltj_city_new";
+
+	public String province="";
+	public String country="";
+	public String type="1";
+	public String falg="";
+
+	public PackFltjCityUp(){
+		intervalMill=0;
+	}
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("province", province);
+			obj.put("country", country);
+			obj.put("type", type);
+			obj.put("falg", falg);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + country + type+province+falg;
+	}
+}

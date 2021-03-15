@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 请求包：海洋天气--区域信息
+ *
+ * @author E.Sun
+ * 2015年9月30日
+ */
+public class PackAreaPositionUp extends PcsPackUp {
+
+    public static final String NAME = "hy_area";
+
+
+    /**
+     * 地区名称
+     **/
+    public String type = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("type", type);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type;
+    }
+
+}

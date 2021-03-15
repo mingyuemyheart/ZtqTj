@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 按钮：登录 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 禁用效果 -->
+    <item   
+    	android:state_enabled="false"  
+        android:drawable="@drawable/btn_login_02_disable" />
+    <!-- 点击效果 -->  
+    <item   
+        android:state_pressed="true"   
+        android:state_enabled="true"  
+        android:drawable="@drawable/btn_login_02_sel" />
+    <!-- 获取焦点效果 -->  
+    <item   
+        android:state_focused="true"   
+        android:state_enabled="true"  
+        android:drawable="@drawable/btn_login_02_sel" />
+    <!-- 默认效果 -->  
+    <item   
+        android:state_enabled="true"  
+        android:drawable="@drawable/btn_login_02_nor" />
+</selector>

@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 版本检测
+ * 
+ */
+public class PackCheckVersionDown extends PcsPackDown {
+	public String nv;// 是 最新版本
+	public String file; // 文件路径
+	public String size; // 大小
+	public String leve; // 等级  1功能修复  2bug修复  3里程碑  4强制更新
+	public String des; // 描述
+	public String sv; // 展示版本
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject obj;
+		try {
+			obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+
+			nv = obj.getString("nv");
+			file = obj.getString("file");
+			size = obj.getString("size");
+			leve = obj.getString("leve");
+			des = obj.getString("des");
+			sv = obj.getString("sv");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+}

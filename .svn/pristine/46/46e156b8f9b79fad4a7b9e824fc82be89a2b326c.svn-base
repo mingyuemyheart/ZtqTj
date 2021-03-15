@@ -1,0 +1,95 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+
+/**
+ * 实景开拍：评论列表
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoCommentListDown extends PcsPackDown {
+	public class Data {
+		// 内容
+		public String des;
+		// 昵称
+		public String nickName;
+		// 头像
+		public String image;
+		// ID
+		public String userId;
+		// 时间
+		public String time_format;
+	}
+
+	public List<Data> mList = new ArrayList<Data>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		mList.clear();
+
+		try {
+			JSONObject temp = new JSONObject(jsonStr);
+			JSONArray arr = temp.getJSONArray("idx");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				Data data = new Data();
+
+				data.des = obj.getString("des");
+				data.nickName = obj.getString("nickName");
+				data.image = obj.getString("image");
+				data.userId = obj.getString("userId");
+				data.time_format = formatTime(obj.getString("time"));
+
+				mList.add(data);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 格式化时间
+	 * 
+	 * @param str
+	 * @return
+	 */
+	private String formatTime(String str) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date = null;
+		try {
+			date = format.parse(str);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		if (date == null) {
+			return "";
+		}
+
+		return str = format.format(date);
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

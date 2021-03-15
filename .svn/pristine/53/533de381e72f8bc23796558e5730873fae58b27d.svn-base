@@ -1,0 +1,92 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+
+/**
+ * @author Z
+ *水位信息下载
+ */
+public class PackWaterInfoDown extends PcsPackDown {
+	public String waterinfo_list;
+	public String max;
+	public String min;
+	public String river;
+	public String basin;
+	public String des;
+	public String water_time;
+	public String count_time;
+
+	//水库
+	public String ensure;
+	public String warn;   
+
+//	河道
+	public String normal;
+	public String flood;
+	public String time;
+	
+	public List<ItemTimeInfo> riverList = new ArrayList<ItemTimeInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			riverList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			max = temp.optString("max");
+			min = temp.optString("min");
+			river = temp.optString("river");
+			basin = temp.optString("basin");
+			des = temp.optString("des");
+			water_time = temp.optString("water_time");
+			count_time = temp.optString("count_time");
+			
+//			河道
+			normal = temp.optString("normal");
+			flood = temp.optString("flood");
+			time = temp.optString("time");  
+			
+//			水库
+			warn = temp.optString("warn");
+			ensure = temp.optString("ensure");
+			
+			JSONArray arr = temp.getJSONArray("waterinfo_list");
+			for (int i = 0; i < arr.length(); i++) {
+				ItemTimeInfo info = new ItemTimeInfo();
+				JSONObject dataJson = arr.getJSONObject(i);
+				info.hour = dataJson.getString("hour");
+				info.detail_hour = dataJson.getString("detail_hour");
+				info.water = dataJson.getString("water");
+				riverList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	public class ItemTimeInfo{
+//		hour	是	时间(用于趋势图)
+//		detail_hour	是	详细时间(用于列表)
+//		water	是	当前水位(用于列表)
+		public String hour;
+		public String detail_hour;
+		public String water;
+		}
+	
+}

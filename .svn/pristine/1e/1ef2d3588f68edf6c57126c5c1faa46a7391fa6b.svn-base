@@ -1,0 +1,33 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 积水信息-所有站点上传包
+ * @author tya
+ *
+ */
+public class PackWaterMonitorInfoUp extends PcsPackUp {
+
+    public static final String NAME = "sh_js_sta_tj";
+    public String station_no;
+
+	public PackWaterMonitorInfoUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+        return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

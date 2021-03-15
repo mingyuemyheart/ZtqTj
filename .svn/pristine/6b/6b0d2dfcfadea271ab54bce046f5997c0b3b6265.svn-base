@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 实景开拍：评论
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoCommentUp extends PcsPackUp {
+
+    public static final String NAME = "sjkpcomments";
+
+	public String desc = "";
+	public String commentsUserId = "";
+	public String itemId = "";
+
+	public PackPhotoCommentUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("desc", desc);
+			obj.put("commentsUserId", commentsUserId);
+			obj.put("itemId", itemId);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

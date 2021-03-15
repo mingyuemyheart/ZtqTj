@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 密保问题查询
+ * Created by tyaathome on 2016/10/8.
+ */
+public class PackPhotoQueryQuestionUp extends PcsPackUp {
+
+    public static final String NAME = "syn_user_que_query";
+    public String platform_user_id = "";
+
+    public PackPhotoQueryQuestionUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("platform_user_id", platform_user_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

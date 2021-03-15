@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 降雨量站点信息（fjfx_rain）
+ *
+ * @author chenjh
+ */
+public class PackRainInfoUp extends PcsPackUp {
+    public static final String NAME = "fjfx_rain";
+    /**
+     * 1:今天8点到现在;2:昨天8点到现在;3:前天8点到现在。
+     **/
+    public String time_level = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("time_level", time_level);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        if (!TextUtils.isEmpty(time_level)) {
+            return NAME + "#" + time_level;
+        }
+        return NAME;
+    }
+
+}

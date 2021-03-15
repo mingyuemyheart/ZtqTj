@@ -1,0 +1,57 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 初始化配置
+ *
+ * @author JiangZy
+ */
+public class PackLocalInit extends PcsPackLocal {
+
+    public static final String KEY = "PackLocalInitUp";
+
+    /**
+     * 不是首次登陆
+     */
+    public boolean isNotFirst = false;
+    /**
+     * 是否初始化过推送
+     */
+    public boolean isRegestPush = false;
+    //版本号
+    public String versionCode = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        if ("".equals(jsonStr) || jsonStr == null) {
+            return;
+        }
+        JSONObject obj;
+        try {
+            obj = new JSONObject(jsonStr);
+            isNotFirst = obj.getBoolean("isNotFirst");
+            isRegestPush = obj.getBoolean("isRegestPush");
+            versionCode = obj.getString("versionCode");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("isNotFirst", isNotFirst);
+            obj.put("isRegestPush", isRegestPush);
+            obj.put("versionCode", versionCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+}

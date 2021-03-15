@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 气象值查询
+ * Created by tyaathome on 2017/11/1.
+ */
+
+public class PackWeatherValueQueryDown extends PcsPackDown {
+
+    public List<WeatherValue> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            info_list.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            JSONArray array = object.getJSONArray("info_list");
+            for(int i = 0; i < array.length(); i++) {
+                JSONObject temp = array.getJSONObject(i);
+                WeatherValue value = new WeatherValue();
+                value.desc = temp.getString("desc");
+                value.value_1 = temp.getString("val_o");
+                value.value_2 = temp.getString("val_t");
+                info_list.add(value);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

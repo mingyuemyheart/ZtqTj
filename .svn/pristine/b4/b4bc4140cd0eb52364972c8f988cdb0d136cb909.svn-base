@@ -1,0 +1,8 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+/**
+ *自动站风况统计表（fltj_zd）
+ */
+public class PackFltjHourDown extends PackFltjZdDown {
+
+}

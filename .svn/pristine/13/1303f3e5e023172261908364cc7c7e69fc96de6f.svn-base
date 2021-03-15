@@ -1,0 +1,75 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * 空气质量排行
+ */
+public class PackAirRankDown extends PcsPackDown {
+
+	public List<AirRankBean> airRankList;
+	public Map<String,AirRankBean> allProvince=new HashMap<String,AirRankBean>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			airRankList = new ArrayList<AirRankBean>();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("rankList");
+			for (int i = 0; i < arr.length(); i++) {
+				AirRankBean bean = new AirRankBean();
+				JSONObject airJson = arr.getJSONObject(i);
+				bean.province = airJson.getString("province");
+				bean.city = airJson.getString("city");
+				bean.num = airJson.getString("num");
+				bean.ranknum = airJson.getString("ranknum");
+				bean.areaId = airJson.getString("areaId");
+				bean.pinyin = airJson.optString("pinyin");
+                bean.rank_ud=airJson.optInt("rank_ud");
+                bean.pub_time=airJson.optString("pub_time");
+                bean.map_name=airJson.optString("map_name");
+				airRankList.add(bean);
+
+				AirRankBean beanMap = new AirRankBean();
+				beanMap.province= airJson.optString("province");
+				beanMap.isCity=false;
+				allProvince.put(beanMap.province,beanMap);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public static class AirRankBean {
+		public String province;// 是 省份 String
+		public String city;// 是 城市 String
+		public String num;// 是 数值 String
+		public String ranknum;// 是 城市排行
+		public String areaId;// 是 城市ID String
+		public String pinyin;// 是 城市拼音 String
+        public int rank_ud;//排名升降序
+        public String pub_time;//时间
+        public String map_name;//地图对应名字
+		//是否是城市（非省份）
+		public boolean isCity=true;
+	}
+
+}

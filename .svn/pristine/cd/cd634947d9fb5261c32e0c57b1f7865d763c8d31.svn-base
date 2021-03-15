@@ -1,0 +1,116 @@
+package com.pcs.lib.lib_pcs_v3;
+
+import android.content.Context;
+
+import org.apache.http.HttpVersion;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * 初始化
+ *
+ * @author JiangZy
+ */
+public class PcsInit {
+    private static PcsInit instance = null;
+    /**
+     * 应用上下文
+     */
+    private Context mContext;
+    /**
+     * Http客户端
+     */
+    private HttpClient mHttpClient;
+
+    /**
+     * 线程池
+     */
+    private ExecutorService mExecutorService;
+
+    /**
+     * @return
+     */
+    public static PcsInit getInstance() {
+        if (instance == null) {
+            instance = new PcsInit();
+        }
+
+        return instance;
+    }
+
+    /**
+     * 初始化
+     *
+     * @param appContext
+     */
+    public void init(Context appContext) {
+        mContext = appContext;
+        mHttpClient = createHttpClient();
+        mExecutorService = Executors.newFixedThreadPool(10);
+    }
+
+    /**
+     * 创建HTTP客户端
+     */
+    private HttpClient createHttpClient() {
+        HttpParams params = new BasicHttpParams();
+        HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+        HttpProtocolParams.setContentCharset(params,
+                HTTP.DEFAULT_CONTENT_CHARSET);
+        HttpProtocolParams.setUseExpectContinue(params, true);
+        HttpConnectionParams.setConnectionTimeout(params, 30 * 1000);
+        HttpConnectionParams.setSoTimeout(params, 30 * 1000);
+        HttpConnectionParams.setSocketBufferSize(params, 8192);
+        SchemeRegistry schReg = new SchemeRegistry();
+        schReg.register(new Scheme("http", PlainSocketFactory
+                .getSocketFactory(), 80));
+        schReg.register(new Scheme("https",
+                SSLSocketFactory.getSocketFactory(), 443));
+
+        ClientConnectionManager connMgr = new ThreadSafeClientConnManager(
+                params, schReg);
+
+        return new DefaultHttpClient(connMgr, params);
+    }
+
+    /**
+     * 获取上下文
+     *
+     * @return
+     */
+    public final Context getContext() {
+        return mContext;
+    }
+
+    /**
+     * 获取Http客户端
+     *
+     * @return
+     */
+    public final HttpClient getHttpClient() {
+        return mHttpClient;
+    }
+
+    /**
+     * 获取线程池
+     *
+     * @return
+     */
+    public final ExecutorService getExecutorService() {
+        return mExecutorService;
+    }
+}

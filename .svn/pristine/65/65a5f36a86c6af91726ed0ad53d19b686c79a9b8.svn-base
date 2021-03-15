@@ -1,0 +1,10 @@
+package com.pcs.ztqtj.view.activity.main;
+
+/**
+ * Created by Z on 2017/6/19.
+ */
+
+public interface UiMain {
+    void reflushView();
+    void showDownLoadNewApp(String intro);
+}

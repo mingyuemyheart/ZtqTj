@@ -1,0 +1,32 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import java.io.Serializable;
+
+/**
+ * 福建防汛 水位站点信息(或水库站点信息)bean
+ * 
+ * @author chenjh
+ */
+@SuppressWarnings("serial")
+public class RiverOrReservoirInfo implements Serializable {
+	/** 经度 **/
+	public String longitude = "";
+	/** 纬度 **/
+	public String latitude = "";
+	/** 站点名称 **/
+	public String stationname = "";
+	/**
+	 * 水势涨落情况 0:缺 1:涨 2:平 3:落
+	 **/
+	public String risetype = "";
+	/**
+	 * 是否超警戒 0:没有 1:有
+	 **/
+	public String is_warning = "";
+	/** 超警戒数量 **/
+	public String warn_zi = "";
+	/** 当前水位 **/
+	public String zi = "";
+	/** 时间 **/
+	public String time = "";
+}

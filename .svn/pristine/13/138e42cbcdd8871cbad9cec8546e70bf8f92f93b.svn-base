@@ -1,0 +1,53 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 空气质量：站点列表
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackAirStationDown extends PcsPackDown {
+
+	public List<PackAirStation> list = new ArrayList<PackAirStation>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		list.clear();
+		JSONObject obj = null;
+		try {
+			obj = new JSONObject(jsonStr);
+			JSONArray arr = obj.getJSONArray("aqi_data");
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject row = arr.getJSONObject(i);
+				PackAirStation pack = new PackAirStation();
+				pack.position_name = row.getString("position_name");
+                pack.station_code=row.optString("station_code");
+				list.add(pack);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 单个站点
+	 * 
+	 * @author JiangZy
+	 * 
+	 */
+	public static class PackAirStation {
+		public String position_name = "";
+        public String station_code="";
+	}
+}

@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.voice;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 语音下载包
+ *
+ * @author chenjx
+ *         2017年11月28日
+ */
+public class PackVoiceDown extends PcsPackDown {
+
+    public String desc = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            desc = obj.getString("desc");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

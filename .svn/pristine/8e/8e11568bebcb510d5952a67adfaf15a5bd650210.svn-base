@@ -1,0 +1,13 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+/**
+ * Created by chenjx
+ * on 2018/9/29.
+ */
+public class ItemRainNow {
+
+    public String rainfall;
+    public String stat_name;
+    public String time = "";
+    public String maxRain="";
+}

@@ -1,0 +1,74 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 首页空气质量
+ *
+ * @author Administrator
+ */
+public class PackAirInfoShDown extends PcsPackDown {
+
+    public AirInfoSh airInfoSh = new AirInfoSh();
+    public String time_pub;//发布时间
+    public String pub_unit;//发布单位
+    public List<AirInfoSh> list = new ArrayList<>();
+
+    public List<String> list_arr=new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        list.clear();
+        list_arr.clear();
+        JSONObject temp;
+        try {
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            JSONArray arr = temp.getJSONArray("info_list");
+            time_pub = temp.getString("time_pub");
+            pub_unit = temp.getString("pub_unit");
+            list_arr.add("站名");
+            AirInfoSh beans = new AirInfoSh();
+            beans.aqi="AQI";
+            beans.quality_lv="污染等级";
+            beans.so2="SO₂";
+            beans.pri_pollutant="首要污染物";
+            beans.pm25="PM2.5";
+            beans.pm10="PM10";
+            beans.o3="O₃";
+            beans.co="CO";
+            beans.no2="NO₂";
+            list.add(beans);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject mediaParentItem = arr.getJSONObject(i);
+                AirInfoSh bean = new AirInfoSh();
+                bean.aqi=mediaParentItem.optString("aqi");
+                bean.no2 = mediaParentItem.optString("no2");
+                bean.so2 = mediaParentItem.optString("so2");
+                bean.o3 = mediaParentItem.optString("o3");
+                bean.pm10 = mediaParentItem.optString("pm10");
+                bean.pm25 = mediaParentItem.optString("pm25");
+                bean.pri_pollutant = mediaParentItem.optString("pri_pollutant");
+                bean.quality_lv = mediaParentItem.optString("quality_lv");
+                bean.co = mediaParentItem.optString("co");
+                list_arr.add(mediaParentItem.optString("county"));
+                list.add(bean);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}

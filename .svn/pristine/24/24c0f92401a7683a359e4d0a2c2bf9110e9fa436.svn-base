@@ -1,0 +1,31 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.satellite;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+/**
+ * 卫星云图列表上传包
+ */
+public class PackSatelliteListUp extends PcsPackUp {
+
+    public static final String NAME = "nephanalysis_list";
+
+    public PackSatelliteListUp() {
+        //15分钟
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+}

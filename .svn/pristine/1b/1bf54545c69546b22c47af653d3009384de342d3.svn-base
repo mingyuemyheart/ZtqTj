@@ -1,0 +1,115 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
+
+/**
+ * 数据包：城市
+ *
+ * @author JiangZy
+ */
+public class PackLocalCity extends PcsPackLocal implements Serializable {
+
+    /**
+     * 地区ID
+     **/
+    public String ID = "";
+    /**
+     * 地区名称
+     **/
+    public String NAME = "";
+    /**
+     * 拼音全拼
+     **/
+    public String PINGYIN = "";
+    /**
+     * 地区父ID
+     **/
+    public String PARENT_ID = "";
+    /**
+     * 拼音首字母
+     **/
+    public String PY = "";
+    /**
+     * 全国城市列表中使用--情亲城市
+     */
+    public String CITY = "";
+
+    public String SHOW_NAME = "";
+
+    public String CODE = "";
+
+    /**
+     * 省份名称
+     */
+    public String PROVINCE = "";
+
+    /**
+     * 是否福建城市
+     */
+    public boolean isFjCity = true;
+
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            ID = obj.optString("ID");
+            NAME = obj.optString("NAME");
+            CODE = obj.optString("CODE");
+            PARENT_ID = obj.optString("PARENT_ID");
+            SHOW_NAME = obj.optString("SHOW_NAME");
+            PINGYIN = obj.optString("PIN_YIN");
+            PY = obj.optString("PY");
+            PROVINCE = obj.optString("PNAME");
+            CITY = obj.optString("CITY");
+            isFjCity = obj.optBoolean("isFjCity", false);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+//	public String getName(String key) {
+//		return LOCALDATAPRO + "PackLocalCity#" + key;
+//	}
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("ID", ID);
+            obj.put("NAME", NAME);
+            obj.put("CODE", CODE);
+            obj.put("PARENT_ID", PARENT_ID);
+            obj.put("SHOW_NAME", SHOW_NAME);
+            obj.put("PIN_YIN", PINGYIN);
+            obj.put("PY", PY);
+            obj.put("PNAME", PROVINCE);
+            obj.put("CITY", CITY);
+            obj.put("isFjCity", isFjCity);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj.toString();
+    }
+
+    /**
+     * 拷贝城市信息
+     *
+     * @param city
+     */
+    public void copyCity(PackLocalCity city) {
+        fillData(city.toJsonStr());
+    }
+}

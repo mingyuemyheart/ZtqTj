@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 我的预警-支付页 -->
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="@dimen/dimen10"
+	android:background="@color/bg_white" >
+	
+    <!-- 服务期限 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/text_select_service_time"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_black"  />
+        
+        <TextView
+            android:id="@+id/btn_set_meal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen5"
+            android:text="@string/text_select_service_time"
+            android:textSize="@dimen/text_content"
+            android:textColor="@color/text_black"
+            android:background="@drawable/btn_warning_type" />
+    </LinearLayout>
+    
+    <!-- 资费说明 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen10"
+        android:orientation="horizontal" >
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/hint_tariff"
+	        android:textSize="@dimen/text_content"
+	        android:textColor="@color/text_black" />
+        
+        <TextView
+	        android:id="@+id/tv_tariff"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textSize="@dimen/text_content"
+	        android:textColor="@color/text_black" />
+    </LinearLayout>
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dimen10"
+        android:background="@color/text_gray_light" />
+    
+    <!-- 支付方式 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+        
+        <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/dimen10"
+	        android:text="@string/text_select_pay_type"
+	        android:textSize="@dimen/text_content"
+	        android:textColor="@color/text_black" />
+        
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:orientation="horizontal"
+            android:gravity="center_vertical" >
+            
+            <RadioButton
+                android:id="@+id/rb_weixin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/PayCheckBox" />
+            
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/image_pay_by_weixin" />
+            
+            <RadioButton
+                android:id="@+id/rb_alipay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen10"
+                android:clickable="false"
+                style="@style/PayCheckBox" />
+            
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/image_pay_by_alipay" />
+        </RadioGroup>
+    </LinearLayout>
+    
+    <!-- 确认按钮 -->
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen10"
+        android:text="@string/text_confirm_pay"
+        android:textSize="@dimen/text_content"
+        android:textColor="@color/text_white"
+        android:background="@drawable/btn_login_02" />
+</LinearLayout>

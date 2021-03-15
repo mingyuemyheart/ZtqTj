@@ -1,0 +1,31 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2017/8/16 0016.
+ * chen_jx
+ */
+
+public class PackYjZqReleaseDown extends PcsPackDown {
+
+    public String result_msg;
+    public String result;
+
+    @Override
+    public void fillData(String jsonStr) {
+
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+
+            result = obj.getString("result");
+            result_msg = obj.getString("result_msg");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

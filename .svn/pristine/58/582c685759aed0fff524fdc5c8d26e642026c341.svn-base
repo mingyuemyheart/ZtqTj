@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimen100"
+    android:background="@drawable/bg_bottom_bg_02"
+    android:orientation="vertical" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen10"
+            android:layout_marginLeft="@dimen/dimen40"
+            android:text="@string/wait_data"
+            android:textSize="@dimen/dimen18"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/download_num_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen10"
+            android:text="@string/divide5"
+            android:textColor="@android:color/white" />
+
+        <com.pcs.ztqtj.view.myview.MySeekBar
+            android:id="@+id/mySeekBar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen10"
+            android:layout_marginRight="@dimen/dimen10"
+            android:layout_toLeftOf="@id/download_num_tv"
+            android:maxHeight="12px"
+            android:minHeight="12px"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:thumb="@drawable/pop_seek_thumb_normal"
+            android:progressDrawable="@drawable/my_seekbar_style" />
+</RelativeLayout>

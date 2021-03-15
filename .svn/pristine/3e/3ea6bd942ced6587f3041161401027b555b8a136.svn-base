@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+/**
+ * Created by ${jx_chen}
+ * on 2019-4-12.
+ */
+public class AirInfoSh {
+
+    public String aqi;
+    /** 返回的信息 **/
+    /**
+     * 时段
+     **/
+    public String no2;
+    /**
+     * 空气质量等级
+     **/
+    public String pri_pollutant;
+    /**
+     * 首要污染物
+     **/
+    public String o3;
+
+    /**
+     * 时段
+     **/
+    public String pm25;
+    /**
+     * 空气质量等级
+     **/
+    public String quality_lv;
+    /**
+     * 首要污染物
+     **/
+    public String so2;
+
+    /**
+     * 时段
+     **/
+    public String county;
+    /**
+     * 空气质量等级
+     **/
+    public String pm10;
+    /**
+     * 首要污染物
+     **/
+    public String co;
+}

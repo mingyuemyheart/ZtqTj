@@ -1,0 +1,85 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
+
+/**
+ * 数据包:自动站，站点
+ *
+ * @author z
+ */
+public class PackLocalStation extends PcsPackLocal implements Serializable {
+
+    /**
+     * 站点ID
+     **/
+    public String ID = "";
+    /**
+     * 站点代号
+     **/
+    public String STATIONID = "";
+    /**
+     * 站点名称
+     **/
+    public String STATIONNAME = "";
+    /**
+     * 经度
+     **/
+    public String LONGITUDE = "";
+    /**
+     * 纬度
+     **/
+    public String LATITUDE = "";
+    /**
+     * 基本站
+     */
+    public String IS_BASE = "";
+
+    public String AREA = "";
+
+
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            ID = obj.optString("ID");
+            STATIONID = obj.optString("STATIONID");
+            STATIONNAME = obj.optString("STATIONNAME");
+            LONGITUDE = obj.optString("LONGITUDE");
+            LATITUDE = obj.optString("LATITUDE");
+            IS_BASE = obj.optString("IS_BASE");
+            AREA = obj.optString("AREA");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("ID", ID);
+            obj.put("STATIONID", STATIONID);
+            obj.put("STATIONNAME", STATIONNAME);
+            obj.put("LONGITUDE", LONGITUDE);
+            obj.put("LATITUDE", LATITUDE);
+            obj.put("IS_BASE", IS_BASE);
+            obj.put("AREA", AREA);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj.toString();
+    }
+
+}

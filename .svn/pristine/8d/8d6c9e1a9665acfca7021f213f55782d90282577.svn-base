@@ -1,0 +1,83 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 实景开拍登陆
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoRegisterUp extends PcsPackUp implements Serializable {
+	public final static String NAME = "scenery_user_res"; 
+	/**
+	 * 昵称
+	 */
+	public String nick_name;
+	
+	/**
+	 * 手机号码,平台账号
+	 */
+	public String platform_user_id;
+	
+	/**
+	 * 密码
+	 */
+	public String pwd;
+	
+	/**
+	 * 重复密码
+	 */
+	public String repwd;
+	/**
+	 * 1表示老用户注册绑定手机，0表示新用户注册
+	 */
+	public String register_type;
+
+    public List<UserQuestion> req_list = new ArrayList<>();
+
+	public PackPhotoRegisterUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("nick_name", nick_name);
+			obj.put("pwd", pwd);
+			obj.put("register_type", register_type);
+			obj.put("repwd", repwd);
+			obj.put("platform_user_id", platform_user_id);
+            JSONArray ary = new JSONArray();
+            for(UserQuestion bean : req_list) {
+                int index = req_list.indexOf(bean);
+                JSONObject temp = new JSONObject();
+                temp.put("que_id", bean.que_id);
+                temp.put("ans_info", bean.ans_info);
+                ary.put(index, temp);
+            }
+            obj.put("req_list", ary);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+
+}

@@ -1,0 +1,14 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import java.io.Serializable;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class ColumnType implements Serializable{
+
+    public String name;
+    public String type;
+}

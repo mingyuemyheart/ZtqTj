@@ -1,0 +1,39 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.expert;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 天气解读
+ *
+ * @author chenjh
+ */
+public class PackExpertDetailUp extends PcsPackUp {
+    public static final String NAME = "tq_zx_info";
+    public String id = "";
+
+    public PackExpertDetailUp() {
+        intervalMill = 0;
+        bRepeat = false;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("id", id);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + id;
+    }
+}

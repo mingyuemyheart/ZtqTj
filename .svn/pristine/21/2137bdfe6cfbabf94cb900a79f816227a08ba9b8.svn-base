@@ -1,0 +1,58 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 气象服务-二级栏目展示（qxfw_two_channel）
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackServiceTwoChannelDown extends PcsPackDown {
+
+	public List<ServiceChannelInfo> serviceChannelList = new ArrayList<ServiceChannelInfo>();
+
+	/** 服务简介 **/
+	public String remark = "";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			serviceChannelList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			remark = temp.getString("remark");
+			JSONArray arr = temp.getJSONArray("datalist");
+
+			for (int i = 0; i < arr.length(); i++) {
+				ServiceChannelInfo info = new ServiceChannelInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				info.id = airJson.getString("id");
+				info.icon = airJson.getString("icon");
+				info.ch_name = airJson.getString("ch_name");
+				serviceChannelList.add(info);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+}

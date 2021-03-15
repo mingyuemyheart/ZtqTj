@@ -1,0 +1,58 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 地区半年降雨量对比
+ */
+public class PackYltjYearDown extends PcsPackDown {
+	public List<YltjYear> datalist;
+	public String a_desc;
+
+	public String yl_max;
+			public String yl_avg;
+
+	@Override
+	public void fillData(String jsonStr) {
+		datalist = new ArrayList<YltjYear>();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+			a_desc=temp.optString("a_desc");
+			yl_max=temp.optString("yl_max");
+			yl_avg=temp.optString("yl_avg");
+
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject obj = arr.getJSONObject(i);
+				YltjYear imgobject = new YltjYear();
+				imgobject.month5 = obj.getString("month5");
+				imgobject.month_name5 = obj.getString("month_name5");
+				imgobject.month4 = obj.getString("month4");
+				imgobject.month_name6 = obj.getString("month_name6");
+				imgobject.month6 = obj.getString("month6");
+				imgobject.month_name4 = obj.getString("month_name4");
+				imgobject.month1 = obj.getString("month1");
+				imgobject.month_name1 = obj.getString("month_name1");
+				imgobject.month3 = obj.getString("month3");
+				imgobject.month_name3 = obj.getString("month_name3");
+				imgobject.month2 = obj.getString("month2");
+				imgobject.month_name2 = obj.getString("month_name2");
+				imgobject.year = obj.getString("year");
+				datalist.add(imgobject);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+}

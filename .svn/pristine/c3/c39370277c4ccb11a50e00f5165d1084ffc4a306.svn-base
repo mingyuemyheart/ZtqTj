@@ -1,0 +1,31 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * @author Z
+ *	好友推荐内容
+ */
+public class PackgetrecommendfriendsmsgDown extends PcsPackDown {
+	public String result = "";
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			result= temp.getString("result");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public String toString() {
+		return null;
+	}
+}

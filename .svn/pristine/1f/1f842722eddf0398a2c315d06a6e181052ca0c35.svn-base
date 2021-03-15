@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/bg_white"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/activity_margintop">
+
+        <TextView
+            android:id="@+id/tv_respon_province"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/btn_disaster_time"
+            android:drawableRight="@drawable/bg_livequery_drowdown_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="全省"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_respon_county"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/btn_disaster_time"
+            android:drawableRight="@drawable/bg_livequery_drowdown_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="全部"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+        <View
+            android:layout_width="10dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_respon_street"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/btn_disaster_time"
+            android:drawableRight="@drawable/bg_livequery_drowdown_small"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingRight="@dimen/dimen4"
+            android:text="全部"
+            android:paddingTop="@dimen/activity_margintop"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+        <View
+            android:layout_width="5dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_respon_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:background="@drawable/btn_livequery_commom"
+            android:gravity="center"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingTop="@dimen/activity_margintop"
+            android:text="查询"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_footnote"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/et_respon_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_disaster_time"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:paddingRight="10dp"
+                android:paddingTop="5dp"
+                android:hint="关键词搜索"
+                android:textColorHint="@color/text_gray"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_footnote"/>
+
+            <ImageView
+                android:id="@+id/iv_respon_search"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_search_icon"/>
+
+        </RelativeLayout>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="3dp"
+        android:background="@color/text_gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="单位名称"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="责任人名字"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="手机号码"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="报告"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_respon_list"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:textColor="@color/text_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dimen16"
+        android:text="没有您要搜索的信息。"/>
+
+    <ListView
+        android:id="@+id/lv_respon_info"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/bg_white"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:footerDividersEnabled="true"
+        android:listSelector="@color/alpha100"/>
+</LinearLayout>

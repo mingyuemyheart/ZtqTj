@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/point_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:src="@drawable/point_red"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="35dp"
+            android:layout_height="35dp">
+
+            <View
+                android:id="@+id/today_position"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/calendar_today_bg"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/list_item_textview"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:gravity="center"
+                android:singleLine="true"
+                android:textColor="#ffffffff"
+                android:textSize="17dp" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/list_item_chinese_date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <ImageView
+        android:id="@+id/holiday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen6"
+        android:src="@drawable/icon_holiday"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/work"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen6"
+        android:src="@drawable/icon_work"
+        android:visibility="gone" />
+</RelativeLayout>

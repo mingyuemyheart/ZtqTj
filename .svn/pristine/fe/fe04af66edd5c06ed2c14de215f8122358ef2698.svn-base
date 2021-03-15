@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 我在这里天气温馨提示上传包
+ * Created by tyaathome on 2016/6/7.
+ */
+public class PackForecastWeatherTipUp extends PackShortUpdateTimeUp {
+
+    public static final String NAME = "jc_forecast_weather_tip";
+
+    public String province = "";
+    public String longitude = "";
+    public String latitude = "";
+
+    public PackForecastWeatherTipUp() {
+        //bRepeat = true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("province", province);
+            obj.put("longitude", longitude);
+            obj.put("latitude", latitude);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        //return NAME + "#" + province;
+        return NAME;
+    }
+}

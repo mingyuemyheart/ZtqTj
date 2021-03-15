@@ -1,0 +1,409 @@
+package com.pcs.ztqtj.view.fragment;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.res.TypedArray;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterProductGridView;
+import com.pcs.ztqtj.control.tool.LocalDataHelper;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
+import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
+import com.pcs.ztqtj.view.activity.newairquality.ActivityAirQualityQuery;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.product.ActivityOceanMap;
+import com.pcs.ztqtj.view.activity.product.ActivitySatelliteCloudChart;
+import com.pcs.ztqtj.view.activity.product.ActivityWeatherRadar;
+import com.pcs.ztqtj.view.activity.product.ActivityWeatherSummary;
+import com.pcs.ztqtj.view.activity.product.lightning.ActivityLightningMonitor;
+import com.pcs.ztqtj.view.activity.product.numericalforecast.ActivityDetailCenterPro;
+import com.pcs.ztqtj.view.activity.product.numericalforecast.ActivityNumericalForecast;
+import com.pcs.ztqtj.view.activity.product.situation.ActivitySituation;
+import com.pcs.ztqtj.view.activity.product.typhoon.ActivityTyphoon;
+import com.pcs.ztqtj.view.activity.set.ActivityProgramerManager;
+import com.pcs.ztqtj.view.dialog.DialogFactory;
+import com.pcs.ztqtj.view.dialog.DialogOneButton;
+import com.pcs.ztqtj.view.dialog.DialogTwoButton;
+import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * 气象产品
+ *
+ * @author chenjh
+ */
+public class FragmentProduct extends Fragment {
+
+    private ImageButton product_top_right_button;
+    private GridView productView;
+    private GridView product_analysis;
+    private AdapterProductGridView adapter, adapter_analysis;
+    private List<Map<String, Object>> dataList, dataList_analysis;
+    private String[] product_list;
+    private String[] product_list_analysis;
+    private int[] product_icon_list;
+    private int[] product_icon_analysis;
+    private final List<Intent> intents = new ArrayList<>();
+    private final List<Intent> intents_analysis = new ArrayList<>();
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_product, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView();
+        initEvent();
+        initData();
+    }
+
+    /**
+     * 初始化UI
+     **/
+    private void initView() {
+        productView = (GridView) getView().findViewById(R.id.product_gridview);
+        product_analysis = (GridView) getView().findViewById(R.id.product_gridview_2);
+        product_top_right_button = (ImageButton) getView().findViewById(
+                R.id.product_top_right_button);
+
+    }
+
+    /**
+     * 初始化监听
+     **/
+    private void initEvent() {
+        product_top_right_button.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),
+                        ActivityProgramerManager.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    /**
+     * 初始化数据
+     **/
+    private void initData() {
+        product_list = getResources().getStringArray(R.array.product_list);
+        product_list_analysis = getResources().getStringArray(R.array.product_analysis);
+        TypedArray ar = getResources().obtainTypedArray(R.array.product_icon_list);
+        TypedArray ar_analysis = getResources().obtainTypedArray(R.array.product_icon_list_analysis);
+        int len = ar.length();
+        product_icon_list = new int[len];
+        for (int i = 0; i < len; i++)
+            product_icon_list[i] = ar.getResourceId(i, 0);
+        int lens = ar_analysis.length();
+        product_icon_analysis = new int[lens];
+        for (int j = 0; j < lens; j++)
+            product_icon_analysis[j] = ar_analysis.getResourceId(j, 0);
+        ar.recycle();
+        ar_analysis.recycle();
+        dataList = new ArrayList<>();
+        dataList_analysis = new ArrayList<>();
+        // 气象雷达、卫星云图、台风路径、天气综述、数值预报、整点实况、指点天气（叠加各项可定位置的预报功能）、交通气象、海洋天气、气象影视、福建汛情
+        intents.add(new Intent(getActivity(), ActivityWeatherRadar.class));//雷达回波
+        intents.add(new Intent(getActivity(), ActivitySatelliteCloudChart.class));//卫星云图
+        intents.add(new Intent(getActivity(), ActivityTyphoon.class));//台风
+        intents.add(new Intent(getActivity(), ActivityLiveQuery.class));//风雨查询
+        intents.add(new Intent(getActivity(), ActivityLiveQueryDetail.class));//整点实况
+//        intents.add(new Intent(getActivity(), AcivityObservation.class));//下垫面
+        intents.add(new Intent(getActivity(), ActivityLightningMonitor.class));// 闪电定位
+//        intents.add(new Intent(getActivity(), ActivityFloodSummaryGridView.class));
+//        intents.add(new Intent(getActivity(), ActivityWaterFlood.class));//水利汛情
+        intents.add(new Intent(getActivity(), ActivityAirQualityQuery.class));//空气质量
+        intents.add(new Intent(getActivity(), ActivitySituation.class));//空气形势
+//        intents.add(new Intent(getActivity(),ActivityDataQuery.class));//资料查询
+
+        intents_analysis.add(new Intent(getActivity(), ActivityWeatherSummary.class));//气象报告
+
+        intents_analysis.add(new Intent(getActivity(), ActivityDetailCenterPro.class));//指导预报
+        intents_analysis.add(new Intent(getActivity(), ActivityNumericalForecast.class));//数值预报
+//        intents_analysis.add(new Intent(getActivity(), ActivityAgricultureWeatherColumn.class)); // 农业气象
+//        intents_analysis.add(new Intent(getActivity(), ActivityTrafficWeather.class));//交通气象
+//        intents_analysis.add(new Intent(getActivity(), ActivityTraffic.class));//交通气象
+//        intents_analysis.add(new Intent(getActivity(), ActivityImWeather.class));//海洋气象
+        intents_analysis.add(new Intent(getActivity(), ActivityOceanMap.class));//海洋气象
+//        intents_analysis.add(new Intent(getActivity(), ActivityLocationWarning.class));//定点服务
+
+        if (!LocalDataHelper.isInitProduct(getActivity())) {
+            LocalDataHelper.InitProduct(getActivity(), product_list, "product");
+            LocalDataHelper.InitProduct(getActivity(), product_list_analysis, "product");
+        } else {
+            for (int i = 0; i < product_list.length; i++) {
+                Boolean boolean1 = LocalDataHelper.getisSectionValue(getActivity(), product_list[i]);
+                if (!boolean1) {
+                    LocalDataHelper.judgeProduct(getActivity(), product_list[i], "product");
+                }
+            }
+            for (int j = 0; j < product_list_analysis.length; j++) {
+                Boolean boolean1 = LocalDataHelper.getisSectionValue(getActivity(), product_list_analysis[j]);
+                if (!boolean1) {
+                    LocalDataHelper.judgeProduct(getActivity(), product_list_analysis[j], "product");
+                }
+            }
+        }
+
+        getSelectItem();
+        adapter = new AdapterProductGridView(getActivity(), dataList);
+        adapter_analysis = new AdapterProductGridView(getActivity(), dataList_analysis);
+        productView.setAdapter(adapter);
+        product_analysis.setAdapter(adapter_analysis);
+        product_analysis.setOnItemClickListener(myOnItemClickListener2);
+        productView.setOnItemClickListener(myOnItemClickListener);
+
+        ShareTools.getInstance(getActivity()).reqShare();
+    }
+
+    /**
+     * 获取选择的项
+     **/
+    private void getSelectItem() {
+        dataList.clear();
+        for (int i = 0; i < product_list.length; i++) {
+            boolean boolean1 = LocalDataHelper.getProductValue(getActivity(), product_list[i]);
+            if (boolean1) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", i);
+                map.put("rid", product_icon_list[i]);
+                map.put("title", product_list[i]);
+                dataList.add(map);
+            }
+            /** 11.2修复导航栏的产品管理功能，开关失效 **/
+//			Map<String, Object> map = new HashMap<String, Object>();
+//			map.put("id", i);
+//			map.put("rid", product_icon_list[i]);
+//			map.put("title", product_list[i]);
+//			dataList.add(map);
+        }
+        dataList_analysis.clear();
+        for (int j = 0; j < product_list_analysis.length; j++) {
+            boolean boolean2 = LocalDataHelper.getProductValue(getActivity(), product_list_analysis[j]);
+            if (boolean2) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", j);
+                map.put("rid", product_icon_analysis[j]);
+                map.put("title", product_list_analysis[j]);
+                dataList_analysis.add(map);
+            }
+        }
+    }
+
+    private final OnItemClickListener myOnItemClickListener2 = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Map<String, Object> map = dataList_analysis.get(i);
+            int id = (Integer) map.get("id");
+            String title = (String) map.get("title");
+            if (title.equals("指导预报")) {
+                Intent intent = new Intent(getActivity(), ActivityDetailCenterPro.class);
+                PackNumericalForecastColumnUp packNumericalForecastColumnUp = new PackNumericalForecastColumnUp();
+                packNumericalForecastColumnUp.type = "2";
+                PcsDataDownload.addDownload(packNumericalForecastColumnUp);
+                intent.putExtra("t", title);
+                intent.putExtra("c", "106");
+                startActivity(intent);
+            } else {
+                startActivity(intents_analysis.get(id));
+            }
+
+
+        }
+    };
+
+    private final OnItemClickListener myOnItemClickListener = new OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+                                long arg3) {
+
+            Map<String, Object> map = dataList.get(position);
+            String title = (String) map.get("title");
+            if (title.equals("整点天气")) {
+                String stationName = "";
+                // 当前城市
+                PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
+                if (packCity == null || packCity.ID == null) {
+                    return;
+                }
+                if (TextUtils.isEmpty(packCity.ID)) {
+                    return;
+                }
+                //实时天气
+                PackSstqUp mPackSstqUp = new PackSstqUp();
+                mPackSstqUp.area = packCity.ID;
+                PackSstqDown packSstq = (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
+                if (packSstq != null && !TextUtils.isEmpty(packSstq.stationname)) {
+                    stationName = packSstq.stationname;
+                } else {
+                    stationName = packCity.NAME;
+                }
+                Intent intent = new Intent(getActivity(), ActivityLiveQueryDetail.class);
+                intent.putExtra("stationName", stationName);
+                intent.putExtra("item", "temp");
+                startActivity(intent);
+            } else if (title.equals("实况查询")) {
+                PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), ActivityLiveQuery.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("city", cityMain);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } else if (title.equals("空气质量")) {
+                PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
+                Intent it = new Intent();
+                if (packCity == null || packCity.ID == null) {
+                    return;
+                }
+                if (packCity.isFjCity) {
+                    it.setClass(getActivity(), ActivityAirQualitySH.class);
+                    it.putExtra("id", packCity.ID);
+                    it.putExtra("name", packCity.NAME);
+                } else {
+                    ActivityAirQualityQuery.setCity(packCity.ID, packCity.CITY);
+                    it.putExtra("id", packCity.ID);
+                    it.putExtra("name", packCity.NAME);
+                    it.setClass(getActivity(), ActivityAirQualityQuery.class);
+                }
+                startActivity(it);
+            } else if (title.equals("水利汛情")) {
+                //Toast.makeText(getActivity(), "模块建设中...", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(getContext(), ActivityWaterFloodTJ.class);
+//                    startActivity(intent);
+//                checkPermission(ActivityWaterFloodTJ.class);
+            } else if (title.equals("雷达回波")) {
+                checkPermission(ActivityWeatherRadar.class);
+            } else {
+                int id = (Integer) map.get("id");
+                startActivity(intents.get(id));
+            }
+
+        }
+    };
+
+    DialogTwoButton dialogLogin = null;
+    private void showLoginDialog() {
+        TextView view = (TextView) LayoutInflater.from(getContext()).inflate(
+                R.layout.dialog_message, null);
+        view.setText("该功能仅限内部人员使用，请先登录！");
+
+        dialogLogin = new DialogTwoButton(getContext(),
+                    view, "返回", "登录", new DialogFactory.DialogListener() {
+                @Override
+                public void click(String str) {
+                    dialogLogin.dismiss();
+                    if (str.equals("返回")) {
+
+                    } else if (str.equals("登录")) {
+                        Intent intent = new Intent(getContext(), ActivityPhotoLogin.class);
+                        startActivity(intent);
+                    }
+                }
+            });
+        dialogLogin.show();
+    }
+
+    private DialogOneButton dialogPermission = null;
+    private void showNoPermission() {
+        TextView view = (TextView) LayoutInflater.from(getContext()).inflate(
+                R.layout.dialog_message, null);
+        view.setText("暂无此权限！");
+        dialogPermission = new DialogOneButton(getContext(), view, "确定", new DialogFactory.DialogListener() {
+            @Override
+            public void click(String str) {
+                dialogPermission.dismiss();
+            }
+        });
+        dialogPermission.show();
+    }
+
+    private void checkPermission(Class<?> cls) {
+        if(ZtqCityDB.getInstance().isLoginService()) {
+            if(ZtqCityDB.getInstance().isServiceAccessible()) {
+                startActivity(new Intent(getContext(), cls));
+            } else {
+                showNoPermission();
+            }
+        } else {
+            showLoginDialog();
+        }
+    }
+
+    /**
+     * 刷新获取选择的项
+     **/
+    private void refleshView() {
+        getSelectItem();
+        adapter.setData(dataList);
+        adapter_analysis.setData(dataList_analysis);
+        adapter.notifyDataSetChanged();
+        adapter_analysis.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refleshView();
+    }
+
+    /**
+     * java.lang.IllegalStateException: No activity 错误解决方案
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class
+                    .getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

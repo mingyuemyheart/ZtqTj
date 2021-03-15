@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxTrendUp extends PcsPackUp {
+
+    public static final String NAME = "fycx_trend_sta";
+    public String channel = "";
+    public String stationid = "";
+    public String type = "";
+    public PackFycxTrendUp(){
+    intervalMill=0;
+}
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("channel", channel);
+            obj.put("stationid", stationid);
+            obj.put("type", type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + channel + "_" + stationid+"_"+type;
+    }
+}

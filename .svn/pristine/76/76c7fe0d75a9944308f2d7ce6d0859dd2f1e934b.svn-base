@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical">
+
+    <GridView
+        android:id="@+id/gridview_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:choiceMode="singleChoice"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="2"
+        android:visibility="visible"/>
+    <View
+        android:id="@+id/view_lines"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="@dimen/dimen2"
+        android:background="@color/warnparentgroup" />
+
+    <RelativeLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/ll_bottom_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/tv_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_warning_center_bottom"
+                android:gravity="center"
+                android:text="@string/warning_query"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
+
+            <TextView
+                android:id="@+id/tv_push_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen30"
+                android:background="@drawable/btn_warning_center_bottom"
+                android:gravity="center"
+                android:text="@string/push_settings"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/ll_bottom_button"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/dimen10">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen30"
+        android:gravity="center_horizontal"
+        android:text="@string/no_data"
+        android:textColor="@color/text_black_common"
+        android:textSize="@dimen/text_content"
+        android:visibility="gone" />
+
+</LinearLayout>

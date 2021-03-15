@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 预警—预警信息下载包
+ * Created by tyaathome on 2016/6/6.
+ */
+public class PackWarningCenterYJXXDown extends PcsPackDown {
+
+    public List<WarnCenterYJXXBean> dws = new ArrayList<WarnCenterYJXXBean>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("dws");
+            for(int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                WarnCenterYJXXBean info = new WarnCenterYJXXBean();
+                info.desc = temp.getString("desc");
+                info.info = temp.getString("info");
+                info.ico = temp.getString("ico");
+                info.color = temp.getString("color");
+                info.pt = temp.getString("pt");
+                info.et = temp.getString("et");
+                info.key = temp.getString("key");
+                info.defend = temp.getString("defend");
+                dws.add(info);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

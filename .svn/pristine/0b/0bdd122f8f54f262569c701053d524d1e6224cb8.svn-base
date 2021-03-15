@@ -1,0 +1,67 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackNearWarnDown extends PcsPackDown {
+
+	private final String KEY_MSG = "result_msg";
+	private final String KEY_DATA = "thunder_near_warn_list";
+	private final String KEY_TIME = "time";
+	private final String KEY_NUMBER = "num";
+	private final String KEY_AREA = "area_name";
+	private final String KEY_PROBABILITY = "probability";
+	private final String KEY_FREQUENCY = "frequency";
+	private final String KEY_COLOR = "color";
+	private final String KEY_LATITUDE = "lat";
+	private final String KEY_LONGITUDE = "log";
+	
+	public List<NearWarnInfo> list = new ArrayList<NearWarnInfo>();
+	public String time = "";
+	public String msg = "";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		list.clear();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			if(obj.has(KEY_MSG)) {
+				msg = obj.getString(KEY_MSG);
+			}
+			if(obj.has(KEY_TIME)) {
+				time = obj.getString(KEY_TIME);
+			}
+			JSONArray array = obj.getJSONArray(KEY_DATA);
+			JSONObject object;
+			NearWarnInfo info;
+			for (int i = 0; i < array.length(); i++) {
+				object = array.getJSONObject(i);
+				info = new NearWarnInfo();
+				info.number = object.getString(KEY_NUMBER);
+				info.area = object.getString(KEY_AREA);
+				info.probability = object.getDouble(KEY_PROBABILITY);
+				info.frequency = object.getDouble(KEY_FREQUENCY);
+				info.color = object.getString(KEY_COLOR);
+				info.latitude = object.getDouble(KEY_LATITUDE);
+				info.longitude = object.getDouble(KEY_LONGITUDE);
+				list.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

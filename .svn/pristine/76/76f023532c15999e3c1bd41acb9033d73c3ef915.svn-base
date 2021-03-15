@@ -1,0 +1,91 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.amap.api.maps.model.LatLng;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+/**
+ * 交通气象坐标列表
+ *
+ * @author JiangZy
+ */
+public class PackLocalTrafficPoints extends PcsPackLocal {
+
+    public static final String KEY = "PackLocalTrafficPoints";
+
+    private final String LATITUDE = "LATITUDE";
+    private final String LONGITUDE = "LONGITUDE";
+
+    public List<LatLng> list = new ArrayList<LatLng>();
+
+    /**
+     * 填充数据
+     *
+     * @param json
+     */
+    @Override
+    public void fillData(String json) {
+        list.clear();
+        try {
+            JSONArray arr = new JSONArray(json);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                double latitude = obj.getDouble(LATITUDE);
+                double longitude = obj.getDouble(LONGITUDE);
+
+                LatLng latLng = new LatLng(latitude, longitude);
+                list.add(latLng);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // 排序
+        Collections.sort(list, new MyComparator());
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONArray arr = new JSONArray();
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                JSONObject obj = new JSONObject();
+                LatLng latLng = list.get(i);
+
+                obj.put(LATITUDE, latLng.latitude);
+                obj.put(LONGITUDE, latLng.longitude);
+
+                arr.put(obj);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return arr.toString();
+    }
+
+    public String getName(String id) {
+        return KEY + "#" + id;
+    }
+
+    /**
+     * 排序
+     *
+     * @author JiangZy
+     */
+    private class MyComparator implements Comparator<LatLng> {
+        @Override
+        public int compare(LatLng lhs, LatLng rhs) {
+            double leftD = lhs.latitude + lhs.longitude;
+            double rightD = rhs.latitude + rhs.longitude;
+
+            return Double.compare(leftD, rightD);
+        }
+    }
+}

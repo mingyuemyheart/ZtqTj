@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/white_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="积水情况统计"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_content" />
+
+        <Button
+            android:id="@+id/btn_all_close"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
+            android:text="关闭"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            android:background="@drawable/btn_rain_info"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_tj_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_black_common" />
+
+
+    <LinearLayout
+        android:id="@+id/lay_monitor_station"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal" >
+
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_black_common" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="站点"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_black_common" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="监测时间"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_black_common" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="积水高度(米)"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/text_black_common" />
+    </LinearLayout>
+
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_black_common" />
+
+    <ListView
+        android:id="@+id/lv_water_monitor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:listSelector="@color/alpha100" >
+    </ListView>
+    
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/text_black_common" />
+
+</LinearLayout>

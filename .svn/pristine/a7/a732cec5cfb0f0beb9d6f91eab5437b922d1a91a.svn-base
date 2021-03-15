@@ -1,0 +1,69 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * JiangZy on 2016/7/7.
+ */
+public class PackWarnPubDetailDown extends PcsPackDown {
+
+    /**
+     * 信息简短描述
+     */
+    public String desc = "";
+
+    /**
+     * 信息图标
+     */
+    public String ico = "";
+
+    /**
+     * 预警颜色
+     */
+    public String color = "";
+
+    /**
+     * 内容
+     */
+    public String content = "";
+
+    /**
+     * 预警发布时间
+     */
+    public String pt = "";
+
+    /**
+     * 预警内容结束时间
+     */
+    public String et = "";
+
+    /**
+     * 防御指南
+     */
+    public String defend = "";
+
+    public String put_str = "";
+
+    public String time = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            desc = obj.getString("desc");
+            ico = obj.getString("ico");
+            color = obj.getString("color");
+            content = obj.getString("content");
+            pt = obj.getString("pt");
+            et = obj.getString("et");
+            defend = obj.getString("defend");
+            put_str = obj.getString("put_str");
+            time = obj.getString("time");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

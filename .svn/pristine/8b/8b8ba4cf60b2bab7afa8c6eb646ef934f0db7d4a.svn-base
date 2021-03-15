@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 水库站列表
+ * Created by tyaathome on 2019/06/14.
+ */
+public class PackRavrListDown extends PcsPackDown {
+
+    public List<Ravr> ravrList = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        ravrList.clear();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            JSONArray jsonArray = jsonObject.optJSONArray("info_list");
+            if(jsonArray != null) {
+                for(int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject ravrJSONObject = jsonArray.getJSONObject(i);
+                    Ravr ravr = new Ravr();
+                    ravr.stcd = ravrJSONObject.optString("stcd", "");
+                    ravr.stnm = ravrJSONObject.optString("stnm", "");
+                    ravr.rvnm = ravrJSONObject.optString("rvnm", "");
+                    ravr.hnnm = ravrJSONObject.optString("hnnm", "");
+                    ravr.bsnm = ravrJSONObject.optString("bsnm", "");
+                    ravr.lgtd = ravrJSONObject.optDouble("lgtd", 0.0d);
+                    ravr.lttd = ravrJSONObject.optDouble("lttd", 0.0d);
+                    ravr.tm = ravrJSONObject.optString("tm", "");
+                    ravr.rz = ravrJSONObject.optString("rz", "");
+                    ravr.inq = ravrJSONObject.optString("inq", "");
+                    ravrList.add(ravr);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

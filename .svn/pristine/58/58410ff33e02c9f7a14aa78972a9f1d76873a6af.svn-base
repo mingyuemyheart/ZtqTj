@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2017/10/31.
+ */
+
+public class AreaConfig {
+    public String id = "";
+    public String area_id = "";
+    public String name = "";
+    public List<SubAreaConfig> sub_list = new ArrayList<>();
+}

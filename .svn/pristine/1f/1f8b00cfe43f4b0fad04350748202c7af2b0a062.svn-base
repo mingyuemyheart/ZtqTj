@@ -1,0 +1,64 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.satellite;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 卫星云图列表下载包
+ * 
+ */
+public class PackSatelliteListDown extends PcsPackDown {
+
+	public List<SatelliteList> nephanalysis_list = new ArrayList<PackSatelliteListDown.SatelliteList>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			nephanalysis_list.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("nephanalysis_list");
+
+			for (int i = 0; i < arr.length(); i++) {
+				SatelliteList satelliteList = new SatelliteList();
+				JSONObject airJson = arr.getJSONObject(i);
+				satelliteList.name = airJson.getString("name");
+				satelliteList.type = airJson.getString("type");
+
+				nephanalysis_list.add(satelliteList);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class SatelliteList {
+
+		/**
+		 * 云图名称
+		 */
+		public String name="";
+
+		/**
+		 * 云图类型
+		 */
+		public String type="";
+
+	}
+
+}

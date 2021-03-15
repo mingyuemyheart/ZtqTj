@@ -1,0 +1,116 @@
+package com.pcs.lib.lib_pcs_v3.control.tool;
+
+import java.util.Calendar;
+
+import android.annotation.SuppressLint;
+import android.text.format.Time;
+
+/**
+ * 时间工具
+ * 
+ * @author JiangZy
+ * 
+ */
+@SuppressLint("DefaultLocale")
+public class TimeTool {
+	private static TimeTool instance = null;
+
+	public final long SECOND = 1000;
+	public final long MINUTE = SECOND * 60;
+	public final long HOUR = MINUTE * 60;
+	public final long DAY = HOUR * 24;
+
+	/**
+	 * 时间类型（白天、晚上、凌晨）
+	 * 
+	 * @author JiangZy
+	 * 
+	 */
+	public enum TimeType {
+		DAY, NIGHT, EARLY
+	};
+
+	private TimeTool() {
+
+	}
+
+	public static TimeTool getInstance() {
+		if (instance == null) {
+			instance = new TimeTool();
+		}
+
+		return instance;
+	}
+
+	/**
+	 * 获取更新时间（9:00、1天前、2天前）
+	 * 
+	 * @return
+	 */
+	public String getRefreshTime(long time) {
+		String str = null;
+		int day = getDaysAgo(time);
+		if (day > 0) {
+			str = String.format("%d天前", day);
+		} else {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(time);
+			str = String.format("%02d:%02d",
+					calendar.get(Calendar.HOUR_OF_DAY),
+					calendar.get(Calendar.MINUTE));
+		}
+
+		return str;
+	}
+
+	/**
+	 * 获取时间类型
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public TimeType getTimeType(long time) {
+		// 白天模式：早6:40-傍晚18:30：
+		// 高温—低温，全天天气状况；
+		// 夜间模式：傍晚18:30-0点：
+		// 低温-高温，全天天气状况；
+		// 凌晨模式：0点-凌晨6:40：
+		// 低温-高温，全天天气状况；
+
+		Time t = new Time();
+		t.set(time);
+		//Log.e("TimeTool", "服务器时间：" + t.hour + ":" + t.minute + ":" + t.second);
+
+		if (t.hour < 6 || (t.hour == 6 && t.minute < 40)) {
+			// 凌晨
+			return TimeType.EARLY;
+		} else if (t.hour > 18 || (t.hour == 18 && t.minute > 30)) {
+			// 夜晚
+			return TimeType.NIGHT;
+		}
+		// 白天
+		return TimeType.DAY;
+	}
+
+	/**
+	 * 与今天相比过去了几天(0点为界)
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public int getDaysAgo(long time) {
+		long currTime = System.currentTimeMillis();
+		int day = (int) ((currTime - time) / DAY);
+		if (day >= 1) {
+			return day;
+		}
+		// 小于24小时，但是0点前也算一天
+		long currTemp = currTime % DAY;
+		long timeTemp = time % DAY;
+		if (timeTemp > currTemp) {
+			return 1;
+		}
+
+		return day;
+	}
+}

@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：精确定点服务
+ * @author E.Sun
+ * 2015年10月29日
+ */
+public class PackAccurateWarningUp extends PcsPackUp {
+
+	public static final String NAME = "warn_acu_position";
+	
+	/** 用户ID */
+	public String userID = "";
+	
+	public PackAccurateWarningUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("user_id", userID);
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME + "#" + userID;
+	}
+
+}

@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 空气质量详细信息
+ * 
+ * @author WeiXJ
+ * 
+ */
+public class PackAirInfoUp extends PcsPackUp {
+
+	public static final String NAME="airinfo_one";
+
+	/** 地区ID **/
+	public String area = "";
+	/** 地区类型(1城市 2监测点) **/
+	public String type = "1";
+	/** 6小时各项监测情况 **/
+	public int time_num = 0;
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("area", area);
+			obj.put("type", type);
+			obj.put("time_num", String.valueOf(time_num));
+
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME+"#" + area + "_" + time_num;
+	}
+
+}

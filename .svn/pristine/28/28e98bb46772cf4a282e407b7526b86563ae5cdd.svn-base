@@ -1,0 +1,66 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.radar;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 气象雷达列表
+ * 
+ * @author chenjh
+ * 
+ */
+public class PackRadarListDown extends PcsPackDown {
+
+	/**雷达站点列表*/
+	public List<StationInfo> stationList = new ArrayList<StationInfo>();
+	/**拼图列表*/
+	public List<StationInfo> puzzleList = new ArrayList<StationInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			stationList.clear();
+			puzzleList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("idex_2");
+			for (int i = 0; i < arr.length(); i++) {
+				StationInfo info = new StationInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				info.station_name = airJson.getString("station_name");
+				info.station_id = airJson.getString("station_id");
+				stationList.add(info);
+			}
+
+			JSONArray arrpuzzle = temp.getJSONArray("idex_1");
+			for (int i = 0; i < arrpuzzle.length(); i++) {
+				StationInfo info = new StationInfo();
+				JSONObject airJson = arrpuzzle.getJSONObject(i);
+				info.station_name = airJson.getString("station_name");
+				info.station_id = airJson.getString("station_id");
+				puzzleList.add(info);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	public class StationInfo {
+		/**
+		 * 站点名称
+		 */
+		public String station_name = "";
+		/**
+		 * 站点号
+		 */
+		public String station_id = "";
+	}
+
+}

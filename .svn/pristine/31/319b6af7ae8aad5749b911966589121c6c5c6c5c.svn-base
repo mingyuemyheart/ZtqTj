@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 实景开拍：点赞
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoPraiseUp extends PcsPackUp {
+
+    public static final String NAME = "clickgood";
+
+	public String userId = "";
+	public String imei = "";
+	public String itemId = "";
+
+	public PackPhotoPraiseUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("userId", userId);
+			obj.put("imei", imei);
+			obj.put("itemId", itemId);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

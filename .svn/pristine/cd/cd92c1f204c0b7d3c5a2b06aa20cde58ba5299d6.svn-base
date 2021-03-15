@@ -1,0 +1,34 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 河道站列表
+ * Created by tyaathome on 2019/06/14.
+ */
+public class PackReverListUp extends PcsPackUp {
+
+    public static final String NAME = "river_list";
+    public String btime = "";
+    public String etime = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("btime", btime);
+            jsonObject.put("etime", etime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

@@ -1,0 +1,113 @@
+package com.pcs.lib.lib_pcs_v3.control.file;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+
+/**
+ * 文件下载通知
+ * 
+ * @author JiangZy
+ * 
+ */
+class PcsFileDownloadNotification implements PcsFileDownloadListener {
+
+	// ----------消息类型
+	private final int WHAT_SUCC = 1001;
+	private final int WHAT_ERR = 1002;
+	private final int WHAT_PROGRESS = 1003;
+
+	// ----------数据类型
+	private final String KEY_URL = "KEY_URL";
+	private final String KEY_FILE_NAME = "KEY_FILE_NAME";
+	private final String KEY_ERR_MSG = "KEY_ERR_MSG";
+	private final String KEY_NET_SIZE = "KEY_NET_SIZE";
+	private final String KEY_DOWN_SIZE = "KEY_FILE_SIZE";
+
+	// 消息处理
+	private Handler mHandler = new Handler() {
+		public void dispatchMessage(Message msg) {
+			if (mViewListener == null) {
+				return;
+			}
+			Bundle bundle = msg.getData();
+			String url = bundle.getString(KEY_URL);
+			String fileName = bundle.getString(KEY_FILE_NAME);
+
+			switch (msg.what) {
+			case WHAT_SUCC:
+				mViewListener.downloadSucc(url, fileName);
+				break;
+			case WHAT_ERR:
+				String errMsg = bundle.getString(KEY_ERR_MSG);
+				mViewListener.downloadSucc(url, errMsg);
+				break;
+			case WHAT_PROGRESS:
+				long netSize = bundle.getLong(KEY_NET_SIZE);
+				long downSize = bundle.getLong(KEY_DOWN_SIZE);
+				mViewListener.progress(url, fileName, netSize, downSize);
+				break;
+			}
+		}
+	};
+
+	private PcsFileDownloadListener mViewListener = null;
+
+	/**
+	 * 设置监听
+	 * 
+	 * @param listener
+	 */
+	public void setViewListener(PcsFileDownloadListener listener) {
+		mViewListener = listener;
+	}
+
+	/**
+	 * 进度
+	 */
+	@Override
+	public void progress(String url, String fileName, long netSize,
+			long downSize) {
+		Bundle bundle = new Bundle();
+		Message message = new Message();
+
+		bundle.putString(KEY_URL, url);
+		bundle.putString(KEY_FILE_NAME, fileName);
+		bundle.putLong(KEY_NET_SIZE, netSize);
+		bundle.putLong(KEY_DOWN_SIZE, downSize);
+
+		message.setData(bundle);
+		message.what = WHAT_PROGRESS;
+		mHandler.sendMessage(message);
+	}
+
+	/**
+	 * 下载成功
+	 */
+	@Override
+	public void downloadSucc(String url, String fileName) {
+		Bundle bundle = new Bundle();
+		Message message = new Message();
+
+		bundle.putString(KEY_URL, url);
+		bundle.putString(KEY_FILE_NAME, fileName);
+
+		message.setData(bundle);
+		message.what = WHAT_SUCC;
+		mHandler.sendMessage(message);
+	}
+
+	@Override
+	public void downloadErr(String url, String fileName, String errMsg) {
+		Bundle bundle = new Bundle();
+		Message message = new Message();
+
+		bundle.putString(KEY_URL, url);
+		bundle.putString(KEY_FILE_NAME, fileName);
+		bundle.putString(KEY_ERR_MSG, errMsg);
+
+		message.setData(bundle);
+		message.what = WHAT_ERR;
+		mHandler.sendMessage(message);
+	}
+}

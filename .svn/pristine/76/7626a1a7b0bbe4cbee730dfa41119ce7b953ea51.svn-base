@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 首页预警信息
+ *
+ * @author JiangZy
+ */
+
+public class PackYjxxIndexDown extends PcsPackDown {
+    /**
+     *
+     */
+    public String id;
+    /**
+     * 文字
+     */
+    public String desc;
+    /**
+     * 图标
+     */
+    public String ico;
+    /**
+     * 内容
+     */
+    public String content;
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            JSONObject dataList = obj.getJSONObject("dataList");
+
+            id = dataList.optString("id");
+            desc = dataList.optString("desc");
+            ico = dataList.optString("ico");
+            content = dataList.optString("content");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

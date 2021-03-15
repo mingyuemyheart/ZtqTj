@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 首页天气第2行（一周天气） -->
+<LinearLayout android:id="@+id/lay_comman02"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/bg_home_week"
+              android:descendantFocusability="blocksDescendants"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_marginleft_right"
+              android:paddingTop="@dimen/dimen5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_marginleft_right"
+            android:paddingRight="@dimen/activity_marginleft_right">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="@color/text_main_blue"
+                    android:textSize="@dimen/text_content"/>
+
+                <TextView
+                    android:id="@+id/text_Calander"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="@dimen/dimen5"
+                    android:background="@drawable/ico_calender_image"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"/>
+                <!--android:text="@string/calander_click"-->
+            </RelativeLayout>
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dimen5"
+                android:background="@drawable/white_background"
+                android:visibility="gone"/>
+
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:text="白天8-20时/夜晨20-次日8时"-->
+            <!--android:textColor="@color/text_main_blue"-->
+            <!--android:textSize="@dimen/text_content" />-->
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:gravity="center_vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/text_content_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:lineSpacingExtra="3dp"
+                android:lineSpacingMultiplier="1.2"
+                android:singleLine="false"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content"
+                />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!--<RadioGroup-->
+            <!--android:id="@+id/radio_group_week_24"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="2"-->
+            <!--android:orientation="horizontal">-->
+            <!--&lt;!&ndash;  android:drawableLeft="@drawable/radio_7_day"&ndash;&gt;-->
+            <!--<RadioButton-->
+            <!--android:id="@+id/main_week"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/radio_main_week_bg"-->
+            <!--android:button="@null"-->
+            <!--android:checked="true"-->
+            <!--android:gravity="center"-->
+            <!--android:visibility="gone"-->
+            <!--android:text="逐日预报"-->
+            <!--android:textColor="@color/text_white"-->
+            <!--android:textSize="@dimen/text_content"/>-->
+            <!--&lt;!&ndash;       android:drawableLeft="@drawable/radio_24_hours"&ndash;&gt;-->
+            <!--<RadioButton-->
+            <!--android:id="@+id/main_24hour"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/radio_main_week_bg"-->
+            <!--android:button="@null"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="Forecast"-->
+            <!--android:paddingLeft="5dp"-->
+            <!--android:textColor="@color/text_white"-->
+            <!--android:textSize="@dimen/text_content"/>-->
+            <!--</RadioGroup>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="5dp"
+                    android:text="Forecast"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"/>
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="5dp"
+                    android:text="24 hours"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content"/>
+
+
+            </LinearLayout>
+
+            <!--        <Button
+                        android:id="@+id/main_36hour"
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/radio_main_week_bg"
+                        android:drawableLeft="@mipmap/icon_36_hours"
+                        android:drawablePadding="@dimen/dimen4"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen18"
+                        android:text="36小时"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content" />-->
+        </LinearLayout>
+
+        <com.pcs.ztqtj.view.myview.MyHScrollView
+            android:id="@+id/layout_week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen10">
+
+                <com.pcs.ztqtj.view.myview.TemperatureView
+                    android:id="@+id/tempertureview"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/weekviewhight"
+                    android:layout_marginTop="@dimen/weektophight"/>
+
+                <com.pcs.ztqtj.view.myview.MyGridView
+                    android:id="@+id/maingridview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:listSelector="@android:color/transparent"
+                    android:numColumns="7"/>
+            </RelativeLayout>
+        </com.pcs.ztqtj.view.myview.MyHScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/white_alpha50">
+
+        </View>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp">
+
+            <LinearLayout
+                android:id="@+id/tv_time"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal|bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_name_ti"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_footnote"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1250dp"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/white_alpha50">
+
+            </View>
+
+            <com.pcs.ztqtj.view.myview.MyHScrollView
+                android:id="@+id/layout_24house"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_toRightOf="@+id/tv_time"
+                android:scrollbars="none">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="@dimen/dimen10">
+
+                    <com.pcs.ztqtj.view.myview.MyGridView
+                        android:id="@+id/gridview24hour"
+                        android:layout_width="1200dp"
+                        android:layout_height="wrap_content"
+                        android:listSelector="@android:color/transparent"/>
+
+                    <com.pcs.ztqtj.view.myview.Hour24View_En
+                        android:id="@+id/main24hour"
+                        android:layout_width="1200dp"
+                        android:layout_height="@dimen/dimen60"
+                        android:layout_marginTop="25dp"/>
+
+                    <TextView
+                        android:id="@+id/not_time_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="暂无数据"
+                        android:textColor="@color/text_white"
+                        android:textSize="@dimen/text_content"/>
+                </RelativeLayout>
+            </com.pcs.ztqtj.view.myview.MyHScrollView>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

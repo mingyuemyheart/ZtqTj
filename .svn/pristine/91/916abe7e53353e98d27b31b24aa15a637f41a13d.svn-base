@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.expert;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 资讯列表
+ *
+ * @author chenjh
+ */
+public class PackExpertListDown extends PcsPackDown {
+    public List<ItemExpert> dataList = new ArrayList<ItemExpert>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject temp;
+        try {
+            dataList.clear();
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            JSONArray arr = temp.getJSONArray("info_list");
+            for (int i = 0; i < arr.length(); i++) {
+                ItemExpert title = new ItemExpert();
+                JSONObject airJson = arr.getJSONObject(i);
+                title.title = airJson.getString("title");
+                title.id = airJson.getString("id");
+                title.release_time = airJson.getString("release_time");
+                title.small_img = airJson.getString("small_img");
+                dataList.add(title);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

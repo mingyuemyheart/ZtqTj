@@ -1,0 +1,146 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+
+/**
+ * 推送标签配置:标签Map中的键
+ * 
+ * @author chenjh
+ * 
+ */
+public class PushTag {
+
+	private static PushTag instance = new PushTag();
+
+	public static PushTag getInstance() {
+		if (instance == null) {
+			instance = new PushTag();
+		}
+		return instance;
+	}
+
+	// 预警信息推送:默认红色、橙色预警为开启状态，黄色、蓝色预警为关闭状态。
+	/** 推送样式开关：0对话框、1通知栏两种推送模式，默认为对话框模式；  **/
+	public String PUSHTAG_QXYJ_MODEL = "yjxx_model";
+	/** 预警城市ID **/
+	public String PUSHTAG_QXYJ_CITY = "yjxx_city";
+	/** 预警城市名称 **/
+	public String PUSHTAG_QXYJ_CITY_NAME = "yjxx_city_name";
+	/** 红色预警: 0:关,1:开 **/
+	public String PUSHTAG_QXYJ_R = "yjxx_r";
+	/** 橙色预警: 0:关,1:开 **/
+	public String PUSHTAG_QXYJ_O = "yjxx_o";
+	/** 黄色预警: 0:关,1:开 **/
+	public String PUSHTAG_QXYJ_Y = "yjxx_y";
+	/** 蓝色预警: 0:关,1:开 **/
+	public String PUSHTAG_QXYJ_B = "yjxx_b";
+    /** 解除类气象预警: 0:关,1:开 **/
+    public String PUSHTAG_REMOVE = "yjxx_re";
+    /** 自然灾害: 0:关,1:开 **/
+    public String PUSHTAG_QXYJ_NATURAL = "tfgg_n";
+    /** 事故灾害: 0:关,1:开 **/
+    public String PUSHTAG_QXYJ_ACCIDENT = "tfgg_a";
+    /** 公共卫生事件: 0:关,1:开 **/
+    public String PUSHTAG_QXYJ_PUBLIC = "tfgg_t";
+    /** 突发公共事件解除类预警: 0:关,1:开 **/
+    public String PUSHTAG_QXYJ_EMERGENCY = "tfgg_re";
+    /** 社会安全事件: 0:关,1:开 **/
+    public String PUSHTAG_QXYJ_SOCIETY = "tfgg_s";
+
+    // 实况告警通知
+	/** 推送样式开关：只以通知栏方式推送，无推送模式设置功能   **/
+	public String PUSHTAG_WARNING_MODEL = "warning_model";
+	/** 告警城市ID  **/
+	public String PUSHTAG_WARNING_CITY = "warning_city";
+	/** 告警城市名称  **/
+	public String PUSHTAG_WARNING_CITY_NAME = "warning_city_name";
+	/**
+	 * 实况告警通知: 0:关,1:开 因为高低温等来自同一数据源，所以高低温等开关做本地配置，
+	 * 至少一个实况类型设置打开时，才把总的告警通知开关打开，反之关闭。
+	 **/
+	public String PUSHTAG_WARNING_INFO = "warning_info";
+
+	// 天气预报通知
+	/** 推送样式开关：只以通知栏方式推送，无推送模式设置功能   **/
+	public String PUSHTAG_WEATHER_FORECAST_MODEL = "weatherForecast_model";
+	/** 推送城市ID **/
+	public String PUSHTAG_WEATHER_FORECAST_CITY = "weatherForecast_city";
+	/** 推送城市名称 **/
+	public String PUSHTAG_WEATHER_FORECAST_CITY_NAME = "weatherForecast_city_name";
+	/** 早间天气预报通知: 0:关,1:开 **/
+	public String PUSHTAG_WEATHER_FORECAST_MORNING = "weatherForecast_cstq";
+	/** 晚间天气预报通知: 0:关,1:开 **/
+	public String PUSHTAG_WEATHER_FORECAST_EVENING = "weatherForecast_evening";
+    /** 城市天气预报通知: 0:关,1:开 **/
+    public String PUSHTAG_WEATHER_CITY = "weatherForecast_cstq";
+    /** 变温提醒通知: 0:关,1:开 **/
+    public String PUSHTAG_WEATHER_BW = "weatherForecast_bw";
+    /** 特殊气温通知: 0:关,1:开 **/
+    public String PUSHTAG_WEATHER_TSQW = "weatherForecast_tsqw";
+    /** 特殊天气通知: 0:关,1:开 **/
+    public String PUSHTAG_WEATHER_TSTQ = "weatherForecast_tstq";
+    /** 空气污染通知: 0:关,1:开 **/
+    public String PUSHTAG_WEATHER_KQWR = "weatherForecast_kqwr";
+
+	// 温馨提示推送
+	/** 推送样式开关：0对话框、1通知栏两种推送模式，默认为通知栏显示模式；  **/
+	public String PUSHTAG_TIPS_MODEL = "tips_model";
+	/** 节日: 0:关,1:开 **/
+	public String PUSHTAG_TIPS_HOLIDAY = "tips_holiday";
+	/** 节气: 0:关,1:开 **/
+	public String PUSHTAG_TIPS_JIEQI = "tips_jieqi";
+	/** 专题: 0:关,1:开 **/
+	public String PUSHTAG_TIPS_SPECIAL = "tips_special";
+	/** 公告: 0:关,1:开 **/
+	public String PUSHTAG_TIPS_NOTICE = "tips_notice";
+
+	/** 本地缓存实况告警通知开关类型:高温. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_HIGH_TEMPERATURE = "warning_info_high_temperature";
+	/** 本地缓存实况告警通知开关类型:低温. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_LOW_TEMPERATURE = "warning_info_low_temperature";
+	/** 本地缓存实况告警通知开关类型:能见度. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_VISIBILITY = "warning_info_visibility";
+	/** 本地缓存实况告警通知开关类型:高湿度. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_HIGH_HUMIDITY = "warning_info_high_humidity";
+	/** 本地缓存实况告警通知开关类型:低湿度. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_LOW_HUMIDITY = "warning_info_low_humidity";
+	/** 本地缓存实况告警通知开关类型:小时雨量. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_HOURLY_RAINFALL = "warning_info_hourly_rainfall";
+	/** 本地缓存实况告警通知开关类型:风速. 0:关,1:开 **/
+	public String LOCAL_WARNING_INFO_WIND_SPEED = "warning_info_wind_speed";
+	
+	/** 本地缓存实况告警通知数值类型:高温.  **/
+	public String VALUE_HIGH_TEMPERATURE = "temp_h";
+	/** 本地缓存实况告警通知数值类型:低温.  **/
+	public String VALUE_LOW_TEMPERATURE = "temp_l";
+	/** 本地缓存实况告警通知数值类型:能见度.  **/
+	public String VALUE_VISIBILITY = "vis_l";
+	/** 本地缓存实况告警通知数值类型:高湿度.  **/
+	public String VALUE_HIGH_HUMIDITY = "hum_h";
+	/** 本地缓存实况告警通知数值类型:低湿度. **/
+	public String VALUE_LOW_HUMIDITY = "hum_l";
+	/** 本地缓存实况告警通知数值类型:小时雨量.  **/
+	public String VALUE_HOURLY_RAINFALL = "rain_h";
+	/** 本地缓存实况告警通知数值类型:风速. **/
+	public String VALUE_WIND_SPEED = "wspeed_h";
+	
+	// 付费服务
+	/** 定点服务推送开关 */
+	public String SERVICE_LOCATION_WARNING = "location_warning";
+
+	/** 气象服务地区  **/
+    /** 推送样式开关：0对话框、1通知栏两种推送模式，默认为通知栏显示模式；  **/
+    public String PUSHTAG_TIPS_MODEL_SERVICE = "tips_model_service";
+
+	public String PUSHTAG_QXFW_CITY = "qxfw_city";
+	/** qxfw_jc （决策报告）**/
+	public String PUSHTAG_QXFW_JC = "qxfw_jc";
+	/**  qxfw_hy （行业气象） **/
+	public String PUSHTAG_QXFW_HY = "qxfw_hy";
+	/** qxfw_lj （临近预报）**/
+	public String PUSHTAG_QXFW_LJ = "qxfw_lj";
+	// 停课铃
+	public String PUSHTAG_TKL = "tkl";
+
+	// /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+}

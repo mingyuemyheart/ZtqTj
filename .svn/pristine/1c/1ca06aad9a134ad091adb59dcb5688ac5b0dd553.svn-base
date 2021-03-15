@@ -1,0 +1,60 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+/**
+ * 临近预警信息
+ * @author E.Sun
+ * 2015年10月13日
+ */
+public class NearWarnInfo {
+
+	/**
+	 * 序号
+	 */
+	public String number = "";
+	
+	/**
+	 * 地区
+	 */
+	public String area = "";
+	
+	/**
+	 * 概率
+	 */
+	public double probability;
+	
+	/**
+	 * 频率
+	 */
+	public double frequency;
+	
+	/**
+	 * 颜色
+	 */
+	public String color;
+	
+	/**
+	 * 纬度
+	 */
+	public double latitude;
+	
+	/**
+	 * 经度
+	 */
+	public double longitude;
+	
+	/**
+	 * 颜色：黄色
+	 */
+	public static final String COLOR_YELLOW = "Y";
+	
+	/**
+	 * 颜色：橙色
+	 */
+	public static final String COLOR_ORANGE = "G";
+	
+	/**
+	 * 颜色：红色
+	 */
+	public static final String COLOR_RED = "R";
+	
+}

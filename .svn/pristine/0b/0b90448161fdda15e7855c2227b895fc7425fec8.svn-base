@@ -1,0 +1,56 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 雨晴信息-站点的累积雨量信息上传包
+ * @author tya
+ *
+ */
+public class PackRainInfoStationAddUp extends PcsPackUp {
+
+    public static final String NAME = "fx_station_add_raininfo";
+
+	/**
+	 * 查询开始时间
+	 */
+	public String starttime = "";
+	
+	/**
+	 * 查询结束时间
+	 */
+	public String endtime = "";
+	
+	/**
+	 * 站点ID
+	 */
+	public String station_id = "";
+	
+	public PackRainInfoStationAddUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("starttime", starttime);
+			obj.put("endtime", endtime);
+			obj.put("station_id", station_id);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

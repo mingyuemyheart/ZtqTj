@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+/**
+ * 意见列表
+ * 
+ * @author Chensq
+ * 
+ */
+public class SuggestListInfo {
+	/** 用户昵称 **/
+	public String nick_name = "";
+	/** 创建时间 **/
+	public String create_time = "";
+	/** 建议内容 **/
+	public String msg = "";
+}

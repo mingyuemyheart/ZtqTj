@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/bg_black_alpha70" />
+
+        <TextView
+            android:id="@+id/item_over24_hour"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/dimen8"
+            android:paddingTop="@dimen/dimen8"
+            android:gravity="center"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/bg_black_alpha70" />
+
+        <TextView
+            android:id="@+id/item_over24_value"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen8"
+            android:paddingTop="@dimen/dimen8"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/bg_black_alpha70" />
+
+        <TextView
+            android:id="@+id/item_future24_hour"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen8"
+            android:paddingTop="@dimen/dimen8"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/bg_black_alpha70" />
+        <TextView
+            android:id="@+id/item_future24_value"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen8"
+            android:paddingTop="@dimen/dimen8"
+            android:textColor="@color/text_black"
+            android:textSize="@dimen/text_footnote" />
+    </LinearLayout>
+    <View
+        android:layout_width="1px"
+        android:layout_height="match_parent"
+        android:background="@color/bg_black_alpha70" />
+</LinearLayout>

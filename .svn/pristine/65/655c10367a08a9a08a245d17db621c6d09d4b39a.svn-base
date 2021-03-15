@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/layout_root"
+              xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@drawable/bg_satellite"
+              android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <RadioGroup
+            android:id="@+id/situation_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_number_detail_subt_blue"
+            android:orientation="horizontal"></RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_number_detail_subt_blue"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/situation_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:text="发布时间"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/dimen14"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/spinner_situation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/situation_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_margintop"
+                    android:background="@drawable/bg_likespinnertextview"
+                    android:drawableRight="@drawable/bg_livequery_drowdown"
+                    android:gravity="center"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="@dimen/dimen4"
+                    android:singleLine="true"
+                    android:textColor="@color/text_black"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ScrollView
+                android:id="@+id/content_scrollview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/bg_white"
+                android:scrollbars="none"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/n_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:lineSpacingExtra="5dp"
+                    android:lineSpacingMultiplier="1.3"
+                    android:padding="@dimen/activity_margintop"
+                    android:textColor="@color/text_black"
+                    android:textSize="@dimen/text_content" />
+            </ScrollView>
+            <com.pcs.ztqtj.view.myview.ImageTouchView
+                android:id="@+id/situation_image_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="@dimen/activity_marginleft_right">
+
+                <Button
+                    android:id="@+id/situation_clear"
+                    android:layout_width="80dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/icon_situation_bar"
+                    android:text="要素说明"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_footnote"/>
+
+                <LinearLayout
+                    android:id="@+id/left_right_btn_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/situation_image_left"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rainfallimage_left"/>
+
+                    <ImageButton
+                        android:id="@+id/situation_image_right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn_rainfallimage_right"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

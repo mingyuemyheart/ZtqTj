@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_choose_time"
+    android:orientation="vertical" >
+    
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+	
+	<RelativeLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="40dp"
+	    android:background="@color/water_grid_head_deep_blue">
+	    
+		<TextView 
+		    android:id="@+id/tv_title"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerInParent="true"
+		    android:textColor="@color/text_black"
+		    android:textSize="@dimen/text_content" />
+	
+		<ImageView 
+		    android:id="@+id/btn_close"
+		    android:layout_width="40dp"
+            android:layout_height="40dp"
+		    android:layout_marginRight="@dimen/dimen10"
+		    android:layout_centerInParent="true"
+		    android:layout_alignParentRight="true"
+		    android:src="@drawable/btn_delete"/>
+		
+	</RelativeLayout>
+	
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+	
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="@color/water_grid_head_light_blue"
+	    android:orientation="horizontal">
+	    
+	    <TextView 
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:layout_marginTop="@dimen/dimen6"
+	        android:layout_marginBottom="@dimen/dimen6"
+	        android:gravity="center"
+	        android:text="@string/time"
+	        android:textColor="@color/text_black"
+	        android:textSize="@dimen/text_footnote" />
+	    
+	    <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@drawable/line_common_v" />
+	    
+	    <!-- 雨量 -->
+		<TextView 
+		    android:id="@+id/tv_rain_fall"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:gravity="center"
+			android:textColor="@color/text_black"
+	        android:textSize="@dimen/text_footnote"/>
+	    
+	</LinearLayout>
+	
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+	
+	<ListView
+	    android:id="@+id/lv_rain_info"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:cacheColorHint="@color/alpha100"
+	    android:divider="@drawable/line_common"
+	    android:listSelector="@color/alpha100" >
+	    
+	</ListView>
+	
+	<View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@drawable/line_common" />
+    
+</LinearLayout>

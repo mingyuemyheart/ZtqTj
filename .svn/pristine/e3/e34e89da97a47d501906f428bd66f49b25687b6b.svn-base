@@ -1,0 +1,144 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+
+import android.content.res.Resources.NotFoundException;
+
+/**
+ * 数值预报
+ */
+public class PackNumericalForecast {
+	private static PackNumericalForecast instance;
+
+	public static PackNumericalForecast getInstance() {
+		if (instance == null) {
+			instance = new PackNumericalForecast();
+		}
+		return instance;
+	}
+
+	private PackNumericalForecast() {
+	};
+
+	private List<NumberBean> listLeve1;
+	private List<NumberBean> listLeve2;
+	private List<NumberBean> listAll;
+
+	public List<NumberBean> getLeve1() {
+		listLeve1 = new ArrayList<NumberBean>();
+		for (int i = 0; i < listAll.size(); i++) {
+			if (listAll.get(i).LEVE.equals("1")) {
+				listLeve1.add(listAll.get(i));
+			}
+		}
+		return listLeve1;
+	}
+
+	public List<NumberBean> getLeve2(String id) {
+		listLeve2 = new ArrayList<NumberBean>();
+		for (int i = 0; i < listAll.size(); i++) {
+			if (listAll.get(i).PARENT_CODE.equals(id)) {
+				listLeve2.add(listAll.get(i));
+			}
+		}
+		return listLeve2;
+	}
+	private void fillData(InputSource source) {
+		listAll = new ArrayList<NumberBean>();
+		listAll.clear();
+		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		XMLReader reader;
+		try {
+			reader = factory.newSAXParser().getXMLReader();
+			reader.setContentHandler(new LifeHandler(listAll));
+			reader.parse(source);
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void fillData(InputStream input) {
+		fillData(new InputSource(input));
+	}
+
+	public void fillData(String xml) {
+		StringReader read = new StringReader(xml);
+		InputSource source = new InputSource(read);
+		fillData(source);
+	}
+
+	public class NumberBean implements Serializable{
+		public String CODE;
+		public String NAME;
+		public String PARENT_CODE;
+		public String LEVE;
+	}
+
+	class LifeHandler extends DefaultHandler {
+		private String tag = "";
+		private static final String INDEX_NAME = "CODE";
+		private static final String SHOW_NAME = "NAME";
+		private static final String IS_CHOICE = "PARENT_CODE";
+		private static final String ELEMENT = "LEVE";
+		private String CODE;
+		private String NAME;
+		private String PARENT_CODE;
+		private String LEVE;
+		private List<NumberBean> list;
+
+		public LifeHandler(List<NumberBean> list) {
+			this.list = list;
+		}
+
+		public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes attributes) throws org.xml.sax.SAXException {
+			tag = localName;
+		};
+
+		public void endElement(String uri, String localName, String qName) throws org.xml.sax.SAXException {
+			tag = "";
+			if (localName.equals(ELEMENT)) {
+				NumberBean pack = new NumberBean();
+				pack.CODE = CODE;
+				pack.NAME = NAME;
+				pack.PARENT_CODE = PARENT_CODE;
+				pack.LEVE = LEVE;
+				list.add(pack);
+				CODE = null;
+				NAME = null;
+				PARENT_CODE = null;
+				LEVE = null;
+			}
+		}
+
+		public void characters(char[] ch, int start, int length) throws org.xml.sax.SAXException {
+			if (tag.equals(INDEX_NAME)) {
+				CODE = new String(ch, start, length);
+			} else if (tag.equals(SHOW_NAME)) {
+				NAME = new String(ch, start, length);
+			} else if (tag.equals(IS_CHOICE)) {
+				PARENT_CODE = new String(ch, start, length);
+			} else if (tag.equals(ELEMENT)) {
+				LEVE = new String(ch, start, length);
+			}
+		}
+	}
+}

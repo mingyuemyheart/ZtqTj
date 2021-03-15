@@ -1,0 +1,31 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 雨量查询—福建省内近1、3小时最大雨量排行
+ */
+public class PackYltj_1_3Up extends PcsPackUp {
+	public static final String NAME = "rainstat_pro_one_thr_rank";
+
+	public PackYltj_1_3Up() {
+		//TODO 演示代码
+		//intervalMill = 1000 * 60 * 5;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		return obj;
+
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+/**
+ * 短刷新频率的上传包基类
+ * Created by tyaathome on 2017/2/15.
+ */
+
+public abstract class PackShortUpdateTimeUp extends PcsPackUp {
+    public PackShortUpdateTimeUp() {
+        super.intervalMill = 0;
+        super.bRepeat = false;
+    }
+}

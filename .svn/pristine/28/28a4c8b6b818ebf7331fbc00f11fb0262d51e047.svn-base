@@ -1,0 +1,68 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Z 气象预警
+ */
+public class PackWarningCenterTfggsjDown extends PcsPackDown {
+	public List<WarnTFGGSJ> list = new ArrayList<WarnTFGGSJ>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		list.clear();
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			JSONArray jsonArraydz = obj.getJSONArray("warn_list");
+			for (int i = 0; i < jsonArraydz.length(); i++) {
+				WarnTFGGSJ bean = new WarnTFGGSJ();
+				bean.title = jsonArraydz.getJSONObject(i).getString("title");
+				bean.html_path = jsonArraydz.getJSONObject(i).getString(
+						"html_path");
+
+				if (jsonArraydz.getJSONObject(i).has("fb_unit")) {
+					bean.fb_unit = jsonArraydz.getJSONObject(i).getString(
+							"fb_unit");
+				}
+				if (jsonArraydz.getJSONObject(i).has("fb_time")) {
+                    bean.fb_time = jsonArraydz.getJSONObject(i).getString(
+                            "fb_time");
+                }
+                if (jsonArraydz.getJSONObject(i).has("yj_time")) {
+                    bean.put_time = jsonArraydz.getJSONObject(i).optString(
+                            "yj_time");
+                }
+				list.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class WarnTFGGSJ {
+		public String title = "";
+		public String html_path = "";
+		public String fb_unit = "";
+		public String fb_time = "";
+		public String put_time="";
+	}
+}

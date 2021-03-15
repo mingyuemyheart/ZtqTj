@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.column;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+
+ *
+ * @author Chensq
+ */
+public class PackLiveTypeDown extends PcsPackDown {
+    public List<String> list_str = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        list_str.clear();
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        JSONObject temp;
+        try {
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            JSONArray arr = temp.getJSONArray("datalist");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject airJson = arr.getJSONObject(i);
+                list_str.add(airJson.optString("name"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,0 +1,18 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+/**
+ * Created by pcs_2017_003 on 2018/1/23.
+ */
+
+public class PushTagContant {
+
+    public static String getCityName() {
+        return cityName;
+    }
+
+    public static void setCityName(String cityName) {
+        PushTagContant.cityName = cityName;
+    }
+
+    public static String cityName;
+}

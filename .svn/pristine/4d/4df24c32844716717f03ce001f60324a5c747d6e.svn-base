@@ -1,0 +1,29 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class YjZqInfoArea {
+
+    /**
+     *
+     */
+    public String id;
+    /**
+     * 地址
+     */
+    public String name;
+    /**
+     * 发布时间
+     */
+    public String type;
+    /**
+     * 状态
+     */
+    public List<YjZqInfoAreaDown> list=new ArrayList<>();
+}

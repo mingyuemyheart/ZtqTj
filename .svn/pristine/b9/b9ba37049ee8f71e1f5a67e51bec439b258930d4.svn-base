@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.io.Serializable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 气象服务详情
+ * 
+ * @author z
+ * html_url": "http://218.85.78.125:8099/ztq30_fj_jc/Qxfw_TransferHtml?id=aHR0cDovLzEwLjE0MC4yMi4xMzo4MDk5L2Z0cC8vZncvMjAxNS0xMS0yNC8yMDE1MTEyNDE2MTE3ODkvMjAxNTExMjQxNjExNzg5Lmh0bWw=",
+            "title": "重要天气预警报告(2015045）?冷空气",
+            "style": "1",
+            "create_time
+ * 
+ */
+public class PackPullServiceDown extends PcsPackDown implements Serializable {
+	public String html_url;
+	public String title;
+	public String style;
+	public String create_time;
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			if (jsonStr == null)return;
+			JSONObject temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			html_url = temp.optString("html_url");
+			title = temp.optString("title");
+			style = temp.optString("style");
+			create_time = temp.optString("create_time");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+}

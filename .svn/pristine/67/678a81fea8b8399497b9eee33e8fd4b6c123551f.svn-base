@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_myserver_group_channel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen10"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/myserver_group_channel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:lineSpacingExtra="5px"
+            android:textColor="@color/text_server_blue"
+            android:textSize="@dimen/text_content"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:lineSpacingExtra="5px"
+            android:text="@string/helpacitvity"
+            android:textColor="@color/text_server_blue"
+            android:textSize="@dimen/text_content"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/item_myserver_bg">
+
+        <Button
+            android:id="@+id/more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dimen10"
+            android:background="@drawable/btn_more_bg"/>
+
+        <TextView
+            android:id="@+id/myserver_group_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/dimen10"
+            android:layout_toLeftOf="@id/more"
+            android:textColor="@color/text_server_blue"
+            android:textSize="@dimen/text_content"/>
+    </RelativeLayout>
+
+</LinearLayout>

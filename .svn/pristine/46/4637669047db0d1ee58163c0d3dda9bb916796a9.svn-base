@@ -1,0 +1,115 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * 生活指数
+ *
+ * @author JiangZy
+ */
+
+public class PackLifeNumberDown extends PcsPackDown {
+    public Map<String, LifeNumber> dataMap = new HashMap<String, LifeNumber>();
+    public List<LifeNumber> dataList = new ArrayList<LifeNumber>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        dataList.clear();
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray arr = obj.getJSONArray("idx");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject row = arr.getJSONObject(i);
+                LifeNumber pack = new LifeNumber();
+
+                /** 指数类型 **/
+                pack.index_name = row.getString("index_name");
+                /** 图标 **/
+                pack.ico_name = row.getString("ico_name");
+                /** 等级 **/
+                pack.lv = row.getString("lv");
+                /** 简短描述 **/
+                pack.simple_des = row.getString("simple_des");
+                /** 详细内容 **/
+                pack.des = row.getString("des");
+                /** 时间 **/
+                pack.create_time = row.getString("create_time");
+                /** 图片路径 **/
+                pack.ico_path = row.getString("ico_path");
+                pack.ico2_path = row.getString("Ico2_path");
+                /** 生活指数链接 **/
+                pack.shzs_url = row.optString("shzs_url");
+                pack.id = row.optString("id");
+                dataMap.put(pack.id, pack);
+                dataList.add(pack);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    public class LifeNumber {
+        /**
+         * 指数类型
+         */
+        public String index_name = "";
+        /**
+         * 图标
+         */
+        public String ico_name = "";
+        /**
+         * 等级
+         */
+        public String lv = "";
+        /**
+         * 简短描述
+         */
+        public String simple_des = "";
+        /**
+         * 详细内容
+         */
+        public String des = "";
+        /**
+         * 时间
+         */
+        public String create_time = "";
+        /**
+         * 图片路径
+         */
+        public String ico_path = "";
+
+        /**
+         * 图片路径、、更多指数中使用
+         */
+        public String ico2_path = "";
+
+        /**
+         * 生活指数链接
+         */
+        public String shzs_url = "";
+
+        /**
+         * 唯一标识
+         */
+        public String id = "";
+    }
+}

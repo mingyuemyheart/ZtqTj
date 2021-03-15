@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+    android:background="@color/bg_white">
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/radioa"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_disaster_reporting"
+            android:button="@null"
+            android:gravity="center"
+            android:layout_marginRight="5dp"
+            android:singleLine="true"
+            android:textColor="@color/text_black"
+            android:textSize="16dp" />
+
+        <RadioButton
+            android:id="@+id/radiob"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_disaster_reporting"
+            android:button="@null"
+            android:gravity="center"
+            android:layout_marginRight="5dp"
+            android:singleLine="true"
+            android:textColor="@color/text_black"
+            android:textSize="16dp" />
+
+        <RadioButton
+            android:id="@+id/radioc"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_disaster_reporting"
+            android:button="@null"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="@color/text_black"
+            android:textSize="16dp" />
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/radio_group"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+</RelativeLayout>

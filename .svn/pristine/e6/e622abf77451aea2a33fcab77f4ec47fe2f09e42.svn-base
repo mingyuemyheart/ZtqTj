@@ -1,0 +1,68 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 风雨查询_分布图
+ * Created by tyaathome on 2017/4/14.
+ */
+
+public class PackFycxFbtUp extends PcsPackUp {
+
+    public static final String NAME = "fycx_fbt";
+    public String type = "";
+    public String img_type = "";
+    public String area_id = "";
+    public String falg = "";
+
+    public PackFycxFbtUp() {
+        this.intervalMill = 0;
+    }
+
+    // 降水
+    public static final String RAIN = "10";
+    // 气温
+    public static final String TEMPERATURE = "11";
+    // 风速
+    public static final String WIND = "12";
+    // 能见度
+    public static final String VISIBILITY = "13";
+    // 气压
+    public static final String PRESSURE = "14";
+    // 相对湿度
+    public static final String HUMIDITY = "17";
+    // 色斑图
+    public static final String SB = "1";
+    // 代表站
+    public static final String DB = "2";
+    // 国家站
+    public static final String GJ = "6";
+    // 雷达
+    public static final String RADAR = "3";
+    // 云图
+    public static final String CLOUD = "4";
+    // 自动站
+    public static final String ZD = "5";
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("type", type);
+            obj.put("img_type", img_type);
+            obj.put("area_id", area_id);
+            obj.put("falg", falg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type + "_" + img_type + "_" + area_id + "_" + falg;
+    }
+}

@@ -1,0 +1,31 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.DesServer;
+
+public class PackQxfwAuthenticationProductDown extends PcsPackDown {
+	/** 授权说明 */
+	public boolean auth_pass;
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			auth_pass = obj.getBoolean("auth_pass");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+}

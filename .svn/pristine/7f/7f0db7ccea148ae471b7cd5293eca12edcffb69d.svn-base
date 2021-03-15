@@ -1,0 +1,37 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+/**
+ * Created by tyaathome on 2017/11/3.
+ */
+
+public class AlipayInfo {
+    /**
+     * 签约合作者身份ID
+     */
+    public String appid = "";
+
+    /**
+     * 签约卖家支付宝账号
+     */
+    public String mch_id = "";
+
+    /**
+     * 通知地址
+     */
+    public String notify_url = "";
+
+    /**
+     * key
+     */
+    public String key = "";
+
+    /**
+     * 日志地址
+     */
+    public String log_url = "";
+
+    /**
+     * 未付款交易的超时时间
+     */
+    public String it_b_pay = "";
+}

@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.art;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 资讯列表
+ *
+ * @author chenjh
+ */
+public class PackArtTitleUp extends PcsPackUp {
+    public static final String NAME = "art_title";
+    public String area = "";
+    public String count = "";
+    public String page = "";
+    public String channel = "";
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("area", area);
+            obj.put("count", count);
+            obj.put("page", page);
+            obj.put("channel", channel);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + area + "_" + count + "_" + page + "_" + channel;
+    }
+}

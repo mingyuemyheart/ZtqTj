@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class PackBannerDown extends PcsPackDown {
+	public List<BannerInfo> arrBannerInfo = new ArrayList<BannerInfo>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		arrBannerInfo.clear();
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("ad_list");
+			for (int i = 0; i < arr.length(); i++) {
+				BannerInfo bannerInfo = new BannerInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				bannerInfo.img_path = airJson.getString("img_path");
+				bannerInfo.title = airJson.getString("title");
+				bannerInfo.url = airJson.getString("url");
+				bannerInfo.fx_content = airJson.optString("fx_content");
+				arrBannerInfo.add(bannerInfo);
+			}
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+}

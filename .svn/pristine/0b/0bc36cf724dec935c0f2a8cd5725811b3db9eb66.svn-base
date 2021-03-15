@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.order;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 下载包：删除订单
+ * @author E.Sun
+ * 2015年11月16日
+ */
+public class PackDeleteOrderDown extends PcsPackDown {
+
+	private final String KEY_RESULT = "result";
+	
+	private String result = "";
+	
+	public static final String RESULT_SUCCEED = "1";
+	public static final String RESULT_FAILED = "-1";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject object = new JSONObject(jsonStr);
+			result = object.getString(KEY_RESULT);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 是否删除成功
+	 * @return
+	 */
+	public boolean isDeleteSucceed() {
+        return RESULT_SUCCEED.equals(result);
+    }
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

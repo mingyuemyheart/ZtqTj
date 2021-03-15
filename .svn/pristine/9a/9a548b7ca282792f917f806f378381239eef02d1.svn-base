@@ -1,0 +1,69 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.lightning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：雷电监测--地市地区查询
+ * 
+ * @author Chensq 2015年11月9日
+ */
+
+public class PackThunderQuireUp extends PcsPackUp {
+	/**
+	 * 开始年月日时分
+	 */
+	public String start_time;
+	/**
+	 * 结束年月日时分
+	 */
+	public String end_time;
+	/**
+	 * 城市id
+	 */
+	public String city_id;
+	/**
+	 * 地区id
+	 */
+	public String area_id;
+	/**
+	 * 闪电类型
+	 */
+	public String cg_ic;
+	/**
+	 * 极性
+	 */
+	public String processflag;
+
+	public static final String NAME = "thunder_query_list";
+
+	public PackThunderQuireUp() {
+		intervalMill = 0;
+	}
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("cg_ic", cg_ic);
+			obj.put("city_id", city_id);
+			obj.put("area_id", area_id);
+			obj.put("end_time", end_time);
+			obj.put("start_time", start_time);
+			obj.put("processflag", processflag);
+			return obj;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

@@ -1,0 +1,31 @@
+package com.pcs.lib.lib_pcs_v3.control.log;
+
+/**
+ * 日志类
+ *
+ * @author JiangZy
+ */
+public class Log {
+
+    public static void e(String tag, String msg) {
+        android.util.Log.e(tag, msg);
+    }
+
+    public static int i(String tag, String msg) {
+        return android.util.Log.i(tag, msg);
+    }
+
+    /**
+     * 获取当前类名+方法名
+     *
+     * @return
+     */
+    public static String getClassMethodName() {
+        String className = Thread.currentThread().getStackTrace()[1]
+                .getClassName();
+        String methodName = Thread.currentThread().getStackTrace()[1]
+                .getMethodName();
+
+        return className + "." + methodName + ".";
+    }
+}

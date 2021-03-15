@@ -1,0 +1,19 @@
+package com.pcs.lib.lib_pcs_v3.model.image;
+
+/**
+ * 图片加载的监听
+ * 
+ * @author JiangZy
+ * 
+ */
+public interface ListenerImageLoad {
+	/**
+	 * 完成
+	 * 
+	 * @param key
+	 *            请求图片时的key或url
+	 * @param isSucc
+	 *            是否成功
+	 */
+	public void done(String key, boolean isSucc);
+}

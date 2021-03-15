@@ -1,0 +1,11 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+/**
+ * Created by tyaathome on 2017/10/31.
+ */
+
+public class SubAreaConfig {
+    public String s_id = "";
+    public String s_area_id = "";
+    public String s_name = "";
+}

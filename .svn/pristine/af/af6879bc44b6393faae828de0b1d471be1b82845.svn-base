@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.service;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象服务-气象单位搜索（qxfw_sel）
+ *
+ * @author chenjh
+ */
+public class PackServiceOrgSearchUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_sel";
+
+    /**
+     * 搜索的内容：福
+     **/
+    public String sel_org = "";
+
+    public PackServiceOrgSearchUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("sel_org", sel_org);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+
+        return NAME + "#" + sel_org;
+    }
+
+}

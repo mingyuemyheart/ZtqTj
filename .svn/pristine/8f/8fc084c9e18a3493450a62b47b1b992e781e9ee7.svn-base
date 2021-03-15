@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 河道站列表
+ * Created by tyaathome on 2019/06/14.
+ */
+public class PackRiverListDown extends PcsPackDown {
+
+    public List<River> riverList = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            riverList.clear();
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            JSONArray jsonArray = jsonObject.optJSONArray("info_list");
+            if(jsonArray != null) {
+                for(int i = 0; i < jsonStr.length(); i++) {
+                    JSONObject riverJSONObject = jsonArray.getJSONObject(i);
+                    River river = new River();
+                    river.stcd = riverJSONObject.optString("stcd", "");
+                    river.stnm = riverJSONObject.optString("stnm", "");
+                    river.rvnm = riverJSONObject.optString("rvnm", "");
+                    river.hnnm = riverJSONObject.optString("hnnm", "");
+                    river.bsnm = riverJSONObject.optString("bsnm", "");
+                    river.lgtd = riverJSONObject.optDouble("lgtd", 0.0d);
+                    river.lttd = riverJSONObject.optDouble("lttd", 0.0d);
+                    river.tm = riverJSONObject.optString("tm", "");
+                    river.z = riverJSONObject.optString("z", "");
+                    river.q = riverJSONObject.optString("q", "");
+                    riverList.add(river);
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

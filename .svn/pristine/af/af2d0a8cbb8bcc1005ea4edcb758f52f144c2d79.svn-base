@@ -1,0 +1,67 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * @author Chensq 
+ * 数值预报栏目下载包
+ */
+public class PackNumericalForecastColumnDown extends PcsPackDown {
+public List<ForList> forlist = new ArrayList<>();
+	@Override
+	public void fillData(String jsonStr) {
+		forlist=new ArrayList<>();
+		if (jsonStr == null || "".equals(jsonStr)) {
+			return;
+		}
+		try {
+            forlist.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray arrfor_list = obj.getJSONArray("for_list");
+			for (int i = 0; i < arrfor_list.length(); i++) {
+				JSONObject jsonb = arrfor_list.getJSONObject(i);
+				ForList mforList=new ForList();
+				mforList.id=jsonb.getString("id");
+				mforList.style=jsonb.getString("style");
+				mforList.name=jsonb.getString("name");
+				mforList.parent_id=jsonb.getString("parent_id");
+                mforList.icon = jsonb.optString("ioc");
+				forlist.add(mforList);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	public class ForList implements InterfaceColumn{
+		public String id;
+		public String name = "";//名称
+		public String parent_id;//父类ID(为空表示一级栏目)
+		public String style;//栏目样式
+        public String icon = "";
+
+        @Override
+        public String getTitle() {
+            return name;
+        }
+
+        @Override
+        public String getIconPath() {
+            return icon;
+        }
+    }
+}

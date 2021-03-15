@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * @author Z
+ *         气象服务更多列表
+ */
+public class PackQxfwMyproMoreUp extends PcsPackUp {
+
+    public static final String NAME = "qxfw_mypro_more";
+
+    public String user_id = "";
+    public String channel_id;
+    public String org_id;
+    public String page_size = "15";
+    public String page_num = "1";
+
+    public PackQxfwMyproMoreUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("user_id", user_id);
+            obj.put("channel_id", channel_id);
+            obj.put("org_id", org_id);
+            obj.put("page_size", page_size);
+            obj.put("page_num", page_num);
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME+"#"+page_size+"_"+channel_id+user_id;
+    }
+}

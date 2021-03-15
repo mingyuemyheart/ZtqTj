@@ -1,0 +1,36 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * JiangZy on 2017/1/22.
+ */
+
+public class PackAirCityInfoUp extends PcsPackUp {
+
+    public static final String KEY = "air_qua_detail";
+
+    public String county_id = "";
+    private final String rank_type = "aqi";
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("county_id", county_id);
+            obj.put("rank_type", rank_type);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return KEY + "#" + county_id;
+    }
+}

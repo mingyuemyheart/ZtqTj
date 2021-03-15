@@ -1,0 +1,85 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalZtqImageDownload;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 插图下载
+ *
+ * @author JiangZy
+ */
+public class PackZtqImageDown extends PcsPackDown {
+
+    //图片地址
+    private String imageUrl = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (TextUtils.isEmpty(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+
+            JSONObject dataList = obj.getJSONObject("dataList");
+            imageUrl = dataList.getString("url");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private PackLocalZtqImageDownload getPackDownload() {
+        PackLocalZtqImageDownload packDownload = (PackLocalZtqImageDownload) PcsDataManager.getInstance().getLocalPack(PackLocalZtqImageDownload.KEY);
+        if (packDownload == null) {
+            //没下载过
+            packDownload = new PackLocalZtqImageDownload();
+            packDownload.imageUrlDownload = imageUrl;
+            PcsDataManager.getInstance().saveLocalData(PackLocalZtqImageDownload.KEY, packDownload);
+        }
+
+        return packDownload;
+    }
+
+    /**
+     * 获取Bitmap图片
+     *
+     * @param imageFetcher
+     * @return
+     */
+    public Bitmap getBitmap(String ftpHead, ImageFetcher imageFetcher) {
+        Bitmap bitmap = null;
+        BitmapDrawable drawable = imageFetcher.getImageCache().getBitmapFromAllCache(ftpHead + getPackDownload().imageUrlDownload);
+        if (drawable != null) {
+            bitmap = drawable.getBitmap();
+        }
+        return bitmap;
+    }
+
+
+    //开始下载图片
+    public void beginDownload(String ftpHead, ImageFetcher imageFetcher) {
+        BitmapDrawable drawable = imageFetcher.getImageCache().getBitmapFromAllCache(ftpHead + imageUrl);
+        if (drawable != null) {
+            //下载完成
+            PackLocalZtqImageDownload packDownload = getPackDownload();
+            packDownload.imageUrlDownload = imageUrl;
+            PcsDataManager.getInstance().saveLocalData(PackLocalZtqImageDownload.KEY, packDownload);
+            return;
+        }
+
+        //开始下载
+        imageFetcher.loadImage(ftpHead + imageUrl, null, ImageConstant.ImageShowType.NONE);
+    }
+}

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 网格预报 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <com.amap.api.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.4"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="top|center_horizontal"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/activity_margintop"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/activity_marginleft_right"
+            android:paddingTop="@dimen/activity_margintop" >
+
+            <!-- 搜索框 -->
+
+            <AutoCompleteTextView
+                android:id="@+id/text_search"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="5.5"
+                android:background="@drawable/search_edit"
+                android:completionThreshold="1"
+                android:dropDownVerticalOffset="1.0dip"
+                android:hint="@string/input_address"
+                android:imeOptions="actionSearch"
+                android:inputType="text|textAutoComplete"
+                android:singleLine="true"
+                android:textColor="@color/mgrey"
+                android:textColorHint="@color/hint" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/btn_search"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/search_btn" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_data"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:visibility="gone"
+            android:orientation="vertical" >
+
+            <!-- 标题栏 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/map_forecast_title"
+                android:gravity="center_vertical" >
+
+                <TextView
+                    android:id="@+id/text_list_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_marginleft_right"
+                    android:layout_weight="5"
+                    android:text="@string/feature_weather"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_content" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right" >
+
+                    <Button
+                        android:id="@+id/btnClose"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginRight="@dimen/activity_marginleft_right"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/btn_delete" />
+                </LinearLayout>
+            </LinearLayout>
+            <!-- 列表标题 -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@color/map_forecast_list_title"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <!-- 时间 -->
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/time"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/map_forecast_line" />
+                <!-- 天气 -->
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/weather"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/map_forecast_line" />
+                <!-- 温度 -->
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/temperature"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/map_forecast_line" />
+                <!-- 降水量 -->
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/rainfall"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content" />
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/map_forecast_line" />
+                <!-- 能见度 -->
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/mvisibility"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/map_forecast_line" />
+
+                <!-- 风向 -->
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/wind_direction"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content"/>
+
+                <ImageView
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="@color/map_forecast_line" />
+
+                <!-- 风速 -->
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/windspeed"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_content"/>
+            </LinearLayout>
+            <!-- 列表 -->
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:divider="#00000000"
+                android:dividerHeight="0dp" >
+            </ListView>
+            <LinearLayout
+                android:id="@+id/lay_nulldata"
+                android:visibility="gone"
+                android:background="@android:color/white"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="50dp">
+                <TextView
+                    android:textSize="@dimen/text_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_black_common"
+                    android:text="暂无数据"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

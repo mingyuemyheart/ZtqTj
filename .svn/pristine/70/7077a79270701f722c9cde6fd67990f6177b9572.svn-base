@@ -1,0 +1,89 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.control.tool.Util;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown.LifeNumber;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 生活指数
+ * 
+ * 
+ */
+public class PackLocalLife {
+	/**
+	 * 获取用户是否已经有定制选择指数项
+	 * @return
+	 */
+	public boolean getDefault(Context context){
+		return Util.getPreferencesBooleanValue(context, "localLife", "save_state");
+	}
+	
+	/**
+	 * 保存用户是否已经有定制选择指数项
+	 * @return
+	 */
+	public void setDefault(Context context,boolean state){
+		Util.setPreferencesBooleanValue(context, "localLife", "save_state", state);
+	}
+	
+	private static PackLocalLife instance;
+	public static PackLocalLife getInstance(){
+		if(instance==null){
+			instance=new PackLocalLife();
+		}
+		return instance;
+	}
+	
+	private PackLocalLife(){}
+	
+	public List<LifeNumber> listSel;
+	public List<LifeNumber> getLifeNumber(Context context){
+		listSel = new ArrayList<LifeNumber>();
+		String str=Util.getPreferencesValue(context, "localLife", "save");
+		if(!TextUtils.isEmpty(str)){
+			try {
+				JSONObject jo=new JSONObject(str);
+				JSONArray jr=jo.getJSONArray("array");
+				PackLifeNumberDown down=new PackLifeNumberDown();
+				for (int i = 0; i < jr.length(); i++) {
+					JSONObject join=jr.getJSONObject(i);
+					LifeNumber num=down.new LifeNumber();
+					num.id=join.getString("id");
+					listSel.add(num);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return listSel;
+	}
+	public void setLifeNumber(Context context,List<LifeNumber> list){
+		JSONObject json=new JSONObject();
+		JSONArray jr=new JSONArray();
+		for (int i = 0; i < list.size(); i++) {
+			JSONObject jsin=new JSONObject();
+			try {
+				jsin.put("id", list.get(i).id);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			jr.put(jsin);
+		}
+		try {
+			json.put("array", jr);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Util.setPreferencesValue(context, "localLife", "save",json.toString());
+	}
+}

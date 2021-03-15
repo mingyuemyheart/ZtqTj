@@ -1,0 +1,11 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+/**
+ * 要素日数查询月份
+ * Created by tyaathome on 2017/10/27.
+ */
+
+public class ElementQueryMonth {
+    public String month = "";
+    public String num = "";
+}

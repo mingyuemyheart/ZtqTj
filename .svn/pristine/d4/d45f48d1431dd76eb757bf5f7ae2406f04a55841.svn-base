@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 获取用户信息
+ * Created by tyaathome on 2016/9/13.
+ */
+public class PackPhotoUserInfoDown extends PcsPackDown {
+
+    public String user_id = "";
+    public String platform_type = "";
+    public String platform_user_id = "";
+    public String nick_name = "";
+    public String head_url = "";
+    public String sex = "";
+    public String address = "";
+    public String mobile = "";
+
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            user_id = obj.getString("user_id");
+            platform_type = obj.getString("platform_type");
+            platform_user_id = obj.getString("platform_user_id");
+            nick_name = obj.getString("nick_name");
+            head_url = obj.getString("head_url");
+            sex = obj.getString("sex");
+            address = obj.getString("address");
+            mobile = obj.getString("mobile");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

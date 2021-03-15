@@ -1,0 +1,23 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 服务产品信息
+ * @author E.Sun
+ * 2015年11月7日
+ */
+public class ProductInfo {
+
+	/** 产品ID */
+	public String id = "";
+	/** 产品名称 */
+	public String name = "";
+	/** 产品介绍 */
+	public String des = "";
+	/** 服务资费 */
+	public double amount;
+	/** 套餐列表 */
+	public List<ProductSetMealInfo> setMealList = new ArrayList<ProductSetMealInfo>();
+}

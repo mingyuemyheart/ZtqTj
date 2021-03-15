@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShortUpdateTimeUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 预警—首页格点信息上传包
+ * Created by tyaathome on 2016/6/6.
+ */
+public class PackWarningCenterYJXXGridIndexUp extends PackShortUpdateTimeUp {
+
+    public static final String NAME = "yjxx_grad_index_fb";
+
+    /**
+     * 省份
+     */
+    public String province = "";
+
+    /**
+     * 要查询预警的城市
+     */
+    public String area = "";
+
+    public PackWarningCenterYJXXGridIndexUp() {
+        //bRepeat = true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("province", province);
+            obj.put("area", area);
+//            obj.put("area", "72329");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return obj;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

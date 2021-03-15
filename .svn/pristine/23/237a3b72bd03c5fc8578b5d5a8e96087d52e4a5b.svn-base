@@ -1,0 +1,89 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * @author Z 气象预警
+ */
+public class PackWarningCenterqxfxzhDown extends PcsPackDown {
+	public List<WarnQXFX> dzDataList;
+	public List<WarnQXFX> shDataList;
+	public List<WarnQXFX> zxhlDataList;
+
+	@Override
+	public void fillData(String jsonStr) {
+		dzDataList = new ArrayList<WarnQXFX>();
+		shDataList = new ArrayList<WarnQXFX>();
+		zxhlDataList = new ArrayList<WarnQXFX>();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			JSONArray jsonArraydz = obj.getJSONArray("dz");
+			for (int i = 0; i < jsonArraydz.length(); i++) {
+				WarnQXFX bean = new WarnQXFX();
+				bean.title = jsonArraydz.getJSONObject(i).getString("title");
+				bean.html_path = jsonArraydz.getJSONObject(i).getString("html_path");
+
+				if (jsonArraydz.getJSONObject(i).has("fb_unit")) {
+					bean.fb_unit = jsonArraydz.getJSONObject(i).getString("fb_unit");
+				}
+				if (jsonArraydz.getJSONObject(i).has("fb_time")) {
+					bean.fb_time = jsonArraydz.getJSONObject(i).getString("fb_time");
+				}
+				dzDataList.add(bean);
+			}
+			JSONArray jsonArraysh = obj.getJSONArray("sh");
+			for (int i = 0; i < jsonArraysh.length(); i++) {
+				WarnQXFX bean = new WarnQXFX();
+				bean.title = jsonArraysh.getJSONObject(i).getString("title");
+				bean.html_path = jsonArraysh.getJSONObject(i).getString("html_path");
+
+				if (jsonArraysh.getJSONObject(i).has("fb_unit")) {
+
+					bean.fb_unit = jsonArraysh.getJSONObject(i).getString("fb_unit");
+				}
+				if (jsonArraysh.getJSONObject(i).has("fb_time")) {
+
+					bean.fb_time = jsonArraysh.getJSONObject(i).getString("fb_time");
+				}
+				shDataList.add(bean);
+			}
+			JSONArray jsonArrayzxhl = obj.getJSONArray("zxhl");
+			for (int i = 0; i < jsonArrayzxhl.length(); i++) {
+				WarnQXFX bean = new WarnQXFX();
+				bean.title = jsonArrayzxhl.getJSONObject(i).getString("title");
+				bean.html_path = jsonArrayzxhl.getJSONObject(i).getString("html_path");
+				if (jsonArrayzxhl.getJSONObject(i).has("fb_unit")) {
+					bean.fb_unit = jsonArrayzxhl.getJSONObject(i).getString("fb_unit");
+				}
+				if (jsonArrayzxhl.getJSONObject(i).has("fb_time")) {
+					bean.fb_time = jsonArrayzxhl.getJSONObject(i).getString("fb_time");
+				}
+				zxhlDataList.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class WarnQXFX {
+		public String title = "";
+		public String html_path = "";
+		public String fb_unit = "";
+		public String fb_time = "";
+	}
+}

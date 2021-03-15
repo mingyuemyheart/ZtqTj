@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <LinearLayout
+        android:id="@+id/gridlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content" >
+	        <TextView
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_margin="@dimen/activity_margintop"
+	            android:layout_alignParentLeft="true"
+	            android:layout_centerVertical="true"
+	            android:text="@string/hot_scenic"
+	            android:textColor="@color/text_white"
+	            android:textSize="@dimen/text_subtitle" />
+	        
+	        <Button
+	            android:id="@+id/btn_search"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_marginRight="@dimen/activity_margintop"
+	            android:layout_alignParentRight="true"
+	            android:layout_centerVertical="true"
+	            android:textColor="@color/text_white"
+	            android:textSize="@dimen/text_subtitle" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/bg_white" />
+
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_margin="@dimen/activity_margintop"
+            android:horizontalSpacing="@dimen/activity_margintop"
+            android:listSelector="@color/alpha100"
+            android:numColumns="3"
+            android:columnWidth="80dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="@dimen/activity_margintop" />
+    </LinearLayout>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@id/gridlayout"
+        android:layout_margin="@dimen/activity_marginleft_right" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.pcs.ztqtj.view.myview.LeadPoint
+            android:id="@+id/pointlayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+</RelativeLayout>

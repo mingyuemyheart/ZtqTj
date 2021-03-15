@@ -1,0 +1,81 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ *实况查询自动统计雨量
+ */
+public class PackYltjHourDown extends PcsPackDown {
+	public List<RainFall> dataList = new ArrayList<RainFall>();
+	public List<RainFall> baseList = new ArrayList<>();
+	
+	public String a_desc;
+    public String county;
+	
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			dataList.clear();
+            baseList.clear();
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("datalist");
+			a_desc=temp.optString("a_desc");
+            county = temp.optString("county");
+			for (int i = 0; i < arr.length(); i++) {
+				RainFall info = new RainFall();
+				JSONObject rainfallJson = arr.getJSONObject(i);
+				info.county = rainfallJson.getString("county");
+				info.hour1 = rainfallJson.getString("hour1");
+				info.hour3 = rainfallJson.getString("hour3");
+				info.hour6 = rainfallJson.getString("hour6");
+				info.hour12 = rainfallJson.getString("hour12");
+				info.hour24 = rainfallJson.getString("hour24");
+				dataList.add(info);
+			}
+
+			JSONArray baseArray = temp.optJSONArray("baselist");
+            for (int i = 0; i < baseArray.length(); i++) {
+                RainFall info = new RainFall();
+                JSONObject rainfallJson = baseArray.getJSONObject(i);
+                info.county = rainfallJson.getString("county");
+                info.hour1 = rainfallJson.getString("hour1");
+                info.hour3 = rainfallJson.getString("hour3");
+                info.hour6 = rainfallJson.getString("hour6");
+                info.hour12 = rainfallJson.getString("hour12");
+                info.hour24 = rainfallJson.getString("hour24");
+                baseList.add(info);
+            }
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+	public class RainFall implements Serializable {
+		public String hour6;
+		public String county;
+		public String hour3;
+		public String hour1;
+		public String hour24;
+		public String hour12;
+
+	}
+	
+}

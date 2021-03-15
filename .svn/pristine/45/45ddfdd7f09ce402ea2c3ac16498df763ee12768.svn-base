@@ -1,0 +1,201 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.control.tool.TimeTool;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.tool.GetJSONObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.Serializable;
+
+/**
+ * 实时天气
+ *
+ * @author JiangZy
+ */
+public class PackSstqDown extends PcsPackDown implements Serializable {
+    /**
+     * 星期
+     */
+    public String week = "";
+    /**
+     * 实时气温
+     */
+    public String ct = "";
+    /**
+     * 天气图标
+     */
+    public String wt_ico = "";
+    /**
+     * 风描述
+     */
+    public String wind = "";
+    /**
+     * 露点温度
+     */
+    public String dewPiont="";
+    /**
+     * 风力
+     */
+    public String fl = "";
+    /**
+     * 风向
+     */
+    public String winddir_current="";
+    /**
+     * 夜间天气
+     */
+    public String wt_night = "";
+    /**
+     * 白天天气
+     */
+    public String wt_daytime = "";
+    /**
+     * 相对湿度
+     */
+    public String humidity = "";
+    /**
+     * 夜间天气图标
+     */
+    public String wt_night_ico = "";
+    /**
+     * 白天天气图标
+     */
+    public String wt_daytime_ico = "";
+    /**
+     * 最高温
+     */
+    public String higt = "";
+    /**
+     * 最低温
+     */
+    public String lowt = "";
+    /**
+     * 能见度
+     */
+    public String visibility = "";
+    /**
+     * 气压
+     */
+    public String vaporpressuser = "";
+    /**
+     * 小时雨量
+     */
+    public String rainfall = "";
+    /**
+     * 更新时间  格式化后的
+     */
+    public String upt = "";
+
+    /**
+     * 更新时间 Long
+     */
+    public String upt_time = "";
+    /**
+     * 服务器时间
+     */
+    public String sys_time = "";
+    /**
+     * 城市名称
+     */
+    public String cityName = "";
+
+    public String us_fl="";
+
+    public String us_area="";
+
+    public String rainfall_day = "";
+    /**
+     * 返回要查询的地区
+     */
+    public String key = "";
+    public String stationname = "";
+
+    public String parentid = "";// 预警中心用于判断是否是地级市
+    public String cityId = "";// 城市id
+    private TimeTool.TimeType timeType = TimeTool.TimeType.DAY;// 时间类型，根据服务器时间或系统时间判断
+
+    private String jsonStr = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            if (jsonStr == null)
+                return;
+            this.jsonStr = jsonStr;
+            JSONObject temp = new JSONObject(jsonStr);
+
+            if (temp.has("updateMill")) {
+                updateMill = temp.optLong("updateMill");
+            }
+            if (temp.has("key")) {
+                key = temp.getString("key");
+            }
+            us_area= temp.optString("us_area");
+            if (temp.has("sstq")) {
+                JSONObject obj = temp.getJSONObject("sstq");
+
+                GetJSONObject getJsonObject = new GetJSONObject(obj);
+
+                wind = (String) getJsonObject.getJSONObjectValue("wind");
+                dewPiont= (String) getJsonObject.getJSONObjectValue("dewPiont");
+                fl = obj.optString("fl");
+                winddir_current = obj.optString("winddir_current");
+                wt_night_ico = (String) getJsonObject
+                        .getJSONObjectValue("wt_night_ico");
+
+                humidity = (String) getJsonObject
+                        .getJSONObjectValue("humidity");
+
+                higt = (String) getJsonObject.getJSONObjectValue("higt");
+
+                wt_night = (String) getJsonObject
+                        .getJSONObjectValue("wt_night");
+
+                rainfall = (String) getJsonObject
+                        .getJSONObjectValue("rainfall");
+                wt_daytime = (String) getJsonObject
+                        .getJSONObjectValue("wt_daytime");
+                wt_daytime_ico = (String) getJsonObject
+                        .getJSONObjectValue("wt_daytime_ico");
+                lowt = (String) getJsonObject.getJSONObjectValue("lowt");
+                stationname = (String) getJsonObject.getJSONObjectValue("stationname");
+                ct = (String) getJsonObject.getJSONObjectValue("ct");
+                wt_ico = (String) getJsonObject.getJSONObjectValue("wt_ico");
+                week = (String) getJsonObject.getJSONObjectValue("week");
+                upt = (String) getJsonObject.getJSONObjectValue("upt");
+                upt_time = (String) getJsonObject.getJSONObjectValue("upt_time");
+                visibility = (String) getJsonObject
+                        .getJSONObjectValue("visibility");
+                sys_time = (String) getJsonObject
+                        .getJSONObjectValue("sys_time");
+                cityName = (String) getJsonObject
+                        .getJSONObjectValue("cityName");
+                vaporpressuser = (String) getJsonObject
+                        .getJSONObjectValue("vaporpressuser");
+                us_fl= (String) getJsonObject.getJSONObjectValue("us_fl");
+                rainfall_day = obj.optString("rainfall_day");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return jsonStr;
+    }
+
+    /**
+     * 获取中文天气
+     *
+     * @return
+     */
+    public String getWeatherCN() {
+        if (timeType == TimeTool.TimeType.NIGHT) {
+            return wt_night;
+        }
+        return wt_daytime;
+    }
+}

@@ -1,0 +1,33 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.week;
+
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+
+public class PackTravelWeekUp extends PackWeekWeatherUp {
+
+    public static final String NAME = "weeklytq";
+
+    protected String cityName;
+
+    public PackTravelWeekUp() {
+        // 间隔毫秒数
+        //intervalMill = 1000 * 60 * 60;
+        intervalMill = 0;
+        // 不循环发送
+        bRepeat = false;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + area + "_" + cityName;
+    }
+
+    public void setCity(PackLocalCity city) {
+        this.cityName = city.NAME;
+        this.area = city.ID;
+    }
+
+    public void setCity(String cityId, String cityName) {
+        this.cityName = cityName;
+        this.area = cityId;
+    }
+}

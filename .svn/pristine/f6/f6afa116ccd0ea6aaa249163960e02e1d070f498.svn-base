@@ -1,0 +1,1238 @@
+package com.pcs.lib_ztqfj_v2.model.pack;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.data.InterPackFactory;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalFamilyCityInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalInit;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalLocationSet;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalSetUpdate;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalTestLocation;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalTrafficPoints;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalTravelViewInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUrl;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalZtqImageDownload;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackAppaisalDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackAppaisalUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCommitMoviceDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCommitMoviceUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCompetitionEntryDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackCompetitionEntryUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackFAQDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackFAQUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackFamilySstqDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackFamilySstqUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackForecastWeatherTipDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackForecastWeatherTipUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHolidayInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHolidayInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHotAppDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHotAppUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackImWeatherDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackImWeatherUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackIntegralPointDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackIntegralPointUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackKnowWarnDetailDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackKnowWarnDetailUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackKnowWarnDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackKnowWarnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackMapForecastDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackMapForecastUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackOrientaDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackOrientaUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackProductDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackProductUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullYJXXDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullYJXXUP;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPushWeatherConfigDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPushWeatherConfigUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQueryPushTagDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQueryPushTagUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproMoreDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproMoreUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproV2Up;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackRainStandardDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackRainStandardUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackRoadDescDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackRoadDescUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSMSDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSMSUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSubscriptionAccountDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSubscriptionAccountUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggestListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggestListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelSubjectDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelSubjectUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelWeatherColumnDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelWeatherColumnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelWeatherDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelWeatherUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackUseGuideDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackUseGuideUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackWeatherSummaryDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackWeatherSummaryUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackYuyinDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackYuyinUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackgetrecommendfriendsmsgDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackgetrecommendfriendsmsgUP;
+import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureSubmitDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureSubmitUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirCityInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirCityInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoShDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoShUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoSimpleDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoSimpleUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirLevelDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirLevelUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirPollutionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirPollutionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirTrendDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirTrendUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirYbDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirYbUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtChannelDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtChannelUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtTitleDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtTitleUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.banner_share.PackShareToServerDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.banner_share.PackShareToServerUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackAroundCityDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackAroundCityUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackCityListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackCityListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackLiveTypeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackLiveTypeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryAreaConfigDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryAreaConfigUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryCompareDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryCompareUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryHistoryTodayDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryHistoryTodayUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryItemConfigDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryItemConfigUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryOrderDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryOrderUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryPayDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryPayOrderDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryPayOrderUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryPayUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryServiceDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryServiceUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackWeatherElementMonthDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackWeatherElementMonthUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackWeatherElementYearDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackWeatherElementYearUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackWeatherValueQueryDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackWeatherValueQueryUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRainInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRainInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRavrListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRavrListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackReservoirInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackReservoirInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRiverListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackReverListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRiverInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRiverInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx.PackHealthQxDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx.PackHealthQxLmDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx.PackHealthQxLmUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.healthyqx.PackHealthQxUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.PackTouristSpotDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.PackTouristSpotUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackNearWarnDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackNearWarnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThirdMonitorDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThirdMonitorUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThunderListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThunderListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThunderMoreListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThunderMoreListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThunderQuireDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThunderQuireUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjCityDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjCityUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjHourDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjHourUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjProDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjProUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjZdDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjZdUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxComparisonDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxComparisonUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtLdDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtLdUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxSstqDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxSstqUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxTrendDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxTrendUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackRainstatHourTimeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackRainstatHourTimeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackRainstatNewDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackRainstatNewUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackRainstatNowDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackRainstatNowUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjCityLowDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjCityLowUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjCityMaxDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjCityMaxUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjProLowDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjProLowUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjProMaxDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjProMaxUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjImgDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjImgUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjMaxHourDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjMaxHourUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjTimeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjTimeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_1_3Down;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_1_3Up;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_level_rankingDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_level_rankingUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_level_ranking_detailDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltj_level_ranking_detailUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackAccurateWarningDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackAccurateWarningUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackPersonalWarningDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackPersonalWarningUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackPublicWarningDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackPublicWarningUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackWarningTypeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning.PackWarningTypeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationCompTableDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationCompTableUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationTableDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationTableUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationViewDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationViewUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackAreaPositionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackAreaPositionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackOceanWeatherDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackOceanWeatherUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.order.PackDeleteOrderDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.order.PackDeleteOrderUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.order.PackPayOrderDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.order.PackPayOrderUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.order.PackSetOrderDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.order.PackSetOrderUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoBrowseDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoBrowseUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCenterDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCenterUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoChangeUserInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoChangeUserInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoDeleteDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoDeleteItemDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoDeleteItemUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoDeleteUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoFindPasswordDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoFindPasswordUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoPraiseDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoPraiseUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoQueryQuestionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoQueryQuestionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoRegisterDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoRegisterUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSetUserQuestionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSetUserQuestionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoShowDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoShowUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSimpleDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSimpleUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSubmitDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSubmitUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserChangePasswordDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserChangePasswordUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.pub.PackPropertyDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.pub.PackPropertyUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.PackPushHelpDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.PackPushHelpUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.PackPushQueryTagTypeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.PackPushQueryTagTypeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.PackPushSetTagTypeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.PackPushSetTagTypeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.SetPushTagDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.push.SetPushTagUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.scene.PackRealDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.scene.PackRealUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackNearReportDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackNearReportUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackSHThreeProductDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackSHThreeProductUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackSHTwoChannelDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackSHTwoChannelUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceChangePwdDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceChangePwdUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceMyProductDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceMyProductUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceOrgDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceOrgSearchDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceOrgSearchUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceOrgTelSearchDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceOrgTelSearchUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceOrgUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceThreeProductDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceThreeProductUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceTwoChannelDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceTwoChannelUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceUserLoginDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceUserLoginUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.traffic.PackTrafficDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.traffic.PackTrafficUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackMultiTyphoonPathDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackMultiTyphoonPathUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonListCurrentActivityDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonListCurrentActivityUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonPathDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonPathUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonWarnLineDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.PackTyphoonWarnLineUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterPublicNaturalDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterPublicNaturalUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterTfggsjDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterTfggsjUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterqxfxzhDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterqxfxzhUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjColumnGradeDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjColumnGradeUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjDepDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjDepUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjMyReportDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjMyReportUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZRPersonInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoAreaDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoAreaUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoListDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoListUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqReleaseDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqReleaseUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqUserDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqUserUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjfileDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjfileUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjzqtjDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjzqtjUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackZRPersonInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoAddDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoAddUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoLegendDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoLegendUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoOneDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoOneUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoStationAddDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoStationAddUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoStationOneDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRainInfoStationOneUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackReservoirWaterInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackRiverWaterInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterInfoAllDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterInfoAllUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterInfoOverAllDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterInfoOverAllUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorStationDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorStationUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWeatherColumnDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWeatherColumnUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWindInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWindInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackWeekWeatherFamilyDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackWeekWeatherFamilyUp;
+
+
+/**
+ * 数据包工厂
+ *
+ * @author JiangZY
+ */
+public class FactoryPack implements InterPackFactory {
+
+    private static FactoryPack instance = null;
+
+    public FactoryPack() {
+    }
+
+    public static void init() {
+        instance = new FactoryPack();
+
+        PcsDataManager.getInstance().setPackFactory(instance);
+    }
+
+    @Override
+    public PcsPackDown createDownPack(String key) {
+        if (TextUtils.isEmpty(key)) {
+            return null;
+        }
+        String[] key2 = key.split("#");
+        String keyTemp = key2[0];
+
+        if (keyTemp.equals(PackInitUp.NAME)) {
+            // 初始化
+            return new PackInitDown();
+        } else if (keyTemp.equals(PackAirInfoUp.NAME)) {
+            // 空气质量详细信息
+            return new PackAirInfoDown();
+        } else if (keyTemp.equals(PackUserPictureUp.NAME)) {
+            //个人图片上传
+            return new PackUserPictureDown();
+        } else if (keyTemp.equals(PackCommitMoviceUp.NAME)) {
+            //视频上传
+            return new PackCommitMoviceDown();
+        } else if (keyTemp.equals(PackAirInfoSimpleUp.NAME)) {
+            // 首页空气质量内容
+            return new PackAirInfoSimpleDown();
+        } else if (keyTemp.equals(PackAirRankUp.NAME)) {
+            // 空气质量排行
+            return new PackAirRankDown();
+        } else if (keyTemp.equals(PackHolidayInfoUp.NAME)) {
+            // 节日
+            return new PackHolidayInfoDown();
+        } else if (keyTemp.equals(PackKeyDescUp.NAME)) {
+            // 空气质量排行
+            return new PackKeyDescDown();
+        } else if (keyTemp.equals(PackAirStationInfoUp.NAME)) {
+            // 空气质量站点信息
+            return new PackAirStationInfoDown();
+        } else if (keyTemp.equals(PackAirStationUp.NAME)) {
+            // 空气质量总体
+            return new PackAirStationDown();
+        } else if (keyTemp.equals(PackArtChannelUp.NAME)) {
+            //  资讯栏目列表
+            return new PackArtChannelDown();
+        } else if (keyTemp.equals(PackArtTitleUp.NAME)) {
+            //  资讯列表
+            return new PackArtTitleDown();
+        } else if (keyTemp.equals(PackColumnUp.NAME)) {
+            //  栏目列表上传包
+            return new PackColumnDown();
+        } else if (keyTemp.equals(PackRainInfoUp.NAME)) {
+            //  降雨量站点信息fjfx_rain
+            return new PackRainInfoDown();
+        } else if (keyTemp.equals(PackReservoirInfoUp.NAME)) {
+            //  降雨量站点信息fjfx_rain
+            return new PackReservoirInfoDown();
+        } else if (keyTemp.equals(PackRiverInfoUp.NAME)) {
+            //  水位站点信息（fjfx_river）
+            return new PackRiverInfoDown();
+
+        } else if (keyTemp.equals(PackZtqImageUp.NAME)) {
+            // 插图下载
+            return new PackZtqImageDown();
+        } else if (keyTemp.equals(PackLocalZtqImageDownload.KEY)) {
+            // 插图下载
+            return new PackLocalZtqImageDownload();
+        } else if (keyTemp.equals(PackRainstatNowUp.NAME)) {
+            // 本时况降雨量查询
+            return new PackRainstatNowDown();
+        } else if (keyTemp.equals(PackYuyinUp.NAME)) {
+            // 语音包下载
+            return new PackYuyinDown();
+        } else if (keyTemp.equals(PackYjxxIndexFbUp.NAME)) {
+            // 首页预警信息
+            return new PackYjxxIndexFbDown();
+        } else if (key.startsWith(PackWeekWeatherFamilyUp.NAME)) {
+            // 一周天气
+            return new PackWeekWeatherFamilyDown();
+        } else if (keyTemp.equals(PackWeatherSummaryUp.NAME)) {
+            // 天气综述
+            return new PackWeatherSummaryDown();
+        } else if (keyTemp.equals(PackUseGuideUp.NAME)) {
+            // 问题
+            return new PackUseGuideDown();
+        } else if (keyTemp.equals(PackTravelWeekUp.NAME)) {
+            return new PackTravelWeekDown();
+        } else if (keyTemp.equals(PackTravelWeatherUp.NAME)) {
+            // 旅游气象
+            return new PackTravelWeatherDown();
+        } else if (keyTemp.equals(PackTravelWeatherColumnUp.NAME)) {
+            // 旅游—气象栏目
+            return new PackTravelWeatherColumnDown();
+        } else if (keyTemp.equals(PackTravelSubjectUp.NAME)) {
+            // 景点专题上传包
+            return new PackTravelSubjectDown();
+        } else if (keyTemp.equals(PackSuggUp.NAME)) {
+            // 意见反馈上传包
+            return new PackSuggDown();
+        } else if (keyTemp.equals(PackSuggestListUp.NAME)) {
+            // 意见列表下载包
+            return new PackSuggestListDown();
+        } else if (keyTemp.equals(PackSstqUp.NAME)) {
+            // 实时天气上传包
+            return new PackSstqDown();
+        } else if (keyTemp.equals(PackFamilySstqUp.NAME)) {
+            // 情亲城市的实时天气上传包
+            return new PackFamilySstqDown();
+        } else if (keyTemp.equals(PackSMSUp.NAME)) {
+            // 气象短信
+            return new PackSMSDown();
+        } else if (keyTemp.equals(PackFltjHourUp.NAME)) {
+//            风雨查询，风况
+            return new PackFltjHourDown();
+        } else if (keyTemp.equals(PackShareAboutUp.NAME)) {
+            // 分享
+            return new PackShareAboutDown();
+        } else if (keyTemp.equals(PackRoadDescUp.NAME)) {
+            // 交通气象：公路概况
+            return new PackRoadDescDown();
+        } else if (keyTemp.equals(PackQxfwMyproV2Up.NAME)) {
+            // 气象服务我的服务
+            return new PackQxfuMyproV2Down();
+        } else if (keyTemp.equals(PackQxfwMyproMoreUp.NAME)) {
+            // 气象服务更多列表
+            return new PackQxfwMyproMoreDown();
+        } else if (keyTemp.equals(PackQxfwAuthenticationProductUp.NAME)) {
+            // 气象服务我的服务
+            return new PackQxfwAuthenticationProductDown();
+        } else if (keyTemp.equals(PackQueryPushTagUp.NAME)) {
+            // 查询推送
+            return new PackQueryPushTagDown();
+        } else if (keyTemp.equals(PackPullYJXXUP.NAME)) {
+            // 预警信息上传
+            return new PackPullYJXXDown();
+        } else if (keyTemp.equals(PackPullServiceUp.NAME)) {
+            // 气象服务详情
+            return new PackPullServiceDown();
+        } else if (keyTemp.equals(PackProductUp.NAME)) {
+            // 服务产品
+            return new PackProductDown();
+        } else if (keyTemp.equals(PackOrientaUp.NAME)) {
+            return new PackOrientaDown();
+        } else if (keyTemp.equals(PackNumericalForecastUp.NAME)) {
+            // 数值预报
+            return new PackNumericalForecastDown();
+        } else if (keyTemp.equals(PackNumericalForecastColumnUp.NAME)) {
+            // 数值预报栏目上传包
+            return new PackNumericalForecastColumnDown();
+        } else if (keyTemp.equals(PackMapForecastUp.NAME)) {
+            // 网格预报
+            return new PackMapForecastDown();
+        } else if (keyTemp.equals(PackMainWeekWeatherUp.NAME)) {
+            // Main一周天气
+            return new PackMainWeekWeatherDown();
+        } else if (keyTemp.equals(PackLifeNumberUp.NAME)) {
+            // 生活指数
+            return new PackLifeNumberDown();
+        } else if (keyTemp.equals(PackKnowWarnUp.NAME)) {
+            // 问题
+            return new PackKnowWarnDown();
+        } else if (keyTemp.equals(PackKnowWarnDetailUp.NAME)) {
+            // 问题
+            return new PackKnowWarnDetailDown();
+        } else if (keyTemp.equals(PackIntegralPointUp.NAME)) {
+            // 整点实况
+            return new PackIntegralPointDown();
+        } else if (keyTemp.equals(PackHourForecastUp.NAME)) {
+            // 逐小时预报
+            return new PackHourForecastDown();
+//        } else if (keyTemp.equals(Pack36HourForecastUp.NAME)) {
+//            // 36小时逐小时预报
+//            return new PackHourForecastDown();
+        } else if (keyTemp.equals(PackHotAppUp.NAME)) {
+            // 热门应用
+            return new PackHotAppDown();
+        } else if (keyTemp.equals(PackgetrecommendfriendsmsgUP.NAME)) {
+            // 获取好友推荐内容上传包
+            return new PackgetrecommendfriendsmsgDown();
+        } else if (keyTemp.equals(PackFAQUp.NAME)) {
+            // 问题
+            return new PackFAQDown();
+        } else if (keyTemp.equals(PackCompetitionEntryUp.NAME)) {
+            // 主播大赛报名
+            return new PackCompetitionEntryDown();
+        } else if (keyTemp.equals(PackCheckVersionUp.NAME)) {
+            // 版本检测
+            return new PackCheckVersionDown();
+        } else if (keyTemp.equals(PackBannerUp.NAME)) {
+            // Banner
+            return new PackBannerDown();
+        } else if (keyTemp.equals(PackWindInfoUp.NAME)) {
+            // 河道站风情信息
+            return new PackWindInfoDown();
+        } else if (keyTemp.equals(PackRiverWaterInfoUp.NAME)) {
+            // 站点河道站水位信息
+            return new PackWaterInfoDown();
+        } else if (keyTemp.equals(PackWaterInfoOverAllUp.NAME)) {
+            // 水库站与河道站超讯限
+            return new PackWaterInfoOverAllDown();
+        } else if (keyTemp.equals(PackWaterInfoAllUp.NAME)) {
+            // 水库站与河道站水位信息
+            return new PackWaterInfoAllDown();
+        } else if (keyTemp.equals(PackReservoirWaterInfoUp.NAME)) {
+            // 点水库站水位信息
+            return new PackWaterInfoDown();
+        } else if (keyTemp.equals(PackRainInfoStationOneUp.NAME)) {
+            // 站点的单时次雨量信息
+            return new PackRainInfoStationOneDown();
+        } else if (keyTemp.equals(PackRainInfoStationAddUp.NAME)) {
+            // 站点的累积雨量信息
+            return new PackRainInfoStationAddDown();
+        } else if (keyTemp.equals(PackRainInfoOneUp.NAME)) {
+            // 所有站点的单时次雨量信息
+            return new PackRainInfoOneDown();
+        } else if (keyTemp.equals(PackRainInfoLegendUp.NAME)) {
+            // 图例
+            return new PackRainInfoLegendDown();
+        } else if (keyTemp.equals(PackRainInfoAddUp.NAME)) {
+            // 所有站点的累积雨量信息
+            return new PackRainInfoAddDown();
+        } else if (keyTemp.equals(PackWarnWeatherUp.NAME)) {
+            // 预警信息
+            return new PackWarnWeatherDown();
+        } else if (keyTemp.equals(PackWarningCenterTfggsjUp.NAME)) {
+            // 气象预警
+            return new PackWarningCenterTfggsjDown();
+        } else if (keyTemp.equals(PackWarningCenterqxfxzhUp.NAME)) {
+            // 气象预警
+            return new PackWarningCenterqxfxzhDown();
+        } else if (keyTemp.equals(PackWarningCenterPublicNaturalUp.NAME)) {
+            // 预警信息
+            return new PackWarningCenterPublicNaturalDown();
+        } else if (keyTemp.equals(PackTyphoonWarnLineUp.NAME)) {
+            // 台风警戒线
+            return new PackTyphoonWarnLineDown();
+        } else if (keyTemp.equals(PackTyphoonPathUp.NAME)) {
+            // 台风路径
+            return new PackTyphoonPathDown();
+        } else if (keyTemp.equals(PackTyphoonListUp.NAME)) {
+            // 台风列表
+            return new PackTyphoonListDown();
+        }  else if (keyTemp.equals(PackServiceUserLoginUp.NAME)) {
+            // 气象服务-登陆
+            return new PackServiceUserLoginDown();
+        } else if (keyTemp.equals(PackServiceTwoChannelUp.NAME)) {
+            // 气象服务-二级栏目展示
+            return new PackServiceTwoChannelDown();
+        } else if (keyTemp.equals(PackServiceThreeProductUp.NAME)) {
+            // 气象服务-三级栏目下产品展示
+            return new PackServiceThreeProductDown();
+        } else if (keyTemp.equals(PackServiceOrgUp.NAME)) {
+            // 气象服务-地区单位显示
+            return new PackServiceOrgDown();
+        } else if (keyTemp.equals(PackServiceOrgTelSearchUp.NAME)) {
+            // 气象服务-象单位联系方式
+            return new PackServiceOrgTelSearchDown();
+        } else if (keyTemp.equals(PackServiceOrgSearchUp.NAME)) {
+            // 气象服务-气象单位搜索
+            return new PackServiceOrgSearchDown();
+        } else if (keyTemp.equals(PackServiceMyProductUp.NAME)) {
+            // 气象服务-我的服务
+            return new PackServiceMyProductDown();
+        } else if (keyTemp.equals(PackServiceChangePwdUp.NAME)) {
+            // 气象服务-密码修改
+            return new PackServiceChangePwdDown();
+        } else if (keyTemp.equals(PackRealUp.NAME)) {
+            // 亲情城市-天气实况
+            return new PackRealDown();
+        } else if (keyTemp.equals(PackSatelliteUp.NAME)) {
+            // 卫星云图
+            return new PackSatelliteDown();
+        } else if (keyTemp.equals(PackSatelliteListUp.NAME)) {
+            // 卫星云图列表
+            return new PackSatelliteListDown();
+        } else if (keyTemp.equals(PackRadarUp.NAME)) {
+            // 气象雷达
+            return new PackRadarDown();
+        } else if (keyTemp.equals(PackRadarListUp.NAME)) {
+            // 气象雷达列表
+            return new PackRadarListDown();
+        } else if (keyTemp.equals(SetPushTagUp.NAME)) {
+            // 设置推送标签
+            return new SetPushTagDown();
+        } else if (keyTemp.equals(PackPropertyUp.NAME)) {
+            // 查询用户属性
+            return new PackPropertyDown();
+        } else if (keyTemp.equals(PackPhotoSubmitUp.NAME)) {
+            // 实景开拍提交
+            return new PackPhotoSubmitDown();
+        } else if (keyTemp.equals(PackPhotoSimpleUp.NAME)) {
+            return new PackPhotoSimpleDown();
+        } else if (keyTemp.equals(PackPhotoShowUp.NAME)) {
+            // 实景开拍首页(照片墙)
+            return new PackPhotoShowDown();
+        } else if (keyTemp.equals(PackPhotoRegisterUp.NAME)) {
+            // 实景开拍登陆
+            return new PackPhotoRegisterDown();
+        } else if (keyTemp.equals(PackPhotoPraiseUp.NAME)) {
+            // 实景开拍：点赞
+            return new PackPhotoPraiseDown();
+        } else if (keyTemp.equals(PackPhotoLoginUp.NAME)) {
+            // 实景开拍登陆
+            return new PackPhotoLoginDown();
+        } else if (keyTemp.equals(PackPhotoDeleteUp.NAME)) {
+            // 实景开拍登陆
+            return new PackPhotoDeleteDown();
+        } else if (keyTemp.equals(PackPhotoCommentUp.NAME)) {
+            // 实景开拍：评论
+            return new PackPhotoCommentDown();
+        } else if (keyTemp.equals(PackPhotoCommentListUp.NAME)) {
+            // 实景开拍：评论列表
+            return new PackPhotoCommentListDown();
+        } else if (keyTemp.equals(PackPhotoCenterUp.NAME)) {
+            // 实景开拍：用户中心
+            return new PackPhotoCenterDown();
+        } else if (keyTemp.equals(PackPhotoBrowseUp.NAME)) {
+            // 实景开拍：增加浏览数
+            return new PackPhotoBrowseDown();
+        } else if (keyTemp.equals(PackSetOrderUp.NAME)) {
+            // 新增（修改）订单
+            return new PackSetOrderDown();
+        } else if (keyTemp.equals(PackPayOrderUp.NAME)) {
+            // 支付服务订单
+            return new PackPayOrderDown();
+        } else if (keyTemp.equals(PackDeleteOrderUp.NAME)) {
+            // 删除订单
+            return new PackDeleteOrderDown();
+        } else if (keyTemp.equals(PackOceanWeatherUp.NAME)) {
+            // 海洋天气
+            return new PackOceanWeatherDown();
+        } else if (keyTemp.equals(PackAreaPositionUp.NAME)) {
+            // 海洋天气--区域信息
+            return new PackAreaPositionDown();
+        } else if (keyTemp.equals(PackMediaListUp.NAME)) {
+            // 气象影视
+            return new PackMediaListDown();
+        } else if (keyTemp.equals(PackWarningTypeUp.NAME)) {
+            // 定点服务--预警类型
+            return new PackWarningTypeDown();
+        } else if (keyTemp.equals(PackPublicWarningUp.NAME)) {
+            // 公众定点服务
+            return new PackPublicWarningDown();
+        } else if (keyTemp.equals(PackPersonalWarningUp.NAME)) {
+            // 定点服务--用户定制列表
+            return new PackPersonalWarningDown();
+        } else if (keyTemp.equals(PackAccurateWarningUp.NAME)) {
+            // 精确定点服务
+            return new PackAccurateWarningDown();
+        } else if (keyTemp.equals(PackYltjYearUp.NAME)) {
+            // 地区半年降雨量对比
+            return new PackYltjYearDown();
+        } else if (keyTemp.equals(PackYltjTimeUp.NAME)) {
+            // 分时段雨量查询
+            return new PackYltjTimeDown();
+        } else if (keyTemp.equals(PackYltjRankUp.NAME)) {
+            // 最大降雨量排名
+            return new PackYltjRankDown();
+        } else if (keyTemp.equals(PackYltjMaxHourUp.NAME)) {
+            // 省内24小时内最大降雨量排名
+            return new PackYltjMaxHourDown();
+        } else if (keyTemp.equals(PackYltjImgUp.NAME)) {
+            // 福建省雨量分布图
+            return new PackYltjImgDown();
+        } else if (keyTemp.equals(PackYltjHourUp.NAME)) {
+            // 市/区/县自动站降雨量统计
+            return new PackYltjHourDown();
+        } else if (keyTemp.equals(PackYltj_level_rankingUp.NAME)) {
+            // 雨量分析统计---下拉选项
+            return new PackYltj_level_rankingDown();
+        } else if (keyTemp.equals(PackYltj_level_ranking_detailUp.NAME)) {
+            // 雨量分析统计---详情
+            return new PackYltj_level_ranking_detailDown();
+        } else if (keyTemp.equals(PackYltj_1_3Up.NAME)) {
+            // 雨量查询—福建省内近1、3小时最大雨量排行
+            return new PackYltj_1_3Down();
+        } else if (keyTemp.equals(PackWdtjZdzUp.NAME)) {
+            // 高温查询—自动站当前实况或24小时值统计表
+            return new PackWdtjZdzDown();
+        } else if (keyTemp.equals(PackWdtjProMaxUp.NAME)) {
+            // 所在地市最高温排名
+            return new PackWdtjProMaxDown();
+        } else if (keyTemp.equals(PackWdtjProLowUp.NAME)) {
+            // 省级最高温排名
+            return new PackWdtjProLowDown();
+        } else if (keyTemp.equals(PackWdtjLowZdzUp.NAME)) {
+            // 自动站低温统计表
+            return new PackWdtjLowZdzDown();
+        } else if (keyTemp.equals(PackWdtjCityMaxUp.NAME)) {
+            // 所在地市最高温排名前6
+            return new PackWdtjCityMaxDown();
+        } else if (keyTemp.equals(PackWdtjCityLowUp.NAME)) {
+            // 本市自动站低温统计表
+            return new PackWdtjCityLowDown();
+        } else if (keyTemp.equals(PackFltjZdUp.NAME)) {
+            // 自动站风况统计表
+            return new PackFltjZdDown();
+        } else if (keyTemp.equals(PackFltjProUp.NAME)) {
+            // 风况查询—省级排名
+            return new PackFltjProDown();
+        } else if (keyTemp.equals(PackFltjCityUp.NAME)) {
+            // 风况查询—本市自动站统计表
+            return new PackFltjCityDown();
+        } else if (keyTemp.equals(PackThunderQuireUp.NAME)) {
+            // 雷电监测--地市地区查询
+            return new PackThunderQuireDown();
+        } else if (keyTemp.equals(PackThunderMoreListUp.NAME)) {
+            // 雷电查询—数据更多查询列表
+            return new PackThunderMoreListDown();
+        } else if (keyTemp.equals(PackThunderListUp.NAME)) {
+            // 雷电监测--地市地区列表
+            return new PackThunderListDown();
+        } else if (keyTemp.equals(PackThirdMonitorUp.NAME)) {
+            // 雷电监测--三维监测
+            return new PackThirdMonitorDown();
+        } else if (keyTemp.equals(PackNearWarnUp.NAME)) {
+            // 雷电监测--临近预警
+            return new PackNearWarnDown();
+        } else if (keyTemp.equals(PackWindInfoUp.NAME)) {
+            // 风情信息-河道站风情信息上传包
+            return new PackWindInfoDown();
+        } else if (keyTemp.equals(PackExpertListUp.NAME)) {
+            // 专家解读
+            return new PackExpertListDown();
+        } else if (keyTemp.equals(PackExpertDetailTalkCommitUp.NAME)) {
+            // 专家解读评论提交
+            return new PackExpertDetailTalkCommitDown();
+        } else if (keyTemp.equals(PackExpertDetailUp.NAME)) {
+            // 专家解读详情
+            return new PackExpertDetailDown();
+        } else if (keyTemp.equals(PackExpertDetailTalkUp.NAME)) {
+            // 专家解读详情评论列表
+            return new PackExpertDetailTalkDown();
+        } else if (keyTemp.equals(PackTouristSpotUp.NAME)) {
+            return new PackTouristSpotDown();
+        } else if (keyTemp.equals(com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackWindInfoUp.NAME)) {
+            return new com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackWindInfoDown();
+        } else if (keyTemp.equals(PackLocalUserInfo.KEY)) {
+            //本地缓存的气象服务用户信息
+            return new PackLocalUserInfo();
+        } else if (keyTemp.equals(PackLocalTravelViewInfo.KEY)) {
+            //本地缓存的旅游景点
+            return new PackLocalTravelViewInfo();
+        } else if (keyTemp.equals(PackLocalSetUpdate.KEY)) {
+            //本地包：更新频率
+            return new PackLocalSetUpdate();
+        } else if (keyTemp.equals(PackLocalPhotoUser.KEY)) {
+            //实景开拍用户信息
+            return new PackLocalPhotoUser();
+        } else if (keyTemp.equals(PackLocalLocationSet.KEY)) {
+            //
+            return new PackLocalLocationSet();
+        } else if (keyTemp.equals(PackLocalInit.KEY)) {
+            //初始化配置
+            return new PackLocalInit();
+        } else if (keyTemp.equals(PackLocalUrl.KEY)) {
+            //URL地址
+            return new PackLocalUrl();
+        } else if (keyTemp.equals(PackLocalFamilyCityInfo.KEY)) {
+            //本地缓存的亲情城市
+            return new PackLocalFamilyCityInfo();
+        } else if (keyTemp.equals(PackLocalCityMain.KEY)) {
+            //首页显示的城市信息
+            return new PackLocalCityMain();
+        } else if (keyTemp.equals(PackLocalCityLocation.KEY)) {
+            //定位到的城市信息
+            return new PackLocalCityLocation();
+        } else if (keyTemp.equals(PackLocalCityInfo.KEY)) {
+            //已选城市城市
+            return new PackLocalCityInfo();
+        } else if (keyTemp.equals(PackLocalUser.KEY)) {
+            // 气象服务用户
+            return new PackLocalUser();
+        } else if (keyTemp.equals(PackLocalTrafficPoints.KEY)) {
+            return new PackLocalTrafficPoints();
+        } else if (keyTemp.equals(PackMediaTauntedUp.NAME)) {
+            // 影视吐槽
+            return new PackMediaTauntedDown();
+        } else if (keyTemp.equals(PackMediaTauntedListUp.NAME)) {
+            // 影视吐槽列表
+            return new PackMediaTauntedListDown();
+        } else if (keyTemp.equals(PackWarningCenterYJXXGridIndexUp.NAME)) {
+            // 预警—首页格点信息
+            return new PackWarningCenterYJXXGridIndexDown();
+        } else if (keyTemp.equals(PackWarningCenterYJXXUp.NAME)) {
+            // 预警—预警信息
+            return new PackWarningCenterYJXXDown();
+        } else if (keyTemp.equals(PackWarnPubDetailUp.NAME)) {
+            // 预警—预警详情
+            return new PackWarnPubDetailDown();
+        } else if (keyTemp.equals(PackForecastWeatherTipUp.NAME)) {
+            // 我在这里天气温馨提示
+            return new PackForecastWeatherTipDown();
+        } else if (keyTemp.equals(PackYltjYearTempUp.NAME)) {
+            // 半年高低溫統計
+            return new PackYltjYearTempDown();
+        } else if (keyTemp.equals(PackWeatherColumnUp.NAME)) {
+            // 天气栏目
+            return new PackWeatherColumnDown();
+        } else if (keyTemp.equals(PackServiceLoginQueryUp.NAME)) {
+            // 气象服务-登录查看
+            return new PackServiceLoginQueryDown();
+        } else if (keyTemp.equals(PackRainStandardUp.NAME)) {
+            // 降雨量标准
+            return new PackRainStandardDown();
+        } else if (keyTemp.equals(PackObservationViewUp.NAME)) {
+            // 下垫面观察趋势图
+            return new PackObservationViewDown();
+        } else if (keyTemp.equals(PackObservationTableUp.NAME)) {
+            // 下垫面观察趋势图
+            return new PackObservationTableDown();
+        } else if (keyTemp.equals(PackObservationCompTableUp.NAME)) {
+            // 下垫面观察趋势图
+            return new PackObservationCompTableDown();
+        } else if (keyTemp.equals(PackPhotoUserQuestionUp.NAME)) {
+            // 用户注册问题
+            return new PackPhotoUserQuestionDown();
+        } else if (keyTemp.equals(PackPhotoFindPasswordUp.NAME)) {
+            // 找回密码
+            return new PackPhotoFindPasswordDown();
+        } else if (keyTemp.equals(PackPhotoUserChangePasswordUp.NAME)) {
+            // 修改密码
+            return new PackPhotoUserChangePasswordDown();
+        } else if (keyTemp.equals(PackPhotoUserInfoUp.NAME)) {
+            // 获取用户信息
+            return new PackPhotoUserInfoDown();
+        } else if (keyTemp.equals(PackPhotoChangeUserInfoUp.NAME)) {
+            // 修改用户信息
+            return new PackPhotoChangeUserInfoDown();
+        } else if (keyTemp.equals(PackPhotoDeleteItemUp.NAME)) {
+            // 实景开拍删除条目
+            return new PackPhotoDeleteItemDown();
+        } else if (keyTemp.equals(PackPhotoSetUserQuestionUp.NAME)) {
+            // 修改密码提示问题
+            return new PackPhotoSetUserQuestionDown();
+        } else if (keyTemp.equals(PackAppaisalUp.NAME)) {
+            // 修改密码提示问题
+            return new PackAppaisalDown();
+        } else if (keyTemp.equals(PackPhotoQueryQuestionUp.NAME)) {
+            // 密保问题查询
+            return new PackPhotoQueryQuestionDown();
+        } else if (keyTemp.equals(PackShareToServerUp.NAME)) {
+            // 首页分享提交
+            return new PackShareToServerDown();
+        } else if (keyTemp.equals(PackAgricultureUp.NAME)) {
+            // 农业气象
+            return new PackAgricultureDown();
+        } else if (keyTemp.equals(PackAgricultureSubmitUp.NAME)) {
+            // 农业灾情提交
+            return new PackAgricultureSubmitDown();
+        } else if (keyTemp.equals(PackLocalTestLocation.KEY)) {
+            // 测试定位
+            return new PackLocalTestLocation();
+        } else if (keyTemp.equals(PackCityListUp.NAME)) {
+            // 城市列表
+            return new PackCityListDown();
+        } else if (keyTemp.equals(PackFycxSstqUp.NAME)) {
+            // 风雨查询_实时天气
+            return new PackFycxSstqDown();
+        } else if (keyTemp.equals(PackFycxTrendUp.NAME)) {
+            // 风雨查询_走势图_统计
+            return new PackFycxTrendDown();
+        } else if (keyTemp.equals(PackFycxComparisonUp.NAME)) {
+            // 风雨查询_对比图
+            return new PackFycxComparisonDown();
+        } else if (keyTemp.equals(PackFycxFbtUp.NAME)) {
+            // 风雨查询_分布图
+            return new PackFycxFbtDown();
+        } else if (keyTemp.equals(PackTyphoonListCurrentActivityUp.NAME)) {
+            // 正在活动的台风列表
+            return new PackTyphoonListCurrentActivityDown();
+        } else if (keyTemp.equals(PackPushQueryTagTypeUp.NAME)) {
+            // 设置标签类型查询
+            return new PackPushQueryTagTypeDown();
+        } else if (keyTemp.equals(PackPushSetTagTypeUp.NAME)) {
+            // 设置标签类型
+            return new PackPushSetTagTypeDown();
+        }else if (keyTemp.equals(PackYjzqtjUp.NAME)) {
+            // 预警统计查询
+            return new PackYjzqtjDown();
+        }else if (keyTemp.equals(PackYjMyReportUp.NAME)) {
+            // 预警我的报告
+            return new PackYjMyReportDown();
+        }else if (keyTemp.equals(PackYjZqInfoAreaUp.NAME)) {
+            // 预警信息
+            return new PackYjZqInfoAreaDown();
+        }else if (keyTemp.equals(PackYjZqInfoListUp.NAME)) {
+            // 预警灾情列表
+            return new PackYjZqInfoListDown();
+        }else if (keyTemp.equals(PackYjZqUserUp.NAME)) {
+            // 应急责任人名单
+            return new PackYjZqUserDown();
+        }else if (keyTemp.equals(PackYjfileUp.NAME)){
+            //预警文件上传
+            return new PackYjfileDown();
+        }else if (keyTemp.equals(PackYjZqInfoUp.NAME)){
+            //预警文件上传
+            return new PackYjZqInfoDown();
+        }else if (keyTemp.equals(PackYjZqReleaseUp.NAME)){
+            //预警文件上传
+            return new PackYjZqReleaseDown();
+        }else if (keyTemp.equals(PackYjColumnGradeUp.NAME)){
+            //预警文件上传
+            return new PackYjColumnGradeDown();
+        } else if (keyTemp.equals(PackFycxFbtLdUp.NAME)) {
+            // 风雨查询_雷达分布图
+            return new PackFycxFbtLdDown();
+        }else if (keyTemp.equals(PackAirTrendUp.NAME)){
+            return new PackAirTrendDown();
+        } else if (keyTemp.equals(PackAirRankNewUp.NAME)) {
+            // 空气质量—排行_new
+            return new PackAirRankNewDown();
+        } else if (keyTemp.equals(PackAirCityInfoUp.KEY)) {
+            return new PackAirCityInfoDown();
+        } else if (keyTemp.equals(PackAirPollutionUp.NAME)) {
+            // 空气质量-全国空气污染预报
+            return new PackAirPollutionDown();
+        }else if (keyTemp.equals(PackImWeatherUp.NAME)){
+            //气象产品--重要天气
+            return new PackImWeatherDown();
+        }else if (keyTemp.equals(PackPushWeatherConfigUp.NAME)){
+            //右侧栏推送设置
+            return new PackPushWeatherConfigDown();
+        } else if (keyTemp.equals(PackWeatherElementMonthUp.NAME)) {
+            // 气象要素日数查询月份
+            return new PackWeatherElementMonthDown();
+        } else if (keyTemp.equals(PackWeatherElementYearUp.NAME)) {
+            // 气象要素日数查询
+            return new PackWeatherElementYearDown();
+        } else if (keyTemp.equals(PackDataQueryItemConfigUp.NAME)) {
+            // 资料查询-项目配置
+            return new PackDataQueryItemConfigDown();
+        } else if (keyTemp.equals(PackDataQueryAreaConfigUp.NAME)) {
+            // 资料查询-地区配置
+            return new PackDataQueryAreaConfigDown();
+        } else if (keyTemp.equals(PackWeatherValueQueryUp.NAME)) {
+            // 气象值查询
+            return new PackWeatherValueQueryDown();
+        } else if (keyTemp.equals(PackDataQueryServiceUp.NAME)) {
+            // 资料查询我的服务
+            return new PackDataQueryServiceDown();
+        } else if (keyTemp.equals(PackDataQueryPayOrderUp.NAME)) {
+            // 支付-套餐
+            return new PackDataQueryPayOrderDown();
+        } else if (keyTemp.equals(PackDataQueryOrderUp.NAME)) {
+            // 支付订单
+            return new PackDataQueryOrderDown();
+        } else if (keyTemp.equals(PackDataQueryPayUp.NAME)) {
+            // 订单支付
+            return new PackDataQueryPayDown();
+        } else if (keyTemp.equals(PackDataQueryHistoryTodayUp.NAME)) {
+            // 历史上的今天
+            return new PackDataQueryHistoryTodayDown();
+        }else if(keyTemp.equals(PackYjDepUp.NAME)){
+            //乡镇查询
+            return  new PackYjDepDown();
+        }else if(keyTemp.equals(PackZRPersonInfoUp.NAME)){
+            //责任人详细灾情
+            return new PackYjZRPersonInfoDown();
+        }else if(keyTemp.equals(PackVoiceUp.NAME)){
+            //讯飞语音接口
+            return new PackVoiceDown();
+        } else if (keyTemp.equals(PackDataQueryCompareUp.NAME)) {
+            // 气象要素同期比较
+            return new PackDataQueryCompareDown();
+        }else if(keyTemp.equals(PackHealthQxUp.NAME)){
+            //健康气象
+            return  new PackHealthQxDown();
+        }else if(keyTemp.equals(PackAirInfoShUp.NAME)){
+            //上海空气质量预报
+            return new PackAirInfoShDown();
+        }else if(keyTemp.equals(PackTrafficUp.NAME)){
+            //上海交通气象
+            return new PackTrafficDown();
+        }else if (keyTemp.equals(PackSHTwoChannelUp.NAME)){
+            //上海气象服务二级栏目
+            return new PackSHTwoChannelDown();
+        }else if (keyTemp.equals(PackSHThreeProductUp.NAME)){
+            //上海气象服务三级栏目
+            return new PackSHThreeProductDown();
+        } else if (keyTemp.equals(PackAroundCityUp.NAME)) {
+            // 周边城市
+            return new PackAroundCityDown();
+        } else if (keyTemp.equals(PackSubscriptionAccountUp.NAME)) {
+            // 微信公众号
+            return new PackSubscriptionAccountDown();
+        }else if(keyTemp.equals(PackWaterMonitorUp.NAME)){
+            //积水监测所有站点
+            return new PackWaterMonitorDown();
+        }else if(keyTemp.equals(PackWaterMonitorInfoUp.NAME)){
+            //积水监测统计
+            return new PackWaterMonitorInfoDown();
+        }else if(keyTemp.equals(PackWaterMonitorStationUp.NAME)){
+            //单个站点信息
+            return new PackWaterMonitorStationDown();
+        }else if(keyTemp.equals(PackHealthQxLmUp.NAME)){
+            //气象生活栏目
+            return new PackHealthQxLmDown();
+        }else if(keyTemp.equals(PackNearReportUp.NAME)){
+            //临近报告
+            return new PackNearReportDown();
+        } else if (keyTemp.equals(PackPushHelpUp.NAME)) {
+            // 推送帮助
+            return new PackPushHelpDown();
+        } else if (keyTemp.equals(PackMultiTyphoonPathUp.NAME)) {
+            // 多个台风路径
+            return new PackMultiTyphoonPathDown();
+        }else if (keyTemp.equals(PackRainstatNewUp.NAME)){
+            //分时次雨量查询
+            return new PackRainstatNewDown();
+        }else if (keyTemp.equals(PackRadarNewUp.NAME)){
+            //高分雷达
+            return new PackRadarNewDown();
+        }else if (keyTemp.equals(PackRainstatHourTimeUp.NAME)){
+            //分时次自动站时间
+            return new PackRainstatHourTimeDown();
+        } else if (keyTemp.equals(PackReverListUp.NAME)) {
+            // 河道站列表
+            return new PackRiverListDown();
+        } else if (keyTemp.equals(PackRavrListUp.NAME)) {
+            // 水库站列表
+            return new PackRavrListDown();
+        }else if (keyTemp.equals(PackLiveTypeUp.NAME)){
+            //实况类型
+            return new PackLiveTypeDown();
+        }else if (keyTemp.equals(PackAirLevelUp.NAME)){
+            //空气质量等级
+            return new PackAirLevelDown();
+        }else if (keyTemp.equals(PackAirYbUp.NAME)){
+            //空气质量预报
+            return new PackAirYbDown();
+        }
+
+        return null;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

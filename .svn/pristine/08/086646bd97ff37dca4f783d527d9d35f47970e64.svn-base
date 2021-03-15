@@ -1,0 +1,57 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 问题
+ * 
+ */
+public class PackKnowWarnDetailDown extends PcsPackDown {
+	public List<KnowWarnDetailBean> dataList;
+	public String id;
+	@Override
+	public void fillData(String jsonStr) {
+		dataList=new ArrayList<KnowWarnDetailBean>();
+		KnowWarnDetailBean bean;
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			JSONArray jsonArray=obj.getJSONArray("data");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonobj=jsonArray.getJSONObject(i);
+				bean=new KnowWarnDetailBean();
+				bean.title=jsonobj.getString("title");
+				bean.id=jsonobj.getString("id");
+				bean.des=jsonobj.getString("des");
+				bean.content=jsonobj.getString("content");
+				bean.img=jsonobj.getString("img");
+				dataList.add(bean);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	public class KnowWarnDetailBean{
+		public String id;
+		public String des;
+		public String title;
+		public String content;
+		public String img;
+	}
+	
+}

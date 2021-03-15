@@ -1,0 +1,14 @@
+package com.pcs.lib.lib_pcs_v3.model.db;
+/**
+ * @author Z
+ *  类型
+ */
+public class TableZTQ {
+	public static final String TABLE_NAME = "pcs_table";
+	public static final String PCSKEY = "pcs_key";
+	public static final String PCSVALUE = "pcs_value";
+	public static final String CREATE_TABLE = " CREATE TABLE if not exists " + TABLE_NAME + " ( "
+	+ PCSKEY + " text PRIMARY KEY," 
+	+ PCSVALUE + " text );";
+	public static final String DROP_TABLE = "DROP TABLE " + TABLE_NAME;
+}

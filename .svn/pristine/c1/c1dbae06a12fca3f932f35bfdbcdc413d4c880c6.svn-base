@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 风雨查询_雷达分布图
+ * Created by tyaathome on 2017/8/23.
+ */
+
+public class PackFycxFbtLdDown extends PcsPackDown {
+
+    public List<FycxFbtLdBean> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            info_list.clear();
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            JSONArray imgListJSON = jsonObject.getJSONArray("info_list");
+            for(int i = 0; i < imgListJSON.length(); i++) {
+                JSONObject beanJson = imgListJSON.getJSONObject(i);
+                FycxFbtLdBean fycxFbtLdBean = new FycxFbtLdBean();
+                fycxFbtLdBean.img_url = beanJson.getString("img_url");
+                fycxFbtLdBean.pub_time = beanJson.getString("pub_time");
+                JSONArray localJson = beanJson.getJSONArray("s_info_list");
+                for(int j = 0; j < localJson.length(); j++) {
+                    JSONObject local = localJson.getJSONObject(j);
+                    FycxFbtBean fycxFbtBean = new FycxFbtBean();
+                    fycxFbtBean.l_type = local.optString("l_type");
+                    fycxFbtBean.lon = local.optString("lon");
+                    fycxFbtBean.lat = local.optString("lat");
+                    fycxFbtBean.sta_name = local.optString("sta_name");
+                    fycxFbtBean.val = local.optString("val");
+                    fycxFbtBean.stationid = local.optString("stationid");
+                    fycxFbtBean.fx = local.optString("fx");
+                    fycxFbtLdBean.s_info_list.add(fycxFbtBean);
+                }
+                info_list.add(fycxFbtLdBean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

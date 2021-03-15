@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.citylist;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2017/3/4.
+ */
+
+public class PackCityListDown extends PcsPackDown{
+
+    public List<CityDBInfo> info_list = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        info_list.clear();
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            JSONArray ary = obj.getJSONArray("info_list");
+            for(int i = 0; i < ary.length(); i++) {
+                JSONObject temp = ary.getJSONObject(i);
+                CityDBInfo bean = new CityDBInfo();
+                bean.channel_id = temp.optInt("channel_id", 0);
+                bean.pub_time = temp.optString("pub_time");
+                bean.url = temp.optString("url");
+                info_list.add(bean);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 城市数据库信息
+     */
+    public class CityDBInfo {
+        public int channel_id = 0;
+        public String url = "";
+        public String pub_time = "";
+        public String file_size = "";
+    }
+}

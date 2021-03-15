@@ -1,0 +1,82 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * JiangZy on 2017/1/22.
+ */
+
+public class PackAirCityInfoDown extends PcsPackDown {
+
+    public class ItemAirCityInfo {
+        public String station_name = "";
+        public String quality = "";
+        public String aqi = "";
+    }
+
+    /**
+     * 城市名称
+     **/
+    public String city_name = "";
+    /**
+     * 空气质量
+     **/
+    public String quality = "";
+    /**
+     * 空气质量值
+     **/
+    public String type = "";
+    /**
+     * 返回的信息
+     **/
+    public String key = "";
+    /**
+     * 城市排名
+     **/
+    public String city_num = "";
+    /**
+     * 更新时间
+     **/
+    public String update_time = "";
+    /**
+     * 空气质量类型
+     **/
+    public String rank_type = "";
+
+    public List<ItemAirCityInfo> list = new ArrayList<ItemAirCityInfo>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            city_name = obj.getString("city_name");
+            quality = obj.getString("quality");
+            type = obj.getString("type");
+            key = obj.getString("key");
+            city_num = obj.getString("city_num");
+            update_time = obj.getString("update_time");
+            rank_type = obj.getString("rank_type");
+
+            JSONArray arr = obj.getJSONArray("station_list");
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject temp = arr.getJSONObject(i);
+                ItemAirCityInfo row = new ItemAirCityInfo();
+
+                row.station_name = temp.getString("station_name");
+                row.quality = temp.getString("quality");
+                row.aqi = temp.getString("aqi");
+
+                list.add(row);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 海洋天气
+ * 
+ * @author chenjh
+ */
+public class PackOceanWeatherUp extends PcsPackUp {
+
+    public static final String NAME = "hy_list";
+
+	/** 地区名称 **/
+	public String area = "";
+
+	@Override
+	public JSONObject toJSONObject() {
+		try {
+			JSONObject obj = new JSONObject();
+			if(!TextUtils.isEmpty(area)){
+				obj.put("area", area);
+			}
+			
+			return obj;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		if (!TextUtils.isEmpty(area)) {
+			return NAME + "#" + area;
+		}
+		return NAME;
+	}
+
+}

@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by Administrator on 2017/8/16 0016.
+ * chen_jx
+ */
+
+public class PackYjZqInfoDown extends PcsPackDown {
+
+    public YjZqInfo yjZqInfo = new YjZqInfo();
+
+    @Override
+    public void fillData(String jsonStr) {
+
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+
+            yjZqInfo.lat = obj.optString("lat");
+            yjZqInfo.nickname = obj.optString("nickname");
+            yjZqInfo.pub_time = obj.optString("pub_time");
+            yjZqInfo.lon = obj.optString("lon");
+
+            yjZqInfo.mobile = obj.optString("mobile");
+            yjZqInfo.pic_url = obj.optString("pic_url");
+            yjZqInfo.tub_url = obj.optString("tub_url");
+            yjZqInfo.vid_url = obj.optString("vid_url");
+
+            yjZqInfo.voi_url = obj.optString("voi_url");
+            yjZqInfo.zq_addr = obj.optString("zq_addr");
+            yjZqInfo.zq_desc = obj.optString("zq_desc");
+            yjZqInfo.zq_name = obj.optString("zq_name");
+
+            yjZqInfo.zq_time = obj.optString("zq_time");
+            yjZqInfo.zq_title = obj.optString("zq_title");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

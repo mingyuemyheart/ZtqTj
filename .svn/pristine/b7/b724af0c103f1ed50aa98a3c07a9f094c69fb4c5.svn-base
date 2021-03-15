@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.pcs.ztqtj.view.myview.CheckableRelativeLayout
+    android:id="@+id/layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="35dp"
+    >
+
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="4dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/line_blue_v_default"/>
+
+    <CheckedTextView
+        android:id="@+id/tv"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:background="@drawable/btn_warning_center_column"
+        android:maxLines="1"
+        android:textColor="@color/color_black_to_white"
+        android:textSize="@dimen/text_content"
+        android:textAlignment="center"
+        />
+
+
+</com.pcs.ztqtj.view.myview.CheckableRelativeLayout>

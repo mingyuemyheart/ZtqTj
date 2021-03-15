@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackLocal;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 主题插图下载
+ */
+public class PackLocalZtqImageDownload extends PcsPackLocal {
+    public static String KEY = "PackLocalZtqImageDownload";
+
+    public String imageUrlDownload = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(jsonStr);
+            imageUrlDownload = obj.getString("imageUrlDownload");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toJsonStr() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("imageUrlDownload", imageUrlDownload);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obj.toString();
+    }
+}

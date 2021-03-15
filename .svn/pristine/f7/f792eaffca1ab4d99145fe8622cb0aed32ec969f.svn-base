@@ -1,0 +1,9 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+/**
+ * 气象影视吐槽下载接口
+ * 返回数据包跟意见反馈信息列表一样。
+ */
+public class PackMediaTauntedListDown extends PackSuggestListDown {
+
+}

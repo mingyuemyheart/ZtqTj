@@ -1,0 +1,145 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/gridlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_margin="@dimen/activity_margintop" >
+            
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentLeft="true"
+	            android:layout_alignParentBottom="true"
+	            android:text="@string/hot_scenic"
+	            android:textColor="@color/text_black_common"
+	            android:textSize="@dimen/text_content" />
+	        
+	        <TextView
+	            android:id="@+id/tv_bookmark"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentRight="true"
+	            android:layout_alignParentBottom="true"
+	            android:text="@string/my_bookmark2"
+	            android:textColor="@color/text_black_common"
+	            android:textSize="@dimen/text_content" />
+		</RelativeLayout>
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/text_black" />
+
+        <GridView
+            android:id="@+id/travel_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_margin="@dimen/activity_margintop"
+            android:horizontalSpacing="@dimen/activity_margintop"
+            android:listSelector="@color/alpha100"
+            android:numColumns="3"
+            android:columnWidth="80dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="@dimen/activity_margintop" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/gridlayout"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:id="@+id/search_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+
+            android:focusable="true"
+            android:focusableInTouchMode="true" >
+
+            <EditText
+                android:id="@+id/ss_alertedittext"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/btn_edit_select_city1"
+                android:drawableLeft="@drawable/btn_edit_select_city2"
+                android:textColorHint="@color/hint" android:hint="搜索旅游景点"
+                android:paddingLeft="15dp"
+                android:textColor="@color/text_black"
+                android:singleLine="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel_vp"
+            android:layout_width="match_parent"
+        	android:layout_height="0dp"
+            android:layout_marginBottom="35dp"
+        	android:layout_weight="2" >
+        	
+	        <android.support.v4.view.ViewPager
+	            android:id="@+id/viewpager"
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent" />
+	
+	        <com.pcs.ztqtj.view.myview.LeadPoint
+	            android:id="@+id/pointlayout"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentBottom="true"
+	            android:layout_alignParentRight="true" />
+	        
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_subject"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+        	android:layout_weight="1"
+            android:layout_marginTop="@dimen/dimen10" >
+	        
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/line_travel_subject"
+                android:scaleType="fitXY" />
+            
+			<LinearLayout
+			    android:id="@+id/ll_subject"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_centerVertical="true"
+			    android:orientation="horizontal" >
+			    
+			</LinearLayout>
+		</RelativeLayout>
+
+    </LinearLayout>
+    
+    <ListView
+        android:id="@+id/listview2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@drawable/line_common"
+        android:orientation="vertical"
+        android:layout_above="@id/gridlayout"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:visibility="gone" >
+    </ListView>
+</RelativeLayout>

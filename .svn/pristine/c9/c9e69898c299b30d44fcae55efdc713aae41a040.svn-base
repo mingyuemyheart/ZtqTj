@@ -1,0 +1,61 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.art;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 资讯列表
+ *
+ * @author chenjh
+ */
+public class PackArtTitleDown extends PcsPackDown {
+
+    public List<ArtTitleInfo> artTitleList = new ArrayList<ArtTitleInfo>();
+    /**
+     * 栏目编号
+     **/
+    public String channel = "";
+
+    /**
+     * 页码,用于指定当前是第几页
+     **/
+    public String page = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        JSONObject temp;
+        try {
+            artTitleList.clear();
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            channel = temp.getString("channel");
+
+            page = temp.getString("page");
+
+            JSONArray arr = temp.getJSONArray("titles");
+
+            for (int i = 0; i < arr.length(); i++) {
+                ArtTitleInfo title = new ArtTitleInfo();
+                JSONObject airJson = arr.getJSONObject(i);
+                title.title = airJson.getString("title");
+                title.desc = airJson.getString("desc");
+                title.pubt = airJson.getString("pubt");
+                title.big_ico = airJson.getString("big_ico");
+                title.small_ico = airJson.getString("small_ico");
+                title.url = airJson.getString("url");
+                artTitleList.add(title);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+}

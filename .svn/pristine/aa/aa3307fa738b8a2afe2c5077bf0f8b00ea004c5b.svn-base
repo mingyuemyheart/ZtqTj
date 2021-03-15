@@ -1,0 +1,140 @@
+package com.pcs.ztqtj.control.main_weather;
+
+import android.app.Activity;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.pcs.lib.lib_pcs_v3.control.tool.Util;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.hour_forecast.AdapterMainHourForecast;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.view.activity.ActivityMain;
+import com.pcs.ztqtj.view.myview.Hour24View;
+import com.pcs.ztqtj.view.myview.MyGridView;
+import com.pcs.ztqtj.view.myview.MyHScrollView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2019/06/22.
+ */
+public class CommandMain24Hours extends CommandMainBase {
+    private Activity activity;
+    private ViewGroup rootLayout;
+    private View rowView;
+    private ImageFetcher imageFetcher;
+    private MyGridView gridview24hour;
+    //适配器：小时
+    private AdapterMainHourForecast adapterMain;
+    private Hour24View main24hour;
+    private MyHScrollView scrollView;
+    private TextView tvNodata;
+    private View layoutWeather;
+    private TextView tvDesc;
+
+    public CommandMain24Hours(Activity activity , ViewGroup rootLayout) {
+        this.activity = activity;
+        this.rootLayout = rootLayout;
+        if(activity instanceof ActivityMain) {
+            imageFetcher = ((ActivityMain) activity).getImageFetcher();
+        }
+    }
+
+    @Override
+    protected void init() {
+        rowView = LayoutInflater.from(activity).inflate(R.layout.layout_main_24hours, rootLayout, false);
+        rootLayout.addView(rowView);
+        gridview24hour = (MyGridView) rowView.findViewById(R.id.gridview24hour);
+        adapterMain = new AdapterMainHourForecast(activity);
+        gridview24hour.setAdapter(adapterMain);
+        scrollView = (MyHScrollView) rowView.findViewById(R.id.layout_24house);
+        main24hour = rowView.findViewById(R.id.main24hour);
+        tvNodata = (TextView) rowView.findViewById(R.id.tv_nodata);
+        layoutWeather = rowView.findViewById(R.id.weather_view);
+        tvDesc = rowView.findViewById(R.id.text_content_desc);
+    }
+
+    @Override
+    protected void refresh() {
+        requestForecast();
+    }
+
+    private void requestForecast() {
+        PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if (city == null) return;
+        //24小时
+        PackHourForecastUp packHourUp = new PackHourForecastUp();
+        packHourUp.county_id = city.ID;
+        PackHourForecastDown down = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packHourUp.getName());
+//        if(down != null && !TextUtils.isEmpty(down.desc)) {
+//            tvDesc.setText(down.desc);
+//            tvDesc.setVisibility(View.VISIBLE);
+//        } else {
+//            tvDesc.setVisibility(View.GONE);
+//        }
+        if (down != null && down.list != null && down.list.size() > 0) {
+            List<Float> mTopTemp = new ArrayList<>();
+            List<Float> mLowRain = new ArrayList<>();
+            if (down.list.size() > 0) {
+                int size = down.list.size();
+                for (int i = 0; i < down.list.size(); i++) {
+                    if (i > 36) {
+                        break;
+                    }
+                    String rain = down.list.get(i).rainfall;
+//                  if (i == 10 || i == 12 || i == 14) {
+//                        rain = "15";
+//                  }
+                    String temp = down.list.get(i).temperature;
+                    if (!TextUtils.isEmpty(temp)) {
+                        mTopTemp.add(Float.parseFloat(temp));
+                    } else {
+                        continue;
+                    }
+                    if (!TextUtils.isEmpty(rain)) {
+                        mLowRain.add(Float.parseFloat(rain));
+                    } else {
+                        mLowRain.add(0f);
+                    }
+                }
+                int width = getWeekItemWidth() * size;
+
+                gridview24hour.setNumColumns(size);
+                gridview24hour.setVisibility(View.VISIBLE);
+                ViewGroup.LayoutParams gradviewParams = gridview24hour.getLayoutParams();
+                gradviewParams.width = width;
+                gridview24hour.setLayoutParams(gradviewParams);
+                adapterMain.notifyDataSetChanged();
+
+                main24hour.setVisibility(View.VISIBLE);
+                main24hour.setCount(size);
+                ViewGroup.LayoutParams mainParams = main24hour.getLayoutParams();
+                mainParams.width = width;
+                main24hour.setLayoutParams(mainParams);
+
+                rowView.setVisibility(View.VISIBLE);
+            } else {
+                rowView.setVisibility(View.GONE);
+                //tvNodata.setVisibility(View.VISIBLE);
+                //layoutWeather.setVisibility(View.INVISIBLE);
+            }
+            main24hour.setTemperture(mTopTemp, mLowRain);
+        } else {
+            rowView.setVisibility(View.GONE);
+        }
+    }
+
+    private int getWeekItemWidth() {
+        int width = (int) (Util.getScreenWidth(activity)/7.0f);
+        return width;
+    }
+}

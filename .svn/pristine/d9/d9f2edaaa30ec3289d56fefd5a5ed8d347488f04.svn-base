@@ -1,0 +1,47 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.livequery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzDown.WdtjLowZdz;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ *省级最高温排名 前9名（
+ */
+public class PackWdtjProLowDown extends PcsPackDown {
+	public List<WdtjLowZdz> datalist= new ArrayList<WdtjLowZdz>();
+	@Override
+	public void fillData(String jsonStr) {
+		datalist.clear();
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.getLong("updateMill");
+			if(temp.has("datalist")){
+				JSONArray arr = temp.getJSONArray("datalist");
+				PackWdtjLowZdzDown zd=new PackWdtjLowZdzDown();
+				for (int i = 0; i < arr.length(); i++) {
+					JSONObject obj = arr.getJSONObject(i);
+					WdtjLowZdz imgobject = zd.new WdtjLowZdz();
+					imgobject.time = obj.getString("time");
+					imgobject.min_wd = obj.getString("min_wd");
+					imgobject.county = obj.getString("county");
+					datalist.add(imgobject);
+				}
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

@@ -1,0 +1,45 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 天气综述
+ * 
+ * @author chenjh
+ */
+public class PackWeatherSummaryDown extends PcsPackDown {
+
+	public String pub_time;
+    public String txt;
+ 
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+            pub_time=temp.optString("pub_time");
+            txt=temp.optString("txt");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public String toString() {
+
+		return null;
+	}
+
+	public class WeatherRow{
+		/** 预报内容 **/
+		public String txt = "";
+		public String title = "";
+	}
+	
+}

@@ -1,0 +1,67 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class YjColumnGradeDown implements Parcelable{
+
+    /**
+     *
+     */
+    public String name;
+    /**
+     * 名字
+     */
+    public String type;
+    public String ioc;
+    public String req_url;
+
+    public YjColumnGradeDown(){
+        super();
+    }
+
+    protected YjColumnGradeDown(Parcel in) {
+        name = in.readString();
+        type = in.readString();
+        ioc = in.readString();
+        req_url = in.readString();
+    }
+
+    public static final Creator<YjColumnGradeDown> CREATOR = new Creator<YjColumnGradeDown>() {
+        @Override
+        public YjColumnGradeDown createFromParcel(Parcel source) {
+
+            YjColumnGradeDown stu = new YjColumnGradeDown();
+            stu.name = source.readString();
+            stu.type = source.readString();
+            stu.req_url = source.readString();
+            stu.ioc = source.readString();
+            return stu;
+
+//            return new YjColumnGradeDown(in);
+        }
+
+        @Override
+        public YjColumnGradeDown[] newArray(int size) {
+            return new YjColumnGradeDown[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(type);
+        parcel.writeString(ioc);
+        parcel.writeString(req_url);
+    }
+}

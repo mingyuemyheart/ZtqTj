@@ -1,0 +1,66 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.tool.GetJSONObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 首页空气质量
+ * 
+ * @author Administrator
+ * 
+ */
+public class PackAirInfoSimpleDown extends PcsPackDown {
+
+	public AirInfoSimple airInfoSimple = new AirInfoSimple();
+
+	@Override
+	public void fillData(String jsonStr) {
+		if (jsonStr == null || "".equals(jsonStr)) {
+			return;
+		}
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+
+			GetJSONObject getJsonObject = new GetJSONObject(temp);
+			airInfoSimple.key = (String) getJsonObject.getJSONObjectValue("key");
+			airInfoSimple.health_advice = (String) getJsonObject.getJSONObjectValue("health_advice");
+			airInfoSimple.quality = (String) getJsonObject.getJSONObjectValue("quality");
+			airInfoSimple.aqi = (String) getJsonObject.getJSONObjectValue("aqi");
+			airInfoSimple.primary_pollutant = (String) getJsonObject.getJSONObjectValue("primary_pollutant");
+			airInfoSimple.area = (String) getJsonObject.getJSONObjectValue("area");
+			airInfoSimple.us_quality= (String) getJsonObject.getJSONObjectValue("us_quality");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	/** 首页空气质量内容 **/
+	public class AirInfoSimple {
+		/** 返回的信息 **/
+		public String key;
+		/** 健康建议 **/
+		public String health_advice;
+		/** 空气质量 **/
+		public String quality;
+		/** Aqi值 **/
+		public String aqi;
+		/** 首要污染物 **/
+		public String primary_pollutant;
+		/** 返回的信息 **/
+		public String area;
+
+		public String us_quality;
+
+		@Override
+		public String toString() {
+			return "AirInfoSimple [key=" + key + ", health_advice=" + health_advice + ", quality=" + quality + ", health_advice=" + health_advice + ", aqi="
+					+ aqi + ", area=" + area + "]";
+		}
+	}
+}

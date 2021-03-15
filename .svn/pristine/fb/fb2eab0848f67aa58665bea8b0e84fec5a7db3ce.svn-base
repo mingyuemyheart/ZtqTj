@@ -1,0 +1,44 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackTravelSubjectDown extends PcsPackDown {
+
+	public List<TravelSubjectInfo> tour_list = new ArrayList<TravelSubjectInfo>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			tour_list.clear();
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray ary = obj.getJSONArray("tour_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+				TravelSubjectInfo tsi = new TravelSubjectInfo();
+				tsi.img_url = temp.getString("img_url");
+				tsi.log = temp.getString("log");
+				tsi.lat = temp.getString("lat");
+				tsi.tour_id = temp.getString("tour_id");
+				tsi.tour_name = temp.getString("tour_name");
+				tour_list.add(tsi);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

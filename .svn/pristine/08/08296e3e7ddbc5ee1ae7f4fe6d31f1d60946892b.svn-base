@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 气象值查询
+ * Created by tyaathome on 2017/11/1.
+ */
+
+public class PackWeatherValueQueryUp extends PcsPackUp {
+
+    public static final String NAME = "zlcx_qxz";
+
+    public String type = "";
+    public String area_id = "";
+    public String time_val = "";
+
+    public PackWeatherValueQueryUp() {
+        this.intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("type", type);
+            object.put("area_id", area_id);
+            object.put("time_val", time_val);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + time_val;
+    }
+}

@@ -1,0 +1,49 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import android.text.TextUtils;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 意见列表下载包
+ * 
+ * @author Chensq
+ * 
+ */
+public class PackSuggestListDown extends PcsPackDown {
+	public List<SuggestListInfo> arrsuggestListInfo=new ArrayList<SuggestListInfo>();
+	@Override
+	public void fillData(String jsonStr) {
+		arrsuggestListInfo.clear();
+		if (TextUtils.isEmpty(jsonStr)) {
+			return;
+		}
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("suggest_list");
+			for (int i = 0; i < arr.length(); i++) {
+				SuggestListInfo suggestListInfo=new SuggestListInfo();
+				JSONObject airJson = arr.getJSONObject(i);
+				suggestListInfo.nick_name= airJson.getString("nick_name");
+				suggestListInfo.create_time= airJson.getString("create_time");
+				suggestListInfo.msg= airJson.getString("msg");
+				arrsuggestListInfo.add(suggestListInfo);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+}

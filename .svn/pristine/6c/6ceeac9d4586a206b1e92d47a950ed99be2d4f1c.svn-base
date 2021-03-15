@@ -1,0 +1,327 @@
+package com.pcs.lib.lib_pcs_v3.control.tool;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.view.View;
+
+/**
+ * @author Z bitmap处理类
+ */
+
+public final class BitmapUtil {
+	public static final int OPTIONS_SCALE_UP = 1;
+	public static final int OPTIONS_RECYCLE_INPUT = 2;
+
+	public static Bitmap extractThumbnail(Bitmap source, int width, int height, int options) {
+		if (source == null) {
+			return null;
+		}
+		float scale;
+		if (source.getWidth() < source.getHeight()) {
+			scale = width / (float) source.getWidth();
+		} else {
+			scale = height / (float) source.getHeight();
+		}
+		Matrix matrix = new Matrix();
+		matrix.setScale(scale, scale);
+		Bitmap thumbnail = transform(matrix, source, width, height, OPTIONS_SCALE_UP | options);
+		return thumbnail;
+	}
+
+	private static Bitmap transform(Matrix scaler, Bitmap source, int targetWidth, int targetHeight, int options) {
+		boolean scaleUp = (options & OPTIONS_SCALE_UP) != 0;
+		boolean recycle = (options & OPTIONS_RECYCLE_INPUT) != 0;
+		int deltaX = source.getWidth() - targetWidth;
+		int deltaY = source.getHeight() - targetHeight;
+		if (!scaleUp && (deltaX < 0 || deltaY < 0)) {
+			/*
+			 * In this case the bitmap is smaller, at least in one dimension,
+			 * than the target. Transform it by placing as much of the image as
+			 * possible into the target and leaving the top/bottom or left/right
+			 * (or both) black.
+			 */
+			Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight, Bitmap.Config.ARGB_8888);
+			Canvas c = new Canvas(b2);
+			int deltaXHalf = Math.max(0, deltaX / 2);
+			int deltaYHalf = Math.max(0, deltaY / 2);
+			Rect src = new Rect(deltaXHalf, deltaYHalf, deltaXHalf + Math.min(targetWidth, source.getWidth()), deltaYHalf + Math.min(targetHeight, source.getHeight()));
+			int dstX = (targetWidth - src.width()) / 2;
+			int dstY = (targetHeight - src.height()) / 2;
+			Rect dst = new Rect(dstX, dstY, targetWidth - dstX, targetHeight - dstY);
+			c.drawBitmap(source, src, dst, null);
+			if (recycle) {
+				source.recycle();
+			}
+			return b2;
+		}
+		float bitmapWidthF = source.getWidth();
+		float bitmapHeightF = source.getHeight();
+		float bitmapAspect = bitmapWidthF / bitmapHeightF;
+		float viewAspect = (float) targetWidth / targetHeight;
+		if (bitmapAspect > viewAspect) {
+			float scale = targetHeight / bitmapHeightF;
+			if (scale < .9F || scale > 1F) {
+				scaler.setScale(scale, scale);
+			} else {
+				scaler = null;
+			}
+		} else {
+			float scale = targetWidth / bitmapWidthF;
+			if (scale < .9F || scale > 1F) {
+				scaler.setScale(scale, scale);
+			} else {
+				scaler = null;
+			}
+		}
+		Bitmap b1;
+		if (scaler != null) {
+			b1 = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), scaler, true);
+		} else {
+			b1 = source;
+		}
+		if (recycle && b1 != source) {
+			source.recycle();
+		}
+		int dx1 = Math.max(0, b1.getWidth() - targetWidth);
+		int dy1 = Math.max(0, b1.getHeight() - targetHeight);
+		Bitmap b2 = Bitmap.createBitmap(b1, dx1 / 2, dy1 / 2, targetWidth, targetHeight);
+		if (b2 != b1) {
+			if (recycle || b1 != source) {
+				b1.recycle();
+			}
+		}
+		return b2;
+	}
+
+	/**
+	 * 获取Bitmap图片
+	 * 
+	 * @param path
+	 *            路径
+	 * @return
+	 */
+	public static Bitmap getBitmap(String path) {
+		File file = new File(path);
+		return getBitmap(file);
+
+	}
+
+	/**
+	 * 获取Bitmap图片
+	 * 
+	 * @param file
+	 *            文件
+	 * @return
+	 */
+	public static Bitmap getBitmap(File file) {
+		if (!Util.SDCardExists()) {
+			return null;
+		}
+		if (file.exists()) {
+			Bitmap img = BitmapFactory.decodeFile(file.getAbsolutePath());
+			if (img != null) {
+				return img;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 保存Bitmap图片
+	 * 
+	 * @param img
+	 *            Bitmap图片
+	 * @param path
+	 *            保存的路径
+	 * @param name
+	 *            图片名
+	 * @return
+	 * @throws FileNotFoundException
+	 */
+	public static boolean saveBitmap(Bitmap img, String path, String name) throws FileNotFoundException {
+		// sd卡不存在
+		if (!Util.SDCardExists()) {
+			return false;
+		}
+		if (img != null) {
+			File f = new File(path);
+			if (!f.exists()) {
+				f.mkdirs();
+			}
+			FileOutputStream iStream = new FileOutputStream(new File(path, name));
+			img.compress(CompressFormat.PNG, 100, iStream);
+			try {
+				iStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 通过资源id获取bitmap
+	 * 
+	 * @param context
+	 * @param resID
+	 * @return
+	 */
+	public static Bitmap getBitmap(Context context, int resID) {
+
+		return BitmapFactory.decodeResource(context.getResources(), resID);
+
+	}
+
+	/**
+	 * 截屏(去掉状态栏)
+	 * 
+	 * @param activity
+	 *            上下文
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static Bitmap takeScreenShot(Activity activity) {
+		// View是你需要截图的View
+		try {
+			View view = activity.getWindow().getDecorView();
+			view.setDrawingCacheEnabled(true);
+			view.buildDrawingCache();
+			Bitmap b1 = view.getDrawingCache();
+			if (b1 == null) {
+				return null;
+			}
+			int mheight = b1.getHeight();
+			int mWidth = b1.getWidth();
+			// 获取状态栏高度
+			Rect frame = new Rect();
+			activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+			int statusBarHeight = frame.top;
+			// 获取屏幕长和高
+			int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+			int height = activity.getWindowManager().getDefaultDisplay().getHeight();
+			if (height > mheight) {
+				height = mheight;
+			}
+			if (width > mWidth) {
+				width = mWidth;
+			}
+			// 去掉标题栏
+			// Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+			Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, width, height - statusBarHeight);
+			view.destroyDrawingCache();
+			return b;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * 截取全屏
+	 * 
+	 * @param activity
+	 *            上下文
+	 * @param view
+	 *            视图
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static Bitmap takeScreenShot(Activity activity, View view) {
+		Bitmap b1 = view.getDrawingCache();
+		// 获取状态栏高度
+		Rect frame = new Rect();
+		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+		int statusBarHeight = frame.top;
+		// 获取屏幕长和高
+		int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+		int height = activity.getWindowManager().getDefaultDisplay().getHeight();
+		if (width == 0 || height == 0) {
+			return null;
+		}
+		Bitmap b = Bitmap.createBitmap(b1, 0, statusBarHeight, b1.getWidth(), b1.getHeight() - statusBarHeight);
+		view.destroyDrawingCache();
+		return b;
+	}
+
+	/**
+	 * 截取全屏
+	 * 
+	 * @param activity
+	 *            上下文
+	 * @return
+	 */
+	@SuppressWarnings("deprecation")
+	public static Bitmap takeFullScreenShot(Activity activity) {
+		// View是你需要截图的View
+		View view = activity.getWindow().getDecorView();
+		view.setDrawingCacheEnabled(true);
+		view.buildDrawingCache();
+		Bitmap b1 = view.getDrawingCache();
+		int mheight = b1.getHeight();
+		int mWidth = b1.getWidth();
+		// 获取状态栏高度
+		Rect frame = new Rect();
+		activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
+		// 获取屏幕长和高
+		int width = activity.getWindowManager().getDefaultDisplay().getWidth();
+		int height = activity.getWindowManager().getDefaultDisplay().getHeight();
+		if (height > mheight) {
+			height = mheight;
+		}
+		if (width > mWidth) {
+			width = mWidth;
+		}
+		// 去掉标题栏 //Bitmap b = Bitmap.createBitmap(b1, 0, 25, 320, 455);
+		Bitmap b = Bitmap.createBitmap(b1, 0, 0, width, height);
+		view.destroyDrawingCache();
+		return b;
+	}
+
+	public static Bitmap scaleBitmip(Bitmap bitmap, float widScale, float higScale) {
+		if (bitmap == null) {
+			return bitmap;
+		}
+		Matrix matrix = new Matrix();
+		matrix.postScale(widScale, higScale); // 长和宽放大缩小的比例
+		Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+		return resizeBmp;
+	}
+
+	/**
+	 * 裁剪成圆形图片
+	 * 
+	 * @param bitmap
+	 * @return
+	 */
+	public static Bitmap toRoundBitmap(Bitmap bitmap) {
+		int width = bitmap.getWidth();
+		int height = bitmap.getHeight();
+		int ovalLen = Math.min(width, height);
+		Rect src = new Rect((width - ovalLen) / 2, (height - ovalLen) / 2, (width - ovalLen) / 2 + ovalLen, (height - ovalLen) / 2 + ovalLen);
+		Rect dst = new Rect(0, 0, ovalLen, ovalLen);
+		Bitmap output = Bitmap.createBitmap(ovalLen, ovalLen, Config.ARGB_8888);
+		Canvas canvas = new Canvas(output);
+		Paint paint = new Paint();
+		paint.setAntiAlias(true);
+		canvas.drawOval(new RectF(0, 0, ovalLen, ovalLen), paint);
+		paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+		canvas.drawBitmap(bitmap, src, dst, paint);
+		return output;
+	}
+}

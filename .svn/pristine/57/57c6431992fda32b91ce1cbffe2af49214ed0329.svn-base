@@ -1,0 +1,69 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 首页空气质量
+ *
+ * @author Administrator
+ */
+public class PackAirYbDown extends PcsPackDown {
+
+    public AirInfoYb airInfoYb = new AirInfoYb();
+    public String time_pub;//发布时间
+    public String pub_unit;//发布单位
+    public List<AirInfoYb> list = new ArrayList<>();
+    public List<String> list_arr=new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        list.clear();
+        list_arr.clear();
+        JSONObject temp;
+        try {
+            temp = new JSONObject(jsonStr);
+            updateMill = temp.optLong("updateMill");
+            JSONArray arr = temp.getJSONArray("info_list");
+            time_pub = temp.getString("time_pub");
+            pub_unit = temp.getString("pub_unit");
+            list_arr.add("时间");
+            AirInfoYb beans = new AirInfoYb();
+//            beans.time="时间";
+            beans.pollutant_index="空气污染气象条件";
+            beans.aqi="AQI等级";
+            beans.aqi_index="AQI指数";
+            beans.pri_pollutant="首要污染物";
+            beans.haze="霾";
+            beans.sandstorm="沙尘";
+            list.add(beans);
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject mediaParentItem = arr.getJSONObject(i);
+                AirInfoYb bean = new AirInfoYb();
+                bean.aqi=mediaParentItem.optString("aqi");
+//                bean.time = mediaParentItem.optString("time");
+                bean.aqi_index = mediaParentItem.optString("aqi_index");
+                bean.haze = mediaParentItem.optString("haze");
+                bean.sandstorm = mediaParentItem.optString("sandstorm");
+                bean.pollutant_index = mediaParentItem.optString("pollutant_index");
+                bean.pri_pollutant = mediaParentItem.optString("pri_pollutant");
+                list_arr.add(mediaParentItem.optString("time"));
+                list.add(bean);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+}

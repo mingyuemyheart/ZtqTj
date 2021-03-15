@@ -1,0 +1,48 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack;
+
+import android.text.TextUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 空气质量站点信息
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackAirStationInfoDown extends PackAirInfoDown {
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject obj = null;
+		try {
+			obj = new JSONObject(jsonStr).getJSONObject("data");
+
+			/** Aqi值 **/
+			aqi = obj.getString("aqi");
+			if (TextUtils.isEmpty(aqi)) {
+				aqi = "0";
+			}
+			/** AQI百分比 **/
+			aqi_percent = calcPercent(Float.valueOf(aqi));
+			/** PM2.5/1h **/
+			pm2_5 = obj.getString("pm2_5");
+			/** PM10/1h **/
+			pm10 = obj.getString("pm10");
+			/** NO2/1h **/
+			no2 = obj.getString("no2");
+			/** CO/1h **/
+			co = obj.getString("co");
+			/** O3/1h **/
+			o3 = obj.getString("o3");
+			/** O3/8h **/
+			o3_8h = obj.getString("o3_8h");
+			/** SO2/1h **/
+			so2 = obj.getString("so2");
+			/** 发布时间 **/
+			updateTime = obj.getString("updateTime");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+}

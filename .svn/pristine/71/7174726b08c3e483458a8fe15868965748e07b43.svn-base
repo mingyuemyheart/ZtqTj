@@ -1,0 +1,46 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.media;
+
+import java.io.Serializable;
+
+/**
+ * 气象影视bean
+ * 
+ * @author chenjh
+ * 
+ */
+public class MediaInfo implements Serializable {
+
+
+	/** 影视主题 **/
+	public String title = "";
+	
+	/** 影视主题 带日期**/
+	public String title_two = "";
+
+	/** 视频地址 **/
+	public String mediaurl = "";
+
+	/** 图片地址 **/
+	public String imageurl = "";
+	
+	/** 视频描述 **/
+	public String desc = "";
+	
+	
+	/** 时间 **/
+	public String time = "";
+
+	public String channel_id="";
+
+    /**
+     * 分享播放地址
+     */
+    public String fxurl = "";
+
+//	@Override
+//	public String toString() {
+//		return "MediaInfo [title=" + title 
+//				+ ", mediaurl=" + mediaurl
+//				+ ", imageurl=" + imageurl + "]";
+//	}
+}

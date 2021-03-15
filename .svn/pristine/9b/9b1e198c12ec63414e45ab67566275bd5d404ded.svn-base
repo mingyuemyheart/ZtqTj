@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.photowall;
+
+
+/**
+ * 实景开拍：增加浏览数
+ * 
+ * @author JiangZy
+ * 
+ */
+public class PackPhotoBrowseDown extends PackPhotoSimpleDown {
+    @Override
+    public void fillData(String jsonStr) {
+        super.fillData(jsonStr);
+    }
+}

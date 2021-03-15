@@ -1,0 +1,27 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn;
+
+/**
+ * Created by Administrator on 2017/8/14 0014.
+ * chen_jx
+ */
+
+public class YjZqInfoList {
+
+    /**
+     *
+     */
+    public String id;
+    /**
+     * 地址
+     */
+    public String nickname;
+    /**
+     * 发布时间
+     */
+    public String pub_time;
+    /**
+     * 状态
+     */
+    public String statu;
+
+}

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 临近预警 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen5"
+        android:gravity="center"
+        android:textSize="@dimen/text_content"
+        android:textColor="@color/text_black"
+        android:background="@color/bg_white" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:orientation="vertical" >
+        
+        <LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal" >
+		    
+		    <View
+	            android:layout_width="0dp"
+	            android:layout_height="1dp"
+	            android:layout_weight="3" />
+		    
+		    <!-- 图例 -->
+		    <LinearLayout
+		        android:id="@+id/layout_legend"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="2"
+		        android:orientation="vertical"
+		        android:background="#8000" >
+		        
+		        <!-- 标题、展开/收起按钮 -->
+		        <LinearLayout
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:orientation="horizontal"
+		        	android:padding="@dimen/dimen5"
+		        	android:gravity="center_vertical" >
+		            
+		            <TextView
+		                android:layout_width="0dp"
+		                android:layout_height="wrap_content"
+		                android:layout_weight="1"
+		                android:gravity="center"
+		                android:text="@string/legend"
+		                android:textColor="@color/text_white"
+		                android:textSize="@dimen/text_content" />
+		            
+		            <ImageButton
+		                android:id="@+id/arrow_up"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:background="@drawable/icon_up_arrow"
+		                android:visibility="gone" />
+		            
+		            <ImageButton
+		                android:id="@+id/arrow_down"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:background="@drawable/icon_down_arrow"
+		                android:visibility="visible" />
+		        </LinearLayout>
+		        
+		        <!-- 图形说明 -->
+		        <LinearLayout
+		            android:id="@+id/layout_legend_detail"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:layout_marginLeft="@dimen/dimen5"
+		            android:padding="@dimen/dimen5"
+		            android:orientation="vertical" >
+		            
+		            <TextView
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:text="@string/probability_30_60"
+	                    android:textColor="@color/text_white"
+	       				android:textSize="@dimen/text_footnote"
+	       				android:drawableLeft="@drawable/icon_lightning_warn_legend_30_60"
+	       				android:drawablePadding="@dimen/dimen5" />
+		            
+		            <TextView
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_marginTop="@dimen/dimen5"
+	                    android:text="@string/probability_60_80"
+	                    android:textColor="@color/text_white"
+	       				android:textSize="@dimen/text_footnote"
+	       				android:drawableLeft="@drawable/icon_lightning_warn_legend_60_80"
+	       				android:drawablePadding="@dimen/dimen5" />
+		            
+		            <TextView
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_marginTop="@dimen/dimen5"
+	                    android:text="@string/probability_80_100"
+	                    android:textColor="@color/text_white"
+	       				android:textSize="@dimen/text_footnote"
+	       				android:drawableLeft="@drawable/icon_lightning_warn_legend_80_100"
+	       				android:drawablePadding="@dimen/dimen5" />
+		        </LinearLayout>
+		    </LinearLayout>
+		</LinearLayout>
+        
+        <LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="vertical"
+		    android:visibility="visible" >
+	
+		    <!-- 标题栏 -->
+		    <RelativeLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:background="@color/map_forecast_title" >
+		        
+		        <TextView
+					android:id="@+id/tv_table_title"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:gravity="center"
+					android:padding="@dimen/dimen5"
+					android:text="@string/title_lightning_table"
+					android:textColor="@android:color/white"
+					android:textSize="@dimen/text_content" />
+		        
+		        <RelativeLayout
+                    android:layout_width="50dp"
+		            android:layout_height="wrap_content"
+		            android:layout_alignParentRight="true"
+                    android:paddingRight="@dimen/dimen5" 
+                    android:layout_centerVertical="true">
+		            
+		            <ImageButton
+	                    android:id="@+id/btn_close"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_alignParentRight="true"
+	                    android:background="@drawable/icon_arrow_up"
+	                    android:visibility="gone" />
+			        
+			        <ImageButton
+	                    android:id="@+id/btn_open"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_alignParentRight="true"
+	                    android:background="@drawable/icon_arrow_down" />
+		            
+		        </RelativeLayout>
+		    </RelativeLayout>
+		
+		    <!-- 无数据提示 -->
+		    <TextView
+		        android:id="@+id/tv_null"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:gravity="center"
+				android:padding="@dimen/dimen5"
+				android:text="@string/hint_no_warn_data_lately"
+				android:textColor="@android:color/black"
+				android:textSize="@dimen/text_content"
+				android:background="@color/bg_white"
+				android:visibility="gone" />
+		    
+		    <!-- 列表 -->
+		    <LinearLayout
+		        android:id="@+id/layout_data"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:orientation="vertical" >
+		        
+		        <!-- 列表标题 -->
+				<LinearLayout
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:background="@color/map_forecast_list_title"
+				    android:gravity="center_vertical"
+				    android:orientation="horizontal" >
+			
+					<!-- 序号 -->
+					<TextView
+					    android:layout_width="0dp"
+					    android:layout_height="@dimen/item_hight"
+					    android:layout_weight="1"
+					    android:gravity="center"
+					    android:text="@string/code"
+					    android:textColor="@android:color/black"
+					    android:textSize="@dimen/text_content" />
+			
+					<ImageView
+					    android:layout_width="1px"
+					    android:layout_height="match_parent"
+					    android:background="@color/map_forecast_line" />
+			
+					<!-- 地名 -->
+					<TextView
+					    android:layout_width="0dp"
+					    android:layout_height="@dimen/item_hight"
+					    android:layout_weight="1"
+					    android:gravity="center"
+					    android:text="@string/place"
+					    android:textColor="@android:color/black"
+					    android:textSize="@dimen/text_content" />
+					
+					<ImageView
+					    android:layout_width="1px"
+					    android:layout_height="match_parent"
+					    android:background="@color/map_forecast_line" />
+					
+					<!-- 概率 -->
+					<TextView
+					    android:layout_width="0dp"
+					    android:layout_height="@dimen/item_hight"
+					    android:layout_weight="1"
+					    android:gravity="center"
+					    android:text="@string/probability"
+					    android:textColor="@android:color/black"
+					    android:textSize="@dimen/text_content" />
+					
+					<ImageView
+					    android:layout_width="1px"
+					    android:layout_height="match_parent"
+					    android:background="@color/map_forecast_line" />
+					
+					<!-- 频率 -->
+				    <TextView
+				        android:layout_width="0dp"
+				        android:layout_height="@dimen/item_hight"
+				        android:layout_weight="1.5"
+				        android:gravity="center"
+				        android:text="@string/frequency"
+				        android:textColor="@android:color/black"
+				        android:textSize="@dimen/text_content" />
+				</LinearLayout>
+		
+				<!-- 列表 -->
+				<ListView
+				    android:id="@+id/listView"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:background="@android:color/white"
+				    android:divider="#00000000"
+				    android:dividerHeight="0dp" >
+				</ListView>
+		    </LinearLayout>
+		</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

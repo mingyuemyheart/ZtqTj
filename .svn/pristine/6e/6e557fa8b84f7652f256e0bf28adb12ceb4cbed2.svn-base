@@ -1,0 +1,61 @@
+package com.pcs.lib_ztqfj_v2.model.pack.local;
+
+public class PackLocalDB {
+
+	/**
+	 * 福建地级市
+	 */
+	public static final String FJCITYNAME = "city_lv1";
+	
+	/**
+	 * 福建县级市
+	 */
+	public static final String FJCOUNTRYNAME = "city_lv2";
+	
+	/**
+	 * 福建城市区级
+	 */
+	public static final String FJDISTRICTNAME = "city_lv3";
+	
+	/**
+	 * 省份
+	 */
+	public static final String PROCITYNAME = "provinces";
+	
+	/**
+	 * 城市
+	 */
+	public static final String CITYNAME = "citylist";
+
+	/**
+	 * 城市
+	 */
+	public static final String LIVECITY = "live_city";
+
+	/**
+	 * 旅游城市
+	 */
+	public static final String TRAVELCITYNAME = "travel_city";
+	
+	/**
+	 * 预警信息
+	 */
+	public static final String WARN = "warn";
+	
+	/**
+	 * 单位信息
+	 */
+	public static final String CITYUNIT = "city_unit";
+	/**
+	 * 站点信息
+	 */
+	public static final String STATION = "station";
+    /**
+     * 省外站点
+     */
+    public static final String STATION_COUNTRY = "station_country";
+	/**
+	 * 高速信息
+	 */
+	public static final String TRAFFICHIGHWAY = "traffic_highway";
+}

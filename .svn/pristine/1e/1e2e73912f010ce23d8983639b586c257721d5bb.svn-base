@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+/**
+ * 气象站的雨情信息
+ *
+ * @author tya
+ */
+public class WaterMonitorInfo {
+
+    /**
+     * 名称
+     */
+    public String station_name = "";
+
+    /**
+     * 时间
+     */
+    public String rectime = "";
+
+    /**
+     * 积水高度
+     */
+    public String js_h = "";
+    /**
+     * 积水程度
+     */
+    public String lev = "";
+}

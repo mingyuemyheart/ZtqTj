@@ -1,0 +1,28 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.agriculture;
+
+import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
+
+/**
+ * 农业气象对象
+ * Created by tyaathome on 2016/11/14.
+ */
+public class AgricultureInfo implements InterfaceColumn {
+    // 频道ID
+    public String channel_id = "";
+    // 标题
+    public String title = "";
+    // 图片url
+    public String Img_url = "";
+    // 类型
+    public String type = "";
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public String getIconPath() {
+        return Img_url;
+    }
+}

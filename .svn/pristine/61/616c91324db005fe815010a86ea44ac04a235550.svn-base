@@ -1,0 +1,54 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.waterflood;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+/**
+ * 风情信息-河道站风情信息下载包
+ * @author tya
+ *
+ */
+public class PackWindInfoDown extends PcsPackDown {
+
+	/**
+	 * 风情列表
+	 */
+	public List<WindInfo> windinfo_list = new ArrayList<WindInfo>();
+	
+	@Override
+	public void fillData(String jsonStr) {
+		windinfo_list.clear();
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			JSONArray ary = obj.getJSONArray("windinfo_list");
+			for(int i = 0; i < ary.length(); i++) {
+				JSONObject temp = ary.getJSONObject(i);
+				WindInfo wi = new WindInfo();
+				wi.station = temp.getString("station");
+				wi.time = temp.getString("time");
+				wi.log = temp.getString("log");
+				wi.lat = temp.getString("lat");
+				wi.power = temp.getString("power");
+				wi.speed = temp.getString("speed");
+				wi.position = temp.getString("position");
+				windinfo_list.add(wi);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

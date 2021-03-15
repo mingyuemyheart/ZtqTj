@@ -1,0 +1,43 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.radar;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * 气象雷达列表
+ *
+ * @author chenjh
+ */
+public class PackRadarListUp extends PcsPackUp {
+
+    public static final String NAME = "leidanewlist";
+
+    public String type = "1";
+
+    public PackRadarListUp() {
+        //15分钟
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("type", type);
+            obj.put("jk_type","2");
+            return obj;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return NAME + "#" + type;
+    }
+
+}

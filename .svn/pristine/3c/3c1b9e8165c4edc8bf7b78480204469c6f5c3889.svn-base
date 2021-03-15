@@ -1,0 +1,15 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+/**
+ * 定点服务--预警类型信息
+ * @author E.Sun
+ * 2015年11月3日
+ */
+public class WarningTypeInfo {
+
+	/** 预警类型ID */
+	public String id = "";
+	/** 预警类型名称 */
+	public String name = "";
+	
+}

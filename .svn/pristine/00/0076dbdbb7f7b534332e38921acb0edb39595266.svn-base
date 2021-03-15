@@ -1,0 +1,33 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.locationwarning;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONObject;
+
+
+
+/**
+ * 请求包：公众定点服务
+ * @author E.Sun
+ * 2015年11月3日
+ */
+public class PackPublicWarningUp extends PcsPackUp {
+
+	public static final String NAME = "warn_pub_position";
+	
+	public PackPublicWarningUp() {
+		intervalMill = 0;
+	}
+	
+	@Override
+	public JSONObject toJSONObject() {
+		JSONObject obj = new JSONObject();
+		return obj;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
+}

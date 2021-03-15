@@ -1,0 +1,71 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.art;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 
+ * 资讯栏目列表
+ * @author chenjh
+ *
+ */
+public class PackArtChannelDown extends PcsPackDown {
+
+	
+	public List<AirChannel> arrAirChannel = new ArrayList<AirChannel>();
+	
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject temp;
+		try {
+			temp = new JSONObject(jsonStr);
+			updateMill = temp.optLong("updateMill");
+			JSONArray arr = temp.getJSONArray("channels");
+			
+			for (int i = 0; i < arr.length(); i++) {
+				AirChannel channel = new AirChannel();
+				JSONObject airJson = arr.getJSONObject(i);
+				channel.id = airJson.getString("id");
+				channel.name = airJson.getString("name");
+				
+				arrAirChannel.add(channel);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+	public class AirChannel {
+		/** 栏目编号 **/
+		public String id = "";
+		/** 栏目名称 **/
+		public String name = "";
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+
+		@Override
+		public String toString() {
+			return "AirChannel [id=" + id + ", name=" + name + "]";
+		}
+		
+	}
+}

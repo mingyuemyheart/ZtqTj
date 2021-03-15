@@ -1,0 +1,38 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+
+public class PackOrientaDown extends PcsPackDown {
+
+	public String District = "";
+	public String Latitude = "";
+	public String Longitude = "";
+	public String Province = "";
+	public String City = "";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			JSONObject obj = new JSONObject(jsonStr);
+			District = obj.getString("District");
+			Latitude = obj.getString("Latitude");
+			Longitude = obj.getString("Longitude");
+			Province = obj.getString("Province");
+			City = obj.getString("City");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+
+}

@@ -1,0 +1,69 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+
+/**
+ * 问题
+ * 
+ */
+public class PackFAQDown extends PcsPackDown {
+public List<FAQTitleBean> titleList=new ArrayList<FAQTitleBean>();
+
+	@Override
+	public void fillData(String jsonStr) {
+		JSONObject obj;
+		JSONArray jsonArray;
+		FAQTitleBean faqtitle;
+		try {
+			obj = new JSONObject(jsonStr);
+			updateMill = obj.optLong("updateMill");
+			jsonArray=obj.getJSONArray("dataList");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonobj=jsonArray.getJSONObject(i);
+				faqtitle=new FAQTitleBean();
+				faqtitle.title=jsonobj.getString("title");
+				JSONArray jsonArrayContent=jsonobj.getJSONArray("info");
+				FAQContentBean faqcontentBean;
+				for (int j = 0; j < jsonArrayContent.length(); j++) {
+					try {
+						JSONObject jsonobjcontent=jsonArrayContent.getJSONObject(j);
+						faqcontentBean=new FAQContentBean();
+						faqcontentBean.question=jsonobjcontent.getString("question");
+						faqcontentBean.answer=jsonobjcontent.getString("answer");
+						faqtitle.content.add(faqcontentBean);
+					} catch (Exception e) {
+						
+					}
+				}
+				titleList.add(faqtitle);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public String toString() {
+		return null;
+	}
+	
+	public class FAQTitleBean{
+		public String title;
+//		public String info;
+		public List<FAQContentBean> content=new ArrayList<FAQContentBean>();
+		
+	}
+	public class FAQContentBean{
+		public String answer;
+		public String question;
+	}
+}

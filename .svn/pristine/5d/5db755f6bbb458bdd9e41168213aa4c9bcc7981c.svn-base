@@ -1,0 +1,42 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+
+
+public class PackTouristSpotDown extends PcsPackDown {
+	private ArrayList<HotTouristSpot> spotList=new ArrayList<HotTouristSpot>();
+	
+	private final String ID="city_id";
+	private final String NAME="city_name";
+	private final String URL="city_url";
+	
+	@Override
+	public void fillData(String jsonStr) {
+		try {
+			spotList.clear();
+			JSONObject jsonObject=new JSONObject(jsonStr);
+			JSONArray array=jsonObject.getJSONArray("data");
+			for(int i=0;i<array.length();i++){
+				JSONObject object=array.getJSONObject(i);
+				HotTouristSpot spot=new HotTouristSpot();
+				spot.setId(object.getString(ID));
+				spot.setName(object.getString(NAME));
+				spot.setImageUrl(object.getString(URL));
+				spotList.add(spot);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public ArrayList<HotTouristSpot> getTouristSpots(){
+		return spotList;
+	}
+}

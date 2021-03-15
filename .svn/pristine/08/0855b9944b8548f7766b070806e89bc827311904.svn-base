@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_feedback_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_margintop"
+    android:paddingTop="@dimen/activity_margintop">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_marginleft_right"
+        android:paddingRight="@dimen/activity_marginleft_right">
+
+        <LinearLayout
+            android:id="@+id/no_login_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/dimen10"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edit_phone_text"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="@dimen/dimen10"
+                android:layout_marginRight="@dimen/dimen10"
+                android:layout_marginTop="@dimen/dimen16"
+                android:background="@drawable/bg_set_edittext"
+                android:drawableLeft="@drawable/icon_login_phone"
+                android:drawablePadding="@dimen/dimen10"
+                android:hint="请输入注册手机号或账号"
+                android:imeOptions="actionNone"
+                android:paddingLeft="@dimen/dimen10"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textColorHint="@color/hint"
+                android:textSize="@dimen/dimen15" />
+
+            <EditText
+                android:id="@+id/edit_pwd_text"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_margin="@dimen/dimen10"
+                android:background="@drawable/bg_set_edittext"
+                android:drawableLeft="@drawable/icon_login_password"
+                android:drawablePadding="@dimen/dimen10"
+                android:hint="请输入您的密码"
+                android:imeOptions="actionNone"
+                android:paddingLeft="@dimen/dimen10"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textColorHint="@color/hint"
+                android:textSize="@dimen/dimen15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen10"
+                android:layout_marginLeft="@dimen/dimen10"
+                android:layout_marginRight="@dimen/dimen10"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_regeist"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_all_common"
+                    android:text="尚未注册"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/textsize15" />
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="@dimen/dimen10"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_all_common"
+                    android:text="@string/login"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/textsize15" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dimen10"
+                    android:text="@string/login_other_way"
+                    android:textColor="@color/text_gray"
+                    android:textSize="@dimen/text_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/btn_weixin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/icon_login_weixin" />
+
+                    <ImageButton
+                        android:id="@+id/btn_qq"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen40"
+                        android:layout_marginRight="@dimen/dimen40"
+                        android:visibility="gone"
+                        android:background="@drawable/icon_login_qq" />
+
+                    <ImageButton
+                        android:id="@+id/btn_sina"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:background="@drawable/icon_login_sina" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/dimen10"
+                    android:text="尊敬的用户，登录客户端，即可发表您的建议。"
+                    android:textColor="@color/text_gray"
+                    android:textSize="@dimen/dimen15" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/has_login_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/name_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textSize="@dimen/text_content" />
+
+            <EditText
+                android:id="@+id/connection_way"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_marginleft_right"
+                android:layout_marginBottom="@dimen/activity_marginleft_right"
+                android:background="@drawable/bg_set_edittext"
+                android:hint="@string/feedback_eidtemail"
+                android:padding="@dimen/activity_marginleft_right"
+                android:singleLine="true"
+                android:textColor="@color/text_black"
+                android:textColorHint="@color/hint" />
+        </LinearLayout>
+
+
+        <EditText
+            android:id="@+id/feedback_information"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_marginleft_right"
+            android:background="@drawable/bg_set_edittext"
+            android:gravity="start"
+            android:hint="@string/feedback_eidtdesc"
+            android:maxLength="500"
+            android:minHeight="100dp"
+            android:padding="@dimen/activity_marginleft_right"
+            android:textColor="@color/text_black"
+            android:textColorHint="@color/hint" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dimen10"
+                android:text="@string/suggest"
+                android:textColor="@color/text_orange"
+                android:textSize="@dimen/text_content" />
+
+            <Button
+                android:id="@+id/commit_content"
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimen10"
+                android:background="@drawable/btn_all_common"
+                android:text="发布"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/textsize15" />
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/dimen2"
+            android:background="@drawable/line_common" />
+
+        <ListView
+            android:id="@+id/lv_feedback_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/text_feedback_gray"
+            android:cacheColorHint="@color/alpha100"
+            android:divider="@drawable/line_common"></ListView>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,120 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * 整点实况
+ *
+ * @author JiangZy
+ */
+public class PackIntegralPointDown extends PcsPackDown {
+
+    public List<IntegralPoint> list = new ArrayList<IntegralPoint>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        list.clear();
+        if (jsonStr == null || "".equals(jsonStr)) {
+            return;
+        }
+        try {
+            JSONObject obj = new JSONObject(jsonStr);
+            updateMill = obj.optLong("updateMill");
+            JSONArray arr = obj.getJSONArray("datalist");
+            for (int i = 0; i < arr.length(); i++) {
+                IntegralPoint pack = new IntegralPoint();
+                JSONObject row = arr.getJSONObject(i);
+                /** 气温 **/
+                pack.wd = row.optString("wd");
+                /** 风力 **/
+                pack.wind = row.optString("wind");
+                /** 雨量 **/
+                pack.rain = row.optString("rain");
+                /** 相对湿度 **/
+                pack.hum = row.optString("hum");
+                /** 能见度 **/
+                pack.vis = row.optString("vis");
+                /** 气压 **/
+                pack.vap = row.optString("vap");
+                /** 排序 **/
+                pack.num = row.optString("num");
+                /** 查询的时间段 **/
+                pack.time = row.optString("time");
+                pack.time_des = row.optString("time_des");
+
+                list.add(pack);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    public class IntegralPoint {
+        /**
+         * 气温
+         **/
+        public String wd;
+        /**
+         * 风力
+         **/
+        public String wind;
+        /**
+         * 雨量
+         **/
+        public String rain;
+        /**
+         * 相对湿度
+         **/
+        public String hum;
+        /**
+         * 能见度
+         **/
+        public String vis;
+        /**
+         * 气压
+         **/
+        public String vap;
+        /**
+         * 排序
+         **/
+        public String num;
+        /**
+         * 查询的时间段
+         **/
+        public String time;
+
+        /**
+         * 列表显示时间
+         **/
+        public String time_des;
+
+        /**
+         * 根据time获取小时数
+         *
+         * @return
+         */
+        public String getHour() {
+            if (time == null || "".equals(time)) {
+                return time;
+            }
+
+            int temp = Integer.valueOf(time);
+            int hour = temp % 100;
+
+            return String.valueOf(hour);
+        }
+    }
+}

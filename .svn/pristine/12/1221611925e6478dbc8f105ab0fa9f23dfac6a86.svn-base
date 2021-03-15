@@ -1,0 +1,51 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.push;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by tyaathome on 2017/8/12.
+ */
+
+public class PackPushSetTagTypeUp extends PcsPackUp {
+
+    public static final String NAME = "setTag_sub";
+    public String tag = "";
+    public String type = "";
+    public List<String> q_list = new ArrayList<>();
+
+    public PackPushSetTagTypeUp() {
+        intervalMill = 0;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("tag", tag);
+            object.put("type", type);
+            JSONArray ary = new JSONArray();
+            for(String str : q_list) {
+                int index = q_list.indexOf(str);
+                JSONObject temp = new JSONObject();
+                temp.put("val", str);
+                ary.put(index, temp);
+            }
+            object.put("q_list", ary);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}

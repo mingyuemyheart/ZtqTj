@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather;
+
+import android.text.TextUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * 海洋天气信息
+ * @author chenjh
+ * @author E.Sun
+ * 2015年11月2日
+ */
+public class OceanWeatherInfo {
+	/** 日期 **/
+	public String date = "";
+	/** 天气描述 **/
+	public String weather = "";
+	/** 风力 **/
+	public String wind = "";
+    /** 风向**/
+    public String windDir = "";
+    /** 能见度**/
+    public String vis = "";
+	/** 类型：海域 */
+	public static final int TYPE_FISHERY = 0;
+	/** 类型：长江口域 */
+	public static final int TYPE_SEA = 1;
+	
+	public static final String KEY_AREA = "area";
+	public static final String KEY_DATE = "date";
+	public static final String KEY_WEATHER = "weather";
+	public static final String KEY_WAVE_HEIGHT = "wave_Height";
+	public static final String KEY_WIND = "wind";
+
+	public void fillData(String json) {
+		if(TextUtils.isEmpty(json)) {
+			return;
+		}
+		try {
+			JSONObject object = new JSONObject(json);
+            windDir = object.getString(KEY_AREA);
+			date = object.getString(KEY_DATE);
+			weather = object.getString(KEY_WEATHER);
+			vis = object.getString(KEY_WAVE_HEIGHT);
+			wind = object.getString(KEY_WIND);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+}

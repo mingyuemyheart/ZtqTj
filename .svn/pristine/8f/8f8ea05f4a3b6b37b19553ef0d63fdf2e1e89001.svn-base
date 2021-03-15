@@ -1,0 +1,40 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.citylist;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 周边城市
+ * Created by tyaathome on 2018/3/21.
+ */
+
+public class PackAroundCityDown extends PcsPackDown {
+
+    public List<AroundCityBean> cityList = new ArrayList<>();
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            cityList.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            JSONArray jsonArray = object.getJSONArray("info_list");
+            for(int i = 0; i < jsonArray.length(); i++) {
+                JSONObject temp = jsonArray.getJSONObject(i);
+                AroundCityBean city = new AroundCityBean();
+                city.id = temp.getString("id");
+                city.name = temp.getString("name");
+                city.parent_id = temp.getString("parent_id");
+                city.parent_name = temp.getString("parent_name");
+                cityList.add(city);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

@@ -1,0 +1,52 @@
+package com.pcs.lib_ztqfj_v2.model.pack.net.dataquery;
+
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 资料查询-地区配置
+ * Created by tyaathome on 2017/10/31.
+ */
+
+public class PackDataQueryAreaConfigDown extends PcsPackDown {
+
+    public List<AreaConfig> p_list = new ArrayList<>();
+    public String des = "";
+
+    @Override
+    public void fillData(String jsonStr) {
+        try {
+            p_list.clear();
+            JSONObject object = new JSONObject(jsonStr);
+            des = object.optString("des");
+            JSONArray pArray = object.getJSONArray("p_list");
+            for(int i = 0; i < pArray.length(); i++) {
+                JSONObject itemObject = pArray.getJSONObject(i);
+                JSONArray sArray = itemObject.getJSONArray("sub_list");
+                AreaConfig areaConfig = new AreaConfig();
+                areaConfig.id = itemObject.getString("id");
+                areaConfig.area_id = itemObject.getString("area_id");
+                areaConfig.name = itemObject.getString("name");
+                List<SubAreaConfig> subList = new ArrayList<>();
+                for(int j = 0; j < sArray.length(); j++) {
+                    JSONObject subitemObject = sArray.getJSONObject(j);
+                    SubAreaConfig subAreaConfig = new SubAreaConfig();
+                    subAreaConfig.s_area_id = subitemObject.getString("s_area_id");
+                    subAreaConfig.s_id = subitemObject.getString("s_id");
+                    subAreaConfig.s_name = subitemObject.getString("s_name");
+                    subList.add(subAreaConfig);
+                }
+                areaConfig.sub_list = subList;
+                p_list.add(areaConfig);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}
