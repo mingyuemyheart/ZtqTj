@@ -11,16 +11,25 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserChangePasswordDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserChangePasswordUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.UserFragmentCallBack;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 个人信息中修改密码
@@ -31,8 +40,6 @@ public class FragmentUserChangePassword extends UserFragmentCallBack implements 
     private EditText etOldPassword;
     private EditText etNewPassword;
     private EditText etConfirmPassword;
-
-    private MyReceiver receiver = new MyReceiver();
 
     @Nullable
     @Override
@@ -104,14 +111,8 @@ public class FragmentUserChangePassword extends UserFragmentCallBack implements 
 
     @Override
     public void onClickSubmitButton() {
-
         PackLocalUser localUser= ZtqCityDB.getInstance().getMyInfo();
-        PackPhotoUserChangePasswordUp packUp = new PackPhotoUserChangePasswordUp();
-        packUp.user_id = localUser.sys_user_id;
-        packUp.mobile = localUser.mobile;
-        packUp.o_pwd = PcsMD5.Md5(oldPassword);
-        packUp.n_pwd = PcsMD5.Md5(newPassword);
-        PcsDataDownload.addDownload(packUp);
+        okHttpModifyPwd(localUser.sys_user_id, oldPassword, newPassword);
     }
 
     @Override
@@ -154,18 +155,60 @@ public class FragmentUserChangePassword extends UserFragmentCallBack implements 
         }
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            // 修改密码
-            if(PackPhotoUserChangePasswordUp.NAME.equals(nameStr)) {
-                PackPhotoUserChangePasswordDown down = (PackPhotoUserChangePasswordDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(down == null) {
-                    return ;
+    /**
+     * 修改密码
+     */
+    private void okHttpModifyPwd(final String uName, final String pwd, final String newPassword) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/changepwd";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", uName);
+                    param.put("pwd", pwd);
+                    param.put("newpwd", newPassword);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (!obj.isNull("result")) {
+                                                boolean result = obj.getBoolean("result");
+                                                if (result) {
+                                                    Toast.makeText(getActivity(), "修改密码成功", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                Toast.makeText(getActivity(), down.result_msg, Toast.LENGTH_LONG).show();
             }
-        }
+        }).start();
     }
+
 }

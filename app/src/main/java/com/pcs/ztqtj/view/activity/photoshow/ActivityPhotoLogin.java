@@ -31,6 +31,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.AppTool;
 import com.pcs.ztqtj.control.tool.CommUtils;
@@ -38,6 +39,8 @@ import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.youmeng.LoginAnther;
 import com.pcs.ztqtj.control.tool.youmeng.ToolQQPlatform;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.pub.ActivityProtocol;
 import com.tencent.tauth.IUiListener;
@@ -48,17 +51,25 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 实景登陆
  *
  * @author JiangZy
  */
-public class ActivityPhotoLogin extends FragmentActivityZtqBase implements
-        OnClickListener {
+public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnClickListener {
     private LoginAnther login;
 
     /**
@@ -85,11 +96,9 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_login);
         setTitleText(R.string.login);
-        PcsDataBrocastReceiver.registerReceiver(this, mReceiver);
         // 初始化按钮
         initView();
         initData();
-
     }
 
     @Override
@@ -445,12 +454,7 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements
             return ;
         }
         CommUtils.closeKeyboard(this);
-        showProgressDialog();
-        mPack = new PackPhotoLoginUp();
-        mPack.platform_user_id = phone;
-        mPack.pwd = PcsMD5.Md5(password);
-        mPack.platform_type = PackPhotoLoginUp.PLAFORM_TYPE_ZTQ;
-        PcsDataDownload.addDownload(mPack);
+        okHttpLogin(phone, password);
     }
 
     private void loginZTQ(String username, String password) {
@@ -459,12 +463,7 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements
             return ;
         }
         CommUtils.closeKeyboard(this);
-        showProgressDialog();
-        mPack = new PackPhotoLoginUp();
-        mPack.platform_user_id = username;
-        mPack.pwd = PcsMD5.Md5(password);
-        mPack.platform_type = PackPhotoLoginUp.PLAFORM_TYPE_ZTQ;
-        PcsDataDownload.addDownload(mPack);
+        okHttpLogin(username, password);
     }
 
     private SHARE_MEDIA currentPathFrom;
@@ -613,93 +612,119 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements
     /**
      * 向我们的服务器提交数据 platForm: 1为新浪，2为qq，3为微信
      */
-    private void loginWeServer(String userId, String userName, String headUrl,
-                               String platForm) {
+    private void loginWeServer(String userId, String userName, String headUrl, String platForm) {
         Log.e("z", userId + "---" + userName + "---" + headUrl + "---" + platForm);
         if(!isOpenNet()){
             showToast(getString(R.string.net_err));
             return ;
         }
         showProgressDialog();
-        mPack = new PackPhotoLoginUp();
-        mPack.head_url = headUrl;
-        mPack.nick_name = userName;
-        mPack.platform_user_id = userId;
-        mPack.platform_type = platForm;
-        PcsDataDownload.addDownload(mPack);
+        okHttpLogin(userName, userId);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // 注销广播
-        PcsDataBrocastReceiver.unregisterReceiver(this, mReceiver);
-    }
+    /**
+     * 用户登录
+     */
+    private void okHttpLogin(final String uName, final String pwd) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/login";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", uName);
+                    param.put("pwd", pwd);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                showToast(errorMessage);
+                                            }
+                                            if (!obj.isNull("token")) {
+                                                MyApplication.TOKEN = obj.getString("token");
+                                                Log.e("token", MyApplication.TOKEN);
+                                            }
+                                            if (!obj.isNull("limitInfo")) {
+                                                MyApplication.LIMITINFO = obj.getString("limitInfo");
+                                            }
+                                            if (!obj.isNull("userInfo")) {
+                                                JSONObject userInfo = obj.getJSONObject("userInfo");
+                                                if (!userInfo.isNull("userId")) {
+                                                    MyApplication.UID = userInfo.getString("userId");
+                                                }
+                                                if (!userInfo.isNull("loginName")) {
+                                                    MyApplication.USERNAME = userInfo.getString("loginName");
+                                                }
+                                                if (!userInfo.isNull("password")) {
+                                                    MyApplication.PASSWORD = userInfo.getString("password");
+                                                }
+                                                if (!userInfo.isNull("userName")) {
+                                                    MyApplication.NAME= userInfo.getString("userName");
+                                                }
+                                                if (!userInfo.isNull("phonenumber")) {
+                                                    MyApplication.MOBILE= userInfo.getString("phonenumber");
+                                                }
+                                                if (!userInfo.isNull("avatar")) {
+                                                    MyApplication.PORTRAIT= userInfo.getString("avatar");
+                                                }
+                                                MyApplication.saveUserInfo(ActivityPhotoLogin.this);
 
-    // 上传包
-    private PackPhotoLoginUp mPack;
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (!PackPhotoLoginUp.NAME.equals(nameStr)) {
-                return;
-            }
-            dismissProgressDialog();
-            if (!TextUtils.isEmpty(errorStr)) {
-                Toast.makeText(ActivityPhotoLogin.this,getString(R.string.error_net), Toast.LENGTH_SHORT).show();
-            }else{
-                PackPhotoLoginDown packDown = (PackPhotoLoginDown) PcsDataManager.getInstance().getNetPack(PackPhotoLoginUp.NAME);
-                if (packDown == null) {
-                    Toast.makeText(ActivityPhotoLogin.this, "登录失败！", Toast.LENGTH_SHORT).show();
-                    return;
+                                                //存储用户数据
+                                                PackLocalUser myUserInfo = new PackLocalUser();
+                                                myUserInfo.user_id = MyApplication.UID;
+                                                myUserInfo.sys_user_id = MyApplication.UID;
+                                                myUserInfo.sys_nick_name = MyApplication.NAME;
+                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
+                                                myUserInfo.mobile = MyApplication.MOBILE;
+//                                                myUserInfo.type = packDown.platform_type;
+//                                                myUserInfo.is_jc = packDown.is_jc;
+                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
+                                                packLocalUserInfo.currUserInfo = myUserInfo;
+                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+
+                                                Toast.makeText(ActivityPhotoLogin.this, getString(R.string.login_succ), Toast.LENGTH_SHORT).show();
+                                                Intent intent = new Intent();
+                                                Bundle bundle = new Bundle();
+                                                bundle.putString("nick_name", MyApplication.NAME);
+                                                bundle.putString("head_url", MyApplication.PORTRAIT);
+                                                bundle.putString("phone", MyApplication.MOBILE);
+                                                bundle.putString("user_id", MyApplication.UID);
+                                                intent.putExtras(bundle);
+                                                setResult(RESULT_OK, intent);
+                                                finish();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                if (!"1".equals(packDown.result)) {
-                    Toast.makeText(ActivityPhotoLogin.this, packDown.result_msg, Toast.LENGTH_SHORT).show();
-                    return;
-                } else if ("1".equals(packDown.result)) {
-                    Toast.makeText(ActivityPhotoLogin.this,
-                            getString(R.string.login_succ), Toast.LENGTH_SHORT)
-                            .show();
-                    // 初始化成功
-                    loginSuccess(packDown);
-                }
             }
-
-        }
-    };
-
-    public void loginSuccess(PackPhotoLoginDown packDown) {// 待用
-        packDown.mobile = phone;
-//        LoginInformation.getInstance().reSetValue(packDown);
-
-        // 存储决策服务用户id
-        PackLocalUser myUserInfo = new PackLocalUser();
-        myUserInfo.user_id = packDown.fw_user_id;
-        myUserInfo.sys_user_id=packDown.user_id;
-        myUserInfo.sys_nick_name=packDown.nick_name;
-        myUserInfo.sys_head_url=packDown.head_url;
-        myUserInfo.mobile=packDown.mobile;
-        myUserInfo.type=packDown.platform_type;
-        myUserInfo.is_jc = packDown.is_jc;
-
-        PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-        packLocalUserInfo.currUserInfo = myUserInfo;
-        ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
-
-//        LoginInformation.getInstance().savePhotoLoginDown(packDown);
-
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putString("nick_name", packDown.nick_name);
-        bundle.putString("head_url", packDown.head_url);
-        bundle.putString("phone", phone);
-//        bundle.putString("phone", phone);
-        bundle.putString("user_id", packDown.user_id);
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
-        finish();
+        }).start();
     }
-
 
     private IUiListener qqLoginListener = new IUiListener() {
         @Override

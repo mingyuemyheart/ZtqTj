@@ -2,35 +2,46 @@ package com.pcs.ztqtj.view.activity.product.agriculture;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * 农业气象详情页
- * Created by tyaathome on 2016/11/17.
+ * 专项服务-行业气象-农业气象-旬报，月报-详情
  */
 public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
 
     private WebView webView;
-
-    private MyReceiver receiver = new MyReceiver();
-    private PackExpertDetailUp packExpertDetailUp = new PackExpertDetailUp();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +49,6 @@ public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
         setContentView(R.layout.activity_webview);
         setTitleText(getIntent().getStringExtra("title"));
         initView();
-        initEvent();
-        initData();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
     }
 
     private void initView() {
@@ -70,16 +70,8 @@ public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
                 ShareTools.getInstance(ActivityAgricultureWeatherDetail.this).setShareContent(getTitleText(), shareContent, shareBitmap,"0").showWindow(layout);
             }
         });
-    }
 
-    private void initEvent() {
-
-    }
-
-    private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
-
-        req();
+        okHttpInfoList();
     }
 
     private void initWebView() {
@@ -127,31 +119,69 @@ public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
     }
 
     /**
-     * 请求数据
+     * 获取农业气象旬报、月报详情
      */
-    private void req() {
-        packExpertDetailUp = new PackExpertDetailUp();
-        packExpertDetailUp.id = getIntent().getStringExtra("id");
-        PcsDataDownload.addDownload(packExpertDetailUp);
-    }
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (!TextUtils.isEmpty(errorStr)) {
-                return;
-            }
-
-            if (nameStr.equals(packExpertDetailUp.getName())) {
-                PackExpertDetailDown down = (PackExpertDetailDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
+    private void okHttpInfoList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String id = getIntent().getStringExtra("id");
+                    String channel_id = getIntent().getStringExtra("channel_id");
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", channel_id);
+                    info.put("extra", id);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"info_list";
+                    Log.e("info_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("info_list", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("tq_zx_info")) {
+                                                    JSONObject tq_zx_info = bobj.getJSONObject("tq_zx_info");
+                                                    if (!TextUtil.isEmpty(tq_zx_info.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackExpertDetailDown down = new PackExpertDetailDown();
+                                                        down.fillData(tq_zx_info.toString());
+                                                        String url = getResources().getString(R.string.file_download_url) + down.link;
+                                                        webView.loadUrl(url);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                String url = getResources().getString(R.string.file_download_url) + down.link;
-                webView.loadUrl(url);
             }
-        }
+        }).start();
     }
+
 }

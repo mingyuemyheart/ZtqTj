@@ -62,11 +62,19 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.TyphoonInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.typhoon.TyphoonPathInfo;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.image.ImageLoadFromUrl;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.product.typhoon.ActivityTyphoon;
 import com.pcs.ztqtj.view.myview.typhoon.TyphoonForecastView;
 import com.pcs.ztqtj.view.myview.typhoon.TyphoonTrueView;
 import com.pcs.ztqtj.view.myview.typhoon.TyphoonView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,6 +83,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 台风路径
@@ -350,28 +363,74 @@ public class ControlTyphoon {
      */
     private void receiveTyphoonList() {
         mActivity.dismissProgressDialog();
-        // 填充数据
-        PackTyphoonListDown downPack = (PackTyphoonListDown) PcsDataManager.getInstance().getNetPack
-                (mPackTyphoonListUp.getName());
-        if (downPack == null || downPack.typhoonList.size() == 0) {
-            mActivity.showError("获取台风列表失败");
-            return;
-        }
+        okHttpTyphoonList(mPackTyphoonListUp.getName());
+    }
 
-        mActivity.fillTyphoonListData(downPack.typhoonList);
+    /**
+     * 获取台风列表
+     */
+    private void okHttpTyphoonList(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("tflist", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("tflist")) {
+                                                JSONObject tflist = bobj.getJSONObject("tflist");
+                                                if (!TextUtil.isEmpty(tflist.toString())) {
+                                                    // 填充数据
+                                                    PackTyphoonListDown downPack = new PackTyphoonListDown();
+                                                    downPack.fillData(tflist.toString());
+                                                    if (downPack == null || downPack.typhoonList.size() == 0) {
+                                                        mActivity.showError("获取台风列表失败");
+                                                        return;
+                                                    }
 
-        //判断当前是否有台风
-        if (TextUtils.isEmpty(downPack.is_ty) || downPack.is_ty.equals("0")) {
-            if (TextUtils.isEmpty(downPack.desc)) {
-                mActivity.showError("当前无台风");
-            } else {
-                mActivity.showError(downPack.desc);
+                                                    mActivity.fillTyphoonListData(downPack.typhoonList);
+
+                                                    //判断当前是否有台风
+                                                    if (TextUtils.isEmpty(downPack.is_ty) || downPack.is_ty.equals("0")) {
+                                                        if (TextUtils.isEmpty(downPack.desc)) {
+                                                            mActivity.showError("当前无台风");
+                                                        } else {
+                                                            mActivity.showError(downPack.desc);
+                                                        }
+                                                    } else {
+                                                        //mActivity.selectTyphoon(0);
+                                                        // 当前有台风则请求当前台风列表
+                                                        requestCurrentTyphoonList();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
             }
-        } else {
-            //mActivity.selectTyphoon(0);
-            // 当前有台风则请求当前台风列表
-            requestCurrentTyphoonList();
-        }
+        }).start();
     }
 
     /**
@@ -403,20 +462,60 @@ public class ControlTyphoon {
      * 接收台风路径
      */
     private void receiveTyphoonPath(String nameStr) {
-        // 填充数据
-        PackTyphoonPathDown mPackTyphoonPathDown = (PackTyphoonPathDown) PcsDataManager.getInstance().getNetPack
-                (nameStr);
-        // 提示出错
-        if (mPackTyphoonPathDown == null || mPackTyphoonPathDown.typhoonPathInfo.fulPointList.size() == 0) {
-            mActivity.showError("获取台风路径失败");
-            // 取消等待框
-            mActivity.dismissProgressDialog();
-            return;
-        }
+        okHttpTyphoonDetail(nameStr);
+    }
 
-        // 解析台风路径
-        //PcsInit.getInstance().getExecutorService().execute(new MyRunnable(mPackTyphoonPathDown.typhoonPathInfo));
-        new MyRunnable(mPackTyphoonPathDown.typhoonPathInfo).run();
+    /**
+     * 获取台风详情数据
+     */
+    private void okHttpTyphoonDetail(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("tfpathnew", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!TextUtil.isEmpty(obj.toString())) {
+                                            // 填充数据
+                                            PackTyphoonPathDown mPackTyphoonPathDown = new PackTyphoonPathDown();
+                                            mPackTyphoonPathDown.fillData(obj.toString());
+                                            // 提示出错
+                                            if (mPackTyphoonPathDown == null || mPackTyphoonPathDown.typhoonPathInfo.fulPointList.size() == 0) {
+                                                mActivity.showError("获取台风路径失败");
+                                                // 取消等待框
+                                                mActivity.dismissProgressDialog();
+                                                return;
+                                            }
+
+                                            // 解析台风路径
+                                            //PcsInit.getInstance().getExecutorService().execute(new MyRunnable(mPackTyphoonPathDown.typhoonPathInfo));
+                                            new MyRunnable(mPackTyphoonPathDown.typhoonPathInfo).run();
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     private void receiverMultiTyphoon(String nameStr) {

@@ -11,13 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.MyPackHourForecastDown;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown.HourForecast;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,9 +32,9 @@ public class AdapterMainHourForecast extends BaseAdapter {
     /**
      * 数据列表
      */
-    private List<HourForecast> mList = new ArrayList<HourForecast>();
+    private List<MyPackHourForecastDown.HourForecast> mList = new ArrayList<MyPackHourForecastDown.HourForecast>();
 
-    public AdapterMainHourForecast(Context context, List<HourForecast> mArrayList) {
+    public AdapterMainHourForecast(Context context, List<MyPackHourForecastDown.HourForecast> mArrayList) {
         mContext = context;
         mList = mArrayList;
 //        PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
@@ -120,7 +116,7 @@ public class AdapterMainHourForecast extends BaseAdapter {
         } else {
             holder = (Holder) convertView.getTag();
         }
-        HourForecast pack = mList.get(position);
+        MyPackHourForecastDown.HourForecast pack = mList.get(position);
         // 天气现象
         if (pack.ico != null && !"".equals(pack.ico)) {
             try {
@@ -136,9 +132,17 @@ public class AdapterMainHourForecast extends BaseAdapter {
         holder.textWeather.setText(pack.desc);
         holder.textSw.setText(pack.winddir);
         if (position == 0) {
-            holder.TextSpeed.setText(pack.windspeed + "m/s");
+            if (!TextUtil.isEmpty(pack.windspeed)) {
+                holder.TextSpeed.setText(pack.windspeed + "m/s");
+            } else {
+                holder.TextSpeed.setText(pack.windlevel);
+            }
         } else {
-            holder.TextSpeed.setText(pack.windspeed);
+            if (!TextUtil.isEmpty(pack.windspeed)) {
+                holder.TextSpeed.setText(pack.windspeed);
+            } else {
+                holder.TextSpeed.setText(pack.windlevel);
+            }
         }
         holder.textTime.setText(pack.getTime());
         return convertView;

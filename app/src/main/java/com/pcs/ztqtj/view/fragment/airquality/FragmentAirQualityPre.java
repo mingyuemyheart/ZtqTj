@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirLevelDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirLevelUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirPollutionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoUp;
@@ -38,19 +40,28 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirTrendDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirTrendUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.air_qualitydetail.AdapterAirStations;
 import com.pcs.ztqtj.control.inter.ClickPositionListener;
 import com.pcs.ztqtj.control.tool.AirQualityTool;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.NetTask;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.air_quality.AcitvityAirWhatAQI;
 import com.pcs.ztqtj.view.activity.newairquality.ActivityAir;
 import com.pcs.ztqtj.view.activity.newairquality.ActivityAirQualityRandking;
 import com.pcs.ztqtj.view.myview.AirQualityView;
 import com.pcs.ztqtj.view.myview.CircleProgressView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,11 +69,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/9/4 0004.
- * chen_jx
- */
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+/**
+ * 空气质量实况
+ */
 public class FragmentAirQualityPre extends Fragment implements View.OnClickListener {
 
     private AirQualityView airQueryView;
@@ -121,14 +138,13 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
             s_area_id = cityMain.ID;
             s_area_name = cityMain.NAME;
         }
-        req();
-//        getTrend(s_area_id, "AQI", "1");
+        okHttpAirLev();
         if (cityMain.isFjCity) {
             tv_choose_station.setText("天津总体");
         } else {
             tv_choose_station.setText(s_area_name + "总体");
         }
-        reqKeyDesc();
+        okHttpAirRemark();
         reqAirInfo();
         reqStationList2();
     }
@@ -310,43 +326,10 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
         task.execute(mPackStationUp);
     }
 
-    private void reqKeyDesc() {
-        PackKeyDescUp packup = new PackKeyDescUp();
-        NetTask task = new NetTask(getActivity(), new NetTask.NetListener() {
-            @Override
-            public void onComplete(PcsPackDown down) {
-                packKey = (PackKeyDescDown) down;
-                if (packKey == null) {
-                    return;
-                }
-                dealWidthKeyData(packKey);
-            }
-        });
-        task.execute(packup);
-    }
-
     private void reqAirInfo() {
         // 城市
         mPackInfoUp.area = s_area_id;
-        NetTask task = new NetTask(getActivity(), new NetTask.NetListener() {
-            @Override
-            public void onComplete(PcsPackDown down) {
-                // 取消等待框
-                dismissProgressDialog();
-                // 加载数据
-                PackAirInfoDown packAirInfoDown = (PackAirInfoDown) down;
-                if (packAirInfoDown == null) {
-                    return;
-                }
-                // 刷新数据
-                refreshData(packAirInfoDown, 300);
-                tv_city_num.setText(packAirInfoDown.city_num + "/");
-                tv_city_total.setText(packAirInfoDown.totalCity + "位");
-                tv_pub_time.setText(strToDateLong(packAirInfoDown.pub_time) + " 更新");
-                tv_airquality_name.setText(packAirInfoDown.pub_unit);
-            }
-        });
-        task.execute(mPackInfoUp);
+        okHttpAirCityStation(s_area_id);
     }
 
     private void reqAirStationInfo(String name, int id) {
@@ -372,31 +355,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     private ArrayList<PackAirLevelDown.AirLecel> list_level = new ArrayList<>();
     private PackAirLevelUp airLevelUp = new PackAirLevelUp();
 
-    /**
-     * 请求站点列表
-     */
-    private void req() {
-        showProgressDialog();
-        NetTask task = new NetTask(getActivity(), new NetTask.NetListener() {
-            @Override
-            public void onComplete(PcsPackDown down) {
-                // 取消等待框
-                dismissProgressDialog();
-                // 加载数据
-                PackAirLevelDown airLevelDown = (PackAirLevelDown) down;
-                if (down == null) {
-                    return;
-                }
-                list_level.clear();
-                list_level.addAll(airLevelDown.list);
-                getTrend(s_area_id, "AQI", areatype);
-            }
-        });
-        task.execute(airLevelUp);
-
-    }
-
-
     private void getTrend(String stationID, String sx, String areatype) {
         showProgressDialog();
         PackAirTrendUp airTrendUp = new PackAirTrendUp();
@@ -404,14 +362,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
         airTrendUp.station_id = stationID;
         airTrendUp.sx = sx;
         airTrendUp.areatype = areatype;
-        NetTask task = new NetTask(getActivity(), new NetTask.NetListener() {
-            @Override
-            public void onComplete(PcsPackDown down) {
-                PackAirTrendDown airTrendDown = (PackAirTrendDown) down;
-                reFlushList(airTrendDown);
-            }
-        });
-        task.execute(airTrendUp);
+        okHttpAirTrend(sx);
     }
 
     @Override
@@ -440,8 +391,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
             aqi = Integer.valueOf(packAirInfoDown.aqi);
             String tipArr[] = getResources().getStringArray(
                     R.array.AirQualityHeathTip);
-            String tipStr = AirQualityTool.getInstance().getHealthTip(tipArr,
-                    aqi);
+            String tipStr = AirQualityTool.getInstance().getHealthTip(tipArr,aqi);
             tv_healthy.setText(tipStr);
             getTvColor(aqi);
             handler.postDelayed(runnableProgress, delay);
@@ -467,8 +417,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                     return;
                 }
                 // 加载数据
-                mPackStationDown = (PackAirStationDown) PcsDataManager.getInstance().getNetPack(
-                        mPackStationUp.getName());
+                mPackStationDown = (PackAirStationDown) PcsDataManager.getInstance().getNetPack(mPackStationUp.getName());
                 // 弹出对话框
                 //showDialogStation();
                 list.clear();
@@ -489,21 +438,12 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 if (!TextUtils.isEmpty(errorStr)) {
                     return;
                 }
-                // 取消等待框
-                dismissProgressDialog();
                 // 加载数据
-                PackAirInfoDown packAirInfoDown = (PackAirInfoDown) PcsDataManager.getInstance()
-                        .getNetPack(
-                                mPackInfoUp.getName());
-                if (packAirInfoDown == null) {
-                    return;
-                }
-                // 刷新数据
-                refreshData(packAirInfoDown, 300);
-                tv_city_num.setText("全国排行：" + packAirInfoDown.city_num + "/" + packAirInfoDown.totalCity + " 击败全国" +
-                        packAirInfoDown.per + "的城市");
-                tv_pub_time.setText(strToDateLong(packAirInfoDown.pub_time) + " 更新");
-                tv_airquality_name.setText(packAirInfoDown.pub_unit);
+//                PackAirInfoDown packAirInfoDown = (PackAirInfoDown) PcsDataManager.getInstance().getNetPack(mPackInfoUp.getName());
+//                if (packAirInfoDown == null) {
+//                    return;
+//                }
+                okHttpAirCityStation(mPackInfoUp.getName());
             } else if (name.equals(mPackStationInfoUp.getName())) {
                 if (!TextUtils.isEmpty(errorStr)) {
                     return;
@@ -511,9 +451,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 // 取消等待框
                 dismissProgressDialog();
                 // 加载数据
-                PackAirStationInfoDown mPackStationInfoDown = (PackAirStationInfoDown) PcsDataManager.getInstance()
-                        .getNetPack(
-                                mPackStationInfoUp.getName());
+                PackAirStationInfoDown mPackStationInfoDown = (PackAirStationInfoDown) PcsDataManager.getInstance().getNetPack(mPackStationInfoUp.getName());
                 if (mPackStationInfoDown == null) {
                     return;
                 }
@@ -575,7 +513,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("AQI走势图");
-                getTrend(s_area_id, "AQI", "1");
+                getTrend(s_area_id, "aqi", "1");
                 break;
             case R.id.lay_PM2:
 //                if (packKey == null) {
@@ -585,7 +523,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("PM2.5走势图");
-                getTrend(s_area_id, "PM2_5", "1");
+                getTrend(s_area_id, "pm2", "1");
                 break;
             case R.id.lay_PM10:
 //                if (packKey == null) {
@@ -595,7 +533,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("PM10走势图");
-                getTrend(s_area_id, "PM10", "1");
+                getTrend(s_area_id, "pm10", "1");
                 break;
             case R.id.lay_CO:
 //                if (packKey == null) {
@@ -605,7 +543,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="1";
                 setTextContentColor("1");
                 tv_type.setText("CO走势图");
-                getTrend(s_area_id, "CO", "1");
+                getTrend(s_area_id, "co", "1");
                 break;
             case R.id.lay_N02:
 //                if (packKey == null) {
@@ -615,7 +553,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="2";
                 setTextContentColor("2");
                 tv_type.setText("NO₂走势图");
-                getTrend(s_area_id, "NO2", "1");
+                getTrend(s_area_id, "no2", "1");
                 break;
             case R.id.lay_SO2:
 //                if (packKey == null) {
@@ -625,7 +563,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="3";
                 setTextContentColor("1");
                 tv_type.setText("SO₂走势图");
-                getTrend(s_area_id, "SO2", "1");
+                getTrend(s_area_id, "so2", "1");
                 break;
             case R.id.lay_031h:
 //                if (packKey == null) {
@@ -635,7 +573,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="4";
                 setTextContentColor("3");
                 tv_type.setText("O₃-1H走势图");
-                getTrend(s_area_id, "O3", "1");
+                getTrend(s_area_id, "o3", "1");
                 break;
             case R.id.lay_038h:
 //                if (packKey == null) {
@@ -643,7 +581,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
 //                }
 //                changeValueKey(6);
                 tv_type.setText("O₃-8H走势图");
-                getTrend(s_area_id, "O3", "1");
+                getTrend(s_area_id, "o3", "1");
                 break;
             case R.id.lay_airRanking:
                 Intent intent = new Intent(getActivity(), ActivityAirQualityRandking.class);
@@ -658,7 +596,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("AQI走势图");
-                getTrend(s_area_id, "AQI", "1");
+                getTrend(s_area_id, "aqi", "1");
                 break;
             case R.id.ll_map:
                 gotoMap();
@@ -1000,4 +938,248 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
         popupWindow.setHeight(hight);
         popupWindow.showAsDropDown(view, x - width / 2, -(y + hight));
     }
+
+    /**
+     * 获取空气质量等级
+     */
+    private void okHttpAirLev() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    String url = CONST.BASE_URL+"air_lev";
+                    Log.e("air_lev", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            Log.e("onFailure", e.getMessage());
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_lev", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        if (!TextUtil.isEmpty(result)) {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("air_lev")) {
+                                                    JSONObject oobj = bobj.getJSONObject("air_lev");
+                                                    if (!TextUtil.isEmpty(oobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        // 加载数据
+                                                        PackAirLevelDown airLevelDown = new PackAirLevelDown();
+                                                        airLevelDown.fillData(oobj.toString());
+                                                        list_level.clear();
+                                                        list_level.addAll(airLevelDown.list);
+                                                        getTrend(s_area_id, "aqi", areatype);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取空气质量实况、排名信息
+     */
+    private void okHttpAirCityStation(final String stationId) {
+        dismissProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    String url = CONST.BASE_URL+"air_city_station";
+                    Log.e("air_city_station", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            Log.e("onFailure", e.getMessage());
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_city_station", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        if (!TextUtil.isEmpty(result)) {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("airinfo_one")) {
+                                                    JSONObject airinfo_one = bobj.getJSONObject("airinfo_one");
+                                                    if (!TextUtil.isEmpty(airinfo_one.toString())) {
+                                                        PackAirInfoDown packAirInfoDown = new PackAirInfoDown();
+                                                        packAirInfoDown.fillData(airinfo_one.toString());
+                                                        // 刷新数据
+                                                        refreshData(packAirInfoDown, 300);
+                                                        tv_city_num.setText(packAirInfoDown.city_num + "/");
+                                                        tv_city_total.setText(packAirInfoDown.totalCity + "位");
+                                                        tv_pub_time.setText(strToDateLong(packAirInfoDown.pub_time) + " 更新");
+                                                        tv_airquality_name.setText(packAirInfoDown.pub_unit);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void okHttpAirRemark() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_remark";
+                    Log.e("air_remark", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_remark", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_remark")) {
+                                                JSONObject air_remark = bobj.getJSONObject("air_remark");
+                                                PackKeyDescDown packKey = new PackKeyDescDown();
+                                                packKey.fillData(air_remark.toString());
+                                                dealWidthKeyData(packKey);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取空气质量趋势数据，图表
+     */
+    private void okHttpAirTrend(final String airType) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", s_area_id);
+                    info.put("airType", airType);//aqi/pm2/pm10/no2/so2/co/o3
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    String url = CONST.BASE_URL+"air_trend";
+                    Log.e("air_trend", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        dismissProgressDialog();
+                                        if (!TextUtil.isEmpty(result)) {
+                                            Log.e("air_trend", result);
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("air_trend")) {
+                                                    JSONObject air_trend = bobj.getJSONObject("air_trend");
+                                                    if (!TextUtil.isEmpty(air_trend.toString())) {
+                                                        PackAirTrendDown airTrendDown = new PackAirTrendDown();
+                                                        airTrendDown.fillData(air_trend.toString());
+                                                        reFlushList(airTrendDown);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

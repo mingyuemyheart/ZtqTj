@@ -339,7 +339,6 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/border_all_alpha_white"
                 android:gravity="center"
                 android:textColor="@color/text_white"
                 android:textSize="14dp"/>
@@ -385,7 +384,6 @@
                 android:layout_height="25dp"
                 android:gravity="center"
                 android:layout_marginLeft="5dp"
-                android:background="@drawable/border_all_alpha_white"
                 android:textColor="@color/text_white"
                 android:textSize="14dp" />
 

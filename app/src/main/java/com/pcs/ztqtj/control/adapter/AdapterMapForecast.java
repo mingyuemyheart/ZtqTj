@@ -1,33 +1,43 @@
 package com.pcs.ztqtj.control.adapter;
 
-import android.text.TextUtils;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.product.ActivityMapForecast;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackMapForecastDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackMapForecastDown.MapForecast;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackMapForecastUp;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * 适配器：网格预报
- *
- * @author JiangZy
+ * 指点天气
  */
 public class AdapterMapForecast extends BaseAdapter {
 
+    private Handler mUIHandler = new Handler();
     private ActivityMapForecast mContext;
-    private PackMapForecastUp mPackUp = new PackMapForecastUp();
-    private PackMapForecastDown mPackDown = new PackMapForecastDown();
+    private MyPackMapForecastDown mPackDown = new MyPackMapForecastDown();
 
     public AdapterMapForecast(ActivityMapForecast context) {
         mContext = context;
@@ -39,27 +49,7 @@ public class AdapterMapForecast extends BaseAdapter {
      * @param latLng
      */
     public void refresh(int hour, LatLng latLng) {
-        String latitude = String.format("%.1f", latLng.latitude);
-        String longitude = String.format("%.1f", latLng.longitude);
-        if (mPackUp.hour != null && mPackUp.hour.equals(String.valueOf(hour))
-                && mPackUp.longitude.equals(latitude)
-                && mPackUp.latitude.equals(latitude)) {
-            // 完全相同
-            return;
-        }
-        if (mPackUp.hour != null) {
-            // 删除之前的下载
-            PcsDataDownload.removeDownload(mPackUp);
-        }
-        mPackDown.list.clear();
-
-        mPackUp.hour = String.valueOf(hour);
-        mPackUp.latitude = latitude;
-        mPackUp.longitude = longitude;
-
-
-        PcsDataDownload.addDownload(mPackUp);
-
+        okHttpGrid(latLng.latitude, latLng.longitude);
         this.notifyDataSetChanged();
     }
 
@@ -97,7 +87,7 @@ public class AdapterMapForecast extends BaseAdapter {
             view.setBackgroundColor(mContext.getResources().getColor(
                     R.color.map_forecast_list_bg));
         }
-        MapForecast pack = mPackDown.list.get(position);
+        MyPackMapForecastDown.MapForecast pack = mPackDown.list.get(position);
         TextView textView = null;
 
         // 天气
@@ -118,52 +108,76 @@ public class AdapterMapForecast extends BaseAdapter {
         // 风向
         textView = (TextView) view.findViewById(R.id.text_winddir);
         textView.setText(pack.winddir);
-        // 风速
+        // 风力
         textView = (TextView) view.findViewById(R.id.text_windspeed);
-        textView.setText(pack.windspeed + "m/s");
+        textView.setText(pack.windlevel);
 
         return view;
     }
 
     /**
-     * 注册广播
+     * 获取指点天气数据
      */
-    public void registerReceiver() {
-        PcsDataBrocastReceiver.registerReceiver(mContext, mReceiver);
-    }
-
-    /**
-     * 注销广播
-     */
-    public void unregisterReceiver() {
-        PcsDataBrocastReceiver.unregisterReceiver(mContext, mReceiver);
-    }
-
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-
-            if (!TextUtils.isEmpty(errorStr)) {
-                Toast.makeText(mContext, errorStr, Toast.LENGTH_SHORT)
-                        .show();
-                return;
-            }
-            if (mPackUp.hour == null) {
-                return;
-            }
-            if (nameStr.equals(mPackUp.getName())) {
-                mPackDown = (PackMapForecastDown) PcsDataManager.getInstance().getNetPack(mPackUp.getName());
-                if (mPackDown == null || mPackDown.list.size() == 0) {
-                    // 提示无数据
-//                    Toast.makeText(mContext, R.string.no_data, Toast.LENGTH_SHORT)
-//                            .show();
-                    mContext.setView(true);
-                    //return ;
-                } else {
-                    mContext.setView(false);
-                    AdapterMapForecast.this.notifyDataSetChanged();
+    private void okHttpGrid(final double lat, final double lng) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("lat", lat+"");
+                    info.put("lon", lng+"");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"grid";
+                    Log.e("grid", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mUIHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("grid", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("grid")) {
+                                                    JSONObject grid = bobj.getJSONObject("grid");
+                                                    if (!TextUtil.isEmpty(grid.toString())) {
+                                                        mPackDown.fillData(grid.toString());
+                                                        if (mPackDown == null || mPackDown.list.size() == 0) {
+                                                            mContext.setView(true);
+                                                        } else {
+                                                            mContext.setView(false);
+                                                            AdapterMapForecast.this.notifyDataSetChanged();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }
-    };
+        }).start();
+    }
+
 }

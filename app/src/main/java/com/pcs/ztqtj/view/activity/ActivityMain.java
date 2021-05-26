@@ -2,6 +2,7 @@ package com.pcs.ztqtj.view.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -34,12 +36,10 @@ import android.widget.Toast;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownload;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownloadListener;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
@@ -50,19 +50,19 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
 import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
-import com.pcs.ztqtj.control.tool.NetTask;
 import com.pcs.ztqtj.control.tool.ZtqAppWidget;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.control.tool.ZtqPushTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
@@ -77,9 +77,21 @@ import com.pcs.ztqtj.view.fragment.FragmentService;
 import com.pcs.ztqtj.view.fragment.FragmentSet;
 import com.umeng.analytics.MobclickAgent;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ActivityMain extends FragmentActivity {
 
@@ -213,19 +225,82 @@ public class ActivityMain extends FragmentActivity {
                     if(bean.currentCity != null) {
                         ZtqCityDB.getInstance().setCityMain(bean.currentCity, false);
                     }
-                    String cityid = bundle.getString("cityid");
                     boolean isfj = bundle.getBoolean("isfj");
                     String unitType = bundle.getString("yj_type");
                     Intent intent = new Intent();
                     intent.setClass(this, ActivityWarningCenterNotFjCity.class);
                     intent.putExtra("warninfo", bean);
-                    intent.putExtra("cityid", cityid);
                     intent.putExtra("yj_type", unitType);
                     startActivity(intent);
                 }
             }
             getIntent().removeExtra(MyConfigure.EXTRA_BUNDLE);
         }
+
+        SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
+        try {
+            String currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            String lastVer = sharedPreferences.getString("ver", "-1");
+            if (!TextUtils.equals(currentVer, lastVer)) {
+                dialogPrivacy(currentVer);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dialogPrivacy(final String ver) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.dialog_privacy, null);
+        TextView tvMessage = view.findViewById(R.id.tvMessage);
+        TextView tvContent = view.findViewById(R.id.tvContent);
+        TextView tvPrivacy = view.findViewById(R.id.tvPrivacy);
+        TextView tvProtocal = view.findViewById(R.id.tvProtocal);
+        LinearLayout llNegative = view.findViewById(R.id.llNegative);
+        LinearLayout llPositive = view.findViewById(R.id.llPositive);
+
+        final Dialog dialog = new Dialog(this, R.style.CustomProgressDialog);
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        tvMessage.setText("隐私服务协议");
+        tvContent.setText("感谢您使用“天津惠民”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津惠民隐私政策》和《天津惠民用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津惠民”。我公司将尽全力保护您的个人信息安全。");
+        tvPrivacy.setText("《天津惠民隐私政策》");
+        tvPrivacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityMain.this, HtmlActivity.class);
+                intent.putExtra(CONST.ACTIVITY_NAME, "隐私政策");
+                intent.putExtra(CONST.WEB_URL, "http://220.243.129.159:8081/web/smart/yszc.html");
+                startActivity(intent);
+            }
+        });
+        tvProtocal.setText("《天津惠民用户服务协议》");
+        tvProtocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityMain.this, HtmlActivity.class);
+                intent.putExtra(CONST.ACTIVITY_NAME, "用户服务协议");
+                intent.putExtra(CONST.WEB_URL, "http://220.243.129.159:8081/web/smart/yhxy.html");
+                startActivity(intent);
+            }
+        });
+        llNegative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        llPositive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("ver", ver);
+                editor.apply();
+            }
+        });
     }
 
     @Override
@@ -443,7 +518,7 @@ public class ActivityMain extends FragmentActivity {
             mFragmentList.add(mFragmentHomeWeather);
             // 气象产品
             mFragmentList.add(new FragmentProduct());
-            // 气象服务
+            // 专项服务
             mFragmentList.add(new FragmentService());
             // 气象生活
             mFragmentList.add(new FragmentLife());
@@ -885,7 +960,7 @@ public class ActivityMain extends FragmentActivity {
             mRadioListener.changeFragment(1);
             radioGroup.check(R.id.radio_product);
         } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.SERVICE.ordinal()) {
-            // 气象服务
+            // 专项服务
             mRadioListener.changeFragment(2);
             radioGroup.check(R.id.radio_service);
         } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.LIVE.ordinal()) {
@@ -949,39 +1024,15 @@ public class ActivityMain extends FragmentActivity {
             @Override
             public void click(String str) {
                 if (str.equals("登录")) {
-                    PackPhotoLoginUp up = new PackPhotoLoginUp();
-                    up.platform_user_id = etUserName.getText().toString();
-                    up.pwd = PcsMD5.Md5(etPassword.getText().toString());
-                    up.platform_type = PackPhotoLoginUp.PLAFORM_TYPE_ZTQ;
-                    NetTask task = new NetTask(ActivityMain.this, new NetTask.NetListener() {
-                        @Override
-                        public void onComplete(PcsPackDown down) {
-                            if(down instanceof PackPhotoLoginDown) {
-                                PackPhotoLoginDown loginDown = (PackPhotoLoginDown) down;
-                                if(loginDown.result.equals("1")) {
-                                    PackLocalUser myUserInfo = new PackLocalUser();
-                                    myUserInfo.user_id = loginDown.fw_user_id;
-                                    myUserInfo.sys_user_id=loginDown.user_id;
-                                    myUserInfo.sys_nick_name=loginDown.nick_name;
-                                    myUserInfo.sys_head_url=loginDown.head_url;
-                                    myUserInfo.mobile=loginDown.mobile;
-                                    myUserInfo.is_jc = loginDown.is_jc;
-                                    PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                                    packLocalUserInfo.currUserInfo = myUserInfo;
-                                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
-                                    Toast.makeText(ActivityMain.this,
-                                            getString(R.string.login_succ), Toast.LENGTH_SHORT)
-                                            .show();
-                                    if(loginDialog != null) {
-                                        loginDialog.dismiss();
-                                    }
-                                } else {
-                                    Toast.makeText(ActivityMain.this, loginDown.result_msg, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    });
-                    task.execute(up);
+                    if (TextUtils.isEmpty(etUserName.getText().toString())) {
+                        Toast.makeText(ActivityMain.this, "请输入账号或手机号", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (TextUtils.isEmpty(etPassword.getText().toString())) {
+                        Toast.makeText(ActivityMain.this, "请输入密码", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    okHttpLogin(etUserName.getText().toString(), etPassword.getText().toString());
                 } else if(str.equals("close")) {
                     if(loginDialog != null) {
                         loginDialog.dismiss();
@@ -993,4 +1044,102 @@ public class ActivityMain extends FragmentActivity {
         loginDialog.showCloseBtn();
         loginDialog.show();
     }
+
+    /**
+     * 用户登录
+     */
+    private void okHttpLogin(final String uName, final String pwd) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/login";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", uName);
+                    param.put("pwd", pwd);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                Toast.makeText(ActivityMain.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (!obj.isNull("token")) {
+                                                MyApplication.TOKEN = obj.getString("token");
+                                            }
+                                            if (!obj.isNull("limitInfo")) {
+                                                MyApplication.LIMITINFO = obj.getString("limitInfo");
+                                            }
+                                            if (!obj.isNull("userInfo")) {
+                                                JSONObject userInfo = obj.getJSONObject("userInfo");
+                                                if (!userInfo.isNull("userId")) {
+                                                    MyApplication.UID = userInfo.getString("userId");
+                                                }
+                                                if (!userInfo.isNull("loginName")) {
+                                                    MyApplication.USERNAME = userInfo.getString("loginName");
+                                                }
+                                                if (!userInfo.isNull("password")) {
+                                                    MyApplication.PASSWORD = userInfo.getString("password");
+                                                }
+                                                if (!userInfo.isNull("userName")) {
+                                                    MyApplication.NAME= userInfo.getString("userName");
+                                                }
+                                                if (!userInfo.isNull("phonenumber")) {
+                                                    MyApplication.MOBILE= userInfo.getString("phonenumber");
+                                                }
+                                                if (!userInfo.isNull("avatar")) {
+                                                    MyApplication.PORTRAIT= userInfo.getString("avatar");
+                                                }
+                                                MyApplication.saveUserInfo(ActivityMain.this);
+
+                                                //存储用户数据
+                                                PackLocalUser myUserInfo = new PackLocalUser();
+                                                myUserInfo.user_id = MyApplication.UID;
+                                                myUserInfo.sys_user_id = MyApplication.UID;
+                                                myUserInfo.sys_nick_name = MyApplication.NAME;
+                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
+                                                myUserInfo.mobile = MyApplication.MOBILE;
+//                                                myUserInfo.type = packDown.platform_type;
+//                                                myUserInfo.is_jc = packDown.is_jc;
+                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
+                                                packLocalUserInfo.currUserInfo = myUserInfo;
+                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+
+                                                Toast.makeText(ActivityMain.this, getString(R.string.login_succ), Toast.LENGTH_SHORT).show();
+                                                if(loginDialog != null) {
+                                                    loginDialog.dismiss();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

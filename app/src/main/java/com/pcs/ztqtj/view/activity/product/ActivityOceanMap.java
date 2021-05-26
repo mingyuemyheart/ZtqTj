@@ -3,6 +3,7 @@ package com.pcs.ztqtj.view.activity.product;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,35 +23,47 @@ import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.OceanAreaInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.OceanWeatherInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackAreaPositionDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackAreaPositionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackOceanWeatherDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.oceanweather.PackOceanWeatherUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.ocean.AdapterMapOcean;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.livequery.DataControl;
 import com.pcs.ztqtj.view.activity.product.typhoon.AMapUtil;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * Created by tyaathome on 2018/09/21.
+ * 海洋气象
  */
 public class ActivityOceanMap extends AMapUtil {
 
     private TextureMapView mapView;
     private AMap aMap;
-    private MyReceiver receiver = new MyReceiver();
     private AdapterMapOcean adapterMapOcean;
     private ListView list_map;
     private TextView tvAddress;
@@ -60,9 +73,6 @@ public class ActivityOceanMap extends AMapUtil {
     // 标记
     private MarkerOptions mMarker = null;
     // 地理编码搜索
-
-    private PackOceanWeatherUp weatherUpPack = new PackOceanWeatherUp();
-    private PackAreaPositionUp areaUpPack = new PackAreaPositionUp();
 
     private GeocodeSearch mGeocodeSearch;
 
@@ -112,10 +122,6 @@ public class ActivityOceanMap extends AMapUtil {
     public void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
-        if (receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(ActivityOceanMap.this, receiver);
-            receiver = null;
-        }
     }
 
     private ArrayList<OceanWeatherInfo> list_ocean = new ArrayList<>();
@@ -210,9 +216,7 @@ public class ActivityOceanMap extends AMapUtil {
     };
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(ActivityOceanMap.this, receiver);
-        areaUpPack.type = "";
-        PcsDataDownload.addDownload(areaUpPack);
+        okHttpHyArea();
     }
 
     private boolean isFirst = true;
@@ -250,8 +254,7 @@ public class ActivityOceanMap extends AMapUtil {
      */
     private void showDataList(String area) {
         showProgressDialog();
-        weatherUpPack.area = area;
-        PcsDataDownload.addDownload(weatherUpPack);
+        okHttpHyList(area);
     }
 
     /**
@@ -338,38 +341,6 @@ public class ActivityOceanMap extends AMapUtil {
         }
     };
 
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.equals(areaUpPack.getName())) {
-                dismissProgressDialog();
-                // 区域
-                PackAreaPositionDown down = (PackAreaPositionDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
-                }
-                addMarkersToMap(down.list_info);
-                area_name=down.list_info.get(0).area_name;
-                showDataList(down.list_info.get(0).area_id);
-            } else if (nameStr.equals(weatherUpPack.getName())) {
-                dismissProgressDialog();
-                PackOceanWeatherDown down = (PackOceanWeatherDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    layout_data.setVisibility(View.GONE);
-                    return;
-                }
-                layout_data.setVisibility(View.VISIBLE);
-                tvAddress.setText(area_name + "( " + down.pub_time + " )");
-                list_ocean.clear();
-                list_ocean.addAll(down.oceanWeatherList);
-                adapterMapOcean.notifyDataSetChanged();
-            }
-        }
-    }
-
-
     private DataControl.ListSelect listenermax = new DataControl.ListSelect() {
         @Override
         public void itemClick(int position, String id) {
@@ -440,5 +411,129 @@ public class ActivityOceanMap extends AMapUtil {
         markerOptionsList.clear();
     }
 
+    /**
+     * 获取海洋气象
+     */
+    private void okHttpHyArea() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"hy_area";
+                    Log.e("hy_area", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("hy_area", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("hy_area")) {
+                                                    JSONObject listobj = bobj.getJSONObject("hy_area");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackAreaPositionDown down = new PackAreaPositionDown();
+                                                        down.fillData(listobj.toString());
+                                                        addMarkersToMap(down.list_info);
+                                                        area_name=down.list_info.get(0).area_name;
+                                                        showDataList(down.list_info.get(0).area_id);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取海洋气象
+     */
+    private void okHttpHyList(final String area) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", area);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"hy_list";
+                    Log.e("hy_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("hy_list", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("hy_list")) {
+                                                    JSONObject listobj = bobj.getJSONObject("hy_list");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackOceanWeatherDown down = new PackOceanWeatherDown();
+                                                        down.fillData(listobj.toString());
+                                                        layout_data.setVisibility(View.VISIBLE);
+                                                        tvAddress.setText(area_name + "( " + down.pub_time + " )");
+                                                        list_ocean.clear();
+                                                        list_ocean.addAll(down.oceanWeatherList);
+                                                        adapterMapOcean.notifyDataSetChanged();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
 }

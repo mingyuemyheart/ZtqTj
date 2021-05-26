@@ -4,25 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterMyserverMore;
-import com.pcs.ztqtj.control.tool.ServiceLoginTool;
-import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.help.ActivityHelp;
-import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
-import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
-import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
@@ -30,22 +20,42 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.DesServer;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproMoreDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproMoreUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterMyserverMore;
+import com.pcs.ztqtj.control.tool.ServiceLoginTool;
+import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.help.ActivityHelp;
+import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
+import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
+import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * @author Z
- *         气象服务。更多栏目
+ * 专项服务-决策服务-我的服务-跟多
  */
 public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
     private ListView listview;
-    private PackQxfwMyproMoreDown down;
-    private PackQxfwMyproMoreUp listDataUp;
     private MyReceiver receiver = new MyReceiver();
-
-    private final int serverResult = 103;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +113,6 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
                 showProgressDialog();
             }
         });
-        listview.setOnScrollListener(myOnScrollListener);
     }
 
     public boolean show_warn = true;
@@ -112,8 +121,8 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
     private void IntentNextActivity() {
         Intent intent = new Intent(ActivityMyServerMore.this, ActivityServeDetails.class);
         //存储用来判断已读跟未读的id
-        SharedPreferencesUtil.putData(url,url);
-        intent.putExtra("url", url);
+        SharedPreferencesUtil.putData(getString(R.string.file_download_url)+url, getString(R.string.file_download_url)+url);
+        intent.putExtra("url", getString(R.string.file_download_url)+url);
         intent.putExtra("title", title);
         intent.putExtra("show_warn", show_warn);
         intent.putExtra("style", style);
@@ -129,15 +138,13 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
         }
     }
 
-    private String channel_id;
-
     private void initData() {
         show_warn = getIntent().getBooleanExtra("show_warn", true);
         pro_list = new ArrayList<DesServer>();
         adapter = new AdapterMyserverMore(this, pro_list);
         listview.setAdapter(adapter);
         Intent intnet = getIntent();
-        channel_id = intnet.getStringExtra("channel_id");
+        String channelId = intnet.getStringExtra("channel_id");
         String channel_name = intnet.getStringExtra("channel_name");
         String org_id = intnet.getStringExtra("org_id");
         org_name = intnet.getStringExtra("org_name");
@@ -145,33 +152,9 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
         setTitleText(title);
         TextView tv = (TextView) findViewById(R.id.myserver_subtitle);
         tv.setText(org_name);
-        initReqData(channel_id, org_id);
-        showProgressDialog();
-        getNextPage();
+
+        okHttpQxfwMyproMore(channelId, org_id);
     }
-
-    private int pageSize = 1;
-
-    private void initReqData(String channel_id, String org_id) {
-        listDataUp = new PackQxfwMyproMoreUp();
-        listDataUp.channel_id = channel_id;
-        listDataUp.org_id = org_id;
-        if (TextUtils.isEmpty(localUserinfo.user_id)) {
-            listDataUp.user_id = "";
-        } else {
-            listDataUp.user_id = localUserinfo.user_id;
-        }
-    }
-
-    private void getNextPage() {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        listDataUp.page_num = pageSize + "";
-        PcsDataDownload.addDownload(listDataUp);
-    }
-
 
     private PackQxfwAuthenticationProductDown checkDown;
     private PackQxfwAuthenticationProductUp cup;
@@ -215,13 +198,7 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String name, String error) {
-
-            if (listDataUp != null && name.equals(listDataUp.getName())) {
-                down = (PackQxfwMyproMoreDown) PcsDataManager.getInstance().getNetPack(name);
-                if (down != null) {
-                    dealWithData();
-                }
-            } else if (checkDown != null && name.equals(cup.getName())) {
+            if (checkDown != null && name.equals(cup.getName())) {
                 dismissProgressDialog();
                 checkDown = (PackQxfwAuthenticationProductDown) PcsDataManager.getInstance().getNetPack(name);
                 if (checkDown != null) {
@@ -258,15 +235,8 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
             ServiceLoginTool.getInstance().createAlreadyLogined(ActivityMyServerMore.this);
         }
     };
-    private boolean getMoreData = true;
 
-    private void dealWithData() {
-        dismissProgressDialog();
-        if (down.pro_list.size() == 15) {
-            pageSize++;
-        } else {
-            getMoreData = false;
-        }
+    private void dealWithData(PackQxfwMyproMoreDown down) {
         pro_list.addAll(down.pro_list);
         adapter.notifyDataSetChanged();
         if (down.pro_list == null || down.pro_list.size() == 0) {
@@ -310,30 +280,69 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
         myDialog.show();
     }
 
-
-    private AbsListView.OnScrollListener myOnScrollListener = new AbsListView.OnScrollListener() {
-
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-            // 当不滚动时
-            if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                // 判断是否滚动到底部
-                if (view.getLastVisiblePosition() == view.getCount() - 1) {
-                    // 加载更多功能的代码
-                    System.out.println("到了底部，加载更多");
-//                    判断是否要加载更多
-                    if (getMoreData) {
-                        getNextPage();
-                    }
+    /**
+     * 获取更多
+     */
+    private void okHttpQxfwMyproMore(final String channelId, final String orgId) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", channelId);
+                    info.put("orgId", orgId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"qxfw_mypro_more";
+                    Log.e("qxfw_mypro_more", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("qxfw_mypro_more", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("qxfw_mypro_more")) {
+                                                    JSONObject qxfw_mypro_more = bobj.getJSONObject("qxfw_mypro_more");
+                                                    if (!TextUtil.isEmpty(qxfw_mypro_more.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackQxfwMyproMoreDown down = new PackQxfwMyproMoreDown();
+                                                        down.fillData(qxfw_mypro_more.toString());
+                                                        if (down != null) {
+                                                            dealWithData(down);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }
-
-        @Override
-        public void onScroll(AbsListView arg0, int arg1, int arg2, int arg3) {
-
-        }
-    };
-
+        }).start();
+    }
 
 }

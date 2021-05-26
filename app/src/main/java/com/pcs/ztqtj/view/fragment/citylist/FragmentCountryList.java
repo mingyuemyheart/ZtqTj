@@ -20,9 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2018/3/12.
+ * 添加城市-国内城市
  */
-
 public class FragmentCountryList extends Fragment {
 
     private mExpandableListView exList;

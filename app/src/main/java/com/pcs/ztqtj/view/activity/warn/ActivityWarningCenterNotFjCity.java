@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2016/6/7.
+ * 预警中心
  */
 public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhoneListAndHelp implements View.OnClickListener {
     private GridView gridView = null;
@@ -108,16 +108,7 @@ public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhone
             fragmentList.add(initWarnBillList());
         }
 
-//        YjZqColumnGrade grade = new YjZqColumnGrade();
-//        grade.name = "气象预警";
-//        YjZqColumnGrade grade2 = new YjZqColumnGrade();
-//        grade2.name = "突发事件预警";
-//        list_column.add(grade);
-//        list_column.add(grade2);
         if(ZtqCityDB.getInstance().getCityMain().isFjCity) {
-//            YjZqColumnGrade grade3 = new YjZqColumnGrade();
-//            grade3.name = "停课铃";
-//            list_column.add(grade3);
             showProgressDialog();
             columnGradeUp.column_type="20";
             PcsDataDownload.addDownload(columnGradeUp);
@@ -199,15 +190,10 @@ public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhone
         FragmentWeatherWarningNotFj fragmentWeatherWarning = new FragmentWeatherWarningNotFj();
         // 判断是否是从首页滚动预警进入本页面的
         WarnBean bean = (WarnBean) getIntent().getSerializableExtra("warninfo");
-        String cityid = getIntent().getStringExtra("cityid");
-        if (bean != null && !TextUtils.isEmpty(cityid)) {
+        if (bean != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("warninfo", bean);
-            bundle.putString("cityid", cityid);
             fragmentWeatherWarning.setArguments(bundle);
-            // 删除传入的数据
-            getIntent().removeExtra("warninfo");
-            getIntent().removeExtra("cityid");
         }
         return fragmentWeatherWarning;
     }

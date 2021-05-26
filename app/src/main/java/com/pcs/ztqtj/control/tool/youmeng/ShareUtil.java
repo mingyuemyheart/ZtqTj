@@ -143,9 +143,9 @@ public class ShareUtil {
     }
 
     public static void initShare() {
-        PlatformConfig.setQQZone("1108632951", "vn1igIEfmTjYNJpe");// QQ和Qzone appid appkey
-        PlatformConfig.setWeixin("wx4651849e403b0fe8", "dbe42360662c4b025891c95519f7c2fa");    //微信 appid appsecret
-        PlatformConfig.setSinaWeibo("4212352973", "1f49745ce2f6f71daeb42f4f4a7987ad","http://sns.whalecloud.com/sina/");//新浪微博 appkey appsecret
+        PlatformConfig.setQQZone("1111680665", "AWvIDxEHLwH5M3xG");// QQ和Qzone appid appkey
+        PlatformConfig.setWeixin("wxa3d2ebc5508eb19f", "c84c96f71d36bd19fc7d5d5bbe30e48c");    //微信 appid appsecret
+        PlatformConfig.setSinaWeibo("838194335", "a3cec82194cbc4df3c81f852bd0e5a0d","http://sns.whalecloud.com/sina/");//新浪微博 appkey appsecret
 //        Config.DEBUG = true;
     }
 

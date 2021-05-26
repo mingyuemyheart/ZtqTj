@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourDown.RainFall;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourUp;
@@ -48,7 +51,11 @@ import com.pcs.ztqtj.control.adapter.livequery.AdapterTempertureRainFall;
 import com.pcs.ztqtj.control.adapter.livequery.AdatperAutoRainFall;
 import com.pcs.ztqtj.control.adapter.livequery.AdatperAutoRainFall.RainFallIn;
 import com.pcs.ztqtj.control.inter.DrowListClick;
+import com.pcs.ztqtj.control.livequery.ControlDistribution;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityListCountry;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
@@ -60,6 +67,11 @@ import com.pcs.ztqtj.view.fragment.livequery.FragmentLiveQueryCommon;
 import com.pcs.ztqtj.view.myview.CompleView;
 import com.pcs.ztqtj.view.myview.MyListView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -70,8 +82,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import static com.pcs.ztqtj.control.livequery.ControlDistribution.ColumnCategory.WIND;
+import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.SB;
+
 /**
- * @author Z 雨量
+ * 实况查询-数据与统计-雨量查询
  */
 public class FragmentRain extends FragmentLiveQueryCommon implements OnClickListener {
     private TextView view_desc;
@@ -869,29 +889,9 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         @Override
         public void onReceive(String name, String errorStr) {
             if (hourUp != null && name.equals(hourUp.getName())) {
-                activity.dismissProgressDialog();
-                hourDown = (PackYltjHourDown) PcsDataManager.getInstance().getNetPack(name);
-                autoRainFall.clear();
-                autoRainFall.add(titleauto);
-                baseRainFall.clear();
-                baseRainFall.add(titleauto);
-                if (hourDown != null) {
-                    autoRainFall.addAll(hourDown.dataList);
-                    baseRainFall.addAll(hourDown.baseList);
-//                    hour_data_introduction.setText(hourDown.a_desc);
-                }
-                rainfalladatper.notifyDataSetChanged();
-                baseRainfallAdatper.notifyDataSetChanged();
-                scrollView.scrollTo(0, 0);
+                okHttpRankYltjHour(name);
             } else if (rankUp != null && name.equals(rankUp.getName())) {
-                activity.dismissProgressDialog();
-                rankDown = (PackYltjRankDown) PcsDataManager.getInstance().getNetPack(name);
-                rankRainFall.clear();
-                rankRainFall.add(titleRank);
-                if (rankDown != null || rankDown.dataList.size() != 0) {
-                    rankRainFall.addAll(rankDown.dataList);
-                }
-                rainfallMaxadatper.notifyDataSetChanged();
+                okHttpYltjRank(name);
             } else if (searchpack != null && name.equals(searchpack.getName())) {
                 activity.dismissProgressDialog();
                 searchpackdwon = (PackYltjTimeDown) PcsDataManager.getInstance().getNetPack(name);
@@ -911,6 +911,119 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                 reFlushImage(name);
             }
         }
+    }
+
+    private void okHttpRankYltjHour(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+name;
+                url = url.replace("yltj_hour", "yltj_hour_yl_2");
+                Log.e("yltj_hour_yl_2", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("yltj_hour")) {
+                                                JSONObject yltj_hour = bobj.getJSONObject("yltj_hour");
+                                                if (!TextUtil.isEmpty(yltj_hour.toString())) {
+                                                    activity.dismissProgressDialog();
+                                                    hourDown = new PackYltjHourDown();
+                                                    hourDown.fillData(yltj_hour.toString());
+                                                    autoRainFall.clear();
+                                                    autoRainFall.add(titleauto);
+                                                    baseRainFall.clear();
+                                                    baseRainFall.add(titleauto);
+                                                    if (hourDown != null) {
+                                                        autoRainFall.addAll(hourDown.dataList);
+                                                        baseRainFall.addAll(hourDown.baseList);
+//                    hour_data_introduction.setText(hourDown.a_desc);
+                                                    }
+                                                    rainfalladatper.notifyDataSetChanged();
+                                                    baseRainfallAdatper.notifyDataSetChanged();
+                                                    scrollView.scrollTo(0, 0);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 获取排行
+     * 24小时内任意1、3小时最大雨量排名
+     */
+    private void okHttpYltjRank(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("yltj_rank", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("yltj_rank")) {
+                                                JSONObject yltj_rank = bobj.getJSONObject("yltj_rank");
+                                                if (!TextUtil.isEmpty(yltj_rank.toString())) {
+                                                    activity.dismissProgressDialog();
+                                                    rankDown = new PackYltjRankDown();
+                                                    rankDown.fillData(yltj_rank.toString());
+                                                    rankRainFall.clear();
+                                                    rankRainFall.add(titleRank);
+                                                    if (rankDown != null || rankDown.dataList.size() != 0) {
+                                                        rankRainFall.addAll(rankDown.dataList);
+                                                    }
+                                                    rainfallMaxadatper.notifyDataSetChanged();
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     private String[] getNumberList(String value) {

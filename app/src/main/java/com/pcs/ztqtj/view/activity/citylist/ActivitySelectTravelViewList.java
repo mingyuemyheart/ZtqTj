@@ -23,6 +23,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 生活气象-旅游气象-选择景点（点击搜索）
+ */
 public class ActivitySelectTravelViewList extends FragmentActivityZtqBase {
 	private EditText edit;
 	private List<PackLocalCity> data;

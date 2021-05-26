@@ -47,9 +47,8 @@ import com.pcs.ztqtj.view.fragment.livequery.fujian_city.FragmentWind;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * @author Z 实况查询
+ * 实况查询
  */
 public class ActivityLiveQuery extends FragmentActivityZtqBase implements OnClickListener {
     private TextView text_title;
@@ -137,8 +136,6 @@ public class ActivityLiveQuery extends FragmentActivityZtqBase implements OnClic
         PackLiveTypeUp liveTypeUp = new PackLiveTypeUp();
         liveTypeUp.type = "1";
         PcsDataDownload.addDownload(liveTypeUp);
-
-
     }
 
     private void initView() {

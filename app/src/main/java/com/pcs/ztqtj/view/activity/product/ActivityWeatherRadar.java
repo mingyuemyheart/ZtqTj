@@ -15,6 +15,8 @@ import android.provider.MediaStore.Images;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -26,6 +28,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -56,20 +59,29 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.RadarImgInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.MyListBaseAdapter;
 import com.pcs.ztqtj.control.adapter.radar.AdapterRadar;
 import com.pcs.ztqtj.control.livequery.ControlDistributionBase;
 import com.pcs.ztqtj.control.livequery.ControlMapBound;
+import com.pcs.ztqtj.control.main_weather.CommandMainRow0;
 import com.pcs.ztqtj.control.radar.RadarMapControl;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.AnimatedGifEncoder;
 import com.pcs.ztqtj.view.activity.FragmentActivityWithShare;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
 import com.pcs.ztqtj.view.myview.MySeekBar;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -89,14 +101,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
- * 气象雷达
- *
+ * 雷达回波
  * @author chenjh
  */
-public class ActivityWeatherRadar extends FragmentActivityWithShare implements
-        View.OnClickListener, AnimationListener {
+public class ActivityWeatherRadar extends FragmentActivityWithShare implements View.OnClickListener, AnimationListener {
     private MyReceiver receiver = new MyReceiver();
     private PackRadarListUp packRadarListUp = new PackRadarListUp();
     private PackRadarUp packRadarUp = new PackRadarUp();
@@ -315,16 +329,61 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
      * 获取雷达站点列表
      **/
     private void getStationList() {
-
 //        if (!isOpenNet()) {
 //            showToast(getString(R.string.net_err));
 //            return;
 //        }
         packRadarListUp.type = "1";
-        PackRadarListDown down =
-                (PackRadarListDown) PcsDataManager.getInstance().getLocalPack(packRadarListUp.getName());
-        dealListDown(down, false);
+        okHttpRadarStations(packRadarListUp.getName(), false);
         PcsDataDownload.addDownload(packRadarListUp);
+    }
+
+    /**
+     * 获取雷达站点列表
+     */
+    private void okHttpRadarStations(final String name, final boolean isnet) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("leidanewlist", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("leidanewlist")) {
+                                                JSONObject leidanewlist = bobj.getJSONObject("leidanewlist");
+                                                if (!TextUtil.isEmpty(leidanewlist.toString())) {
+                                                    PackRadarListDown down = new PackRadarListDown();
+                                                    down.fillData(leidanewlist.toString());
+                                                    dealListDown(down, isnet);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     /**
@@ -338,22 +397,8 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
     private void dealListDown(PackRadarListDown packRadarListDown, boolean isnet) {
         if (packRadarListDown == null) {
             if (isnet) {
-                PackRadarListDown down =
-                        (PackRadarListDown) PcsDataManager.getInstance().getLocalPack(packRadarListUp.getName());
-                if (down==null){
-                    return;
-                }
-                stationList.clear();
-                puzzleList.clear();
-                stationList.addAll(down.stationList);
-                puzzleList.addAll(down.stationList);
-                updateStationList();
-//        showProgressDialog();
-                itemName = puzzleList.get(0).station_name;
-                tab_name.setText(itemName);
-                switchTab(0, puzzleList.get(0).station_id);
+                okHttpRadarStations(packRadarListUp.getName(), isnet);
             }
-
         } else {
             stationList.clear();
             puzzleList.clear();
@@ -365,29 +410,68 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
             tab_name.setText(itemName);
             switchTab(0, puzzleList.get(0).station_id);
         }
-
-
     }
 
     private void dealRadarDown(PackRadarDown packRadarDown, boolean isnet) {
         if (packRadarDown == null) {
             if (isnet) {
-                PackRadarDown down =
-                        (PackRadarDown) PcsDataManager.getInstance().getLocalPack(packRadarUp.getName());
-                if (down==null){
-                    return;
-                }
-                mImage.setVisibility(View.VISIBLE);
-                radarImgList = down.radarImgList;
-                updateRadarData();
+                okHttpRadarDetail(packRadarUp.getName(), isnet);
             }
         } else {
             mImage.setVisibility(View.VISIBLE);
             radarImgList = packRadarDown.radarImgList;
             updateRadarData();
         }
-
     }
+
+    /**
+     * 获取雷达站点详情
+     */
+    private void okHttpRadarDetail(final String name, final boolean isnet) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("leida", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("leida")) {
+                                                JSONObject leida = bobj.getJSONObject("leida");
+                                                if (!TextUtil.isEmpty(leida.toString())) {
+                                                    PackRadarDown down = new PackRadarDown();
+                                                    down.fillData(leida.toString());
+                                                    dealRadarDown(down, isnet);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
     /**
      * 数据更新广播接收
      */
@@ -396,10 +480,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
         public void onReceive(String name, String error) {
             if (packRadarListUp != null && packRadarListUp.getName().equals(name)) {
                 dismissProgressDialog();
-
-                PackRadarListDown packRadarListDown =
-                        (PackRadarListDown) PcsDataManager.getInstance().getNetPack(name);
-                dealListDown(packRadarListDown, true);
+                okHttpRadarStations(packRadarListUp.getName(), true);
 
 //                PackRadarListDown packRadarListDown = (PackRadarListDown) PcsDataManager.getInstance().getNetPack(name);
 //                if (packRadarListDown == null) {
@@ -418,9 +499,8 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
 
             } else if (packRadarUp != null && packRadarUp.getName().equals(name)) {
                 dismissProgressDialog();
-                PackRadarDown packRadarDown =
-                        (PackRadarDown) PcsDataManager.getInstance().getNetPack(name);
-                dealRadarDown(packRadarDown, true);
+                okHttpRadarDetail(packRadarUp.getName(), true);
+
 //                PackRadarDown packRadarDown = (PackRadarDown) PcsDataManager.getInstance().getNetPack(name);
 //                radarImgList.clear();
 //                if (packRadarDown == null||packRadarDown.radarImgList.size()==0) {
@@ -535,9 +615,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
         mSeekBar.setProgress(imgCount - 1);
         packRadarUp.station_id = station_id;
         packRadarUp.count = "8";
-        PackRadarDown down =
-                (PackRadarDown) PcsDataManager.getInstance().getLocalPack(packRadarUp.getName());
-        dealRadarDown(down, false);
+        okHttpRadarDetail(packRadarUp.getName(), false);
         PcsDataDownload.addDownload(packRadarUp);
     }
 
@@ -555,7 +633,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
             img_time.setText("");
             mImage.setVisibility(View.GONE);
         }
-
     }
 
     private void showLastImageView() {
@@ -566,7 +643,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
             comm_imgs = new Bitmap[radarImgList.size()];
             // 显示最后一张图片
             RadarImgInfo info = radarImgList.get(radarImgList.size() - 1);
-            String url = getString(R.string.file_download_url) + info.img;
+            String url = info.img;
             getImageFetcher().loadImage(url, null, ImageConstant.ImageShowType.NONE);
             initSeekBar(radarImgList.size());
             if (TextUtils.isEmpty(info.actiontime)) {
@@ -600,7 +677,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
                 if (isSucc && getImageFetcher().getImageCache() != null) {
                     for (int i = 0; i < radarImgList.size(); i++) {
                         RadarImgInfo info = radarImgList.get(i);
-                        String url = getString(R.string.file_download_url) + info.img;
+                        String url = info.img;
                         if (key.equals(url)) {
                             comm_imgs[i] = getImageFetcher().getImageCache()
                                     .getBitmapFromAllCache(key).getBitmap();
@@ -629,7 +706,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
         if (count < radarImgList.size()) {
             // 下载第count张图片
             RadarImgInfo info = radarImgList.get(count);
-            String url = getString(R.string.file_download_url) + info.img;
+            String url = info.img;
             getImageFetcher().addListener(loadImageListener);
             getImageFetcher().loadImage(url, null, ImageConstant.ImageShowType.NONE);
         } else {
@@ -1000,7 +1077,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements
                 return Observable.just(radarImgInfo).map(new Function<RadarImgInfo, Bitmap>() {
                     @Override
                     public Bitmap apply(RadarImgInfo info) throws Exception {
-                        String path = getString(R.string.file_download_url) + info.img;
+                        String path = info.img;
                         return getBitmapFromURL(path);
                     }
                 });

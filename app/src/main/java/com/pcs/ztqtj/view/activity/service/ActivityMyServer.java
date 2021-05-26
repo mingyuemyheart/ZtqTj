@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -11,16 +12,6 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterServerMyServer;
-import com.pcs.ztqtj.control.tool.MyConfigure;
-import com.pcs.ztqtj.control.tool.ServiceLoginTool;
-import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.help.ActivityHelp;
-import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
-import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
-import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
@@ -29,10 +20,37 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproV2Up;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterServerMyServer;
+import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.control.tool.ServiceLoginTool;
+import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.help.ActivityHelp;
+import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
+import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
+import com.pcs.ztqtj.view.dialog.DialogTwoButton;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * @author Z 气象服务-我的服务 getintent()中 subtitle--是否显示副标题：-决策报告- 0为不显示，其他只为显示
+ * 专项服务-决策服务-我的服务 getintent()中 subtitle--是否显示副标题：-决策报告- 0为不显示，其他只为显示
  */
 public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     private PackLocalUser localUserinfo;
@@ -40,8 +58,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     private TextView null_data;
     private ExpandableListView explistviw;
     private AdapterServerMyServer listAdatper;
-    private PackQxfwMyproV2Up up;
-    private PackQxfuMyproV2Down down;
     private String channel = "";
     private String showSubtitle = "1";
 
@@ -80,8 +96,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         super.onPause();
         this.unregisterReceiver(receiver);
     }
-
-
 
     private void chackIsJcbg() {
         if ("1".equals(channel)) {
@@ -197,8 +211,8 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
 
     private void IntentNextActivity() {
         Intent intent = new Intent(ActivityMyServer.this, ActivityServeDetails.class);
-        SharedPreferencesUtil.putData(url,url);
-        intent.putExtra("url", url);
+        SharedPreferencesUtil.putData(getString(R.string.file_download_url)+url,getString(R.string.file_download_url)+url);
+        intent.putExtra("url", getString(R.string.file_download_url)+url);
         intent.putExtra("title", channel_title);
         intent.putExtra("channelid", channel);
         intent.putExtra("show_warn", show_warn);
@@ -249,28 +263,12 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
             }
         });
         explistviw.setAdapter(listAdatper);
-        req();
-    }
-
-    private void req() {
-
 
         if(!isOpenNet()){
             showToast(getString(R.string.net_err));
             return ;
         }
-
-        showProgressDialog();
-        up = new PackQxfwMyproV2Up();
-        if (TextUtils.isEmpty(localUserinfo.user_id)) {
-            up.user_id = "";
-        } else {
-            up.user_id = localUserinfo.user_id;
-        }
-        // up.user_id = "201503241118444";
-        up.channel_id = channel;
-        PcsDataDownload.addDownload(up);
-        down = new PackQxfuMyproV2Down();
+        okHttpInfoList();
     }
 
     private void gotoServiceMore() {
@@ -332,13 +330,7 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String name, String error) {
-            if (up != null && name.equals(up.getName())) {
-                down = (PackQxfuMyproV2Down) PcsDataManager.getInstance().getNetPack(name);
-                if (down != null) {
-
-                    dealWithData();
-                }
-            } else if (checkUp != null && name.equals(checkUp.getName())) {
+            if (checkUp != null && name.equals(checkUp.getName())) {
                 dismissProgressDialog();
                 checkDown = (PackQxfwAuthenticationProductDown) PcsDataManager.getInstance().getNetPack(name);
                 if (checkDown != null) {
@@ -398,7 +390,7 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     /**
      * 处理数据
      */
-    private void dealWithData() {
+    private void dealWithData(PackQxfuMyproV2Down down) {
         dismissProgressDialog();
         try {
             if (down.auth_pass) {
@@ -465,4 +457,69 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         messageTextViewCom.setText(msg);
         myDialogCom.show();
     }
+
+    /**
+     * 获取我的服务
+     */
+    private void okHttpInfoList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", "101030301");
+                    info.put("extra", "");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"info_list";
+                    Log.e("info_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("info_list", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("qxfw_mypro_v2")) {
+                                                    JSONObject qxfw_mypro_v2 = bobj.getJSONObject("qxfw_mypro_v2");
+                                                    if (!TextUtil.isEmpty(qxfw_mypro_v2.toString())) {
+                                                        PackQxfuMyproV2Down down = new PackQxfuMyproV2Down();
+                                                        down.fillData(qxfw_mypro_v2.toString());
+                                                        if (down != null) {
+                                                            dealWithData(down);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -42,20 +44,25 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoDeleteUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoPraiseDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoPraiseUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.photo.AdapterPhotoCenter;
 import com.pcs.ztqtj.control.tool.CommUtils;
-import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.image.GetImageView;
 import com.pcs.ztqtj.model.PhotoShowDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.user.ActivityUserInformation;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 import com.pcs.ztqtj.view.myview.MyListView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -65,6 +72,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 实景个人中心
@@ -318,10 +333,7 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
      * 退出账号
      */
     private void logout() {
-        ZtqCityDB.getInstance().removeMyInfo();
-//        LoginInformation.getInstance().clearLoginInfo();
-        setResult(Activity.RESULT_OK);
-        finish();
+        okHttpLogout();
     }
 
     private OnClickListener mOnClick = new OnClickListener() {
@@ -734,4 +746,66 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
         intent.putExtra("photo_path", mFilePhoto.getPath());
         startActivity(intent);
     }
+
+    /**
+     * 用户登出
+     */
+    private void okHttpLogout() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/logout";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.e("logout", e.getMessage());
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                showToast(errorMessage);
+                                            }
+                                            if (!obj.isNull("result")) {
+                                                boolean res = obj.getBoolean("result");
+                                                if (res) {
+                                                    MyApplication.clearUserInfo(ActivityPhotoUserCenter.this);
+                                                    ZtqCityDB.getInstance().removeMyInfo();
+//        LoginInformation.getInstance().clearLoginInfo();
+                                                    setResult(Activity.RESULT_OK);
+                                                    finish();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

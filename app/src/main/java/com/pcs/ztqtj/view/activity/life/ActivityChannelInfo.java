@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.ShareTools;
@@ -15,15 +18,9 @@ import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.image.ImageLoader;
 import com.pcs.ztqtj.control.tool.image.ImageUtils;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 
 /**
- * 资讯详细信息
- * 
- * @author chenjh
- * 
+ * 生活气象-天气新闻-详情
  */
 public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 
@@ -86,7 +83,7 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 			Log.d("info.big_ico", "大图为空");
 			ImageUtils.getInstance().setBgImage(ActivityChannelInfo.this, bigImageView, screenWidth, R.drawable.no_pic, true);
 		} else {
-			String big_ico = getString(R.string.file_download_url) + info.big_ico;
+			String big_ico = info.big_ico;
 			Bitmap bitmap = null;
 			bitmap = mImageLoader.getBitmapFromCache(big_ico);
 			if (bitmap != null) {

@@ -63,7 +63,7 @@
         <!-- &lt;!&ndash; 高德KEY &ndash;&gt; -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="d7cf24d98774b4ca78b1a37cff362638"/>
+            android:value="1948f1486bfe2dfe527ed695bc1a5d39"/>
         <!--
                 &lt;!&ndash; KEY_正式：810db5b45b00edd18a84f6101b49e11e &ndash;&gt;
             &lt;!&ndash; KEY_jzy：7e0d20609db76cca89ba5417c5a520dc &ndash;&gt;
@@ -88,6 +88,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".view.activity.HtmlActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
+
         <!-- 风雨查询数据列表单个数据详情界面 -->
         <activity
             android:name=".view.activity.livequery.ActivityLiveQueryDetail"
@@ -1113,25 +1120,25 @@
             android:exported="true" >
             <intent-filter>
                 <!-- 【必须】 请修改为当前APP包名.PUSH_ACTION-->
-                <action android:name="com.pcs.ztqtj.PUSH_ACTION" />
+                <action android:name="com.tianyi.shawn.tjdecision.PUSH_ACTION" />
             </intent-filter>
         </service>
 
         <!-- 【必须】 【注意】authorities修改为 包名.AUTH_XGPUSH, 如demo的包名为：com.qq.xgdemo-->
         <provider
             android:name="com.tencent.android.tpush.XGPushProvider"
-            android:authorities="com.pcs.ztqtj.AUTH_XGPUSH"
+            android:authorities="com.tianyi.shawn.tjdecision.AUTH_XGPUSH"
             android:exported="true"
             />
         <!-- 【必须】 【注意】authorities修改为 包名.TPUSH_PROVIDER, 如demo的包名为：com.qq.xgdemo-->
         <provider
             android:name="com.tencent.android.tpush.SettingsContentProvider"
-            android:authorities="com.pcs.ztqtj.TPUSH_PROVIDER"
+            android:authorities="com.tianyi.shawn.tjdecision.TPUSH_PROVIDER"
             android:exported="false" />
         <!-- 【必须】 【注意】authorities修改为 包名.TENCENT.MID.V3, 如demo的包名为：com.qq.xgdemo-->
         <provider
             android:name="com.tencent.mid.api.MidProvider"
-            android:authorities="com.pcs.ztqtj.TENCENT.MID.V3"
+            android:authorities="com.tianyi.shawn.tjdecision.TENCENT.MID.V3"
             android:exported="true" >
         </provider>
 
@@ -1170,7 +1177,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="tencent100424468" />
+                <data android:scheme="tencent1111680665" />
             </intent-filter>
         </activity>
         <activity
@@ -1269,7 +1276,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.pcs.ztqtj.provider"
+            android:authorities="com.tianyi.shawn.tjdecision.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

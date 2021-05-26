@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,23 +13,34 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterTravelWeekWeather;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterTravelWeekWeather;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 旅游气象第一页
- *
- * @author WeiXJ
+ * 生活气象-旅游气象-第一页
  */
 @SuppressLint("ValidFragment")
 public class TravelFragmentOne extends Fragment {
@@ -40,28 +52,15 @@ public class TravelFragmentOne extends Fragment {
     private TextView areaName;
     // private ImageView travelOneBanner;
     private AdapterTravelWeekWeather weekAdapter;
-    private String area = "";
+    private String cityId = "";
     private String cityName = "";
     private List<WeekWeatherInfo> weekWeatherList = new ArrayList<>();
     private ImageFetcher mImageFetcher;
-    private MyReceiver myReceiver = new MyReceiver();
 
-    public TravelFragmentOne(String area, String cityName, ImageFetcher imageFetcher) {
-        this.area = area;
+    public TravelFragmentOne(String cityId, String cityName, ImageFetcher imageFetcher) {
+        this.cityId = cityId;
         this.cityName = cityName;
         mImageFetcher = imageFetcher;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), myReceiver);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        PcsDataBrocastReceiver.unregisterReceiver(getActivity(), myReceiver);
     }
 
     @Override
@@ -78,48 +77,10 @@ public class TravelFragmentOne extends Fragment {
         dateTextView = (TextView) getView().findViewById(R.id.date_tv);
         iconImageView = (ImageView) getView().findViewById(R.id.weather_icon);
         weekweather = (ListView) getView().findViewById(R.id.weekweather);
-        refreshWeekWeatherList(area);
+        okHttpWeeklytq(cityId);
     }
 
     String shareC = "";
-    private PackTravelWeekUp packTravelWeekUp;
-    /**
-     * 更新一周天气数据
-     **/
-    private void refreshWeekWeatherList(String area) {
-        packTravelWeekUp = new PackTravelWeekUp();
-        packTravelWeekUp.setCity(area, cityName);
-        PackTravelWeekDown packTravelWeekDown = (PackTravelWeekDown) PcsDataManager.getInstance().getNetPack(packTravelWeekUp.getName());
-        if (packTravelWeekDown == null) {
-            PcsDataDownload.addDownload(packTravelWeekUp);
-            return;
-        }
-        weekWeatherList = packTravelWeekDown.getWeek();
-        if (weekWeatherList.size() > 0) {
-            WeekWeatherInfo info = weekWeatherList.get(0);
-            updateWeather(info);
-            weekAdapter = new AdapterTravelWeekWeather(getActivity(), weekWeatherList.subList(1, weekWeatherList.size()), mImageFetcher);
-            weekweather.setAdapter(weekAdapter);
-            weekAdapter.notifyDataSetChanged();
-            shareC = packTravelWeekDown.getShareStr(cityName);
-        } else {
-            return;
-        }
-        // -----------顶部显示
-        WeekWeatherInfo info = weekWeatherList.get(0);
-        areaName.setText(cityName);
-
-        String h_l_str = "";
-        // ------今天
-        weatherTextView.setText(info.weather);
-        h_l_str += info.higt + "~" + info.lowt + "°C";
-
-        tempTextView.setText(h_l_str);
-        dateTextView.setText(info.gdt + "" + info.week);
-
-        Drawable drawable = mImageFetcher.getImageCache().getBitmapFromAssets(packTravelWeekDown.getIconPath(packTravelWeekDown.getTodayIndex()));
-        iconImageView.setImageDrawable(drawable);
-    }
 
     /**
      * 更新实时天气数据
@@ -132,22 +93,88 @@ public class TravelFragmentOne extends Fragment {
         dateTextView.setText(info.gdt + info.week);
     }
 
-    public void reflashUI(String area, String cityName) {
-        this.area = area;
-        this.cityName = cityName;
-    }
+    /**
+     * 获取一周预报
+     */
+    private void okHttpWeeklytq(final String stationId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"weeklytq";
+                    Log.e("weeklytq", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("weeklytq", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("weeklytq#"+stationId)) {
+                                                    JSONObject weeklytq = bobj.getJSONObject("weeklytq#"+stationId);
+                                                    if (!TextUtil.isEmpty(weeklytq.toString())) {
+                                                        PackTravelWeekDown packTravelWeekDown = new PackTravelWeekDown();
+                                                        packTravelWeekDown.fillData(weeklytq.toString());
+                                                        weekWeatherList = packTravelWeekDown.getWeek();
+                                                        if (weekWeatherList.size() > 0) {
+                                                            WeekWeatherInfo info = weekWeatherList.get(0);
+                                                            updateWeather(info);
+                                                            weekAdapter = new AdapterTravelWeekWeather(getActivity(), weekWeatherList.subList(1, weekWeatherList.size()), mImageFetcher);
+                                                            weekweather.setAdapter(weekAdapter);
+                                                            weekAdapter.notifyDataSetChanged();
+                                                            shareC = packTravelWeekDown.getShareStr(cityName);
+                                                        } else {
+                                                            return;
+                                                        }
+                                                        // -----------顶部显示
+                                                        WeekWeatherInfo info = weekWeatherList.get(0);
+                                                        areaName.setText(cityName);
 
+                                                        String h_l_str = "";
+                                                        // ------今天
+                                                        weatherTextView.setText(info.weather);
+                                                        h_l_str += info.higt + "~" + info.lowt + "°C";
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (name.equals(packTravelWeekUp.getName())) {
-                PackTravelWeekDown down = (PackTravelWeekDown) PcsDataManager.getInstance().getNetPack(name);
-                if (down == null) {
-                    return;
+                                                        tempTextView.setText(h_l_str);
+                                                        dateTextView.setText(info.gdt + "" + info.week);
+
+                                                        Drawable drawable = mImageFetcher.getImageCache().getBitmapFromAssets(packTravelWeekDown.getIconPath(packTravelWeekDown.getTodayIndex()));
+                                                        iconImageView.setImageDrawable(drawable);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                refreshWeekWeatherList(area);
             }
-        }
+        }).start();
     }
+
 }

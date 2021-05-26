@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/livequery_bleak2_bg"
-              android:orientation="vertical">
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/livequery_bleak2_bg"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/data_desc"
@@ -13,12 +12,11 @@
         android:layout_marginLeft="@dimen/dimen2"
         android:layout_marginTop="@dimen/activity_margintop"
         android:background="#0897f1"
-        android:paddingBottom="@dimen/activity_margintop"
         android:paddingLeft="@dimen/activity_margintop"
         android:paddingTop="@dimen/activity_margintop"
+        android:paddingBottom="@dimen/activity_margintop"
         android:textColor="@color/text_white"
-        android:textSize="@dimen/text_content"/>
-
+        android:textSize="@dimen/text_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -35,7 +33,7 @@
             android:background="@drawable/bg_likespinnertextview_2"
             android:gravity="center"
             android:textColor="@color/text_black"
-            android:textSize="@dimen/text_content"/>
+            android:textSize="@dimen/text_content" />
 
         <TextView
             android:id="@+id/livequery_town_spinner"
@@ -46,7 +44,7 @@
             android:background="@drawable/bg_likespinnertextview_2"
             android:gravity="center"
             android:textColor="@color/text_black"
-            android:textSize="@dimen/text_content"/>
+            android:textSize="@dimen/text_content" />
     </LinearLayout>
 
     <RadioGroup
@@ -56,8 +54,7 @@
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/activity_margintop"
-        android:weightSum="7"
-        >
+        android:weightSum="7">
 
         <RadioButton
             android:id="@+id/lowtemradiogroupleft"
@@ -72,7 +69,7 @@
             android:gravity="center"
             android:text="@string/daily_lowest"
             android:textColor="@color/text_black"
-            android:textSize="@dimen/text_content"/>
+            android:textSize="@dimen/text_content" />
 
         <RadioButton
             android:id="@+id/lowtemradiogroupright"
@@ -85,7 +82,7 @@
             android:gravity="center"
             android:text="@string/hour_lowest"
             android:textColor="@color/text_black"
-            android:textSize="@dimen/text_content"/>
+            android:textSize="@dimen/text_content" />
     </RadioGroup>
 
     <RadioGroup
@@ -96,8 +93,7 @@
         android:layout_marginRight="@dimen/dimen10"
         android:orientation="horizontal"
         android:padding="@dimen/activity_margintop"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <RadioButton
             android:id="@+id/rb_24h"
@@ -110,7 +106,7 @@
             android:gravity="center"
             android:text="近24小时最低"
             android:textColor="@drawable/text_black_while"
-            android:textSize="15dp"/>
+            android:textSize="15dp" />
 
         <RadioButton
             android:id="@+id/rb_hours"
@@ -122,7 +118,7 @@
             android:gravity="center"
             android:text="@string/hour_lowest"
             android:textColor="@drawable/text_black_while"
-            android:textSize="15dp"/>
+            android:textSize="15dp" />
     </RadioGroup>
 
     <ScrollView
@@ -145,12 +141,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/bg_white"
-                android:paddingBottom="@dimen/activity_margintop"
                 android:paddingLeft="@dimen/activity_margintop"
                 android:paddingTop="@dimen/activity_margintop"
+                android:paddingBottom="@dimen/activity_margintop"
                 android:singleLine="true"
                 android:textColor="#0897f1"
-                android:textSize="@dimen/text_footnote"/>
+                android:textSize="@dimen/text_footnote" />
 
             <com.pcs.ztqtj.view.myview.MyListView
                 android:id="@+id/livequery_auto_min_table"
@@ -158,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:cacheColorHint="@color/alpha100"
                 android:divider="@drawable/line_common"
-                android:listSelector="@color/alpha100"/>
+                android:listSelector="@color/alpha100" />
 
             <!--    <TextView
                     android:id="@+id/description_title_low_sc"
@@ -186,7 +182,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -207,7 +202,7 @@
                             android:id="@+id/table_data"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/icon_livequery_table"/>
+                            android:src="@drawable/icon_livequery_table" />
 
                         <TextView
                             android:id="@+id/view_desc"
@@ -216,7 +211,7 @@
                             android:layout_marginLeft="@dimen/dimen4"
                             android:text="对比表"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_footnote"/>
+                            android:textSize="@dimen/text_footnote" />
                     </LinearLayout>
 
                     <TextView
@@ -225,12 +220,12 @@
                         android:layout_height="wrap_content"
                         android:layout_toLeftOf="@id/table_layout"
                         android:background="#0897f1"
-                        android:paddingBottom="@dimen/activity_margintop"
                         android:paddingLeft="@dimen/activity_margintop"
                         android:paddingTop="@dimen/activity_margintop"
+                        android:paddingBottom="@dimen/activity_margintop"
                         android:text="气温对比图"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
                 </RelativeLayout>
 
                 <TextView
@@ -240,7 +235,7 @@
                     android:padding="@dimen/dimen10"
                     android:text="数据说明："
                     android:textColor="@color/text_black"
-                    android:textSize="@dimen/text_footnote"/>
+                    android:textSize="@dimen/text_footnote" />
 
                 <LinearLayout
                     android:id="@+id/comp_layout"
@@ -252,7 +247,7 @@
                     <com.pcs.ztqtj.view.myview.CompleView
                         android:id="@+id/rainfall_comp_view"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp"/>
+                        android:layout_height="250dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -263,8 +258,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/activity_margintop"
                             android:layout_marginTop="@dimen/activity_margintop"
+                            android:layout_marginBottom="@dimen/activity_margintop"
                             android:orientation="horizontal">
 
                             <TextView
@@ -276,7 +271,7 @@
                                 android:paddingLeft="@dimen/activity_margintop"
                                 android:singleLine="true"
                                 android:textColor="@color/text_black"
-                                android:textSize="@dimen/text_content"/>
+                                android:textSize="@dimen/text_content" />
 
                             <TextView
                                 android:id="@+id/year_green"
@@ -287,7 +282,7 @@
                                 android:paddingLeft="@dimen/activity_margintop"
                                 android:singleLine="true"
                                 android:textColor="@color/text_black"
-                                android:textSize="@dimen/text_content"/>
+                                android:textSize="@dimen/text_content" />
 
                             <TextView
                                 android:id="@+id/year_low_green"
@@ -298,35 +293,35 @@
                                 android:paddingLeft="@dimen/activity_margintop"
                                 android:singleLine="true"
                                 android:textColor="@color/text_black"
-                                android:textSize="@dimen/text_content"/>
+                                android:textSize="@dimen/text_content" />
                         </LinearLayout>
                         <!--  android:text="@string/rain_history_max"-->
                         <TextView
                             android:id="@+id/history_max"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/activity_margintop"
                             android:layout_marginTop="@dimen/activity_margintop"
+                            android:layout_marginBottom="@dimen/activity_margintop"
                             android:drawableLeft="@drawable/icon_livequery_max"
                             android:paddingLeft="@dimen/activity_margintop"
                             android:singleLine="true"
 
                             android:textColor="@color/text_black"
-                            android:textSize="@dimen/text_footnote"/>
+                            android:textSize="@dimen/text_footnote" />
 
                         <!--  android:text="@string/rain_history_average"-->
                         <TextView
                             android:id="@+id/history_avg"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/activity_margintop"
                             android:layout_marginTop="@dimen/activity_margintop"
+                            android:layout_marginBottom="@dimen/activity_margintop"
                             android:drawableLeft="@drawable/icon_livequery_avg"
                             android:paddingLeft="@dimen/activity_margintop"
                             android:singleLine="true"
 
                             android:textColor="@color/text_black"
-                            android:textSize="@dimen/text_footnote"/>
+                            android:textSize="@dimen/text_footnote" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -339,7 +334,7 @@
                 android:cacheColorHint="@color/alpha100"
                 android:divider="@drawable/line_common"
                 android:listSelector="@color/alpha100"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

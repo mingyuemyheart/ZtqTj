@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -26,8 +27,6 @@ import android.widget.Toast;
 
 import com.iflytek.cloud.RecognizerResult;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
@@ -42,14 +41,13 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.YjxxInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
@@ -57,8 +55,11 @@ import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.VoiceTool;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.JsonParser;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.ActivityCompetitionEntry;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
@@ -71,13 +72,23 @@ import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 import com.pcs.ztqtj.view.dialog.DialogVoiceButton;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * JiangZy on 2016/6/3.
@@ -99,6 +110,14 @@ public class CommandMainRow0 extends CommandMainBase {
     private String  ids;
     private VoiceTool voiceTool;
     private TextView tvDesc;
+    private TextView textWarn_second;
+    private TextView textWarn;
+    //预警列表
+    private GridView lv_warn_content;
+    //预警列表2
+    private GridView lv_warn_contents;
+    private LinearLayout lay_yj01;
+    private LinearLayout lay_yj02;
 
     public CommandMainRow0(ActivityMain activity, ViewGroup rootLayout, ImageFetcher
             imageFetcher, Fragment fragment) {
@@ -126,7 +145,6 @@ public class CommandMainRow0 extends CommandMainBase {
         refreshWarn();
     }
 
-    private PackYjxxIndexFbUp mPackYjxxUp = new PackYjxxIndexFbUp();
     private List<String> list;
     private List<YjxxInfo> list2, list3;
 
@@ -188,97 +206,154 @@ public class CommandMainRow0 extends CommandMainBase {
      */
     private void refreshWarn() {
         //文字
-        TextView textWarn_second = (TextView) mRowView.findViewById(R.id.text_warn_area_second);
-        TextView textWarn = (TextView) mRowView.findViewById(R.id.text_warn_area);
+        textWarn_second = (TextView) mRowView.findViewById(R.id.text_warn_area_second);
+        textWarn = (TextView) mRowView.findViewById(R.id.text_warn_area);
         //预警列表
-        GridView lv_warn_content = (GridView) mRowView.findViewById(R.id.grid);
+        lv_warn_content = (GridView) mRowView.findViewById(R.id.grid);
         //预警列表2
-        GridView lv_warn_contents = (GridView) mRowView.findViewById(R.id.grid_second);
-        LinearLayout lay_yj01 = (LinearLayout) mRowView.findViewById(R.id.lay_yj01);
-        LinearLayout lay_yj02 = (LinearLayout) mRowView.findViewById(R.id.lay_yj02);
-        // 当前城市
-        PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
-        if (packCity == null || packCity.ID == null) {
+        lv_warn_contents = (GridView) mRowView.findViewById(R.id.grid_second);
+        lay_yj01 = (LinearLayout) mRowView.findViewById(R.id.lay_yj01);
+        lay_yj02 = (LinearLayout) mRowView.findViewById(R.id.lay_yj02);
+
+        okHttpWarning();
+    }
+
+    /**
+     * 获取预警实况
+     */
+    private void okHttpWarning() {
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if(city == null) {
             lv_warn_content.setVisibility(View.GONE);
             return;
         }
-        mPackYjxxUp.setCity(packCity);
-        PackYjxxIndexFbDown packYjxxDown = (PackYjxxIndexFbDown) PcsDataManager.getInstance().getNetPack(mPackYjxxUp
-                .getName());
-
-        if (packYjxxDown == null) {
-            lay_yj01.setVisibility(View.GONE);
-            lay_yj02.setVisibility(View.GONE);
-            return;
-        }
-        list = packYjxxDown.list;
-        list2 = packYjxxDown.list_2;
-        list3 = packYjxxDown.list_3;
-        if (list == null || list.size() == 0) {
-            lay_yj01.setVisibility(View.GONE);
-            lay_yj02.setVisibility(View.GONE);
-            return;
-        }
-        if (list2 == null || list2.size() == 0) {
-            lay_yj01.setVisibility(View.GONE);
-            lay_yj02.setVisibility(View.GONE);
-            return;
-        }
-        lay_yj01.setVisibility(View.VISIBLE);
-        lay_yj02.setVisibility(View.VISIBLE);
-        textWarn.setText(list.get(0));
-        int size = list2.size();
-        int length = 50;
-        DisplayMetrics dm = new DisplayMetrics();
-        mActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        float density = dm.density;
-        int gridviewWidth = (int) (size * (length + 4) * density);
-        int itemWidth = (int) (length * density);
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(gridviewWidth, 300);
-        lv_warn_content.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
-        lv_warn_content.setColumnWidth(itemWidth); // 设置列表项宽
-        lv_warn_content.setHorizontalSpacing(5); // 设置列表项水平间距
-        lv_warn_content.setVerticalSpacing(-3);
-        lv_warn_content.setStretchMode(GridView.NO_STRETCH);
-        lv_warn_content.setNumColumns(size); // 设置列数量=列表集合数
-
-        Warn_infoAdapter adapter = new Warn_infoAdapter(mActivity, list2, mImageFetcher);
-        lv_warn_content.setAdapter(adapter);
-        lv_warn_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ids = list2.get(i).id;
-                clickWarnText(ids);
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", city.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"yjxx_index_fb_list";
+                    Log.e("yjxx_index_fb_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("yjxx_index_fb_list", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yjxx_index_fb_list")) {
+                                                    JSONObject listobj = bobj.getJSONObject("yjxx_index_fb_list");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        PackYjxxIndexFbDown packYjxxDown = new PackYjxxIndexFbDown();
+                                                        packYjxxDown.fillData(listobj.toString());
+                                                        if (packYjxxDown == null) {
+                                                            lay_yj01.setVisibility(View.GONE);
+                                                            lay_yj02.setVisibility(View.GONE);
+                                                            return;
+                                                        }
+                                                        list = packYjxxDown.list;
+                                                        list2 = packYjxxDown.list_2;
+                                                        list3 = packYjxxDown.list_3;
+                                                        if (list == null || list.size() == 0) {
+                                                            lay_yj01.setVisibility(View.GONE);
+                                                            lay_yj02.setVisibility(View.GONE);
+                                                            return;
+                                                        }
+                                                        if (list2 == null || list2.size() == 0) {
+                                                            lay_yj01.setVisibility(View.GONE);
+                                                            lay_yj02.setVisibility(View.GONE);
+                                                            return;
+                                                        }
+                                                        lay_yj01.setVisibility(View.VISIBLE);
+                                                        lay_yj02.setVisibility(View.VISIBLE);
+                                                        textWarn.setText(list.get(0));
+                                                        textWarn.setBackgroundResource(R.drawable.border_all_alpha_white);
+                                                        int size = list2.size();
+                                                        int length = 50;
+                                                        DisplayMetrics dm = new DisplayMetrics();
+                                                        mActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+                                                        float density = dm.density;
+                                                        int gridviewWidth = (int) (size * (length + 4) * density);
+                                                        int itemWidth = (int) (length * density);
+
+                                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(gridviewWidth, 300);
+                                                        lv_warn_content.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
+                                                        lv_warn_content.setColumnWidth(itemWidth); // 设置列表项宽
+                                                        lv_warn_content.setHorizontalSpacing(5); // 设置列表项水平间距
+                                                        lv_warn_content.setVerticalSpacing(-3);
+                                                        lv_warn_content.setStretchMode(GridView.NO_STRETCH);
+                                                        lv_warn_content.setNumColumns(size); // 设置列数量=列表集合数
+
+                                                        Warn_infoAdapter adapter = new Warn_infoAdapter(mActivity, list2, mImageFetcher);
+                                                        lv_warn_content.setAdapter(adapter);
+                                                        lv_warn_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                            @Override
+                                                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                                                ids = list2.get(i).id;
+                                                                clickWarnText(ids);
+                                                            }
+                                                        });
+                                                        if (list3 == null || list3.size() == 0) {
+                                                            lay_yj01.setVisibility(View.GONE);
+                                                            return;
+                                                        }
+                                                        int gridviewWidth2 = (int) (list3.size() * (length + 4) * density);
+                                                        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(gridviewWidth2, 300);
+                                                        lay_yj01.setVisibility(View.VISIBLE);
+                                                        textWarn_second.setText(list.get(1));
+                                                        textWarn_second.setBackgroundResource(R.drawable.border_all_alpha_white);
+                                                        int sizes = list3.size();
+
+                                                        lv_warn_contents.setLayoutParams(params2); // 设置GirdView布局参数,横向布局的关键
+                                                        lv_warn_contents.setColumnWidth(itemWidth); // 设置列表项宽
+                                                        lv_warn_contents.setHorizontalSpacing(5); // 设置列表项水平间距
+                                                        lv_warn_contents.setVerticalSpacing(-3);
+                                                        lv_warn_contents.setStretchMode(GridView.NO_STRETCH);
+                                                        lv_warn_contents.setNumColumns(sizes); // 设置列数量=列表集合数
+
+                                                        Warn_infoAdapter adapterS = new Warn_infoAdapter(mActivity, list3, mImageFetcher);
+                                                        lv_warn_contents.setAdapter(adapterS);
+                                                        lv_warn_contents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                            @Override
+                                                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                                                ids = list3.get(i).id;
+                                                                clickWarnText(list3.get(i).id);
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        });
-        if (list3 == null || list3.size() == 0) {
-            lay_yj01.setVisibility(View.GONE);
-            return;
-        }
-        int gridviewWidth2 = (int) (list3.size() * (length + 4) * density);
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(gridviewWidth2, 300);
-        lay_yj01.setVisibility(View.VISIBLE);
-        textWarn_second.setText(list.get(1));
-        int sizes = list3.size();
-
-        lv_warn_contents.setLayoutParams(params2); // 设置GirdView布局参数,横向布局的关键
-        lv_warn_contents.setColumnWidth(itemWidth); // 设置列表项宽
-        lv_warn_contents.setHorizontalSpacing(5); // 设置列表项水平间距
-        lv_warn_contents.setVerticalSpacing(-3);
-        lv_warn_contents.setStretchMode(GridView.NO_STRETCH);
-        lv_warn_contents.setNumColumns(sizes); // 设置列数量=列表集合数
-
-        Warn_infoAdapter adapterS = new Warn_infoAdapter(mActivity, list3, mImageFetcher);
-        lv_warn_contents.setAdapter(adapterS);
-        lv_warn_contents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ids = list3.get(i).id;
-                clickWarnText(list3.get(i).id);
-            }
-        });
-
+        }).start();
     }
 
     class Warn_infoAdapter extends BaseAdapter {
@@ -328,136 +403,184 @@ public class CommandMainRow0 extends CommandMainBase {
 
     //点击预警详情
     private void clickWarnText(String id) {
-        //城市
-        PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
-        mPackYjxxUp.setCity(packCity);
         //进度条
         mActivity.showProgressDialog();
-        PackWarnPubDetailUp packDetailUp = new PackWarnPubDetailUp();
-        packDetailUp.id = id;
-        SharedPreferencesUtil.putData(id,id);
-        //广播接收
-        PcsDataBrocastReceiver.registerReceiver(mActivity, mReceiver);
-        //下载
-        PcsDataDownload.addDownload(packDetailUp);
+        okHttpWarningDetail(id);
     }
 
     private View view;
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (TextUtils.isEmpty(nameStr)) {
-                return;
-            }
 
-            if (nameStr.startsWith(PackWarnPubDetailUp.NAME)) {
-                //预警详情
-                PcsDataBrocastReceiver.unregisterReceiver(mActivity, mReceiver);
-                if (!TextUtils.isEmpty(errorStr)) {
-                    //获取详情失败
-                    showDetilError();
-                    return;
-                }
-                PackWarnPubDetailDown packDown = (PackWarnPubDetailDown) PcsDataManager.getInstance().getNetPack
-                        (nameStr);
-                if (packDown == null) {
-                    //获取详情失败
-                    showDetilError();
-                    return;
-                }
-                //城市
-                PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
-
-                //数据
-                WarnBean bean = new WarnBean();
-                bean.level = packDown.desc;
-                bean.ico = packDown.ico;
-                bean.msg = packDown.content;
-                bean.pt = packDown.pt;
-                bean.defend = packDown.defend;
-                bean.put_str = packDown.put_str;
-                SharedPreferencesUtil.putData(ids, ids);
-                //跳转
-                Intent intent2 = new Intent(mActivity, ActivityWarningCenterNotFjCity.class);
-                intent2.putExtra("warninfo", bean);
-                intent2.putExtra("cityid", packCity.ID);
-                mActivity.startActivity(intent2);
-            }else   if (nameStr.startsWith(PackVoiceUp.NAME)) {
-                PcsDataBrocastReceiver.unregisterReceiver(mActivity, mReceiver);
-                PackVoiceDown down = (PackVoiceDown) PcsDataManager.getInstance().getNetPack(PackVoiceUp.NAME);
-                mActivity.dismissProgressDialog();
-                if (down == null) {
-                    return;
-                }
-                lists.clear();
-                String str = down.desc.replace("-", "零下");
-                //格式化语音报读数字
-                if (str.contains("12") || str.contains("22") || str.contains("32") || str.contains("42") || str
-                        .contains("12.2") || str
-                        .contains("22.2") || str.contains("32.2") || str.contains("42.2")) {
-
-                } else {
-                    if (str.contains("2.2")) {
-                        str = str.replace("2.2", "二点二");
-                    } else {
-                        if (str.contains("2.")) {
-                            str = str.replace("2.", "二点");
-                        }
+    /**
+     * 获取实况语音
+     */
+    private void okHttpSound() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+PackVoiceUp.NAME;
+                Log.e("sstq_yy", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     }
-                }
-                str = str.replace(".2", "点二");
-                str = str.replace(".", "点");
-                if (dialogVoiceButton == null) {
-                    view = LayoutInflater.from(mActivity).inflate(
-                            R.layout.dialog_message, null);
-                    ((TextView) view.findViewById(R.id.dialogmessage))
-                            .setText(down.desc);
-                    dialogVoiceButton = new DialogVoiceButton(mActivity,
-                            view, "关闭", new DialogFactory.DialogListener() {
-                        @Override
-                        public void click(String str) {
-                            if (str.equals("关闭")) {
-                                dialogVoiceButton.dismiss();
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("sstq_yy")) {
+                                                JSONObject sstq_yy = bobj.getJSONObject("sstq_yy");
+                                                if (!TextUtil.isEmpty(sstq_yy.toString())) {
+                                                    PackVoiceDown down = new PackVoiceDown();
+                                                    down.fillData(sstq_yy.toString());
+                                                    mActivity.dismissProgressDialog();
+                                                    if (down == null) {
+                                                        return;
+                                                    }
+                                                    lists.clear();
+                                                    String str = down.desc.replace("-", "零下");
+                                                    //格式化语音报读数字
+                                                    if (str.contains("12") || str.contains("22") || str.contains("32") || str.contains("42") || str
+                                                            .contains("12.2") || str
+                                                            .contains("22.2") || str.contains("32.2") || str.contains("42.2")) {
+
+                                                    } else {
+                                                        if (str.contains("2.2")) {
+                                                            str = str.replace("2.2", "二点二");
+                                                        } else {
+                                                            if (str.contains("2.")) {
+                                                                str = str.replace("2.", "二点");
+                                                            }
+                                                        }
+                                                    }
+                                                    str = str.replace(".2", "点二");
+                                                    str = str.replace(".", "点");
+                                                    if (dialogVoiceButton == null) {
+                                                        view = LayoutInflater.from(mActivity).inflate(
+                                                                R.layout.dialog_message, null);
+                                                        ((TextView) view.findViewById(R.id.dialogmessage))
+                                                                .setText(down.desc);
+                                                        dialogVoiceButton = new DialogVoiceButton(mActivity,
+                                                                view, "关闭", new DialogFactory.DialogListener() {
+                                                            @Override
+                                                            public void click(String str) {
+                                                                if (str.equals("关闭")) {
+                                                                    dialogVoiceButton.dismiss();
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        ((TextView) view.findViewById(R.id.dialogmessage))
+                                                                .setText(down.desc);
+                                                    }
+
+                                                    if (!dialogVoiceButton.isShowing()) {
+                                                        dialogVoiceButton.show();
+                                                    }
+                                                    voiceTool.readResult(str);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 预警详情
+     */
+    private void okHttpWarningDetail(final String html) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", html);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"yjxx_info_query";
+                    Log.e("yjxx_info_query", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mActivity.dismissProgressDialog();
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("yjxx_info_query", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yjxx_info_query")) {
+                                                    JSONObject yjxx_info_query = bobj.getJSONObject("yjxx_info_query");
+                                                    if (!TextUtil.isEmpty(yjxx_info_query.toString())) {
+                                                        PackWarnPubDetailDown packDown = new PackWarnPubDetailDown();
+                                                        packDown.fillData(yjxx_info_query.toString());
+
+                                                        //数据
+                                                        WarnBean bean = new WarnBean();
+                                                        bean.level = packDown.desc;
+                                                        bean.ico = packDown.ico;
+                                                        bean.msg = packDown.content;
+                                                        bean.pt = packDown.pt;
+                                                        bean.defend = packDown.defend;
+                                                        bean.put_str = packDown.put_str;
+                                                        SharedPreferencesUtil.putData(ids, ids);
+                                                        //跳转
+                                                        Intent intent2 = new Intent(mActivity, ActivityWarningCenterNotFjCity.class);
+                                                        intent2.putExtra("warninfo", bean);
+                                                        mActivity.startActivity(intent2);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
                         }
                     });
-                } else {
-                    ((TextView) view.findViewById(R.id.dialogmessage))
-                            .setText(down.desc);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                if (!dialogVoiceButton.isShowing()) {
-                    dialogVoiceButton.show();
-                }
-                voiceTool.readResult(str);
             }
-
-        }
-    };
+        }).start();
+    }
 
     /**
      * 获取详情失败
      */
     private void showDetilError() {
         Toast.makeText(mActivity, R.string.get_detail_error, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * 取一周天气列表
-     *
-     * @return
-     */
-    private List<WeekWeatherInfo> getWeatherList() {
-        // 当前城市
-        PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
-        if (packCity == null || packCity.ID == null) {
-            return new ArrayList<WeekWeatherInfo>();
-        }
-        mPackWeekUp.setCity(packCity);
-        PackMainWeekWeatherDown packMainWeekDown = (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack
-                (mPackWeekUp.getName());
-
-        return packMainWeekDown.getWeek();
     }
 
     /**
@@ -551,75 +674,135 @@ public class CommandMainRow0 extends CommandMainBase {
         }
     };
 
-    String[] nessaryPermissions = {
-            Manifest.permission.RECORD_AUDIO
-    };
+    String[] nessaryPermissions = {Manifest.permission.RECORD_AUDIO};
 
     private boolean checkAudioPermissions() {
         return PermissionsTools.checkPermissions(mFragment, nessaryPermissions, MyConfigure.REQUEST_PERMISSION_AUDIO);
     }
 
+    /**
+     * 获取一周天气
+     */
+    private void okHttpWeek() {
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if(city == null) return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", city.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"pnweek";
+                    Log.e("pnweek", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("pnweek", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("p_new_week")) {
+                                                    JSONObject p_new_weekobj = bobj.getJSONObject("p_new_week");
+                                                    if (!TextUtil.isEmpty(p_new_weekobj.toString())) {
+                                                        PackMainWeekWeatherDown packWeekDown = new PackMainWeekWeatherDown();
+                                                        packWeekDown.fillData(p_new_weekobj.toString());
+                                                        PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
+                                                        mPackWeekUp.setCity(packCity);
+                                                        List<WeekWeatherInfo> weatherList = packWeekDown.getWeek();
+                                                        if (packCity == null || TextUtils.isEmpty(packCity.ID) || weatherList == null) {
+                                                            return;
+                                                        }
+                                                        StringBuffer shareStr = new StringBuffer(packCity.NAME + ":");
+                                                        if (weatherList.size() > 1) {
+                                                            shareStr.append(weatherList.get(1).gdt + ",");
+                                                            shareStr.append(weatherList.get(1).weather + ",");
+                                                            shareStr.append(weatherList.get(1).higt + "~");
+                                                            shareStr.append(weatherList.get(1).lowt + "°C,");
+                                                        }
+                                                        if (weatherList.size() > 2) {
+                                                            shareStr.append(weatherList.get(2).gdt + ",");
+                                                            shareStr.append(weatherList.get(2).weather + ",");
+                                                            shareStr.append(weatherList.get(2).higt + "~");
+                                                            shareStr.append(weatherList.get(2).lowt + "°C,");
+                                                        }
+                                                        if (weatherList.size() > 3) {
+                                                            shareStr.append(weatherList.get(3).gdt + ",");
+                                                            shareStr.append(weatherList.get(3).weather + ",");
+                                                            shareStr.append(weatherList.get(3).higt + "~");
+                                                            shareStr.append(weatherList.get(3).lowt + "°C。");
+                                                        }
+                                                        if (weatherList.size() > 4) {
+                                                            shareStr.append(weatherList.get(4).gdt + ",");
+                                                            shareStr.append(weatherList.get(4).weather + ",");
+                                                            shareStr.append(weatherList.get(4).higt + "~");
+                                                            shareStr.append(weatherList.get(4).lowt + "°C,");
+                                                        }
+                                                        if (weatherList.size() > 5) {
+                                                            shareStr.append(weatherList.get(5).gdt + ",");
+                                                            shareStr.append(weatherList.get(5).weather + ",");
+                                                            shareStr.append(weatherList.get(5).higt + "~");
+                                                            shareStr.append(weatherList.get(5).lowt + "°C,");
+                                                        }
+                                                        if (weatherList.size() > 6) {
+                                                            shareStr.append(weatherList.get(6).gdt + ",");
+                                                            shareStr.append(weatherList.get(6).weather + ",");
+                                                            shareStr.append(weatherList.get(6).higt + "~");
+                                                            shareStr.append(weatherList.get(6).lowt + "°C。");
+                                                        }
+                                                        if (weatherList.size() >= 7) {
+                                                            shareStr.append(weatherList.get(7).gdt + ",");
+                                                            shareStr.append(weatherList.get(7).weather + ",");
+                                                            shareStr.append(weatherList.get(7).higt + "~");
+                                                            shareStr.append(weatherList.get(7).lowt + "°C。");
+                                                        }
+
+                                                        Bitmap bitmap = BitmapUtil.takeScreenShot(mActivity);
+                                                        bitmap = ZtqImageTool.getInstance().stitchQR(mActivity, bitmap);
+                                                        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
+
+                                                        String shareContnet = "";
+                                                        if (shareDown != null) {
+                                                            shareContnet = shareStr + shareDown.share_content;
+                                                        }
+                                                        ShareTools.getInstance(mActivity).setShareContent("分享天气",shareContnet, bitmap, "0").showWindow(mRootLayout);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     //点击分享
     private void clickShare() {
-        PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
-        List<WeekWeatherInfo> weatherList = getWeatherList();
-        if (packCity == null || TextUtils.isEmpty(packCity.ID) || weatherList == null) {
-            return;
-        }
-        StringBuffer shareStr = new StringBuffer(packCity.NAME + ":");
-        if (weatherList.size() > 1) {
-            shareStr.append(weatherList.get(1).gdt + ",");
-            shareStr.append(weatherList.get(1).weather + ",");
-            shareStr.append(weatherList.get(1).higt + "~");
-            shareStr.append(weatherList.get(1).lowt + "°C,");
-        }
-        if (weatherList.size() > 2) {
-            shareStr.append(weatherList.get(2).gdt + ",");
-            shareStr.append(weatherList.get(2).weather + ",");
-            shareStr.append(weatherList.get(2).higt + "~");
-            shareStr.append(weatherList.get(2).lowt + "°C,");
-        }
-        if (weatherList.size() > 3) {
-            shareStr.append(weatherList.get(3).gdt + ",");
-            shareStr.append(weatherList.get(3).weather + ",");
-            shareStr.append(weatherList.get(3).higt + "~");
-            shareStr.append(weatherList.get(3).lowt + "°C。");
-        }
-        if (weatherList.size() > 4) {
-            shareStr.append(weatherList.get(4).gdt + ",");
-            shareStr.append(weatherList.get(4).weather + ",");
-            shareStr.append(weatherList.get(4).higt + "~");
-            shareStr.append(weatherList.get(4).lowt + "°C,");
-        }
-        if (weatherList.size() > 5) {
-            shareStr.append(weatherList.get(5).gdt + ",");
-            shareStr.append(weatherList.get(5).weather + ",");
-            shareStr.append(weatherList.get(5).higt + "~");
-            shareStr.append(weatherList.get(5).lowt + "°C,");
-        }
-        if (weatherList.size() > 6) {
-            shareStr.append(weatherList.get(6).gdt + ",");
-            shareStr.append(weatherList.get(6).weather + ",");
-            shareStr.append(weatherList.get(6).higt + "~");
-            shareStr.append(weatherList.get(6).lowt + "°C。");
-        }
-        if (weatherList.size() >= 7) {
-            shareStr.append(weatherList.get(7).gdt + ",");
-            shareStr.append(weatherList.get(7).weather + ",");
-            shareStr.append(weatherList.get(7).higt + "~");
-            shareStr.append(weatherList.get(7).lowt + "°C。");
-        }
-
-        Bitmap bitmap = BitmapUtil.takeScreenShot(mActivity);
-        bitmap = ZtqImageTool.getInstance().stitchQR(mActivity, bitmap);
-        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp
-                .getNameCom());
-
-        String shareContnet = "";
-        if (shareDown != null) {
-            shareContnet = shareStr + shareDown.share_content;
-        }
-        ShareTools.getInstance(mActivity).setShareContent("分享天气",shareContnet, bitmap, "0").showWindow(mRootLayout);
+        okHttpWeek();
     }
 
     //实景
@@ -884,9 +1067,8 @@ public class CommandMainRow0 extends CommandMainBase {
         } else {
             isPopVoice = false;
             mActivity.showProgressDialog();
-            PcsDataBrocastReceiver.registerReceiver(mActivity, mReceiver);
-            voiceUp.county_id = lists.get(0).ID;
-            PcsDataDownload.addDownload(voiceUp);
+//            voiceUp.county_id = lists.get(0).ID;
+            okHttpSound();
         }
     }
 

@@ -27,6 +27,9 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 
+/**
+ * 添加城市
+ */
 public class ActivityCityList extends FragmentActivityZtqBase implements CityChoicableImpl {
 
     private RadioButton rbSh,rbContry;

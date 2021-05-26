@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Z 空气质量
+ * 空气质量-天津
  */
 public class ActivityAirQualitySH extends FragmentActivityZtqBase {
     private RadioGroup radioGroup;

@@ -46,21 +46,31 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
- * @author Z 数值预报详情
- *         <p/>
- *         中央气象台指导预报
+ * 指导预报
  */
-public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
-        OnClickListener {
+public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements OnClickListener {
     private TextView subtitle_tv;
     private TextView spinner_text;
     private TextView n_content;
@@ -323,18 +333,63 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         @Override
         public void onReceive(String name, String errorStr) {
             if (packup != null && name.equals(packup.getName())) {
-                dismissProgressDialog();
-                if (TextUtils.isEmpty(errorStr)) {
-                    packDown = (PackNumericalForecastDown) PcsDataManager.getInstance().getNetPack(name);
-                    if (packDown == null) {
-                        return;
-                    }
-                    dealWidth(packDown);
-                }
+                okHttpList(name);
             } else if (aboutShare != null && aboutShare.getName().equals(name)) {
                 shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(name);
             }
         }
+    }
+
+    /**
+     * 获取指导预报数据
+     */
+    private void okHttpList(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("szyb_new", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("szyb_new")) {
+                                                JSONObject listobj = bobj.getJSONObject("szyb_new");
+                                                if (!TextUtil.isEmpty(listobj.toString())) {
+                                                    dismissProgressDialog();
+                                                    packDown = new PackNumericalForecastDown();
+                                                    packDown.fillData(listobj.toString());
+                                                    if (packDown == null) {
+                                                        return;
+                                                    }
+                                                    dealWidth(packDown);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     /**

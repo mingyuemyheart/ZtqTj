@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,14 +20,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirQualityDetail;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirStation;
-import com.pcs.ztqtj.control.tool.AirQualityTool;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
-import com.pcs.ztqtj.view.dialog.DialogOneButton;
-import com.pcs.ztqtj.view.myview.ViewCirclePoint;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
@@ -36,6 +29,27 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirQualityDetail;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirStation;
+import com.pcs.ztqtj.control.tool.AirQualityTool;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
+import com.pcs.ztqtj.view.dialog.DialogOneButton;
+import com.pcs.ztqtj.view.myview.ViewCirclePoint;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 空气质量
@@ -407,8 +421,9 @@ public class ActivityAirQualityDetail extends FragmentActivityZtqBase {
                 dismissProgressDialog();
                 // --------站点列表
                 // 加载数据
-                mPackStationDown = (PackAirStationDown) PcsDataManager.getInstance().getNetPack(
-                        mPackStationUp.getName());
+//                mPackStationDown = (PackAirStationDown) PcsDataManager.getInstance().getNetPack(mPackStationUp.getName());
+                okHttpAirCityStation(mPackStationUp.getName());
+
                 // 弹出对话框
                 showDialogStation();
                 if (mPackStationDown == null) {
@@ -445,6 +460,46 @@ public class ActivityAirQualityDetail extends FragmentActivityZtqBase {
         }
     };
 
+    private void okHttpAirCityStation(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("air_city_station", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONObject obj = new JSONObject(result);
+                                    if (!obj.isNull("b")) {
+                                        JSONObject bobj = obj.getJSONObject("b");
+                                        if (!bobj.isNull("air_city_station")) {
+                                            JSONObject air_city_station = bobj.getJSONObject("air_city_station");
+                                            mPackStationDown = new PackAirStationDown();
+                                            mPackInfoDown.fillData(air_city_station.toString());
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
     private final OnSeekBarChangeListener mOnSeekBarChangeListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress,
@@ -478,8 +533,7 @@ public class ActivityAirQualityDetail extends FragmentActivityZtqBase {
             switch (v.getId()) {
                 case R.id.btn_better:
                     Intent it = new Intent();
-                    it.setClass(ActivityAirQualityDetail.this,
-                            ActivityAirQuality.class);
+                    it.setClass(ActivityAirQualityDetail.this, ActivityAirQuality.class);
                     ActivityAirQualityDetail.this.startActivity(it);
                     break;
                 case R.id.btn_station:

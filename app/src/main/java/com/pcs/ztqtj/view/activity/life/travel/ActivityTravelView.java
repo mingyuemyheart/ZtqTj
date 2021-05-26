@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,20 +18,8 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterTravelCity;
-import com.pcs.ztqtj.control.adapter.AdapterTravelCity.FamilyCityListDeleteBtnClick;
-import com.pcs.ztqtj.control.adapter.AdapterTravelFragement;
-import com.pcs.ztqtj.control.adapter.AdapterTravelViewPager;
-import com.pcs.ztqtj.control.tool.MyConfigure;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
-import com.pcs.ztqtj.view.activity.citylist.ActivitySelectTravelViewList;
-import com.pcs.ztqtj.view.activity.web.MyWebView;
-import com.pcs.ztqtj.view.myview.LeadPoint;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
@@ -42,30 +31,50 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.TravelWeatherColumn;
 import com.pcs.lib_ztqfj_v2.model.pack.net.TravelWeatherSubject;
 import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.HotTouristSpot;
 import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.PackTouristSpotDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.PackTouristSpotUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterTravelCity;
+import com.pcs.ztqtj.control.adapter.AdapterTravelCity.FamilyCityListDeleteBtnClick;
+import com.pcs.ztqtj.control.adapter.AdapterTravelFragement;
+import com.pcs.ztqtj.control.adapter.AdapterTravelViewPager;
+import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
+import com.pcs.ztqtj.view.activity.citylist.ActivitySelectTravelViewList;
+import com.pcs.ztqtj.view.activity.web.MyWebView;
+import com.pcs.ztqtj.view.myview.LeadPoint;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 旅游气象
- *
- * @author chenjh
+ * 生活气象-旅游气象
  */
-public class ActivityTravelView extends FragmentActivitySZYBBase implements
-        OnClickListener {
-    private final int MAXCITY = 5;
+public class ActivityTravelView extends FragmentActivitySZYBBase implements OnClickListener {
+
     private ListView listview;
     private List<PackTravelWeekDown> listCityInfo = new ArrayList<PackTravelWeekDown>();
     private ArrayList<HotTouristSpot> touristSoptList = new ArrayList<HotTouristSpot>();
     private int defaultCityItem = 0;
     private MyReceiver receiver = new MyReceiver();
-    private TouristSpotReceiver spotReceiver = new TouristSpotReceiver();
     private AdapterTravelCity adapter;
-    private PackTravelWeekUp packUp;
-    private PackTouristSpotUp touristSpotUp = new PackTouristSpotUp();
     private GridView travel_gridview;
     private PackTouristSpotDown touristSpotDown = new PackTouristSpotDown();
     private AdapterTravelFragement travelAdapter;
@@ -75,7 +84,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
     private PackTravelWeatherColumnDown packColumnDown = new PackTravelWeatherColumnDown();
     private PackTravelWeatherColumnUp packColumnUp = new PackTravelWeatherColumnUp();
     private LinearLayout llSubject = null;
-    private RelativeLayout rlSubject = null;
     private TextView tvBookmark = null;
     private boolean flag = false;
     private EditText ss_alertedittext;
@@ -117,14 +125,12 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
         listview = (ListView) findViewById(R.id.listview2);
         travel_gridview = (GridView) findViewById(R.id.travel_gridview);
         llSubject = (LinearLayout) findViewById(R.id.ll_subject);
-        rlSubject = (RelativeLayout) findViewById(R.id.rl_subject);
         tvBookmark = (TextView) findViewById(R.id.tv_bookmark);
         ss_alertedittext= (EditText) findViewById(R.id.ss_alertedittext);
         initBannerView();
     }
 
     private void initEvent() {
-
         listview.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -147,40 +153,31 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
         ss_alertedittext.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ActivityTravelView.this,
-                        ActivitySelectTravelViewList.class);
-                startActivityForResult(intent,
-                        MyConfigure.RESULT_GOTO_TRAVEDETAIL);
+                Intent intent = new Intent(ActivityTravelView.this, ActivitySelectTravelViewList.class);
+                startActivityForResult(intent, MyConfigure.RESULT_GOTO_TRAVEDETAIL);
             }
         });
     }
 
     private void intentNextActivity(String cityID, String CityName) {
-        Intent intent = new Intent(ActivityTravelView.this,
-                ActivityTravelDetail.class);
+        Intent intent = new Intent(ActivityTravelView.this, ActivityTravelDetail.class);
         intent.putExtra("cityId", cityID);
         intent.putExtra("cityName", CityName);
-//        Toast.makeText(ActivityTravelView.this,cityID+"--"+CityName,Toast.LENGTH_LONG).show();
         startActivity(intent);
     }
 
     private void initData() {
-
         if(!isOpenNet()){
             showToast(getString(R.string.net_err));
             return ;
         }
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
-        PcsDataBrocastReceiver.registerReceiver(this, spotReceiver);
         getDefluatData();
 
-        adapter = new AdapterTravelCity(this, listCityInfo, defaultCityItem,
-                btnClickListener, getImageFetcher());
+        adapter = new AdapterTravelCity(this, listCityInfo, defaultCityItem, btnClickListener, getImageFetcher());
         listview.setAdapter(adapter);
-        touristSpotUp.area_id = ZtqCityDB.getInstance().getCityMain().ID;
-        PcsDataDownload.addDownload(touristSpotUp);
-
-        reqColumn();
+        okHttpLyCityList();
+        okHttpBanner();
         initBanner();
     }
 
@@ -193,8 +190,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
             public void onPageSelected(int arg0) {
                 pagerCurrentPosition = arg0;
                 if (columnList.size() > 1) {
-                    pointlayout.setPointSelect(pagerCurrentPosition
-                            % columnList.size());
+                    pointlayout.setPointSelect(pagerCurrentPosition % columnList.size());
                     addSubjectToLayout(columnList.get(pagerCurrentPosition).subject_list);
                 }
             }
@@ -211,20 +207,16 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
 
     /**
      * 动态添加主题至布局
-     *
      * @param subjectList
      */
     private void addSubjectToLayout(List<TravelWeatherSubject> subjectList) {
         llSubject.removeAllViews();
         if (subjectList != null && subjectList.size() > 0) {
-           // rlSubject.setVisibility(View.VISIBLE);
             for (final TravelWeatherSubject subject : subjectList) {
-                View view = LayoutInflater.from(this).inflate(
-                        R.layout.item_travel_subjest, null);
+                View view = LayoutInflater.from(this).inflate(R.layout.item_travel_subjest, null);
                 TextView tv = (TextView) view.findViewById(R.id.tv);
                 tv.setText(subject.name);
-                LayoutParams params = new LayoutParams(0,
-                        LayoutParams.MATCH_PARENT, 1);
+                LayoutParams params = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1);
                 view.setLayoutParams(params);
                 tv.setOnClickListener(new OnClickListener() {
 
@@ -232,8 +224,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
                     public void onClick(View v) {
                         if (subject.key_type.equals("1")) {
                             String url = getResources().getString(
-                                    R.string.file_download_url)
-                                    + subject.link_url;
+                                    R.string.file_download_url) + subject.link_url;
                             gotoWebView("旅游气象", url);
                         } else if (subject.key_type.equals("tour_subject")) {
                             Intent intent = new Intent(ActivityTravelView.this,
@@ -246,8 +237,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
                 });
                 llSubject.addView(view);
             }
-        } else {
-           // rlSubject.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -257,15 +246,13 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
     private void initBanner() {
         dismissProgressDialog();
         pagerCurrentPosition = 0;
-        adapterPager = new AdapterTravelViewPager(this, columnList,
-                getImageFetcher());
+        adapterPager = new AdapterTravelViewPager(this, columnList, getImageFetcher());
         vp.setAdapter(adapterPager);
         if (columnList.size() == 0) {
             // 如果大小为0的话则不需要计算当前位置
         } else {
             // 不为0则计算当前位置
-            pagerCurrentPosition = ((adapterPager.getCount() / columnList
-                    .size()) / 2) * columnList.size();
+            pagerCurrentPosition = ((adapterPager.getCount() / columnList.size()) / 2) * columnList.size();
             vp.setCurrentItem(pagerCurrentPosition);
             pointlayout.initPoint(columnList.size());
         }
@@ -273,21 +260,14 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
 
     private void getDefluatData() {
         listCityInfo.clear();
-        PackLocalTravelViewInfo localTravelViewInfo = ZtqCityDB.getInstance()
-                .getCurrentTravelViewInfo();
+        PackLocalTravelViewInfo localTravelViewInfo = ZtqCityDB.getInstance().getCurrentTravelViewInfo();
         if (localTravelViewInfo == null) {
             return;
         }
         // 取数据
         for (int i = 0; i < localTravelViewInfo.localViewList.size(); i++) {
-            // 加载本地数据
-            PackTravelWeekUp up = new PackTravelWeekUp();
-            up.setCity(localTravelViewInfo.localViewList.get(i));
-            PackTravelWeekDown down = (PackTravelWeekDown) PcsDataManager.getInstance().getNetPack(up.getName());
-            if (null == down) {
-            } else {
-                listCityInfo.add(down);
-            }
+            PackLocalCity packLocalCity = localTravelViewInfo.localViewList.get(i);
+            okHttpLyHjjc(packLocalCity.ID);
         }
     }
 
@@ -296,15 +276,8 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                // case MyConfigure.RESULT_SELECT_TRAVELVIEW: {
-                // PackLocalCity cityinfo = (PackLocalCity) data
-                // .getSerializableExtra("cityinfo");
-                // addcityinfo(cityinfo);
-                // break;
-                // }
                 case MyConfigure.RESULT_GOTO_TRAVEDETAIL: {
                     PackLocalCity cityinfo = (PackLocalCity) data.getSerializableExtra("cityinfo");
-                    // reqNet(cityinfo);
                     addcityinfo(cityinfo);
                     flag = true;
                     break;
@@ -346,7 +319,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
         }
         listCityInfo.add(packDown);
         saveLocalTravelViewInfo(cityInfo);
-        reqNet(cityInfo);
+        okHttpWeeklytq(cityInfo.ID, cityInfo.NAME);
     }
 
     /**
@@ -404,35 +377,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
         ZtqCityDB.getInstance().setCurrentTravelViewInfo(localcitylist);
     }
 
-    /**
-     * 网络请求数据
-     *
-     * @param cityInfo
-     */
-    private void reqNet(PackLocalCity cityInfo) {
-
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
-        showProgressDialog();
-        packUp = new PackTravelWeekUp();
-        packUp.setCity(cityInfo);
-        PackTravelWeekDown down = (PackTravelWeekDown) PcsDataManager.getInstance().getNetPack(packUp.getName());
-        if (down == null) {
-            // 判断是缓存数据中是否已经存在，不存在则网络请求取数据
-            PcsDataDownload.addDownload(packUp);
-        } else {
-            // 取城市信息后解析数据
-            down.cityId = cityInfo.ID;
-            down.cityName = cityInfo.NAME;
-            addCityInfoToListView(down);
-            intentNextActivity(down.cityId, down.cityName);
-        }
-    }
-
-    private void reqColumn() {
-
+    private void okHttpBanner() {
         if(!isOpenNet()){
             showToast(getString(R.string.net_err));
             return ;
@@ -442,34 +387,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
         PcsDataDownload.addDownload(packColumnUp);
     }
 
-    private boolean isCreatGetData = false;
-
-    /**
-     * 网络请求数据,请求默认的九个推荐地方
-     */
-    private void reqNetDefault() {
-
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
-        showProgressDialog();
-        isCreatGetData = true;
-        // 默认列表请求数据
-        for (int i = 0; i < touristSoptList.size(); i++) {
-            packUp = new PackTravelWeekUp();
-            packUp.setCity(touristSoptList.get(i).getId(), touristSoptList.get(i).getName());
-            PcsDataDownload.addDownload(packUp);
-        }
-        // // 选择列表请求数据
-        for (int i = 0; i < listCityInfo.size(); i++) {
-            packUp = new PackTravelWeekUp();
-            packUp.setCity(listCityInfo.get(i).cityId, listCityInfo.get(i).cityName);
-            PcsDataDownload.addDownload(packUp);
-        }
-
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -477,24 +394,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
                 Intent intent = new Intent(this, ActivityTravelBookmark.class);
                 startActivity(intent);
                 break;
-        }
-    }
-
-    private class TouristSpotReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (!nameStr.contains(PackTouristSpotUp.NAME)) {
-                return;
-            }
-            touristSpotDown = (PackTouristSpotDown) PcsDataManager.getInstance().getNetPack(nameStr);
-            if (touristSpotDown == null)
-                return;
-            touristSoptList = touristSpotDown.getTouristSpots();
-            travelAdapter = new AdapterTravelFragement(getApplicationContext(),
-                    touristSoptList, getImageFetcher());
-            travel_gridview.setAdapter(travelAdapter);
-            reqNetDefault();
         }
     }
 
@@ -514,11 +413,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
 
                     intentNextActivity(down.cityId, down.cityName);
                     flag = false;
-                    // addCityInfoToListView(pack);
-                    // if (isCreatGetData) {
-                    // getDefluatData();
-                    // adapter.notifyDataSetChanged();
-                    // }
                 }
             }
             if (name.equals(packColumnUp.getName())) {
@@ -539,7 +433,193 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements
     public void onDestroy() {
         super.onDestroy();
         this.unregisterReceiver(receiver);
-        this.unregisterReceiver(spotReceiver);
+    }
+
+    /**
+     * 获取旅游城市列表
+     */
+    private void okHttpLyCityList() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"ly_city_list";
+                    Log.e("ly_city_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("ly_city_list", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("ly_city_list")) {
+                                                    JSONObject listobj = bobj.getJSONObject("ly_city_list");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        touristSpotDown = new PackTouristSpotDown();
+                                                        touristSpotDown.fillData(listobj.toString());
+                                                        if (touristSpotDown == null) {
+                                                            return;
+                                                        }
+                                                        touristSoptList = touristSpotDown.getTouristSpots();
+                                                        travelAdapter = new AdapterTravelFragement(getApplicationContext(), touristSoptList, getImageFetcher());
+                                                        travel_gridview.setAdapter(travelAdapter);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取默认景点信息
+     */
+    private void okHttpLyHjjc(final String stationId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"ly_hjjc";
+                    Log.e("ly_hjjc", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("ly_hjjc", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("weeklytq")) {
+                                                    JSONObject weeklytq = bobj.getJSONObject("weeklytq");
+                                                    if (!TextUtil.isEmpty(weeklytq.toString())) {
+                                                        PackTravelWeekDown down = new PackTravelWeekDown();
+                                                        down.fillData(weeklytq.toString());
+                                                        listCityInfo.add(down);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取一周预报
+     */
+    private void okHttpWeeklytq(final String stationId, final String cityName) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"weeklytq";
+                    Log.e("weeklytq", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("weeklytq", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("weeklytq#"+stationId)) {
+                                                    JSONObject weeklytq = bobj.getJSONObject("weeklytq#"+stationId);
+                                                    if (!TextUtil.isEmpty(weeklytq.toString())) {
+                                                        PackTravelWeekDown down = new PackTravelWeekDown();
+                                                        down.fillData(weeklytq.toString());
+                                                        // 取城市信息后解析数据
+                                                        down.cityId = stationId;
+                                                        down.cityName = cityName;
+                                                        addCityInfoToListView(down);
+                                                        intentNextActivity(down.cityId, down.cityName);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

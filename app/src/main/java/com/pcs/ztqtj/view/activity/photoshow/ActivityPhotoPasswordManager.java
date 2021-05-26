@@ -161,7 +161,6 @@ public class ActivityPhotoPasswordManager extends FragmentActivityZtqBase implem
                         Toast.makeText(ActivityPhotoPasswordManager.this, "网络不可用", Toast.LENGTH_LONG).show();
                         return ;
                     }
-                    showProgressDialog();
                     mFragment.onClickSubmitButton();
                 }
                 break;
@@ -234,6 +233,7 @@ public class ActivityPhotoPasswordManager extends FragmentActivityZtqBase implem
                 }
             }
 
+            //修改密码
             if(PackPhotoUserChangePasswordUp.NAME.equals(nameStr)) {
                 dismissProgressDialog();
                 PackPhotoUserChangePasswordDown down = (PackPhotoUserChangePasswordDown) PcsDataManager.getInstance().getNetPack(nameStr);

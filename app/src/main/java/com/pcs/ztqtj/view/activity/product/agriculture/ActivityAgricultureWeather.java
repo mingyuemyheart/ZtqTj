@@ -2,42 +2,45 @@ package com.pcs.ztqtj.view.activity.product.agriculture;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterAgricultureWeather;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.ItemExpert;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterAgricultureWeather;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 农业气象
- * Created by tyaathome on 2016/11/7.
+ * 专项服务-行业气象-农业气象-旬报，月报
  */
-public class ActivityAgricultureWeather extends FragmentActivityZtqBase implements View.OnClickListener {
+public class ActivityAgricultureWeather extends FragmentActivityZtqBase {
 
     private ListView listView;
-
     private List<ItemExpert> listColumn = new ArrayList<>();
-    private PackExpertListUp packExpertListUp = new PackExpertListUp();
-    private static final int COUNT = 15;
-    private int currentPage = 1;
-    private MyReceiver receiver = new MyReceiver();
     private AdapterAgricultureWeather adapter;
-    private boolean isLoading = false;
-    private boolean isReqFinish = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +52,6 @@ public class ActivityAgricultureWeather extends FragmentActivityZtqBase implemen
         initData();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
-    }
-
     private void initView() {
         listView = (ListView) findViewById(R.id.listview);
     }
@@ -66,103 +60,87 @@ public class ActivityAgricultureWeather extends FragmentActivityZtqBase implemen
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ItemExpert dto = listColumn.get(position);
                 Intent intent = new Intent(ActivityAgricultureWeather.this, ActivityAgricultureWeatherDetail.class);
                 intent.putExtra("title", getIntent().getStringExtra("title"));
-                intent.putExtra("id", listColumn.get(position).id);
+                intent.putExtra("id", dto.id);
+                intent.putExtra("channel_id", getIntent().getStringExtra("channel_id"));
                 startActivity(intent);
-            }
-        });
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // 当不滚动时
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    Log.e("position",view.getLastVisiblePosition() + "");
-                    // 判断是否滚动到底部
-                    if (view.getLastVisiblePosition() == view.getCount() - 1) {
-                        // 加载更多功能的代码
-                        Log.e("jzy","到了底部，加载更多");
-
-                        if (!isLoading && !isReqFinish) {
-                            reqMoreList();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-
             }
         });
     }
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         adapter = new AdapterAgricultureWeather(this, listColumn);
         listView.setAdapter(adapter);
-        reqNewList();
+        okHttpInfoList();
     }
 
     /**
-     * 获取新列表
+     * 获取农业气象旬报、月报
      */
-    private void reqNewList() {
-        isLoading = true;
-        currentPage = 1;
-        packExpertListUp = new PackExpertListUp();
-        packExpertListUp.channel_id = getIntent().getStringExtra("channel_id");
-        packExpertListUp.count = COUNT;
-        packExpertListUp.page = currentPage;
-        PcsDataDownload.addDownload(packExpertListUp);
-    }
+    private void okHttpInfoList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String type = getIntent().getStringExtra("type");
+                    String channel_id = getIntent().getStringExtra("channel_id");
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", channel_id);
+                    info.put("extra", type);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"info_list";
+                    Log.e("info_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("info_list", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("tq_zx")) {
+                                                    JSONObject tq_zx = bobj.getJSONObject("tq_zx");
+                                                    if (!TextUtil.isEmpty(tq_zx.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackExpertListDown down = new PackExpertListDown();
+                                                        down.fillData(tq_zx.toString());
 
-    private void reqMoreList() {
-        isLoading = true;
-        currentPage++;
-        packExpertListUp = new PackExpertListUp();
-        packExpertListUp.channel_id = getIntent().getStringExtra("channel_id");
-        packExpertListUp.count = COUNT;
-        packExpertListUp.page = currentPage;
-        PcsDataDownload.addDownload(packExpertListUp);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-
-        }
-    }
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if(!TextUtils.isEmpty(errorStr)) {
-                return ;
-            }
-
-            if(nameStr.equals(packExpertListUp.getName())) {
-                isLoading = false;
-                PackExpertListDown down = (PackExpertListDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(down == null) {
-                    return ;
+                                                        listColumn.addAll(down.dataList);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                listColumn.addAll(down.dataList);
-                adapter.notifyDataSetChanged();
-                if(down.dataList != null) {
-                    // 当请求回来的数据列表小于count时则表示已无更多数据了，所以不需要再请求并隐藏加载更多
-                    if(down.dataList.size() < COUNT) {
-                        adapter.setLoadingVisibility(View.GONE);
-                        isReqFinish = true;
-                    } else {
-                        isReqFinish = false;
-                        adapter.setLoadingVisibility(View.VISIBLE);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
             }
-        }
+        }).start();
     }
+
 }

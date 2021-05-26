@@ -13,7 +13,7 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown.HourForecast;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.hour_forecast.AdapterXMForecast;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
@@ -36,7 +36,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -84,170 +87,138 @@ public class CommandMain24HoursWeather extends CommandMainBase {
     }
 
     private void requestForecast() {
-        PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if(city == null) return;
         //24小时
-        final PackHourForecastUp packHourUp = new PackHourForecastUp();
-        packHourUp.county_id = city.ID;
-//        PackHourForecastDown down = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packHourUp.getName());
-//        if(down != null && down.list != null && down.list.size() > 0) {
-//            List<Float> mTopTemp = new ArrayList<>();
-//            List<Float> mLowRain = new ArrayList<>();
-//            List<HourForecast> list = down.list;
-//            int size = list.size();
-//            for (int i = 0; i < list.size(); i++) {
-//                if (i > 36) {
-//                    break;
-//                }
-//                String rain = list.get(i).rainfall;
-//                String temp = list.get(i).temperature;
-//                if (!TextUtils.isEmpty(temp)) {
-//                    mTopTemp.add(Float.parseFloat(temp));
-//                } else {
-//                    continue;
-//                }
-//                if (!TextUtils.isEmpty(rain)) {
-//                    mLowRain.add(Float.parseFloat(rain));
-//                } else {
-//                    mLowRain.add(0f);
-//                }
-//            }
-//            int width = Util.dp2px(60) * size;
-//
-//            gridview24hour.setNumColumns(size);
-//            gridview24hour.setVisibility(View.VISIBLE);
-//            ViewGroup.LayoutParams gradviewParams = gridview24hour.getLayoutParams();
-//            gradviewParams.width = width;
-//            gridview24hour.setLayoutParams(gradviewParams);
-//            forecastList.clear();
-//            forecastList.addAll(list);
-//            adapter.notifyDataSetChanged();
-//            hour24View.setData(forecastList, imageFetcher);
-//            //tvNodata.setVisibility(View.INVISIBLE);
-//            //layoutWeather.setVisibility(View.VISIBLE);
-//            rowView.setVisibility(View.VISIBLE);
-//        } else {
-//            rowView.setVisibility(View.GONE);
-//            //tvNodata.setVisibility(View.VISIBLE);
-//            //layoutWeather.setVisibility(View.INVISIBLE);
-//        }
-
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final String url = CONST.BASE_URL+packHourUp.getName();
-                Log.e("forecast", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", city.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"forecast";
+                    Log.e("forecast", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            Log.e("onFailure", e.getMessage());
                         }
-                        final String result = response.body().string();
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("forecast")) {
-                                                JSONObject forecastobj = bobj.getJSONObject("forecast");
-                                                if (!forecastobj.isNull("today")) {
-                                                    JSONArray todayArray = forecastobj.getJSONArray("today");
-                                                    List<PackHourForecastDown.HourForecast> list = new ArrayList<>();
-                                                    for (int i = 0; i < todayArray.length(); i++) {
-                                                        PackHourForecastDown down = new PackHourForecastDown();
-                                                        PackHourForecastDown.HourForecast dto = down.new HourForecast();
-                                                        JSONObject itemObj = todayArray.getJSONObject(i);
-                                                        if (!itemObj.isNull("windspeed")) {
-                                                            dto.windspeed = itemObj.getString("windspeed");
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("forecast", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("forecast")) {
+                                                    JSONObject forecastobj = bobj.getJSONObject("forecast");
+                                                    if (!forecastobj.isNull("today")) {
+                                                        JSONArray todayArray = forecastobj.getJSONArray("today");
+                                                        List<PackHourForecastDown.HourForecast> list = new ArrayList<>();
+                                                        for (int i = 0; i < todayArray.length(); i++) {
+                                                            PackHourForecastDown down = new PackHourForecastDown();
+                                                            PackHourForecastDown.HourForecast dto = down.new HourForecast();
+                                                            JSONObject itemObj = todayArray.getJSONObject(i);
+                                                            if (!itemObj.isNull("windspeed")) {
+                                                                dto.windspeed = itemObj.getString("windspeed");
+                                                            }
+                                                            if (!itemObj.isNull("time")) {
+                                                                dto.time = itemObj.getString("time");
+                                                            }
+                                                            if (!itemObj.isNull("airpressure")) {
+                                                                dto.airpressure = itemObj.getString("airpressure");
+                                                            }
+                                                            if (!itemObj.isNull("visibility")) {
+                                                                dto.visibility = itemObj.getString("visibility");
+                                                            }
+                                                            if (!itemObj.isNull("rainfall")) {
+                                                                dto.rainfall = itemObj.getString("rainfall");
+                                                            }
+                                                            if (!itemObj.isNull("rh")) {
+                                                                dto.rh = itemObj.getString("rh");
+                                                            }
+                                                            if (!itemObj.isNull("ico")) {
+                                                                dto.ico = itemObj.getString("ico");
+                                                            }
+                                                            if (!itemObj.isNull("w_datetime")) {
+                                                                dto.w_datetime = itemObj.getString("w_datetime");
+                                                            }
+                                                            if (!itemObj.isNull("winddir")) {
+                                                                dto.winddir = itemObj.getString("winddir");
+                                                            }
+                                                            if (!itemObj.isNull("temperature")) {
+                                                                dto.temperature = itemObj.getString("temperature");
+                                                            }
+                                                            list.add(dto);
                                                         }
-                                                        if (!itemObj.isNull("time")) {
-                                                            dto.time = itemObj.getString("time");
-                                                        }
-                                                        if (!itemObj.isNull("airpressure")) {
-                                                            dto.airpressure = itemObj.getString("airpressure");
-                                                        }
-                                                        if (!itemObj.isNull("visibility")) {
-                                                            dto.visibility = itemObj.getString("visibility");
-                                                        }
-                                                        if (!itemObj.isNull("rainfall")) {
-                                                            dto.rainfall = itemObj.getString("rainfall");
-                                                        }
-                                                        if (!itemObj.isNull("rh")) {
-                                                            dto.rh = itemObj.getString("rh");
-                                                        }
-                                                        if (!itemObj.isNull("ico")) {
-                                                            dto.ico = itemObj.getString("ico");
-                                                        }
-                                                        if (!itemObj.isNull("w_datetime")) {
-                                                            dto.w_datetime = itemObj.getString("w_datetime");
-                                                        }
-                                                        if (!itemObj.isNull("winddir")) {
-                                                            dto.winddir = itemObj.getString("winddir");
-                                                        }
-                                                        if (!itemObj.isNull("temperature")) {
-                                                            dto.temperature = itemObj.getString("temperature");
-                                                        }
-                                                        list.add(dto);
-                                                    }
 
-                                                    if(list.size() > 0) {
-                                                        List<Float> mTopTemp = new ArrayList<>();
-                                                        List<Float> mLowRain = new ArrayList<>();
-                                                        int size = list.size();
-                                                        for (int i = 0; i < list.size(); i++) {
-                                                            if (i > 36) {
-                                                                break;
+                                                        if(list.size() > 0) {
+                                                            List<Float> mTopTemp = new ArrayList<>();
+                                                            List<Float> mLowRain = new ArrayList<>();
+                                                            int size = list.size();
+                                                            for (int i = 0; i < list.size(); i++) {
+                                                                if (i > 36) {
+                                                                    break;
+                                                                }
+                                                                String rain = list.get(i).rainfall;
+                                                                String temp = list.get(i).temperature;
+                                                                if (!TextUtils.isEmpty(temp)) {
+                                                                    mTopTemp.add(Float.parseFloat(temp));
+                                                                } else {
+                                                                    continue;
+                                                                }
+                                                                if (!TextUtils.isEmpty(rain)) {
+                                                                    mLowRain.add(Float.parseFloat(rain));
+                                                                } else {
+                                                                    mLowRain.add(0f);
+                                                                }
                                                             }
-                                                            String rain = list.get(i).rainfall;
-                                                            String temp = list.get(i).temperature;
-                                                            if (!TextUtils.isEmpty(temp)) {
-                                                                mTopTemp.add(Float.parseFloat(temp));
-                                                            } else {
-                                                                continue;
-                                                            }
-                                                            if (!TextUtils.isEmpty(rain)) {
-                                                                mLowRain.add(Float.parseFloat(rain));
-                                                            } else {
-                                                                mLowRain.add(0f);
-                                                            }
-                                                        }
-                                                        int width = Util.dp2px(60) * size;
+                                                            int width = Util.dp2px(60) * size;
 
-                                                        gridview24hour.setNumColumns(size);
-                                                        gridview24hour.setVisibility(View.VISIBLE);
-                                                        ViewGroup.LayoutParams gradviewParams = gridview24hour.getLayoutParams();
-                                                        gradviewParams.width = width;
-                                                        gridview24hour.setLayoutParams(gradviewParams);
-                                                        forecastList.clear();
-                                                        forecastList.addAll(list);
-                                                        adapter.notifyDataSetChanged();
-                                                        hour24View.setData(forecastList, imageFetcher);
-                                                        //tvNodata.setVisibility(View.INVISIBLE);
-                                                        //layoutWeather.setVisibility(View.VISIBLE);
-                                                        rowView.setVisibility(View.VISIBLE);
-                                                    } else {
-                                                        rowView.setVisibility(View.GONE);
-                                                        //tvNodata.setVisibility(View.VISIBLE);
-                                                        //layoutWeather.setVisibility(View.INVISIBLE);
+                                                            gridview24hour.setNumColumns(size);
+                                                            gridview24hour.setVisibility(View.VISIBLE);
+                                                            ViewGroup.LayoutParams gradviewParams = gridview24hour.getLayoutParams();
+                                                            gradviewParams.width = width;
+                                                            gridview24hour.setLayoutParams(gradviewParams);
+                                                            forecastList.clear();
+                                                            forecastList.addAll(list);
+                                                            adapter.notifyDataSetChanged();
+                                                            hour24View.setData(forecastList, imageFetcher);
+                                                            //tvNodata.setVisibility(View.INVISIBLE);
+                                                            //layoutWeather.setVisibility(View.VISIBLE);
+                                                            rowView.setVisibility(View.VISIBLE);
+                                                        } else {
+                                                            rowView.setVisibility(View.GONE);
+                                                            //tvNodata.setVisibility(View.VISIBLE);
+                                                            //layoutWeather.setVisibility(View.INVISIBLE);
+                                                        }
                                                     }
                                                 }
                                             }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
 

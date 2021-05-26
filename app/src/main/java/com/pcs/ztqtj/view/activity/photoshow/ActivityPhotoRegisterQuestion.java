@@ -8,22 +8,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.inter.ItemClick;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSetUserQuestionDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSetUserQuestionUp;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.UserQuestion;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.inter.ItemClick;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 注册问题
@@ -32,10 +45,6 @@ import java.util.List;
 public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase implements View.OnClickListener{
 
     private Button btnSubmit;
-    private MyReceiver receiver = new MyReceiver();
-
-    private PackPhotoUserQuestionUp packQuestionUp = new PackPhotoUserQuestionUp();
-    private PackPhotoUserQuestionDown packQuestionDown = new PackPhotoUserQuestionDown();
 
     private TextView tvQuestion1;
     private TextView tvQuestion2;
@@ -46,12 +55,6 @@ public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase imple
 
     private String questionId1 = "";
     private String questionId2 = "";
-
-    // 用户id
-    private String user_id = "";
-    // 平台id
-    private String platform_user_id = "";
-    private String password = "";
 
     /**
      * 问题信息列表
@@ -96,29 +99,16 @@ public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase imple
     }
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         reqQuestion();
-        user_id = getIntent().getStringExtra("user_id");
-        platform_user_id = getIntent().getStringExtra("platform_user_id");
-        password = getIntent().getStringExtra("password");
     }
 
     @Override
     public void finish() {
         Intent intent = new Intent();
-        intent.putExtra("username", platform_user_id);
-        intent.putExtra("password", password);
+        intent.putExtra("username", MyApplication.USERNAME);
+        intent.putExtra("password", MyApplication.PASSWORD);
         ActivityPhotoRegisterQuestion.this.setResult(RESULT_OK, intent);
         super.finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
     }
 
     private boolean check() {
@@ -154,39 +144,17 @@ public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase imple
      * 获取问题信息
      */
     private void reqQuestion() {
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
-        packQuestionUp = new PackPhotoUserQuestionUp();
-        PcsDataDownload.addDownload(packQuestionUp);
-    }
+        questionList1.clear();
+        UserQuestion dto = new UserQuestion();
+        dto.que_title = "你最喜欢的颜色是什么？";
+        dto.que_id = "1";
+        questionList1.add(dto);
 
-    /**
-     * 注册设置问题列表
-     */
-    private void reqRegister() {
-        PackPhotoSetUserQuestionUp packUp = new PackPhotoSetUserQuestionUp();
-        packUp.user_id = user_id;
-        packUp.platform_user_id = platform_user_id;
-
-        List<UserQuestion> list = new ArrayList<>();
-        UserQuestion q1 = new UserQuestion();
-        q1.que_id = questionId1;
-        q1.ans_info = etAnswer1.getText().toString();
-
-        UserQuestion q2 = new UserQuestion();
-        q2.que_id = questionId2;
-        q2.ans_info = etAnswer2.getText().toString();
-
-        list.add(q1);
-        list.add(q2);
-        packUp.req_list = list;
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
-        PcsDataDownload.addDownload(packUp);
+        questionList2.clear();
+        dto = new UserQuestion();
+        dto.que_title = "你最喜欢的水果是什么？";
+        dto.que_id = "2";
+        questionList2.add(dto);
     }
 
     /**
@@ -210,7 +178,7 @@ public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase imple
                     gotoLogin();
                 } else {
                     if(check()) {
-                        reqRegister();
+                        okHttpRegister();
                     }
                 }
 
@@ -240,40 +208,100 @@ public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase imple
         }
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
+    /**
+     * 用户注册
+     */
+    private void okHttpRegister() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/register";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", MyApplication.USERNAME);
+                    param.put("pwd", MyApplication.PASSWORD);
+                    param.put("userName", MyApplication.NAME);
+                    param.put("qesTypeOne", questionId1);
+                    param.put("qesTypeOneAns", etAnswer1.getText().toString());
+                    param.put("qesTypeTwo", questionId2);
+                    param.put("qesTypeTwoAns", etAnswer2.getText().toString());
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                showToast(errorMessage);
+                                            }
+                                            if (!obj.isNull("token")) {
+                                                MyApplication.TOKEN = obj.getString("token");
+                                            }
+                                            if (!obj.isNull("userInfo")) {
+                                                JSONObject userInfo = obj.getJSONObject("userInfo");
+                                                if (!userInfo.isNull("userId")) {
+                                                    MyApplication.UID = userInfo.getString("userId");
+                                                }
+                                                if (!userInfo.isNull("loginName")) {
+                                                    MyApplication.USERNAME = userInfo.getString("loginName");
+                                                }
+                                                if (!userInfo.isNull("password")) {
+                                                    MyApplication.PASSWORD = userInfo.getString("password");
+                                                }
+                                                if (!userInfo.isNull("userName")) {
+                                                    MyApplication.NAME= userInfo.getString("userName");
+                                                }
+                                                if (!userInfo.isNull("phonenumber")) {
+                                                    MyApplication.MOBILE= userInfo.getString("phonenumber");
+                                                }
+                                                if (!userInfo.isNull("avatar")) {
+                                                    MyApplication.PORTRAIT= userInfo.getString("avatar");
+                                                }
+                                                MyApplication.saveUserInfo(ActivityPhotoRegisterQuestion.this);
 
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if(packQuestionUp.getName().equals(nameStr)) {
-                packQuestionDown = (PackPhotoUserQuestionDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(packQuestionDown == null) {
-                    return ;
-                }
-                if(packQuestionDown.info_list_1 != null && packQuestionDown.info_list_1.size() > 0
-                        && packQuestionDown.info_list_2 != null && packQuestionDown.info_list_2.size() > 0) {
-                    questionList1 = packQuestionDown.info_list_1;
-                    questionList2 = packQuestionDown.info_list_2;
-                    tvQuestion1.setText(questionList1.get(0).que_title);
-                    questionId1 = questionList1.get(0).que_id;
-                    tvQuestion2.setText(questionList2.get(0).que_title);
-                    questionId2 = questionList2.get(0).que_id;
+                                                //存储用户数据
+                                                PackLocalUser myUserInfo = new PackLocalUser();
+                                                myUserInfo.user_id = MyApplication.UID;
+                                                myUserInfo.sys_user_id = MyApplication.UID;
+                                                myUserInfo.sys_nick_name = MyApplication.NAME;
+                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
+                                                myUserInfo.mobile = MyApplication.MOBILE;
+//                                                myUserInfo.type = packDown.platform_type;
+//                                                myUserInfo.is_jc = packDown.is_jc;
+                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
+                                                packLocalUserInfo.currUserInfo = myUserInfo;
+                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+
+                                                gotoLogin();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-
-            if(PackPhotoSetUserQuestionUp.NAME.equals(nameStr)) {
-                dismissProgressDialog();
-
-                PackPhotoSetUserQuestionDown packDown = (PackPhotoSetUserQuestionDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDown == null) {
-                    Toast.makeText(ActivityPhotoRegisterQuestion.this, "注册失败！", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                showToast(packDown.result_msg);
-                if(packDown.result.equals("1")) {
-                    gotoLogin();
-                }
-
-            }
-        }
+        }).start();
     }
+
 }

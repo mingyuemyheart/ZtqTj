@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="@string/map_forecast_tip"
+                android:text="@string/map_forecast_tip_init"
                 android:textColor="@color/text_white"
                 android:textSize="@dimen/text_footnote"
                 android:singleLine="true"

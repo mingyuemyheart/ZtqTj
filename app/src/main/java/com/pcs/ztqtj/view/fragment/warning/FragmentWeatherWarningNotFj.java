@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,20 +21,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterPopWarn;
-import com.pcs.ztqtj.control.adapter.adapter_warn.AdapterWeaWarnList;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
-import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
-import com.pcs.ztqtj.view.dialog.DialogFactory;
-import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
@@ -42,15 +30,42 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterPopWarn;
+import com.pcs.ztqtj.control.adapter.adapter_warn.AdapterWeaWarnList;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
+import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
+import com.pcs.ztqtj.view.dialog.DialogFactory;
+import com.pcs.ztqtj.view.dialog.DialogOneButton;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 气象预警fragment
+ * 预警中心
  * Created by tyaathome on 2016/6/13.
  */
 public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmentUpdateImpl {
@@ -73,11 +88,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
     private List<WarnCenterYJXXGridBean> currentWarnList = new ArrayList<>();
 
     // 上传下载包
-    private PackWarnWeatherUp packUp = new PackWarnWeatherUp();
     private PackWarnWeatherDown packDown = new PackWarnWeatherDown();
-
-    // 广播对象
-    private MyReceiver receiver = new MyReceiver();
 
     private AdapterWeaWarnList adapter = null;
 
@@ -140,34 +151,17 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
     }
 
     private void initData() {
-        //PcsDataBrocastReceiver.registerReceiver(getActivity(), receiver);
         adapter = new AdapterWeaWarnList(getActivity(), currentWarnList);
         listView.setAdapter(adapter);
-        String cityid = "";
         Bundle bundle = getArguments();
         if(bundle != null) {
             mainSingleWarnBean = (WarnBean) bundle.getSerializable("warninfo");
-            cityid = bundle.getString("cityid");
+            initDetailFragment(mainSingleWarnBean);
         } else {
-            PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-            cityid = cityMain.ID;
-//            if (cityMain != null&&cityMain.isFjCity) {
-//                cityid = cityMain.PARENT_ID;
-//            }else{
-//                cityid = cityMain.ID;
-//            }
+            final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+            if (city == null) return;
+            okHttpWarningList(city.ID);
         }
-        if(!TextUtils.isEmpty(cityid)) {
-            reqNet(cityid);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        if (receiver != null) {
-//            PcsDataBrocastReceiver.unregisterReceiver(getActivity(), receiver);
-//        }
     }
 
     /**
@@ -176,14 +170,8 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
      * @param bean
      */
     private void reqDetail(WarnCenterYJXXGridBean bean) {
-        PcsDataBrocastReceiver.registerReceiver(getContext(), receiver);
-        //等待框
         ((ActivityWarningCenterNotFjCity) getActivity()).showProgressDialog();
-        //请求
-        PackWarnPubDetailUp packDetailUp = new PackWarnPubDetailUp();
-        packDetailUp.id = bean.id;
-        //下载
-        PcsDataDownload.addDownload(packDetailUp);
+        okHttpWarningDetail(bean.id);
     }
 
     /**
@@ -224,22 +212,61 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
     }
 
     /**
-     * 网络请求数据
-     *
-     * @param cityid
+     * 获取预警列表信息
      */
-    private void reqNet(String cityid) {
-        PcsDataBrocastReceiver.registerReceiver(getContext(), receiver);
-        packUp = new PackWarnWeatherUp();
-        packUp.areaid = cityid;
-//        // 请求网络
-//        packDown = (PackWarnWeatherDown) PcsDataManager.getInstance().getNetPack(packUp.getName());
-//        if (packDown != null) {
-//            dealWidthData(packDown);
-//        }else{
-//
-//        }
-        PcsDataDownload.addDownload(packUp);
+    private void okHttpWarningList(final String stationId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"warningcenterqx_fb";
+                    Log.e("warningcenterqx_fb", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("warningcenterqx_fb", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("warningcenterqx_fb")) {
+                                                    JSONObject fbObj = bobj.getJSONObject("warningcenterqx_fb");
+                                                    packDown = new PackWarnWeatherDown();
+                                                    packDown.fillData(fbObj.toString());
+                                                    dealWidthData(packDown);
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     /**
@@ -248,14 +275,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
      * @param pack
      */
     private void dealWidthData(PackWarnWeatherDown pack) {
-        ActivityWarningCenterNotFjCity activity = (ActivityWarningCenterNotFjCity) getActivity();
-//        if(pack.city.size() == 0) {
-//            activity.showNoData(true);
-//        } else {
-//            activity.showNoData(false);
-//        }
-        if (pack.county.size() == 0 && pack.province.size() == 0
-                && pack.city.size() == 0) {
+        if (pack.county.size() == 0 && pack.province.size() == 0 && pack.city.size() == 0) {
             return;
         }
         titleData.clear();
@@ -369,9 +389,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
                 }
             });
         }
-
-
-
     }
 
     private void radioButtonClick(int id) {
@@ -446,7 +463,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             parentId = contentList.get(position).ID;
-            reqNet(contentList.get(position).ID);
+            okHttpWarningList(contentList.get(position).ID);
             // 关闭对话框
             mDialogStation.hide();
         }
@@ -494,49 +511,74 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
         refresh();
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (TextUtils.isEmpty(name)) {
-                return;
+    /**
+     * 预警详情
+     */
+    private void okHttpWarningDetail(final String id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", id);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"yjxx_info_query";
+                    Log.e("yjxx_info_query", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("yjxx_info_query", result);
+                                    }
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("yjxx_info_query")) {
+                                                JSONObject yjxx_info_query = bobj.getJSONObject("yjxx_info_query");
+                                                if (!TextUtil.isEmpty(yjxx_info_query.toString())) {
+                                                    ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
+                                                    //预警详情
+                                                    PackWarnPubDetailDown packDown = new PackWarnPubDetailDown();
+                                                    packDown.fillData(yjxx_info_query.toString());
+                                                    //数据
+                                                    WarnBean bean = new WarnBean();
+                                                    bean.level = packDown.desc;
+                                                    bean.ico = packDown.ico;
+                                                    bean.msg = packDown.content;
+                                                    bean.pt = packDown.pt;
+                                                    bean.defend = packDown.defend;
+                                                    bean.put_str = packDown.put_str;
+                                                    initDetailFragment(bean);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            if (packUp != null && name.equals(packUp.getName())) {
-                if(getContext() != null && receiver != null) {
-                    PcsDataBrocastReceiver.unregisterReceiver(getContext(), receiver);
-                }
-                packDown = (PackWarnWeatherDown) PcsDataManager.getInstance().getNetPack(packUp.getName());
-                if (packDown == null) {
-                    return;
-                }
-                dealWidthData(packDown);
-            } else if (name.startsWith(PackWarnPubDetailUp.NAME)) {
-                if(getContext() != null && receiver != null) {
-                    PcsDataBrocastReceiver.unregisterReceiver(getContext(), receiver);
-                }
-                //等待框
-                ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
-                //预警详情
-                if (!TextUtils.isEmpty(errorStr)) {
-                    //获取详情失败
-                    showDetilError();
-                    return;
-                }
-                PackWarnPubDetailDown packDown = (PackWarnPubDetailDown) PcsDataManager.getInstance().getNetPack(name);
-                if (packDown == null) {
-                    //获取详情失败
-                    showDetilError();
-                    return;
-                }
-                //数据
-                WarnBean bean = new WarnBean();
-                bean.level = packDown.desc;
-                bean.ico = packDown.ico;
-                bean.msg = packDown.content;
-                bean.pt = packDown.pt;
-                bean.defend = packDown.defend;
-                bean.put_str = packDown.put_str;
-                initDetailFragment(bean);
-            }
-        }
+        }).start();
     }
+
 }

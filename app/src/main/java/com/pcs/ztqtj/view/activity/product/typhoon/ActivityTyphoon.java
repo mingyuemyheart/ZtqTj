@@ -1245,7 +1245,6 @@ public class ActivityTyphoon extends FragmentActivityWithShare implements OnClic
      * 台风列表点击事件
      */
     private OnItemClickListener mTyphoonListClick = new OnItemClickListener() {
-
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Holder holder = (Holder) view.getTag();
@@ -1254,8 +1253,7 @@ public class ActivityTyphoon extends FragmentActivityWithShare implements OnClic
             } else {
                 // 限制显示数
                 if (mAdapter.getCheckedCount() >= MAX_COUNT_TYPHOON && !holder.cb.isChecked()) {
-                    Toast.makeText(ActivityTyphoon.this, getString(R.string.error_select_typhoon), Toast
-                            .LENGTH_SHORT).show();
+                    Toast.makeText(ActivityTyphoon.this, getString(R.string.error_select_typhoon), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 selectTyphoon(position);

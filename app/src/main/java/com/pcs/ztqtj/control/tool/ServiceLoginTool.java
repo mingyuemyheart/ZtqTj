@@ -21,8 +21,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryUp;
 
 /**
- * 气象服务登录工具类
- * Created by tyaathome on 2016/8/24.
+ * 专项服务-决策服务-我的服务
  */
 public class ServiceLoginTool {
 

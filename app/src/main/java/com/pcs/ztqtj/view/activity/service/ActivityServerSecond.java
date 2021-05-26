@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,49 +15,53 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.AsyncTask;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceTwoChannelDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceTwoChannelUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.ServiceChannelInfo;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 气象生活第二页
- *
- * @author JiangZy
+ * 专项服务-地区点击
  */
 public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
 
     // 气象类别
-    private static int DECISION = 1;// 决策
-    private static int INDESTRY = 2;// 行业
-    private static int NEAR = 3;// 临近
+    private static String DECISION = "jc";// 决策
+    private static String INDESTRY = "hy";// 行业
+    private static String NEAR = "lj";// 临近
+    private String currTab = DECISION;
 
-    private int currTab = 1;
-
-    private GridView mGridView;
     private MyGridViewAdapter mGridViewAdapter;
-
-    private MyReceiver receiver = new MyReceiver();
-    private PackServiceTwoChannelUp packServiceTwoChannelUp = new PackServiceTwoChannelUp();
     private List<ServiceChannelInfo> serviceChannelList = new ArrayList<ServiceChannelInfo>();
 
     private String area_id = "";// 地区ID 测试
 
     private boolean show_warn = false;
-    private LinearLayout ll_bottom_button;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -69,8 +74,6 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
         initRadioButton();
         // 初始化GridView
         initGridView();
-        PcsDataBrocastReceiver.registerReceiver(ActivityServerSecond.this,
-                receiver);
         // 设置默认显示
         setDefaultDisplay();
     }
@@ -96,10 +99,9 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
      * 初始化GridView
      */
     private void initGridView() {
-        mGridView = (GridView) findViewById(R.id.gridview);
+        GridView mGridView = (GridView) findViewById(R.id.gridview);
         mGridViewAdapter = new MyGridViewAdapter(this);
         mGridView.setAdapter(mGridViewAdapter);
-        ll_bottom_button= (LinearLayout) findViewById(R.id.ll_bottom_button);
     }
 
     private void setDefaultDisplay() {
@@ -113,9 +115,9 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
     /**
      * 刷新箭头图标
      */
-    private void refreshArrowIcon(int type, boolean isShow) {
+    private void refreshArrowIcon(String type, boolean isShow) {
         View view;
-        if (type == INDESTRY) {
+        if (TextUtils.equals(INDESTRY, type)) {
             // 行业
             view = findViewById(R.id.iv_industry);
         } else {
@@ -141,14 +143,14 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
     /**
      * 显示介绍
      */
-    private void refreshIntroduce(int type, String remark) {
+    private void refreshIntroduce(String type, String remark) {
         TextView introduce = (TextView) findViewById(R.id.text_decision_introduce);
         TextView content = (TextView) findViewById(R.id.text_decision_content);
-        if (type == INDESTRY) {
+        if (TextUtils.equals(INDESTRY, type)) {
             // 行业
             introduce.setText(R.string.industry_introduce);
             content.setText(Html.fromHtml(remark));
-        } else if (type == NEAR) {
+        } else if (TextUtils.equals(NEAR, type)) {
             // 临近
             introduce.setText(R.string.near_introduce);
             content.setText(Html.fromHtml(remark));
@@ -269,17 +271,16 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
                 @Override
                 public void onClick(View arg0) {
                     String title = "决策气象服务";
-                    switch (currTab) {
-                        case 1:
-                            title = "决策气象服务";
-                            break;
-                        case 2:
-                            title = "行业气象服务";
-                            break;
-                        case 3:
-                            title = "临近气象服务";
-                            break;
+                    if (TextUtils.equals(currTab, DECISION)) {
+                        title = "决策气象服务";
+                    } else if (TextUtils.equals(currTab, INDESTRY)) {
+                        title = "行业气象服务";
+                    } else if (TextUtils.equals(currTab, NEAR)) {
+                        title = "临近气象服务";
+                    } else {
+                        title = "决策气象服务";
                     }
+
                     Intent it = new Intent();
                     it.setClass(mContext, ActivityServeThird.class);
                     it.putExtra("channel_id", info.id);
@@ -309,11 +310,9 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
 
     /**
      * 获取二级栏目
-     *
-     * @param channel_id
+     * @param type "jc/hy"//各区模块中决策和行业，必填
      */
-    private void getServiceChannelList(int channel_id) {
-
+    private void getServiceChannelList(String type) {
         if (!isOpenNet()) {
             showToast(getString(R.string.net_err));
             return;
@@ -322,39 +321,11 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
         serviceChannelList.clear();
         mGridViewAdapter.notifyDataSetChanged();
 
-        currTab = channel_id;
+        currTab = type;
         area_id = getIntent().getStringExtra("area_id");
         area_name = getIntent().getStringExtra("area_name");
-        if (packServiceTwoChannelUp == null) {
-            packServiceTwoChannelUp = new PackServiceTwoChannelUp();
-        }
-        packServiceTwoChannelUp.area_id = area_id;
-        packServiceTwoChannelUp.channel_id = channel_id + "";
-        PcsDataDownload.addDownload(packServiceTwoChannelUp);
-    }
 
-    /**
-     * 数据更新广播接收
-     */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String name, String error) {
-            if (packServiceTwoChannelUp != null && packServiceTwoChannelUp.getName().equals(name)) {//
-                PackServiceTwoChannelDown packServiceTwoChannelDown =
-                        (PackServiceTwoChannelDown) PcsDataManager.getInstance().getNetPack(name);
-                if (packServiceTwoChannelDown == null) {
-                    return;
-                }
-                serviceChannelList = packServiceTwoChannelDown.serviceChannelList;
-
-
-                refreshGridView();
-                // 刷新介绍
-                refreshIntroduce(currTab, packServiceTwoChannelDown.remark);
-            }
-
-        }
+        okHttpQxfwTwoChannel();
     }
 
     @Override
@@ -363,6 +334,72 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
         Intent returnIntent = new Intent();
         setResult(RESULT_CANCELED, returnIntent);
         finish();
-        this.unregisterReceiver(receiver);
     }
+
+    /**
+     * 获取专项服务-专项服务数据
+     */
+    private void okHttpQxfwTwoChannel() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String area_id = getIntent().getStringExtra("area_id");
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", area_id);
+                    info.put("extra", currTab);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"qxfw_two_channel";
+                    Log.e("qxfw_two_channel", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("qxfw_two_channel", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("qxfw_two_channel")) {
+                                                    JSONObject qxfw_two_channel = bobj.getJSONObject("qxfw_two_channel");
+                                                    if (!TextUtil.isEmpty(qxfw_two_channel.toString())) {
+                                                        PackServiceTwoChannelDown packServiceTwoChannelDown = new PackServiceTwoChannelDown();
+                                                        packServiceTwoChannelDown.fillData(qxfw_two_channel.toString());
+                                                        serviceChannelList = packServiceTwoChannelDown.serviceChannelList;
+
+                                                        refreshGridView();
+                                                        // 刷新介绍
+                                                        refreshIntroduce(currTab, packServiceTwoChannelDown.remark);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

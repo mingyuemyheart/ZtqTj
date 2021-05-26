@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,15 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackForecastWeatherTipUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexDown;
 import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterWarningCenterGrid;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
 import com.pcs.ztqtj.control.inter.DrowListClick;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.air_quality.AcitvityAirWhatAQI;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
@@ -36,13 +43,22 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastUp;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by chenjx on 2017/12/29.
- */
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
+/**
+ * 天气形势
+ */
 public class ActivitySituation extends FragmentActivityZtqBase implements View.OnClickListener {
 
     private ImageButton image_left;
@@ -339,14 +355,7 @@ public class ActivitySituation extends FragmentActivityZtqBase implements View.O
         @Override
         public void onReceive(String name, String errorStr) {
             if (name.contains(packNumericalForecastUp.NAME)) {
-
-                dismissProgressDialog();
-                packDown = (PackNumericalForecastDown) PcsDataManager.getInstance()
-                        .getNetPack(packNumericalForecastUp.getName());
-                if (packDown == null || packDown.lmBeanList.size() == 0) {
-                    return;
-                }
-                dealWidth(packDown);
+                okHttpList(packNumericalForecastUp.getName());
             } else if (name.equals(packNumericalForecastColumnUp.getName())) {
                 packNumericalForecastColumnDown = (PackNumericalForecastColumnDown) PcsDataManager.getInstance()
                         .getNetPack
@@ -399,6 +408,58 @@ public class ActivitySituation extends FragmentActivityZtqBase implements View.O
                 getserverData(0);
             }
         }
+    }
+
+    /**
+     * 获取天气形势数据
+     */
+    private void okHttpList(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+name;
+                Log.e("szyb_new", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("szyb_new")) {
+                                                JSONObject listobj = bobj.getJSONObject("szyb_new");
+                                                if (!TextUtil.isEmpty(listobj.toString())) {
+                                                    dismissProgressDialog();
+                                                    packDown = new PackNumericalForecastDown();
+                                                    packDown.fillData(listobj.toString());
+                                                    if (packDown == null || packDown.lmBeanList.size() == 0) {
+                                                        return;
+                                                    }
+                                                    dealWidth(packDown);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     /**

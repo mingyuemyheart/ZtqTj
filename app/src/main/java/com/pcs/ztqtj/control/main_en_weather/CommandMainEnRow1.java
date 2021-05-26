@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,10 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoSimpleDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoSimpleUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
@@ -32,15 +35,30 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceShowBg;
 import com.pcs.ztqtj.control.main_weather.CommandMainBase;
 import com.pcs.ztqtj.control.tool.AirQualityTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.activityEn.ActivityMainEn;
 import com.pcs.ztqtj.view.activity.web.ActivityWebSh;
+import com.pcs.ztqtj.view.dialog.DialogFactory;
+import com.pcs.ztqtj.view.dialog.DialogVoiceButton;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * JiangZy on 2016/6/3.
@@ -70,6 +88,9 @@ public class CommandMainEnRow1 extends CommandMainBase {
     public static boolean is_hs = false;
     private CommandMainEnRow2 commandMainEnRow2;
     private CommandMainEnRow3 commandMainEnRow3;
+
+    private TextView text_aqi_num,text_aqi_type;
+    private ImageView iv_aqi_type;
 
     public CommandMainEnRow1(CommandMainEnRow2 EnRow2, CommandMainEnRow3 EnRow3, Activity activity, ViewGroup
             rootLayout, ImageFetcher imageFetcher,
@@ -181,11 +202,11 @@ public class CommandMainEnRow1 extends CommandMainBase {
         text_station.setText("");
         TextView text_reflush_time = (TextView) mRootLayout.findViewById(R.id.text_reflush_time);
         text_reflush_time.setText("");
-        TextView text_aqi_num = (TextView) mRootLayout.findViewById(R.id.tv_aqi_num);
+        text_aqi_num = (TextView) mRootLayout.findViewById(R.id.tv_aqi_num);
         text_aqi_num.setText("");
-        TextView text_aqi_type = (TextView) mRootLayout.findViewById(R.id.tv_aqi_type);
+        text_aqi_type = (TextView) mRootLayout.findViewById(R.id.tv_aqi_type);
         text_aqi_type.setText("");
-        ImageView iv_aqi_type = (ImageView) mRootLayout.findViewById(R.id.iv_main_aqi);
+        iv_aqi_type = (ImageView) mRootLayout.findViewById(R.id.iv_main_aqi);
         TextView text_degree = (TextView) mRootLayout.findViewById(R.id.text_degree);
 
         // 当前城市
@@ -240,25 +261,7 @@ public class CommandMainEnRow1 extends CommandMainBase {
 
         packAirInfoSimpleUp.setCity(packCity);
         packAirInfoSimpleUp.type = "1";
-        PackAirInfoSimpleDown packAir = (PackAirInfoSimpleDown) PcsDataManager.getInstance().getNetPack
-                (packAirInfoSimpleUp.getName());
-        if (packAir != null) {
-//            if (!TextUtils.isEmpty(packAir.airInfoSimple.quality)) {
-//                text_pollute.setText(packAir.airInfoSimple.quality);
-//            }
-            if (!TextUtils.isEmpty(packAir.airInfoSimple.aqi)) {
-                int color = AirQualityTool.getInstance().getAqiColor(
-                        Integer.valueOf(packAir.airInfoSimple.aqi));
-                text_aqi_num.setText(packAir.airInfoSimple.aqi);
-                text_aqi_num.setTextColor(color);
-                getAqiColorImage(iv_aqi_type, Integer.valueOf(packAir.airInfoSimple.aqi));
-                text_aqi_type.setText(packAir.airInfoSimple.us_quality);
-                text_aqi_type.setTextColor(color);
-            } else {
-                text_aqi_num.setText("null");
-                text_aqi_num.setTextColor(mActivity.getResources().getColor(android.R.color.white));
-            }
-        }
+        okHttpAirCityStation(packAirInfoSimpleUp.getName());
 
         mPackWeekUp.setCity(packCity);
         PackMainWeekWeatherDown packMainWeekDown = (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack
@@ -352,6 +355,70 @@ public class CommandMainEnRow1 extends CommandMainBase {
             text_station.setText(stationName + "气象站" + time_text + "采集");
         }
 
+    }
+
+    /**
+     * 获取空气质量实况
+     * @param name
+     */
+    private void okHttpAirCityStation(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+name;
+                url = url.replace("airinfosimple", "air_city_station");
+                Log.e("air_city_station", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONObject obj = new JSONObject(result);
+                                    if (!obj.isNull("b")) {
+                                        JSONObject bobj = obj.getJSONObject("b");
+                                        if (!bobj.isNull("airinfosimple")) {
+                                            JSONObject airinfosimple = bobj.getJSONObject("airinfosimple");
+                                            if (!TextUtil.isEmpty(airinfosimple.toString())) {
+                                                PackAirInfoSimpleDown packAir = new PackAirInfoSimpleDown();
+                                                packAir.fillData(airinfosimple.toString());
+                                                if (packAir != null) {
+//            if (!TextUtils.isEmpty(packAir.airInfoSimple.quality)) {
+//                text_pollute.setText(packAir.airInfoSimple.quality);
+//            }
+                                                    if (!TextUtils.isEmpty(packAir.airInfoSimple.aqi)) {
+                                                        int color = AirQualityTool.getInstance().getAqiColor(
+                                                                Integer.valueOf(packAir.airInfoSimple.aqi));
+                                                        text_aqi_num.setText(packAir.airInfoSimple.aqi);
+                                                        text_aqi_num.setTextColor(color);
+                                                        getAqiColorImage(iv_aqi_type, Integer.valueOf(packAir.airInfoSimple.aqi));
+                                                        text_aqi_type.setText(packAir.airInfoSimple.us_quality);
+                                                        text_aqi_type.setTextColor(color);
+                                                    } else {
+                                                        text_aqi_num.setText("null");
+                                                        text_aqi_num.setTextColor(mActivity.getResources().getColor(android.R.color.white));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     private String changeStr(String value) {

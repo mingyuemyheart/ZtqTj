@@ -22,21 +22,31 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoRegisterDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoRegisterUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.pub.ActivityProtocol;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 实景注册
@@ -57,7 +67,7 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
     /**
      * 输入文本
      */
-    private String nickname, platform_user_id, password, repassword;
+    private String nickname, mobile, password, repassword;
 
     private String type;
 
@@ -65,7 +75,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     private TextView tvProtocol;
     private Bundle bundle;
-    private MyReceiver receiver = new MyReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +86,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
         instantiateObject();
         // 初始化按钮
         initView();
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-        }
     }
 
     @Override
@@ -227,9 +227,9 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 //			Toast.makeText(this, getString(R.string.error_name_validity), Toast.LENGTH_SHORT).show();
 //			return;
 //		}
-        platform_user_id = etPhone.getText().toString();
+        mobile = etPhone.getText().toString();
         // 验证是否输入手机号
-        if (!checkPhoneInput(platform_user_id)) {
+        if (!checkPhoneInput(mobile)) {
             Toast.makeText(this, getString(R.string.error_phone_input), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -375,19 +375,15 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
             showToast(getString(R.string.net_err));
             return;
         }
-        PackPhotoRegisterUp mPackRegisterUp = new PackPhotoRegisterUp();
-        mPackRegisterUp.nick_name = nickname;
-        mPackRegisterUp.pwd = PcsMD5.Md5(password);
-        mPackRegisterUp.register_type = type;//1表示老用户注册绑定手机，0表示新用户注册
-        mPackRegisterUp.repwd = PcsMD5.Md5(repassword);
-        mPackRegisterUp.platform_user_id = platform_user_id;
-        PcsDataDownload.addDownload(mPackRegisterUp);
-        showProgressDialog();
 
-//        Intent intent = new Intent(this, ActivityPhotoRegisterQuestion.class);
-//        intent.putExtra("pack", mPackRegisterUp);
-//        intent.putExtra("password", password);
-//        startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
+        MyApplication.USERNAME = mobile;
+        MyApplication.PASSWORD = password;
+        MyApplication.NAME= nickname;
+        MyApplication.MOBILE= mobile;
+        MyApplication.saveUserInfo(ActivityPhotoRegister.this);
+
+        Intent intent = new Intent(ActivityPhotoRegister.this, ActivityPhotoRegisterQuestion.class);
+        startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
     }
 
     /**
@@ -413,39 +409,4 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
         return spanStr;
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (PackPhotoRegisterUp.NAME.equals(nameStr)) {
-                dismissProgressDialog();
-                PackPhotoRegisterDown down = (PackPhotoRegisterDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
-                }
-                showToast(down.result_msg);
-
-                PackLocalUser myUserInfo = new PackLocalUser();
-                myUserInfo.user_id = down.user_id;
-                myUserInfo.sys_user_id = down.sys_user_id;
-                myUserInfo.sys_nick_name = down.sys_nick_name;
-                myUserInfo.sys_head_url = down.sys_head_url;
-                myUserInfo.mobile = platform_user_id;
-                myUserInfo.type = "4";
-                myUserInfo.is_jc = down.is_jc;
-                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                packLocalUserInfo.currUserInfo = myUserInfo;
-                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
-
-                if (down.result.equals("1")) {
-                    Intent intent = new Intent(ActivityPhotoRegister.this, ActivityPhotoRegisterQuestion.class);
-                    intent.putExtra("user_id", down.user_id);
-                    intent.putExtra("platform_user_id", platform_user_id);
-                    intent.putExtra("password", password);
-                    startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
-                    return;
-                }
-            }
-        }
-    }
 }

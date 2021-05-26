@@ -208,4 +208,14 @@
 
     <color name="air_label_bac">#007ebb</color>
 
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="light_gray">#f0eff5</color>
+    <color name="text_color1">#CBCBCB</color>
+    <color name="text_color2">#A3A7AC</color>
+    <color name="text_color3">#f0000000</color>
+    <color name="text_color4">#8A8A8A</color>
+    <color name="red">#FF0033</color>
+
 </resources>

@@ -154,7 +154,7 @@ public class FragmentProduct extends Fragment {
 //        intents.add(new Intent(getActivity(), ActivityFloodSummaryGridView.class));
 //        intents.add(new Intent(getActivity(), ActivityWaterFlood.class));//水利汛情
         intents.add(new Intent(getActivity(), ActivityAirQualityQuery.class));//空气质量
-        intents.add(new Intent(getActivity(), ActivitySituation.class));//空气形势
+        intents.add(new Intent(getActivity(), ActivitySituation.class));//天气形势
 //        intents.add(new Intent(getActivity(),ActivityDataQuery.class));//资料查询
 
         intents_analysis.add(new Intent(getActivity(), ActivityWeatherSummary.class));//气象报告
@@ -256,9 +256,7 @@ public class FragmentProduct extends Fragment {
     private final OnItemClickListener myOnItemClickListener = new OnItemClickListener() {
 
         @Override
-        public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-                                long arg3) {
-
+        public void onItemClick(AdapterView<?> arg0, View arg1, int position,long arg3) {
             Map<String, Object> map = dataList.get(position);
             String title = (String) map.get("title");
             if (title.equals("整点天气")) {

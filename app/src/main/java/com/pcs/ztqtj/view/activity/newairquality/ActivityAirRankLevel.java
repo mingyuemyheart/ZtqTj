@@ -2,6 +2,7 @@ package com.pcs.ztqtj.view.activity.newairquality;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +13,27 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirRank;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.air_quality.ActivityAirQualityDetail;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.AirRankNew;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirRank;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+import com.pcs.ztqtj.view.activity.air_quality.ActivityAirQualityDetail;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,8 +41,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 import static com.pcs.ztqtj.view.activity.air_quality.ActivityAirQualityProvince.keyPosition;
 
+/**
+ * 空气质量-排行榜
+ */
 public class ActivityAirRankLevel extends FragmentActivityZtqBase {
 
     private Button pm_city;
@@ -47,7 +66,6 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
     private List<AirRankNew> listCityPop = new ArrayList<>();
     private List<AirRankNew> listProvincePop = new ArrayList<>();
     private PackAirRankNewUp packDetialup ;
-    private MyReceiver receiver = new MyReceiver();
     private CheckBox cbRank;
 
     @Override
@@ -58,15 +76,6 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
         initView();
         initEvent();
         initData();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
     }
 
     private void initView() {
@@ -91,13 +100,12 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
     }
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         dataList = getIntent().getParcelableArrayListExtra("listdata");
         adapterAirRank = new AdapterAirRank(this, dataList);
         adapterAirRank.setCenter();
         lvRank.setAdapter(adapterAirRank);
         adapterAirRank.notifyDataSetChanged();
-        reqD("aqi");
+        reqD("AQI");
     }
 
     /**
@@ -263,9 +271,7 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
 
     private void reqD(String reqcode) {
         showProgressDialog();
-        packDetialup = new PackAirRankNewUp();
-        packDetialup.rank_type = reqcode;
-        PcsDataDownload.addDownload(packDetialup);
+        okHttpAirRankNew(reqcode);
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -294,18 +300,57 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
         }
     };
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if(nameStr.equals(packDetialup.getName())) {
-                dismissProgressDialog();
-                PackAirRankNewDown down = (PackAirRankNewDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(down == null) {
-                    return;
+    private void okHttpAirRankNew(final String airType) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("airType", airType);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_rank_new";
+                    Log.e("air_rank_new", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_rank_new", result);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_rank_new")) {
+                                                JSONObject air_rank = bobj.getJSONObject("air_rank_new");
+                                                PackAirRankNewDown down = new PackAirRankNewDown();
+                                                down.fillData(air_rank.toString());
+                                                dealWidthData(down);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                dealWidthData(down);
             }
-        }
+        }).start();
     }
+
 }

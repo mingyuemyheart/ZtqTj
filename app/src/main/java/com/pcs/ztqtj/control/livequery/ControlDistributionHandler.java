@@ -40,10 +40,8 @@ import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionSt
 import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.ZD;
 
 /**
- * 色斑图操作控制器
- * Created by tyaathome on 2017/6/4.
+ * 实况查询-色斑图操作控制器
  */
-
 public class ControlDistributionHandler extends ControlDistributionBase {
 
     private FragmentDistributionMap mFragment;
@@ -769,7 +767,7 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                     //currentSiteInfo = getCurrentCityInfo();
                     reqColumnValue(currentColumn);
                 } else {
-                    //dismissProgressDialog();
+                    mActivity.dismissProgressDialog();
                     setTimePopupWindow(down.arrcolumnInfo);
                 }
                 // 时间段和站点都有数据时取初始色斑图数据

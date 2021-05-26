@@ -155,8 +155,6 @@ public class ZtqCityDB {
                 mWarnList = CityDBParseTool.getWarnList(context);
                 mUnitList = CityDBParseTool.getUnitList(context);
                 mHighWay = CityDBParseTool.getHighWayList(context);
-                provincesList = CityDBParseTool.getProvinceList(context, "province.json");
-                provincesLiveQueryList = CityDBParseTool.getProvinceList(context, "province_live_query.json");
                 Log.e("ZtqCityDB", String.valueOf(System.currentTimeMillis() - start));
             }
 
@@ -178,24 +176,27 @@ public class ZtqCityDB {
         }
         if(jsonObject == null) return;
         switch (type) {
-            case CITYLIST:
+            case Tj_Qgdisty:
                 allCityInfos = CityDBParseTool.parseCityList(jsonObject);
                 mListCity_1 = CityDBParseTool.parseTJCity(allCityInfos);
-                break;
-            case TRAVELCITYLIST:
-                allViewsList = CityDBParseTool.parseCityList(jsonObject);
-                break;
-            case LIVECITY:
+
                 liveCityInfos = CityDBParseTool.parseCityList(jsonObject);
                 allCountryCityInfos.clear();
                 allCountryCityInfos.addAll(liveCityInfos);
+
+                countryStationList = CityDBParseTool.parseStationList(jsonObject);
                 break;
-            case STATIONS:
+            case Tj_landscapeList:
+                allViewsList = CityDBParseTool.parseCityList(jsonObject);
+                break;
+            case Tj_auto:
                 allStationList = CityDBParseTool.parseStationList(jsonObject);
                 baseStationList = CityDBParseTool.parseBaseStationList(allStationList);
-                break;
-            case STATIONS_NATIONAL:
                 countryStationList = CityDBParseTool.parseStationList(jsonObject);
+                break;
+            case Tj_Province:
+                provincesList = CityDBParseTool.getProvinceList(jsonObject);
+                provincesLiveQueryList = CityDBParseTool.getProvinceList(jsonObject);
                 break;
             default:
         }

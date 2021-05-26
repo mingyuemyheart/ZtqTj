@@ -18,9 +18,11 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -42,13 +44,21 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
 import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.AirQualityTool;
 import com.pcs.ztqtj.control.tool.LunarCalendar;
 import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.loading.ActivityLoading;
 import com.pcs.ztqtj.view.activity.newairquality.ActivityAirQualityQuery;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
 import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,13 +66,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * Created by tyaathome on 2016/6/23.
  */
 public class WeatherWidget_5x3 extends AppWidgetProvider {
 
+    private Handler mUIHandler = new Handler();
     private static final String CLICK_ACTION = "com.pcs.ztq.CLICK_ACTION_5x3";
     private int[] warnImageResourseId = {R.id.iv1, R.id.iv2, R.id.iv3, R.id.iv4};
+    private RemoteViews views;
+    private Context context;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -142,8 +160,9 @@ public class WeatherWidget_5x3 extends AppWidgetProvider {
         //update(context);
     }
 
-    private void update(Context context, int[] appWidgetIds) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_5x3);
+    private void update(final Context context, int[] appWidgetIds) {
+        this.context = context;
+        views = new RemoteViews(context.getPackageName(), R.layout.widget_provider_5x3);
 
         // 字体颜色
         int textColor = context.getResources().getColor(R.color.text_white);
@@ -212,18 +231,16 @@ public class WeatherWidget_5x3 extends AppWidgetProvider {
             mPackSstqUp.area = cityinfo.ID;
             PackSstqDown packSstq = (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
             if (packSstq != null && !TextUtils.isEmpty(packSstq.ct)) {
-                views.setImageViewBitmap(R.id.iv_temperature, createTextBitmap(context, packSstq.ct + "℃", 48,
-                        textColor));
+                views.setImageViewBitmap(R.id.iv_temperature, createTextBitmap(context, packSstq.ct + "℃", 48,textColor));
             } else {
                 //views.setTextViewText(R.id.iv_temperature, "");
             }
 
             // 空气质量
-            PackAirInfoSimpleUp mPackAirUp = new PackAirInfoSimpleUp();
+            final PackAirInfoSimpleUp mPackAirUp = new PackAirInfoSimpleUp();
             mPackAirUp.setCity(cityinfo);
             mPackAirUp.type = "1";
-            PackAirInfoSimpleDown packAir = (PackAirInfoSimpleDown) PcsDataManager.getInstance().getNetPack
-                    (mPackAirUp.getName());
+            PackAirInfoSimpleDown packAir = (PackAirInfoSimpleDown) PcsDataManager.getInstance().getNetPack(mPackAirUp.getName());
             if (packAir != null && !TextUtils.isEmpty(packAir.airInfoSimple.quality)) {
                 views.setViewVisibility(R.id.tv_aqi, View.VISIBLE);
                 views.setTextViewText(R.id.tv_aqi, context.getResources().getString(R.string.air) + packAir
@@ -234,6 +251,8 @@ public class WeatherWidget_5x3 extends AppWidgetProvider {
                 views.setViewVisibility(R.id.tv_aqi, View.GONE);
                 views.setTextViewText(R.id.tv_aqi, "暂无");
             }
+//            okHttpAirCityStation(mPackAirUp.getName());
+
 
             // 温馨提示
             //PackLocalCityLocation location = ZtqLocationTool.getInstance().getLocationCity();
@@ -303,6 +322,63 @@ public class WeatherWidget_5x3 extends AppWidgetProvider {
             mrg.updateAppWidget(id, views);
         }
 
+    }
+
+    /**
+     * 获取空气质量实况
+     * @param name
+     */
+    private void okHttpAirCityStation(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+name;
+                url = url.replace("airinfosimple", "air_city_station");
+                Log.e("air_city_station", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        mUIHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    JSONObject obj = new JSONObject(result);
+                                    if (!obj.isNull("b")) {
+                                        JSONObject bobj = obj.getJSONObject("b");
+                                        if (!bobj.isNull("airinfosimple")) {
+                                            JSONObject airinfosimple = bobj.getJSONObject("airinfosimple");
+                                            if (!TextUtil.isEmpty(airinfosimple.toString())) {
+                                                PackAirInfoSimpleDown packAir = new PackAirInfoSimpleDown();
+                                                packAir.fillData(airinfosimple.toString());
+                                                if (packAir != null && !TextUtils.isEmpty(packAir.airInfoSimple.quality)) {
+                                                    views.setViewVisibility(R.id.tv_aqi, View.VISIBLE);
+                                                    views.setTextViewText(R.id.tv_aqi, context.getResources().getString(R.string.air) + packAir
+                                                            .airInfoSimple.quality);
+                                                    bundleIntentAqi(context, views);
+                                                    //views.setInt(R.id.tv_aqi, "setBackgroundResource", getAqiDrawable(packAir.airInfoSimple.aqi));
+                                                } else {
+                                                    views.setViewVisibility(R.id.tv_aqi, View.GONE);
+                                                    views.setTextViewText(R.id.tv_aqi, "暂无");
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     private Bitmap getWarnPicture(YjxxInfo info) {

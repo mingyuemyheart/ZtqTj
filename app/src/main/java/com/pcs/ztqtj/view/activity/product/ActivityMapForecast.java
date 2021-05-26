@@ -55,9 +55,6 @@ import java.util.List;
 
 /**
  * 指点天气
- * 
- * @author JiangZy
- * 
  */
 public class ActivityMapForecast extends FragmentActivityZtqBase {
 	private AMap mAMap;
@@ -109,8 +106,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 		if (mLatLng == null) {
 			ZtqLocationTool.getInstance().addListener(mLocationListener);
 		}
-		// 注册广播
-		mAdapter.registerReceiver();
 	}
 
 	@Override
@@ -119,8 +114,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 		mMapView.onPause();
 		// 去除定位监听
 		ZtqLocationTool.getInstance().removeListener(mLocationListener);
-		// 注销广播
-		mAdapter.unregisterReceiver();
 	}
 
 	@Override
@@ -381,7 +374,7 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 		// 进度条
 		showProgressDialog("正在搜索:\n" + mSearchWord);// 显示进度框
 		// 搜索
-		mQuery = new PoiSearch.Query(mSearchWord, "", "福建");// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
+		mQuery = new PoiSearch.Query(mSearchWord, "", "");// 第一个参数表示搜索字符串，第二个参数表示poi搜索类型，第三个参数表示poi搜索区域（空字符串代表全国）
 		mQuery.setPageSize(1);// 设置每页最多返回多少条poiitem
 		mQuery.setPageNum(0);// 设置查第一页
 

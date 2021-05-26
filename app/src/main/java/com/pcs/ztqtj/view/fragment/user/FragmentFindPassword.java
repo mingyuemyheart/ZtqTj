@@ -13,19 +13,30 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.UserQuestion;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.ItemClick;
 import com.pcs.ztqtj.control.inter.UserFragmentCallBack;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoFindPasswordUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.UserQuestion;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.dialog.DialogFactory;
+import com.pcs.ztqtj.view.dialog.DialogOneButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 找回密码
@@ -45,16 +56,13 @@ public class FragmentFindPassword extends UserFragmentCallBack implements View.O
     private String questionId1 = "";
     private String questionId2 = "";
 
-    private MyReceiver receiver = new MyReceiver();
-
-    private PackPhotoUserQuestionUp packQuestionUp = new PackPhotoUserQuestionUp();
-
     /**
      * 问题信息列表
      */
-    //private List<UserQuestion> questionList = new ArrayList<>();
     private List<UserQuestion> questionList1 = new ArrayList<>();
     private List<UserQuestion> questionList2 = new ArrayList<>();
+
+    private DialogOneButton dialog;
 
     @Nullable
     @Override
@@ -102,19 +110,7 @@ public class FragmentFindPassword extends UserFragmentCallBack implements View.O
     }
 
     private void initData() {
-        receiver = new MyReceiver();
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), receiver);
-
         reqQuestion();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(getActivity(), receiver);
-            receiver = null;
-        }
     }
 
     /**
@@ -136,8 +132,17 @@ public class FragmentFindPassword extends UserFragmentCallBack implements View.O
      * 获取问题信息
      */
     private void reqQuestion() {
-        packQuestionUp = new PackPhotoUserQuestionUp();
-        PcsDataDownload.addDownload(packQuestionUp);
+        questionList1.clear();
+        UserQuestion dto = new UserQuestion();
+        dto.que_title = "你最喜欢的颜色是什么？";
+        dto.que_id = "1";
+        questionList1.add(dto);
+
+        questionList2.clear();
+        dto = new UserQuestion();
+        dto.que_title = "你最喜欢的水果是什么？";
+        dto.que_id = "2";
+        questionList2.add(dto);
     }
 
     @Override
@@ -170,21 +175,7 @@ public class FragmentFindPassword extends UserFragmentCallBack implements View.O
 
     @Override
     public void onClickSubmitButton() {
-        PackPhotoFindPasswordUp packUp = new PackPhotoFindPasswordUp();
-        packUp.mobile = mobile;
-        List<UserQuestion> list = new ArrayList<>();
-        UserQuestion question1 = new UserQuestion();
-        question1.que_id = questionId1;
-        question1.ans_info = ans1;
-        list.add(question1);
-
-        UserQuestion question2 = new UserQuestion();
-        question2.que_id = questionId2;
-        question2.ans_info = ans2;
-        list.add(question2);
-
-        packUp.req_list = list;
-        PcsDataDownload.addDownload(packUp);
+        okHttpFindPwd();
     }
 
     @Override
@@ -229,25 +220,71 @@ public class FragmentFindPassword extends UserFragmentCallBack implements View.O
         ans2 = etAnswer2.getText().toString();
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if(packQuestionUp.getName().equals(nameStr)) {
-                PackPhotoUserQuestionDown down = (PackPhotoUserQuestionDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(down == null) {
-                    return ;
-                }
-                if(down.info_list_1 != null && down.info_list_1.size() > 0
-                        && down.info_list_2 != null && down.info_list_2.size() > 0) {
-                    questionList1 = down.info_list_1;
-                    questionList2 = down.info_list_2;
-                    tvQuestion1.setText(questionList1.get(0).que_title);
-                    questionId1 = questionList1.get(0).que_id;
-                    tvQuestion2.setText(questionList2.get(0).que_title);
-                    questionId2 = questionList2.get(0).que_id;
+    /**
+     * 找回密码
+     */
+    private void okHttpFindPwd() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/pwdback";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", MyApplication.USERNAME);
+                    param.put("qesTypeOne", questionId1);
+                    param.put("qesTypeOneAns", etAnswer1.getText().toString());
+                    param.put("qesTypeTwo", questionId2);
+                    param.put("qesTypeTwoAns", etAnswer2.getText().toString());
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (!obj.isNull("password")) {
+                                                String pwd = obj.getString("password");
+                                                String tip = "随机密码：" + pwd + "。请尽快修改。";
+                                                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_setanther_layout, null);
+                                                TextView tv = (TextView) view.findViewById(R.id.dialog_info);
+                                                tv.setText(tip);
+                                                dialog = new DialogOneButton(getActivity(), view, "知道了", new DialogFactory.DialogListener() {
+                                                    @Override
+                                                    public void click(String str) {
+                                                        dialog.dismiss();
+                                                        getActivity().finish();
+                                                    }
+                                                });
+                                                dialog.show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }
+        }).start();
     }
+
 }

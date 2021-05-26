@@ -35,9 +35,7 @@ import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import java.lang.reflect.Field;
 
 /**
- * 气象服务
- *
- * @author chenjh
+ * 专项服务-决策服务
  */
 public class FragmentService extends Fragment implements OnClickListener {
     private ImageButton imageghelp;
@@ -161,7 +159,6 @@ public class FragmentService extends Fragment implements OnClickListener {
     }
 
     public void initListener() {
-
         imageghelp.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,40 +221,40 @@ public class FragmentService extends Fragment implements OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_service_tj:
-                toServiceActivity("3601");
+                toServiceActivity("101030303");
                 break;
             case R.id.tv_bhxq:
-                toServiceActivity("3516");
+                toServiceActivity("101030305");
                 break;
             case R.id.tv_dlq:
-                toServiceActivity("3510");
+                toServiceActivity("101030306");
                 break;
             case R.id.tv_xqq:
-                toServiceActivity("3511");
+                toServiceActivity("101030307");
                 break;
             case R.id.tv_jnq:
-                toServiceActivity("3512");
+                toServiceActivity("101030308");
                 break;
             case R.id.tv_bcq:
-                toServiceActivity("3513");
+                toServiceActivity("101030309");
                 break;
             case R.id.tv_wqq:
-                toServiceActivity("3514");
+                toServiceActivity("101030310");
                 break;
             case R.id.tv_bdq:
-                toServiceActivity("3515");
+                toServiceActivity("101030311");
                 break;
             case R.id.tv_nhq:
-                toServiceActivity("3517");
+                toServiceActivity("101030313");
                 break;
             case R.id.tv_jhq:
-                toServiceActivity("3518");
+                toServiceActivity("101030312");
                 break;
             case R.id.tv_jzq:
-                toServiceActivity("3519");
+                toServiceActivity("101030314");
                 break;
             case R.id.tv_service_person_office:
-                toServiceActivity("3602");
+                toServiceActivity("101030304");
                 break;
             case R.id.tv_service_weather_office:
                 toServiceActivity("3603");

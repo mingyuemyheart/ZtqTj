@@ -262,18 +262,9 @@ public class CityDBParseTool {
 
     /**
      * 获取预警信息列表
-     * @param context
-     * @param fileName 文件名(普通省份：province.json  风雨查询省份：province_live_query.json)
      * @return
      */
-    public static List<PackLocalCity> getProvinceList(Context context, String fileName) {
-        String string = getStringFromAssets(context, fileName);
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(string);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public static List<PackLocalCity> getProvinceList(JSONObject jsonObject) {
         if(jsonObject == null) return null;
         List<PackLocalCity> provinceList = new ArrayList<>();
         JSONArray rowJSON = jsonObject.optJSONArray("ROW");

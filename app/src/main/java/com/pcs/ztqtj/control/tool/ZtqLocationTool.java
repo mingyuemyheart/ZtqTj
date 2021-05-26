@@ -18,6 +18,7 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.geocoder.StreetNumber;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.control.listener.PcsOnGeocodeSearchListener;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.lib.lib_pcs_v3.control.log.Log;

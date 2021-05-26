@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by tyaathome on 2019/03/22.
+ * 逐日预报
  */
 public class Adapter7DaysGridView extends BaseAdapter {
 
@@ -106,24 +106,6 @@ public class Adapter7DaysGridView extends BaseAdapter {
                 holder.tv.setText(info.week);
             }
             holder.tv_speed.setText(info.getSpeed());
-
-//            Date date = null;
-//            try {
-//                date = format.parse(info.gdt);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            if (date != null) {
-//                Calendar calendar = Calendar.getInstance();
-//                calendar.setTimeInMillis(date.getTime());
-//                int month = calendar.get(Calendar.MONTH)+1;
-//                int day = calendar.get(Calendar.DAY_OF_MONTH);
-//                if (day == 1) {
-//                    holder.week_date.setText(month + "月");
-//                } else {
-//                    holder.week_date.setText(day + "日");
-//                }
-//            }
 
             try {
                 String str = info.gdt;

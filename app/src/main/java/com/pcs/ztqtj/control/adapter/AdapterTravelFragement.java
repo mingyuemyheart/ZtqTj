@@ -8,26 +8,26 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.HotTouristSpot;
+import com.pcs.ztqtj.R;
 
 import java.util.ArrayList;
 
+/**
+ * 生活气象-旅游气象
+ */
 public class AdapterTravelFragement extends BaseAdapter {
 	private Context context;
 	private ArrayList<HotTouristSpot> touristSoptList;
 	private ImageFetcher mImageFetcher;
-	private String mUrlPrev = "";
 
 	public AdapterTravelFragement(Context context,
 			ArrayList<HotTouristSpot> touristSoptList, ImageFetcher imageFetcher) {
 		this.context = context;
 		this.touristSoptList = touristSoptList;
 		mImageFetcher = imageFetcher;
-
-		mUrlPrev = context.getResources().getString(R.string.file_download_url);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class AdapterTravelFragement extends BaseAdapter {
 		}
 		holder.itemText.setText(name);
 
-		String url = mUrlPrev + touristSoptList.get(position).getImageUrl();
+		String url = context.getResources().getString(R.string.file_download_url) + touristSoptList.get(position).getImageUrl();
 		mImageFetcher.loadImage(url, holder.itemImage, ImageConstant.ImageShowType.SRC);
 
 		return convertView;

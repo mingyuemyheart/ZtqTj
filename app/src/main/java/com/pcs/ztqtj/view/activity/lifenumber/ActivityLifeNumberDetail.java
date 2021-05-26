@@ -30,7 +30,6 @@ import java.util.TimeZone;
 
 /**
  * 生活指数详情
- *
  * @author JiangZy
  */
 public class ActivityLifeNumberDetail extends FragmentActivityZtqBase {

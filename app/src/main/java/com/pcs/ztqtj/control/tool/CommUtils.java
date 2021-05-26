@@ -503,8 +503,7 @@ public class CommUtils {
                 activity.startActivityForResult(intent, requestCode);
             } else {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                Uri photoURI = FileProvider.getUriForFile(activity, "com.pcs.ztqtj.provider",
-                        file);
+                Uri photoURI = FileProvider.getUriForFile(activity, activity.getPackageName()+".FileProvider",file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 activity.startActivityForResult(intent, requestCode);
@@ -525,7 +524,7 @@ public class CommUtils {
                 fragment.startActivityForResult(intent, requestCode);
             } else {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                Uri photoURI = FileProvider.getUriForFile(fragment.getActivity(), "com.pcs.ztqtj.provider",
+                Uri photoURI = FileProvider.getUriForFile(fragment.getActivity(), fragment.getActivity().getPackageName()+".FileProvider",
                         file);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -574,7 +573,7 @@ public class CommUtils {
             Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri uri = FileProvider.getUriForFile(PcsInit.getInstance().getContext(),
-                    "com.pcs.ztqtj.provider", file);
+					PcsInit.getInstance().getContext().getPackageName()+".FileProvider", file);
             intent.setData(uri);
             PcsInit.getInstance().getContext().startActivity(intent);
         }

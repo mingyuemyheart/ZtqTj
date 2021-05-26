@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Contacts;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -12,24 +13,38 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.MyConfigure;
-import com.pcs.ztqtj.control.tool.NetTask;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 /**
@@ -78,29 +93,79 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
         if (type.equals("1") || type.equals("2")){
             packDetailUp.type = type;
         }
-        NetTask task = new NetTask(this, new NetTask.NetListener() {
+        okHttpWarningDetail(id);
+    }
+
+    /**
+     * 预警详情
+     */
+    private void okHttpWarningDetail(final String id) {
+        new Thread(new Runnable() {
             @Override
-            public void onComplete(PcsPackDown down) {
-                dismissProgressDialog();
-                if(down != null) {
-                    PackWarnPubDetailDown warnDown =(PackWarnPubDetailDown) down;
-                    PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-                    String shareAdd="";
-                    if (shareDown!=null) {
-                        shareAdd=shareDown.share_content;
-                    }
-                    contentImageview = "";
-                    titledata = warnDown.put_str;
-                    titlecontent = warnDown.desc;
-                    contentText = warnDown.content;
-                    shareContent = titlecontent + "：" + contentText + "(" + titledata + ")" + shareAdd;
-                    defend = warnDown.defend;
-                    initData();
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", id);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"yjxx_info_query";
+                    Log.e("yjxx_info_query", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("yjxx_info_query", result);
+                                    }
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("yjxx_info_query")) {
+                                                JSONObject yjxx_info_query = bobj.getJSONObject("yjxx_info_query");
+                                                if (!TextUtil.isEmpty(yjxx_info_query.toString())) {
+                                                    dismissProgressDialog();
+                                                    PackWarnPubDetailDown warnDown = new PackWarnPubDetailDown();
+                                                    warnDown.fillData(yjxx_info_query.toString());
+                                                    PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
+                                                    String shareAdd="";
+                                                    if (shareDown!=null) {
+                                                        shareAdd=shareDown.share_content;
+                                                    }
+                                                    contentImageview = "";
+                                                    titledata = warnDown.put_str;
+                                                    titlecontent = warnDown.desc;
+                                                    contentText = warnDown.content;
+                                                    shareContent = titlecontent + "：" + contentText + "(" + titledata + ")" + shareAdd;
+                                                    defend = warnDown.defend;
+                                                    initData();
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        });
-        task.execute(packDetailUp);
-
+        }).start();
     }
 
     private void initData() {

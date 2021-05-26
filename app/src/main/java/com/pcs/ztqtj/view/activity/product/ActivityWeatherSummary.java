@@ -4,37 +4,47 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackWeatherSummaryDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackWeatherSummaryUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 天气综述
- *
- * @author Z
+ * 气象报告
  */
 public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
-    private MyReceiver receiver = new MyReceiver();
     private TextView content;
-    private PackWeatherSummaryUp weatherUp;
     private TextView null_context, tv_time;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
-        // 注册广播接收
-        PcsDataBrocastReceiver.registerReceiver(ActivityWeatherSummary.this, receiver);
         setContentView(R.layout.weather_summary);
         setTitleText("气象报告");
         initView();
@@ -93,39 +103,8 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
             return;
         }
         showProgressDialog();
-        weatherUp = new PackWeatherSummaryUp();
-        weatherUp.type = "";
-        PcsDataDownload.addDownload(weatherUp);
+        okHttpContent();
     }
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String error) {
-            if (weatherUp == null) {
-                return;
-            }
-            if (name.equals(weatherUp.getName())) {
-                dismissProgressDialog();
-                PackWeatherSummaryDown weatherDown = (PackWeatherSummaryDown) PcsDataManager.getInstance().getNetPack
-                        (name);
-                if (weatherDown == null) {
-                    return;
-                }
-                if (TextUtils.isEmpty(weatherDown.pub_time) && TextUtils.isEmpty(weatherDown.txt)) {
-                    tv_time.setVisibility(View.GONE);
-                    content.setVisibility(View.GONE);
-                    null_context.setVisibility(View.VISIBLE);
-                } else {
-                    tv_time.setVisibility(View.VISIBLE);
-                    content.setVisibility(View.VISIBLE);
-                    null_context.setVisibility(View.GONE);
-                    tv_time.setText(weatherDown.pub_time);
-                    content.setText(weatherDown.txt);
-                }
-            }
-        }
-    }
-
 
 //    /**
 //     * 添加标题的单选按钮 动态添加radiobutton
@@ -165,10 +144,73 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
 //        }
 //    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.unregisterReceiver(receiver);
+    /**
+     * 获取气象报告数据
+     */
+    private void okHttpContent() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"qxbg";
+                    Log.e("qxbg", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("qxbg", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("qxbg")) {
+                                                    JSONObject listobj = bobj.getJSONObject("qxbg");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackWeatherSummaryDown weatherDown = new PackWeatherSummaryDown();
+                                                        weatherDown.fillData(listobj.toString());
+                                                        if (TextUtils.isEmpty(weatherDown.pub_time) && TextUtils.isEmpty(weatherDown.txt)) {
+                                                            tv_time.setVisibility(View.GONE);
+                                                            content.setVisibility(View.GONE);
+                                                            null_context.setVisibility(View.VISIBLE);
+                                                        } else {
+                                                            tv_time.setVisibility(View.VISIBLE);
+                                                            content.setVisibility(View.VISIBLE);
+                                                            null_context.setVisibility(View.GONE);
+                                                            tv_time.setText(weatherDown.pub_time);
+                                                            content.setText(weatherDown.txt);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 

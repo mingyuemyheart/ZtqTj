@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Z 空气质量列表
+ * 空气质量-今日排行，昨日排行列表
  */
 public class AdapterAirRanking extends BaseAdapter {
 

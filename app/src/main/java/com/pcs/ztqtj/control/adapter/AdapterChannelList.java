@@ -9,18 +9,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
+import com.pcs.ztqtj.R;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * 
- * @author chenjh
- * 
+ * 生活气象-天气新闻
  */
 public class AdapterChannelList extends BaseAdapter {
 
@@ -72,8 +70,8 @@ public class AdapterChannelList extends BaseAdapter {
 		String description = info.desc;
 		// String ico=map.get("ico").toString();
 		String formatDate = info.pubt;
-		String small_ico = context.getString(R.string.file_download_url) + info.small_ico;
-		String big_ico = context.getString(R.string.file_download_url) + info.big_ico;
+		String small_ico = info.small_ico;
+		String big_ico = info.big_ico;
 		if (formatDate == null) {
 			formatDate = "时间未知";
 		}

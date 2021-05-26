@@ -6,11 +6,12 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.pcs.ztqtj"
-        minSdkVersion 16
+//        applicationId "com.pcs.ztqtj"
+        applicationId "com.tianyi.shawn.tjdecision"
+        minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10022
-        versionName "V1.2.1"
+        versionCode 10024
+        versionName "1.2.3"
         manifestPlaceholders = [
                 XG_ACCESS_ID:"2100331791",
                 XG_ACCESS_KEY : "AV2S73V38UXQ",
@@ -22,24 +23,38 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('/Users/sunxiaoming/Downloads/创新网络/打包/中国气象/weatherdecision.keystore')
+            storeFile file('/Users/sunxiaoming/Downloads/创新网络/打包/天译津云气象/tjdecision.keystore')
             storePassword "123456"
-            keyAlias "platomix"
-            keyPassword "123456"
-        }
-        release {
-            storeFile file('/Users/sunxiaoming/Downloads/创新网络/打包/中国气象/weatherdecision.keystore')
-            storePassword "123456"
-            keyAlias "platomix"
+            keyAlias "tjdecision"
             keyPassword "123456"
         }
     }
     buildTypes {
+//        release {
+//            signingConfig signingConfigs.release
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    //打包，自动追加版本号、名称
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                outputFileName = "TJHM_${defaultConfig.versionCode}_V${defaultConfig.versionName}_${buildType.name}.apk"
+            }
     }
 
     lintOptions {
@@ -76,7 +91,7 @@ dependencies {
 
     // 高德
     implementation 'com.amap.api:3dmap:6.7.0'
-    implementation 'com.amap.api:location:4.3.0'
+    implementation 'com.amap.api:location:4.7.0'
     implementation 'com.amap.api:search:6.1.0'
 
     // rxjava

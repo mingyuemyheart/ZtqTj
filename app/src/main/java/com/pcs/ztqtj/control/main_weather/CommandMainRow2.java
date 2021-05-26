@@ -15,12 +15,12 @@ import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterWeekGridView;
+import com.pcs.ztqtj.control.adapter.MyPackHourForecastDown;
 import com.pcs.ztqtj.control.adapter.hour_forecast.AdapterMainHourForecast;
 import com.pcs.ztqtj.control.inter.InterfaceShowBg;
 import com.pcs.ztqtj.model.ZtqCityDB;
@@ -56,7 +56,7 @@ public class CommandMainRow2 extends CommandMainBase {
     private Hour24View main24hour;
     //适配器：小时
     private AdapterMainHourForecast adapterMain;
-    private List<PackHourForecastDown.HourForecast> list = new ArrayList<>();
+    private List<MyPackHourForecastDown.HourForecast> list = new ArrayList<>();
     //适配器：一周
     private AdapterWeekGridView mWeekAdapter;
 
@@ -169,7 +169,7 @@ public class CommandMainRow2 extends CommandMainBase {
             //24小时
             PackHourForecastUp packHourUp = new PackHourForecastUp();
             packHourUp.county_id = packCity.ID;
-            PackHourForecastDown down = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packHourUp.getName());
+            MyPackHourForecastDown down = (MyPackHourForecastDown) PcsDataManager.getInstance().getNetPack(packHourUp.getName());
             List<Float> mTopTemp = new ArrayList<Float>();
             List<Float> mLowRain = new ArrayList<Float>();
             if (down != null && down.list.size() > 0) {

@@ -23,8 +23,8 @@ import com.pcs.ztqtj.view.activity.FragmentActivityWithShare;
 import java.util.ArrayList;
 
 /**
+ * 海洋气象 弃用
  * Created by Administrator on 2017/10/18 0018.
- * chen_jx
  */
 
 public class ActivityImWeather extends FragmentActivityWithShare {

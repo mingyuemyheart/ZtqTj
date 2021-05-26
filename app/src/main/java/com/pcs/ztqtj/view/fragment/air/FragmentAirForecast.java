@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,25 +20,37 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirForecast;
-import com.pcs.ztqtj.view.activity.newairquality.ActivityAir;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirPollutionDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirPollutionUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirForecast;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.newairquality.ActivityAir;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Z on 2017/1/16.
- */
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+/**
+ * 污染扩散预报图
+ */
 public class FragmentAirForecast extends Fragment {
 
     private ActivityAir activity;
@@ -58,7 +71,6 @@ public class FragmentAirForecast extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), myReceiver);
         // 创建图片缓存
         initView();
         initData();
@@ -165,31 +177,65 @@ public class FragmentAirForecast extends Fragment {
         }
     };
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        PcsDataBrocastReceiver.unregisterReceiver(getActivity(), myReceiver);
-    }
-
     public void getForeCast() {
         activity.showProgressDialog();
-        PackAirPollutionUp up = new PackAirPollutionUp();
-        PcsDataDownload.addDownload(up);
+        okHttpAirPollution();
     }
 
-
-    private PcsDataBrocastReceiver myReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.equals(PackAirPollutionUp.NAME)) {
-                activity.dismissProgressDialog();
-                PackAirPollutionDown down = (PackAirPollutionDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down != null) {
-                    reflushForecast(down);
+    /**
+     * 污染扩散预报图
+     */
+    private void okHttpAirPollution() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_pollution";
+                    Log.e("air_pollution", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_pollution")) {
+                                                JSONObject air_pollution = bobj.getJSONObject("air_pollution");
+                                                if (!TextUtil.isEmpty(air_pollution.toString())) {
+                                                    PackAirPollutionDown down = new PackAirPollutionDown();
+                                                    down.fillData(air_pollution.toString());
+                                                    reflushForecast(down);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }
-    };
+        }).start();
+    }
 
     private void reflushForecast(PackAirPollutionDown down) {
         if (down != null) {
@@ -208,7 +254,7 @@ public class FragmentAirForecast extends Fragment {
 
     private void checkImageItem(int position) {
         PackAirPollutionDown.ForecustItem down = (PackAirPollutionDown.ForecustItem) adapter.getItem(position);
-        String path = getString(R.string.file_download_url) + down.img_url;
+        String path = getString(R.string.air_pollution)+down.img_url;
         imgPath = path;
         //mImageFetcher.loadImage(path, null, ImageConstant.ImageShowType.NONE);
         mImageFetcher.loadImage(path, show_forecast, ImageConstant.ImageShowType.SRC);

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
@@ -30,7 +32,10 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterCompImage;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterTempertureLow;
 import com.pcs.ztqtj.control.inter.DrowListClick;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
 import com.pcs.ztqtj.view.activity.livequery.LiveQueryPopupWindowTool;
@@ -38,17 +43,26 @@ import com.pcs.ztqtj.view.fragment.livequery.FragmentLiveQueryCommon;
 import com.pcs.ztqtj.view.myview.CompleView;
 import com.pcs.ztqtj.view.myview.MyListView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.pcs.ztqtj.R.id.livequery_city_spinner;
 import static com.pcs.ztqtj.R.id.livequery_town_spinner;
 
 /**
- * Created by tyaathome on 2017/8/21.
+ * 实况查询-数据与统计-低温查询
  */
-
 public class FragmentLowTemperature extends FragmentLiveQueryCommon {
 
     private ScrollView scrollView;
@@ -733,45 +747,75 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
     }
 
     private class MyReceiver extends PcsDataBrocastReceiver {
-
         @Override
         public void onReceive(String nameStr, String errorStr) {
             if (nameStr.equals(lowTempUp.getName())) {
-                activity.dismissProgressDialog();
-                PackWdtjLowZdzDown down = (PackWdtjLowZdzDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
-                }
-                mDataList.clear();
-                mDataList.add(titletemp);
-                mDataList.addAll(down.datalist);
-                adapter.notifyDataSetChanged();
-                scrollView.scrollTo(0, 0);
+                okHttpRankLowTemp(nameStr);
             } else if (nameStr.equals(low24HourUp.getName())) {
-                activity.dismissProgressDialog();
-                PackWdtjLowZdzDown down = (PackWdtjLowZdzDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
-                }
-                mDataList.clear();
-                mDataList.add(titletemp);
-                mDataList.addAll(down.datalist);
-                adapter.notifyDataSetChanged();
-                scrollView.scrollTo(0, 0);
+                okHttpRankLowTemp(nameStr);
             } else if (nameStr.equals(lowHoursUp.getName())) {
-                activity.dismissProgressDialog();
-                PackWdtjLowZdzDown down = (PackWdtjLowZdzDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
-                }
-                mDataList.clear();
-                mDataList.add(titletemp);
-                mDataList.addAll(down.datalist);
-                adapter.notifyDataSetChanged();
-                scrollView.scrollTo(0, 0);
+                okHttpRankLowTemp(nameStr);
             } else if (yltjYearUp != null && nameStr.equals(yltjYearUp.getName())) {
                 reFlushImage(nameStr);
             }
         }
     }
+
+    /**
+     * 获取低温排行
+     */
+    private void okHttpRankLowTemp(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+name;
+                url = url.replace("wdtj_low_zdz", "wdtj_low_zdz_2");
+                Log.e("wdtj_low_zdz_2", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("wdtj_low_zdz")) {
+                                                JSONObject wdtj_low_zdz = bobj.getJSONObject("wdtj_low_zdz");
+                                                if (!TextUtil.isEmpty(wdtj_low_zdz.toString())) {
+                                                    activity.dismissProgressDialog();
+                                                    PackWdtjLowZdzDown down = new PackWdtjLowZdzDown();
+                                                    down.fillData(wdtj_low_zdz.toString());
+                                                    if (down == null) {
+                                                        return;
+                                                    }
+                                                    mDataList.clear();
+                                                    mDataList.add(titletemp);
+                                                    mDataList.addAll(down.datalist);
+                                                    adapter.notifyDataSetChanged();
+                                                    scrollView.scrollTo(0, 0);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
 }

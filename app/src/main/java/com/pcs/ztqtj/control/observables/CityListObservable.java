@@ -1,18 +1,19 @@
 package com.pcs.ztqtj.control.observables;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.control.log.Log;
-import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackCityListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackCityListDown.CityDBInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.PackCityListUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.NetTask;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,14 +43,20 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * Created by tyaathome on 2019/04/01.
+ * 下载数据
  */
 public class CityListObservable {
 
     private Context context;
-    private static final String APP_TYPE = "2";
     private static final int TIMEOUT = 10;
     private CityListCallback callback;
 
@@ -58,60 +65,8 @@ public class CityListObservable {
     }
 
     public void execute() {
-        PackCityListUp up = new PackCityListUp();
-        up.app_type = "3";
-        NetTask task = new NetTask(context, netListener);
-        task.setUrl(context.getString(R.string.url));
-        //task.setUrl("http://218.28.7.251:8096/ztq_hn_jc/service.do");
-        task.execute(up);
+        okHttpAreaInfoList();
     }
-
-    private NetTask.NetListener netListener = new NetTask.NetListener() {
-        @SuppressLint("CheckResult")
-        @Override
-        public void onComplete(PcsPackDown down) {
-            if(down instanceof PackCityListDown) {
-                PackCityListDown cityListDown = (PackCityListDown) down;
-                List<CityDBInfo> cityDBList = cityListDown.info_list;
-                List<Observable<FileEmitterValue>> observableList = new ArrayList<>();
-                if(cityDBList.size() != 5) {
-                    observableList = getAssetsObservableList();
-                } else {
-                    for (CityDBInfo info : cityDBList) {
-                        observableList.add(getObservable(info));
-                    }
-                }
-                Observable.zip(observableList, new Function<Object[], List<FileEmitterValue>>() {
-                    @Override
-                    public List<FileEmitterValue> apply(Object[] objects) throws Exception {
-                        List<FileEmitterValue> list = new ArrayList<>();
-                        for(Object object : objects) {
-                            if(object instanceof FileEmitterValue) {
-                                FileEmitterValue value = (FileEmitterValue) object;
-                                if(value.type == null) continue;
-                                list.add(value);
-                            }
-                        }
-                        return list;
-                    }
-                }).observeOn(Schedulers.io()).doOnNext(new Consumer<List<FileEmitterValue>>() {
-                    @Override
-                    public void accept(List<FileEmitterValue> fileEmitterValues) {
-                        if(callback != null) {
-                            callback.onNext(fileEmitterValues);
-                        }
-                    }
-                }).observeOn(AndroidSchedulers.mainThread()).doOnComplete(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        if(callback != null) {
-                            callback.onComplete();
-                        }
-                    }
-                }).subscribe();
-            }
-        }
-    };
 
     private Observable<FileEmitterValue> getObservable(CityDBInfo info) {
         return Observable.just(info).observeOn(Schedulers.io()).flatMap(new Function<CityDBInfo, ObservableSource<FileEmitterValue>>() {
@@ -127,41 +82,6 @@ public class CityListObservable {
             public ObservableSource<FileEmitterValue> apply(CityDBInfo cityDBInfo) throws Exception {
                 // 从assets中读取文件
                 FileEmitterValue value = getFileFromAssets(cityDBInfo.channel_id);
-                return Observable.just(value);
-            }
-        }));
-    }
-
-    /**
-     * 获取所有从从assets中读取的城市列表的observable数据
-     * @return
-     */
-    private List<Observable<FileEmitterValue>> getAssetsObservableList() {
-        List<Observable<FileEmitterValue>> result = new ArrayList<>();
-        result.add(getAssetsObservable(FileType.CITYLIST));
-        result.add(getAssetsObservable(FileType.TRAVELCITYLIST));
-        result.add(getAssetsObservable(FileType.LIVECITY));
-        result.add(getAssetsObservable(FileType.STATIONS));
-        result.add(getAssetsObservable(FileType.STATIONS_NATIONAL));
-        return result;
-    }
-
-    /**
-     * 获取observable从assets中读取的城市列表数据
-     * @return
-     */
-    private Observable<FileEmitterValue> getAssetsObservable(FileType type) {
-        return Observable.just(type).observeOn(Schedulers.io()).flatMap(new Function<FileType, ObservableSource<FileEmitterValue>>() {
-            @Override
-            public ObservableSource<FileEmitterValue> apply(FileType fileType) throws Exception {
-                FileEmitterValue value = getFileFromAssets(fileType.value());
-                return Observable.just(value);
-            }
-        }).timeout(TIMEOUT, TimeUnit.SECONDS, Observable.just(type).observeOn(Schedulers.io()).flatMap(new Function<FileType,
-                ObservableSource<FileEmitterValue>>() {
-            @Override
-            public ObservableSource<FileEmitterValue> apply(FileType fileType) throws Exception {
-                FileEmitterValue value = getFileFromAssets(fileType.value());
                 return Observable.just(value);
             }
         }));
@@ -350,11 +270,10 @@ public class CityListObservable {
      * 文件类型枚举
      */
     public enum FileType {
-        CITYLIST(2),// 全国城市
-        TRAVELCITYLIST(4),// 旅游城市
-        LIVECITY(5),// 风雨查询城市
-        STATIONS(6),// 省内自动站
-        STATIONS_NATIONAL(7);// 全国自动站
+        Tj_Qgdisty(4),// 全国城市，全国自动站，风雨查询城市,Tj_Qgdisty
+        Tj_landscapeList(1),// 旅游城市
+        Tj_Province(3),// 省
+        Tj_auto(6);// 省内自动站
 
         private int _value;
 
@@ -368,16 +287,14 @@ public class CityListObservable {
 
         public static FileType getType(int value) {
             switch (value) {
-                case 2:
-                    return CITYLIST;
                 case 4:
-                    return TRAVELCITYLIST;
-                case 5:
-                    return LIVECITY;
+                    return Tj_Qgdisty;
+                case 1:
+                    return Tj_landscapeList;
+                case 3:
+                    return Tj_Province;
                 case 6:
-                    return STATIONS;
-                case 7:
-                    return STATIONS_NATIONAL;
+                    return Tj_auto;
                 default:
                     return null;
             }
@@ -385,16 +302,14 @@ public class CityListObservable {
 
         public static String getFileName(int value) {
             switch (value) {
-                case 2:
-                    return "CITYLIST";
                 case 4:
-                    return "TRAVELCITYLIST";
-                case 5:
-                    return "LIVECITY";
+                    return "Tj_Qgdisty";
+                case 1:
+                    return "Tj_landscapeList";
+                case 3:
+                    return "Tj_Province";
                 case 6:
-                    return "STATIONS";
-                case 7:
-                    return "STATIONS_NATIONAL";
+                    return "Tj_auto";
                 default:
                     return null;
             }
@@ -421,6 +336,92 @@ public class CityListObservable {
     public interface CityListCallback {
         void onNext(List<FileEmitterValue> list);
         void onComplete();
+    }
+
+    /**
+     * 获取站号文件
+     * Tj_landscapeList，景点的
+     * tj_City，空气质量的
+     * Tj_Province，省
+     * Tj_Qgdisty，天气网(3240 县及以上城市编号)
+     * Tj_auto，天津自动站
+     */
+    private void okHttpAreaInfoList() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"area_info_list";
+                    Log.e("area_info_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            if (!TextUtil.isEmpty(result)) {
+                                Log.e("area_info_list", result);
+                                try {
+                                    JSONObject obj = new JSONObject(result);
+                                    if (!obj.isNull("area_info_list")) {
+                                        JSONObject fbObj = obj.getJSONObject("area_info_list");
+                                        if (!TextUtil.isEmpty(fbObj.toString())) {
+                                            PackCityListDown cityListDown = new PackCityListDown();
+                                            cityListDown.fillData(fbObj.toString());
+                                            List<CityDBInfo> cityDBList = cityListDown.info_list;
+                                            List<Observable<FileEmitterValue>> observableList = new ArrayList<>();
+                                            for (CityDBInfo info : cityDBList) {
+                                                observableList.add(getObservable(info));
+                                            }
+                                            Observable.zip(observableList, new Function<Object[], List<FileEmitterValue>>() {
+                                                @Override
+                                                public List<FileEmitterValue> apply(Object[] objects) throws Exception {
+                                                    List<FileEmitterValue> list = new ArrayList<>();
+                                                    for(Object object : objects) {
+                                                        if(object instanceof FileEmitterValue) {
+                                                            FileEmitterValue value = (FileEmitterValue) object;
+                                                            if(value.type == null) continue;
+                                                            list.add(value);
+                                                        }
+                                                    }
+                                                    return list;
+                                                }
+                                            }).observeOn(Schedulers.io()).doOnNext(new Consumer<List<FileEmitterValue>>() {
+                                                @Override
+                                                public void accept(List<FileEmitterValue> fileEmitterValues) {
+                                                    if(callback != null) {
+                                                        callback.onNext(fileEmitterValues);
+                                                    }
+                                                }
+                                            }).observeOn(AndroidSchedulers.mainThread()).doOnComplete(new Action() {
+                                                @Override
+                                                public void run() throws Exception {
+                                                    if(callback != null) {
+                                                        callback.onComplete();
+                                                    }
+                                                }
+                                            }).subscribe();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

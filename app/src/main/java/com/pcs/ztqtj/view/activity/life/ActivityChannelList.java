@@ -2,6 +2,7 @@ package com.pcs.ztqtj.view.activity.life;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AbsListView;
@@ -10,23 +11,34 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterChannelList;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtTitleDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtTitleUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.AdapterChannelList;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 资讯列表
- * 
- * @author chenjh
+ * 生活气象-天气新闻
  */
 public class ActivityChannelList extends FragmentActivityZtqBase {
 
@@ -35,10 +47,7 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 	private View lineview;
 	private AdapterChannelList mAdapter;
 
-	private PackArtTitleUp packArtTitle = new PackArtTitleUp();
-
 	private List<ArtTitleInfo> airTitleList = new ArrayList<ArtTitleInfo>();
-	private MyReceiver receiver = new MyReceiver();
 
 	private String title = "";
 	private String channel_id;
@@ -74,8 +83,6 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 		mAdapter = new AdapterChannelList(getApplicationContext(), airTitleList, getImageFetcher());
 		myListView.setAdapter(mAdapter);
 		showProgressDialog();
-		// 注册广播接收
-		PcsDataBrocastReceiver.registerReceiver(this, receiver);
 		title = getIntent().getStringExtra("title");
 		channel_id = getIntent().getStringExtra("channel_id");
 		setTitleText(title);
@@ -86,18 +93,13 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 		if (page == -1) {
 			return;
 		}
-		if (null == packArtTitle) {
-			packArtTitle = new PackArtTitleUp();
-		}
+
 		if(!isOpenNet()){
 			showToast(getString(R.string.net_err));
 			return ;
 		}
 
-		packArtTitle.page = page + "";
-		packArtTitle.count = PAGE_SIZE + "";
-		packArtTitle.channel = channel_id;
-		PcsDataDownload.addDownload(packArtTitle);
+		okHttpArtTitle();
 	}
 
 	/**
@@ -127,36 +129,6 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 		}
 	};
 
-	/**
-	 * 数据更新广播接收
-	 * 
-	 * @author JiangZy
-	 * 
-	 */
-	private class MyReceiver extends PcsDataBrocastReceiver {
-		@Override
-		public void onReceive(String name, String error) {
-
-			if (packArtTitle != null && packArtTitle.getName().equals(name)) {
-                PackArtTitleDown pack = (PackArtTitleDown) PcsDataManager.getInstance().getNetPack(name);
-				if (pack == null) {
-					return;
-				}
-				airTitleList.addAll(pack.artTitleList);
-				reflashData();
-				dismissProgressDialog();
-				if (pack.artTitleList.size() > 0) {
-					page++;
-					System.out.println("有更多数据");
-				} else {
-					System.out.println("无更多数据");
-					page = -1;
-				}
-			}
-		}
-
-	}
-
 	private OnScrollListener myOnScrollListener = new OnScrollListener() {
 		@Override
 		public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -177,10 +149,73 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 		}
 	};
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		this.unregisterReceiver(receiver);
+	/**
+	 * 获取天气新闻
+	 */
+	private void okHttpArtTitle() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					JSONObject param  = new JSONObject();
+					param.put("token", MyApplication.TOKEN);
+					String json = param.toString();
+					final String url = CONST.BASE_URL+"art_title";
+					Log.e("art_title", url);
+					RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+					OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+						@Override
+						public void onFailure(@NotNull Call call, @NotNull IOException e) {
+						}
+						@Override
+						public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+							if (!response.isSuccessful()) {
+								return;
+							}
+							final String result = response.body().string();
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									if (!TextUtil.isEmpty(result)) {
+										Log.e("art_title", result);
+										try {
+											JSONObject obj = new JSONObject(result);
+											if (!obj.isNull("b")) {
+												JSONObject bobj = obj.getJSONObject("b");
+												if (!bobj.isNull("art_title")) {
+													JSONObject art_title = bobj.getJSONObject("art_title");
+													if (art_title.isNull("page")) {
+														art_title.put("page", "1");
+													}
+													if (!TextUtil.isEmpty(art_title.toString())) {
+														PackArtTitleDown pack = new PackArtTitleDown();
+														pack.fillData(art_title.toString());
+														airTitleList.addAll(pack.artTitleList);
+														reflashData();
+														dismissProgressDialog();
+														if (pack.artTitleList.size() > 0) {
+															page++;
+															System.out.println("有更多数据");
+														} else {
+															System.out.println("无更多数据");
+															page = -1;
+														}
+													}
+												}
+											}
+										} catch (JSONException e) {
+											e.printStackTrace();
+										}
+									}
+								}
+							});
+						}
+					});
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 }

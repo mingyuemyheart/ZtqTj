@@ -32,22 +32,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 气象生活
- *
- * @author chenjh
+ * 生活气象
  */
 public class FragmentLife extends Fragment {
 
     private GridView gridView;
-
     private String[] life_list;
     private int[] life_icon_list;
     private ImageView rl;
     private RecyclerView recycleview;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_live, container, false);
     }
 
@@ -101,13 +97,11 @@ public class FragmentLife extends Fragment {
                         startActivity(intent);
                         break;
                     case 2:
-
                         intent.setClass(getActivity(), ActivityChannelList.class);
                         intent.putExtra("title", "天气新闻");
                         intent.putExtra("channel_id", "100005");
                         getActivity().startActivity(intent);
                         break;
-
                     case 4:
 //					灾害防御
                         intent.setClass(getActivity(), ActivityChannelList.class);
@@ -119,7 +113,6 @@ public class FragmentLife extends Fragment {
                         // 气象科普
                         intent.setClass(getActivity(), ActivityMeteorologicalScience.class);
                         getActivity().startActivity(intent);
-
                         break;
                 }
             }

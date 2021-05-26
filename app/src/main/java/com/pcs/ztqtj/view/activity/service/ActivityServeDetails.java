@@ -27,6 +27,9 @@ import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.youmeng.ShareUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 
+/**
+ * 专项服务-决策服务-我的服务-详情
+ */
 public class ActivityServeDetails extends FragmentActivitySZYBBase {
     private ViewGroup mParent;
     private WebView mWebView;
@@ -214,8 +217,6 @@ public class ActivityServeDetails extends FragmentActivitySZYBBase {
     }
 
     private void reqNet() {
-
-
         if (!isOpenNet()) {
             showToast(getString(R.string.net_err));
             return;
@@ -258,7 +259,6 @@ public class ActivityServeDetails extends FragmentActivitySZYBBase {
     };
 
     private class MyRecevice extends PcsDataBrocastReceiver {
-
         @Override
         public void onReceive(String nameStr, String errorStr) {
             if (nameStr.equals(packUp.getName())) {

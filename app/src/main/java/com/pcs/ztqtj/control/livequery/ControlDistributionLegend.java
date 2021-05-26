@@ -19,10 +19,8 @@ import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.fragment.livequery.FragmentDistributionMap;
 
 /**
- * 图例控制器
- * Created by tyaathome on 2017/6/3.
+ * 实况查询-图例控制器
  */
-
 public class ControlDistributionLegend extends ControlDistributionBase {
 
     FragmentDistributionMap mFragment;

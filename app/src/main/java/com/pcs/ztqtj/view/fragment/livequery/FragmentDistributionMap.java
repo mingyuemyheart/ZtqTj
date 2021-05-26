@@ -40,9 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2017/6/6.
+ * 实况查询-要素分布图
  */
-
 public class FragmentDistributionMap extends FragmentLiveQueryCommon {
     private TextureMapView mapView;
     protected AMap aMap;

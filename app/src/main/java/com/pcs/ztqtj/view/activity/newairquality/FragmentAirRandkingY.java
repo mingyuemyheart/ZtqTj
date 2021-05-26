@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,24 +27,28 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceType;
-import com.pcs.ztqtj.control.adapter.air_qualitydetail.AdapterAirRanking;
-import com.pcs.ztqtj.control.inter.DrowListClick;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.AirRankNew;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown.DicListBean;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceType;
+import com.pcs.ztqtj.control.adapter.air_qualitydetail.AdapterAirRanking;
+import com.pcs.ztqtj.control.inter.DrowListClick;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,8 +56,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * @author Z 空气质量
+ * 空气质量-昨日排行
  */
 public class FragmentAirRandkingY extends Fragment implements OnClickListener {
     private ListView cityList;
@@ -61,7 +74,6 @@ public class FragmentAirRandkingY extends Fragment implements OnClickListener {
     private Button pm_city;
     private Button pm_province;
     private Button pm_rank_name;
-    private MyReceiver receiver = new MyReceiver();
     private AdapterAirRanking adapter;
     private TextView whatAQI;
     private ImageButton btn_right;
@@ -94,26 +106,12 @@ public class FragmentAirRandkingY extends Fragment implements OnClickListener {
         initDate();
     }
 
-
-    @Nullable
-    @Override
-    public void onResume() {
-        super.onResume();
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), receiver);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        PcsDataBrocastReceiver.unregisterReceiver(getActivity(), receiver);
-    }
-
     private void initDate() {
         whatAQI.setText(Html.fromHtml("<u>什么是空气质量指数(AQI)?</u>"));
         adapter = new AdapterAirRanking(getActivity(),s_area_name);
         cityList.setAdapter(adapter);
         reqKey();
-        reqD("aqi");
+        reqD("AQI");
     }
 
     /**
@@ -124,17 +122,7 @@ public class FragmentAirRandkingY extends Fragment implements OnClickListener {
             showToast(getString(R.string.net_err));
             return ;
         }
-        PackKeyDescUp packup = new PackKeyDescUp();
-        try {
-            packKey = (PackKeyDescDown) PcsDataManager.getInstance().getNetPack(PackKeyDescUp.NAME);
-            if (packKey == null) {
-            } else {
-                dealWidthKeyData(packKey);
-            }
-            PcsDataDownload.addDownload(packup);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        okHttpAirRemark();
     }
 
     /**
@@ -195,12 +183,9 @@ public class FragmentAirRandkingY extends Fragment implements OnClickListener {
             return ;
         }
         showProgressDialog();
-        packDetialup = new PackAirRankNewUp();
-        packDetialup.rank_type = reqcode;
-        packDetialup.time="0";
         // 如果是aqi则有背景
         adapter.isAQI = reqcode.trim().equals("aqi") || reqcode.trim().toLowerCase().equals("aqi");
-        PcsDataDownload.addDownload(packDetialup);
+        okHttpAirRankNew(reqcode);
     }
 
     public void showProgressDialog() {
@@ -383,59 +368,6 @@ public class FragmentAirRandkingY extends Fragment implements OnClickListener {
         adapter.notifyDataSetChanged();
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (name.equals(packDetialup.getName())) {
-                PackAirRankNewDown pack = (PackAirRankNewDown) PcsDataManager.getInstance().getNetPack(name);
-                if (pack == null) {
-                    return;
-                }
-                dismissProgressDialog();
-                dealWidthData(pack);
-            } else if (name.equals(PackKeyDescUp.NAME)) {
-                packKey = (PackKeyDescDown) PcsDataManager.getInstance().getNetPack(name);
-                if (packKey == null) {
-                    return;
-                }
-                dealWidthKeyData(packKey);
-            }
-        }
-    }
-
-
-    private void dealWidthData(PackAirRankNewDown pack) {
-        try {
-            adapter.isDown = true;
-            airListDataParent.clear();
-            airListData.clear();
-            List<AirRankNew> airListData_exm = new ArrayList<>();
-//            airListData.addAll(pack.rank_list);
-            for (int i=0;i<pack.rank_list.size();i++){
-                AirRankNew airRankNew=new AirRankNew();
-                if (pack.rank_list.get(i).city.equals("天津")){
-                    airRankNew=pack.rank_list.get(i);
-                    airListData.add(airRankNew);
-                }else{
-                    airListData_exm.add(pack.rank_list.get(i));
-                }
-            }
-            airListData.addAll(airListData_exm);
-            Iterator it = pack.allProvince.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry) it.next();
-                airListDataParent.add((AirRankNew) entry.getValue());
-            }
-
-            adapter.setData(airListData);
-            adapter.notifyDataSetChanged();
-            //初始化下拉列表
-            initPopList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 初始化下拉列表
      */
@@ -603,6 +535,139 @@ public class FragmentAirRandkingY extends Fragment implements OnClickListener {
             }
         });
         return pop;
+    }
+
+    private void okHttpAirRankNew(final String airType) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("airType", airType);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_rank_new";
+                    Log.e("air_rank_new", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_rank_new", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_rank_new")) {
+                                                JSONObject air_rank = bobj.getJSONObject("air_rank_new");
+                                                PackAirRankNewDown pack = new PackAirRankNewDown();
+                                                pack.fillData(air_rank.toString());
+                                                try {
+                                                    adapter.isDown = true;
+                                                    airListDataParent.clear();
+                                                    airListData.clear();
+                                                    List<AirRankNew> airListData_exm = new ArrayList<>();
+//            airListData.addAll(pack.rank_list);
+                                                    for (int i=0;i<pack.rank_list.size();i++){
+                                                        AirRankNew airRankNew=new AirRankNew();
+                                                        if (pack.rank_list.get(i).city.equals("天津")){
+                                                            airRankNew=pack.rank_list.get(i);
+                                                            airListData.add(airRankNew);
+                                                        }else{
+                                                            airListData_exm.add(pack.rank_list.get(i));
+                                                        }
+                                                    }
+                                                    airListData.addAll(airListData_exm);
+                                                    Iterator it = pack.allProvince.entrySet().iterator();
+                                                    while (it.hasNext()) {
+                                                        Map.Entry entry = (Map.Entry) it.next();
+                                                        airListDataParent.add((AirRankNew) entry.getValue());
+                                                    }
+
+                                                    adapter.setData(airListData);
+                                                    adapter.notifyDataSetChanged();
+                                                    //初始化下拉列表
+                                                    initPopList();
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void okHttpAirRemark() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_remark";
+                    Log.e("air_remark", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_remark", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_remark")) {
+                                                JSONObject air_remark = bobj.getJSONObject("air_remark");
+                                                PackKeyDescDown packKey = new PackKeyDescDown();
+                                                packKey.fillData(air_remark.toString());
+                                                dealWidthKeyData(packKey);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

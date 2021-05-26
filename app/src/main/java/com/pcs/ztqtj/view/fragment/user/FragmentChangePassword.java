@@ -13,9 +13,21 @@ import android.widget.Toast;
 
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.UserFragmentCallBack;
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserChangePasswordUp;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 设置密码
@@ -91,11 +103,7 @@ public class FragmentChangePassword extends UserFragmentCallBack implements View
 
     @Override
     public void onClickSubmitButton() {
-        PackPhotoUserChangePasswordUp packUp = new PackPhotoUserChangePasswordUp();
-        packUp.mobile = userName;
-        packUp.o_pwd = PcsMD5.Md5(oldPassword);
-        packUp.n_pwd = PcsMD5.Md5(newPassword);
-        PcsDataDownload.addDownload(packUp);
+        okHttpModifyPwd(userName, oldPassword, newPassword);
     }
 
     @Override
@@ -165,4 +173,61 @@ public class FragmentChangePassword extends UserFragmentCallBack implements View
                 break;
         }
     }
+
+    /**
+     * 修改密码
+     */
+    private void okHttpModifyPwd(final String uName, final String pwd, final String newPassword) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/changepwd";
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", uName);
+                    param.put("pwd", pwd);
+                    param.put("newpwd", newPassword);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (!obj.isNull("result")) {
+                                                boolean result = obj.getBoolean("result");
+                                                if (result) {
+                                                    getActivity().finish();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

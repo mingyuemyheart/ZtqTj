@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +19,6 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.livequery.AdapterWind;
-import com.pcs.ztqtj.control.inter.DrowListClick;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
-import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
-import com.pcs.ztqtj.view.fragment.livequery.FragmentLiveQueryCommon;
-import com.pcs.ztqtj.view.myview.MyListView;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
@@ -39,14 +32,34 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjHourUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjZdDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjZdDown.FltjZd;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFltjZdUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.livequery.AdapterWind;
+import com.pcs.ztqtj.control.inter.DrowListClick;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
+import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
+import com.pcs.ztqtj.view.fragment.livequery.FragmentLiveQueryCommon;
+import com.pcs.ztqtj.view.myview.MyListView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
- * @author Z 风况
+ * 实况查询-数据与统计-风况查询
  */
 public class FragmentWind extends FragmentLiveQueryCommon implements OnClickListener {
     private MyListView livequery_auto_rainfall;
@@ -232,7 +245,6 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
     }
 
     private void initEvent() {
-
         livequery_auto_rainfall.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -423,29 +435,10 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
         @Override
         public void onReceive(String name, String errorStr) {
             if (fltjZdUp != null && name.equals(fltjZdUp.getName())) {
-                activity.dismissProgressDialog();
-                PackFltjZdDown fltjZdDown = (PackFltjZdDown) PcsDataManager.getInstance().getNetPack(name);
-                windAutoList.clear();
-                windAutoList_source.clear();
-                windAutoList.add(titleMaxRain);
-                if (fltjZdDown != null) {
-                    windAutoList.addAll(fltjZdDown.datalist);
-                    windAutoList_source.addAll(fltjZdDown.datalist);
-                }
-                //autoatper.notifyDataSetChanged();
-                autoatper.setData(windAutoList);
+                okHttpRankWind(name);
             } else if (maxWind != null && maxWind.getName().equals(name)) {
 //                极大风速
-                activity.dismissProgressDialog();
-                PackFltjHourDown fltjMaxHourDown = (PackFltjHourDown) PcsDataManager.getInstance().getNetPack(name);
-                windAutoList.clear();
-                windAutoList.add(titleMaxRain);
-                if (fltjMaxHourDown == null) {
-                } else {
-                    windAutoList.addAll(fltjMaxHourDown.datalist);
-                }
-                //autoatper.notifyDataSetChanged();
-                autoatper.setData(windAutoList);
+                okHttpWindMax(name);
             }
         }
     }
@@ -463,4 +456,119 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * 获取风况排行
+     */
+    private void okHttpRankWind(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+name;
+                url = url.replace("fltj_zd", "fltj_zd_2");
+                Log.e("fltj_zd_2", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("fltj_zd")) {
+                                                JSONObject fltj_zd = bobj.getJSONObject("fltj_zd");
+                                                if (!TextUtil.isEmpty(fltj_zd.toString())) {
+                                                    activity.dismissProgressDialog();
+                                                    PackFltjZdDown fltjZdDown = new PackFltjZdDown();
+                                                    fltjZdDown.fillData(fltj_zd.toString());
+                                                    windAutoList.clear();
+                                                    windAutoList_source.clear();
+                                                    windAutoList.add(titleMaxRain);
+                                                    if (fltjZdDown != null) {
+                                                        windAutoList.addAll(fltjZdDown.datalist);
+                                                        windAutoList_source.addAll(fltjZdDown.datalist);
+                                                    }
+                                                    //autoatper.notifyDataSetChanged();
+                                                    autoatper.setData(windAutoList);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 获取极大风速
+     */
+    private void okHttpWindMax(final String name) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+name;
+                Log.e("fltj_hour", url);
+                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("fltj_hour")) {
+                                                JSONObject fltj_hour = bobj.getJSONObject("fltj_hour");
+                                                if (!TextUtil.isEmpty(fltj_hour.toString())) {
+                                                    activity.dismissProgressDialog();
+                                                    PackFltjHourDown fltjMaxHourDown = new PackFltjHourDown();
+                                                    fltjMaxHourDown.fillData(fltj_hour.toString());
+                                                    windAutoList.clear();
+                                                    windAutoList.add(titleMaxRain);
+                                                    if (fltjMaxHourDown == null) {
+                                                    } else {
+                                                        windAutoList.addAll(fltjMaxHourDown.datalist);
+                                                    }
+                                                    //autoatper.notifyDataSetChanged();
+                                                    autoatper.setData(windAutoList);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
 }

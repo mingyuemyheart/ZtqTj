@@ -107,7 +107,7 @@
         android:layout_height="45dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/windspeed"
+        android:text="@string/wind_power"
         android:textColor="@color/map_forecast_list_text"
         android:textSize="@dimen/text_content" />
 

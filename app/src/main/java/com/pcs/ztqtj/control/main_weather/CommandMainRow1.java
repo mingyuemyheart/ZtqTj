@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +31,10 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceShowBg;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
@@ -44,7 +43,10 @@ import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.VoiceTool;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
@@ -53,6 +55,12 @@ import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoShow;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,6 +68,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * JiangZy on 2016/6/3.
@@ -71,12 +87,9 @@ public class CommandMainRow1 extends CommandMainBase {
     private InterfaceShowBg mShowBg;
     //行视图
     private View mRowView;
-    //实时天气
-    private PackSstqUp mPackSstqUp = new PackSstqUp();
     //一周天气
     private PackMainWeekWeatherUp mPackWeekUp = new PackMainWeekWeatherUp();
     //预警未读消息
-    private PackWarnWeatherUp packWarnWeatherUp = new PackWarnWeatherUp();
     private Fragment mFragment;
 
     private boolean is_readed = true;
@@ -165,285 +178,402 @@ public class CommandMainRow1 extends CommandMainBase {
     protected void refresh() {
         stationName = "";
         // 气温
-        TextView text_temperature = (TextView) mRootLayout.findViewById(R.id.text_temperature);
+        final TextView text_temperature = (TextView) mRootLayout.findViewById(R.id.text_temperature);
         text_temperature.setText("");
-        TextView text_temperature_decimals =
+        final TextView text_temperature_decimals =
                 (TextView) mRootLayout.findViewById(R.id.text_temperature_decimals);
         text_temperature_decimals.setText("");
         // 中文天气
-        TextView text_weather_cn = (TextView) mRootLayout.findViewById(R.id.text_weather_cn);
+        final TextView text_weather_cn = (TextView) mRootLayout.findViewById(R.id.text_weather_cn);
         text_weather_cn.setText("");
         // 雨量
-        TextView text_rain = (TextView) mRootLayout.findViewById(R.id.text_rain);
+        final TextView text_rain = (TextView) mRootLayout.findViewById(R.id.text_rain);
         text_rain.setText("");
         // 风速
-        TextView text_wind = (TextView) mRootLayout.findViewById(R.id.text_wind);
+        final TextView text_wind = (TextView) mRootLayout.findViewById(R.id.text_wind);
         text_wind.setText("");
         // 能见度
-        TextView text_visibility = (TextView) mRootLayout.findViewById(R.id.text_visibility);
+        final TextView text_visibility = (TextView) mRootLayout.findViewById(R.id.text_visibility);
         text_visibility.setText("");
         // 空气质量
-        TextView text_station = (TextView) mRootLayout.findViewById(R.id.text_station_name);
+        final TextView text_station = (TextView) mRootLayout.findViewById(R.id.text_station_name);
         text_station.setText("");
-        TextView text_reflush_time = (TextView) mRootLayout.findViewById(R.id.text_reflush_time);
+        final TextView text_reflush_time = (TextView) mRootLayout.findViewById(R.id.text_reflush_time);
         text_reflush_time.setText("");
+
         // 当前城市
-        PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
+        final PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
         if (packCity == null || TextUtils.isEmpty(packCity.ID)) {
             return;
         }
-        String tempStr;
-        // -------当前天气
-        mPackSstqUp.area = packCity.ID;
-        PackSstqDown packSstq =
-                (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
-        if (packSstq == null) {
-            packSstq = new PackSstqDown();
 
+        /**
+         * 获取实况信息
+         */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String url = CONST.BASE_URL+"sstq";
+                Log.e("sstq", url);
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", packCity.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("sstq", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("sstq")) {
+                                                    JSONObject sstqobj = bobj.getJSONObject("sstq");
+                                                    if (!sstqobj.isNull("sstq")) {
+                                                        PackSstqDown packSstq = new PackSstqDown();
+                                                        JSONObject itemObj = sstqobj.getJSONObject("sstq");
+                                                        if (!itemObj.isNull("ct")) {
+                                                            packSstq.ct = itemObj.getString("ct");
+                                                        }
+                                                        if (!itemObj.isNull("humidity")) {
+                                                            packSstq.humidity = itemObj.getString("humidity");
+                                                        }
+                                                        if (!itemObj.isNull("rainfall")) {
+                                                            packSstq.rainfall_day = itemObj.getString("rainfall");
+                                                        }
+                                                        if (!itemObj.isNull("wind")) {
+                                                            packSstq.wind = itemObj.getString("wind");
+                                                        }
+                                                        if (!itemObj.isNull("visibility")) {
+                                                            packSstq.visibility = itemObj.getString("visibility");
+                                                        }
+                                                        if (!itemObj.isNull("upt")) {
+                                                            packSstq.upt = itemObj.getString("upt");
+                                                        }
 
-        }
-        // 气温
-        tempStr = packSstq.ct;
-        if (!TextUtils.isEmpty(packSstq.ct) && packSstq.ct.indexOf(".") > -1) {
-            tempStr = packSstq.ct.substring(0, packSstq.ct.indexOf(".") + 1);
-        }
-        text_temperature.setText(tempStr);
-        tempStr = "";
-        //气温小数
-        if (!TextUtils.isEmpty(packSstq.ct) && packSstq.ct.indexOf(".") > -1) {
-            tempStr = packSstq.ct.substring(packSstq.ct.indexOf(".") + 1, packSstq.ct.length());
-        }
-        text_temperature_decimals.setText(tempStr);
+                                                        // 气温
+                                                        String tempStr = packSstq.ct;
+                                                        if (!TextUtils.isEmpty(packSstq.ct) && packSstq.ct.indexOf(".") > -1) {
+                                                            tempStr = packSstq.ct.substring(0, packSstq.ct.indexOf(".") + 1);
+                                                        }
+                                                        text_temperature.setText(tempStr);
+                                                        tempStr = "";
+                                                        //气温小数
+                                                        if (!TextUtils.isEmpty(packSstq.ct) && packSstq.ct.indexOf(".") > -1) {
+                                                            tempStr = packSstq.ct.substring(packSstq.ct.indexOf(".") + 1, packSstq.ct.length());
+                                                        }
+                                                        text_temperature_decimals.setText(tempStr);
 
-        mPackWeekUp.setCity(packCity);
-        PackMainWeekWeatherDown packMainWeekDown =
-                (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack
-                        (mPackWeekUp.getName());
-        if (packMainWeekDown != null && packMainWeekDown.getToday() != null) {
-            WeekWeatherInfo todayInfo = packMainWeekDown.getToday();
-            // 中文天气
-            text_weather_cn.setText(todayInfo.weather);
-            // 刷新背景
-            String path = todayInfo.getWeatherBg();
-            String pathThumb = todayInfo.getWeatherThumb();
-            if (!TextUtils.isEmpty(path)) {
-                mShowBg.showBg(path, pathThumb);
-            }
-        }
-        // 湿度
-        TextView text_humidity = (TextView) mRootLayout
-                .findViewById(R.id.text_humidity);
-        if (!TextUtils.isEmpty(packSstq.humidity)) {
-            text_humidity.setText(packSstq.humidity + "%");
-        } else {
-            text_humidity.setText("暂无");
-        }
+                                                        mPackWeekUp.setCity(packCity);
+                                                        PackMainWeekWeatherDown packMainWeekDown = (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack(mPackWeekUp.getName());
+                                                        if (packMainWeekDown != null && packMainWeekDown.getToday() != null) {
+                                                            WeekWeatherInfo todayInfo = packMainWeekDown.getToday();
+                                                            // 中文天气
+                                                            text_weather_cn.setText(todayInfo.weather);
+                                                            // 刷新背景
+                                                            String path = todayInfo.getWeatherBg();
+                                                            String pathThumb = todayInfo.getWeatherThumb();
+                                                            if (!TextUtils.isEmpty(path)) {
+                                                                mShowBg.showBg(path, pathThumb);
+                                                            }
+                                                        }
+                                                        // 湿度
+                                                        TextView text_humidity = (TextView) mRootLayout
+                                                                .findViewById(R.id.text_humidity);
+                                                        if (!TextUtils.isEmpty(packSstq.humidity)) {
+                                                            text_humidity.setText(packSstq.humidity + "%");
+                                                        } else {
+                                                            text_humidity.setText("暂无");
+                                                        }
 
-        // 雨量
-        if (!TextUtils.isEmpty(packSstq.rainfall_day)) {
-            text_rain.setText(packSstq.rainfall_day + "mm");
-        } else {
-            text_rain.setText("暂无");
-        }
+                                                        // 雨量
+                                                        if (!TextUtils.isEmpty(packSstq.rainfall_day)) {
+                                                            text_rain.setText(packSstq.rainfall_day + "mm");
+                                                        } else {
+                                                            text_rain.setText("暂无");
+                                                        }
 
-        // 风速
-        if (!TextUtils.isEmpty(packSstq.wind)) {
-            text_wind.setText(packSstq.wind + "m/s");
-        } else {
-            text_wind.setText("暂无");
-        }
+                                                        // 风速
+                                                        if (!TextUtils.isEmpty(packSstq.wind)) {
+                                                            text_wind.setText(packSstq.wind + "m/s");
+                                                        } else {
+                                                            text_wind.setText("暂无");
+                                                        }
 
-        // 能见度
-        if (!TextUtils.isEmpty(packSstq.visibility)) {
-            text_visibility.setText(packSstq.visibility + "m");
-        } else {
-            text_visibility.setText("暂无");
-        }
-        Time time = new Time();
-        String time_text = "";
-        if (!TextUtils.isEmpty(packSstq.upt)) {
-            try {
-                if (!TextUtils.isEmpty(packSstq.upt)) {
-                    String[] str = packSstq.upt.split(" ");
-                    time_text = str[1];
-                }
+                                                        // 能见度
+                                                        if (!TextUtils.isEmpty(packSstq.visibility)) {
+                                                            text_visibility.setText(packSstq.visibility + "m");
+                                                        } else {
+                                                            text_visibility.setText("暂无");
+                                                        }
+                                                        Time time = new Time();
+                                                        String time_text = "";
+                                                        if (!TextUtils.isEmpty(packSstq.upt)) {
+                                                            try {
+                                                                if (!TextUtils.isEmpty(packSstq.upt)) {
+                                                                    String[] str = packSstq.upt.split(" ");
+                                                                    time_text = str[1];
+                                                                }
 //                if (packCity.isFjCity) {
-                stationName = packSstq.stationname;
+                                                                stationName = packSstq.stationname;
 //                } else {
 //                    stationName = packCity.NAME;
 //                }
-                //text_reflush_time.setText(time.format("实况%H:%M更新"));
-            } catch (Exception e) {
-                e.printStackTrace();
+                                                                //text_reflush_time.setText(time.format("实况%H:%M更新"));
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        } else {
+                                                            stationName = packCity.NAME;
+                                                        }
+                                                        if (TextUtils.isEmpty(stationName)) {
+                                                            text_station.setText(time_text + "采集");
+                                                        } else {
+                                                            text_station.setText(stationName + "气象站" + time_text + "采集");
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        } else {
-            stationName = packCity.NAME;
-        }
-        if (TextUtils.isEmpty(stationName)) {
-            text_station.setText(time_text + "采集");
-        } else {
-            text_station.setText(stationName + "气象站" + time_text + "采集");
-        }
-//        mPackAirUp.setCity(packCity);
-//        mPackAirUp.type = "1";
-//        PackAirInfoSimpleDown packAir = (PackAirInfoSimpleDown) PcsDataManager.getInstance()
-//        .getNetPack(mPackAirUp
-//                .getName());
-//        if (packAir != null) {
-//            if (!TextUtils.isEmpty(packAir.airInfoSimple.aqi)) {
-//                int color = AirQualityTool.getInstance().getAqiColor(
-//                        Integer.valueOf(packAir.airInfoSimple.aqi));
-//                text_air_num.setText(packAir.airInfoSimple.aqi);
-//                text_air_num.setTextColor(color);
-//            } else {
-//                text_air_num.setText("暂无");
-//                text_air_num.setTextColor(mActivity.getResources().getColor(android.R.color
-//                .white));
-//            }
-//        }
+        }).start();
 
-        String cityid = "";
+        /**
+         * 获取预警列表信息
+         */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", packCity.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"warningcenterqx_fb";
+                    Log.e("warningcenterqx_fb", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("warningcenterqx_fb", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("warningcenterqx_fb")) {
+                                                    JSONObject fbObj = bobj.getJSONObject("warningcenterqx_fb");
+                                                    JSONArray cityArray = null;
+                                                    JSONArray proArray = null;
+                                                    JSONArray countryArray = null;
+                                                    if (!fbObj.isNull("city")) {
+                                                        cityArray = fbObj.getJSONArray("city");
+                                                    }
+                                                    if (!fbObj.isNull("province")) {
+                                                        proArray = fbObj.getJSONArray("province");
+                                                    }
+                                                    if (!fbObj.isNull("county")) {
+                                                        countryArray = fbObj.getJSONArray("county");
+                                                    }
 
-        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-//        if (cityMain != null) {
-//            if (cityMain.isFjCity) {
-//                cityid = cityMain.PARENT_ID;
-//            } else {
-                cityid = cityMain.ID;
-//            }
-//        }
-        packWarnWeatherUp.areaid = cityid;
+                                                    if (cityArray == null && proArray == null && countryArray == null) {
+                                                        ImageView widget_title_icon = (ImageView) mRootLayout.findViewById(R.id.widget_title_icon);
+                                                        widget_title_icon.setVisibility(View.INVISIBLE);
+                                                    }
 
-        PackWarnWeatherDown packWarnWeatherDown =
-                (PackWarnWeatherDown) PcsDataManager.getInstance().getNetPack
-                        (packWarnWeatherUp.getName());
-        if (packWarnWeatherDown == null) {
-            ImageView widget_title_icon =
-                    (ImageView) mRootLayout.findViewById(R.id.widget_title_icon);
-            widget_title_icon.setVisibility(View.INVISIBLE);
-            return;
-        }
-
-        if (packWarnWeatherDown.city.size() == 0 && packWarnWeatherDown.county.size() == 0 && packWarnWeatherDown.province.size() == 0) {
-            ImageView widget_title_icon =
-                    (ImageView) mRootLayout.findViewById(R.id.widget_title_icon);
-            widget_title_icon.setVisibility(View.INVISIBLE);
-        } else {
-            setRead(packWarnWeatherDown);
-
-        }
+                                                    if (cityArray.length() == 0 && proArray.length() == 0 && countryArray.length() == 0) {
+                                                        ImageView widget_title_icon = (ImageView) mRootLayout.findViewById(R.id.widget_title_icon);
+                                                        widget_title_icon.setVisibility(View.INVISIBLE);
+                                                    } else {
+                                                        setRead(cityArray, proArray, countryArray);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
-
-    public void setRead(PackWarnWeatherDown packWarnWeatherDown) {
+    private void setRead(JSONArray cityArray, JSONArray proArray, JSONArray countryArray) {
         is_readed = true;
         String id = "";
         ImageView widget_title_icon = (ImageView) mRootLayout.findViewById(R.id.widget_title_icon);
-        if (packWarnWeatherDown.city.size() != 0) {
-            for (int i = 0; i < packWarnWeatherDown.city.size(); i++) {
-                id = SharedPreferencesUtil.getData(packWarnWeatherDown.city.get(i).id, "");
-                String date2 = packWarnWeatherDown.city.get(i).put_time + ":00";
-                date2 = date2.replace("年", "-");
-                date2 = date2.replace("月", "-");
-                date2 = date2.replace("日", " ");
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                int days = 0;
+        if (cityArray.length() != 0) {
+            for (int i = 0; i < cityArray.length(); i++) {
                 try {
-                    Date date3 = format.parse(date2);
-                    String date = format.format(new Date());
-                    Date date4 = format.parse(date);
-                    days = differentDaysByMillisecond(date3, date4);
-                } catch (ParseException e) {
+                    JSONObject itemObj = cityArray.getJSONObject(i);
+                    String itemId = "";
+                    if (!itemObj.isNull("id")) {
+                        itemId = itemObj.getString("id");
+                    }
+                    id = SharedPreferencesUtil.getData(itemId, "");
+                    String date2 = itemObj.getString("yj_time") + ":00";
+                    date2 = date2.replace("年", "-");
+                    date2 = date2.replace("月", "-");
+                    date2 = date2.replace("日", " ");
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    int days = 0;
+                    try {
+                        Date date3 = format.parse(date2);
+                        String date = format.format(new Date());
+                        Date date4 = format.parse(date);
+                        days = differentDaysByMillisecond(date3, date4);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if (days < 1) {
+                        if (!TextUtils.isEmpty(id)) {
+                            is_readed = true;
+                            widget_title_icon.setVisibility(View.INVISIBLE);
+                        } else {
+                            widget_title_icon.setVisibility(View.VISIBLE);
+                            is_readed = false;
+                            break;
+                        }
+                    } else {
+                        is_readed = true;
+                        widget_title_icon.setVisibility(View.INVISIBLE);
+                        SharedPreferencesUtil.putData(itemId, itemId);
+                    }
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (days < 1) {
-                    if (!TextUtils.isEmpty(id)) {
-                        is_readed = true;
-                        widget_title_icon.setVisibility(View.INVISIBLE);
-                    } else {
-                        widget_title_icon.setVisibility(View.VISIBLE);
-                        is_readed = false;
-                        break;
-                    }
-                } else {
-                    is_readed = true;
-                    widget_title_icon.setVisibility(View.INVISIBLE);
-                    SharedPreferencesUtil.putData(packWarnWeatherDown.city.get(i).id,
-                            packWarnWeatherDown.city.get(i)
-                                    .id);
-                }
             }
         }
-        if (packWarnWeatherDown.province.size() != 0) {
-            for (WarnCenterYJXXGridBean bean : packWarnWeatherDown.province) {
-                id = SharedPreferencesUtil.getData(bean.id, "");
-                if (is_readed) {
-                    String date2 = bean.put_time + ":00";
-                    date2 = date2.replace("年", "-");
-                    date2 = date2.replace("月", "-");
-                    date2 = date2.replace("日", " ");
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    int days = 0;
-                    try {
-                        Date date3 = format.parse(date2);
-                        String date = format.format(new Date());
-                        Date date4 = format.parse(date);
-                        days = differentDaysByMillisecond(date3, date4);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+        if (proArray.length() != 0) {
+            for (int i = 0; i < proArray.length(); i++) {
+                try {
+                    JSONObject itemObj = proArray.getJSONObject(i);
+                    String itemId = "";
+                    if (!itemObj.isNull("id")) {
+                        itemId = itemObj.getString("id");
                     }
-                    if (days < 1) {
-                        if (!TextUtils.isEmpty(id)) {
+                    id = SharedPreferencesUtil.getData(itemId, "");
+                    if (is_readed) {
+                        String date2 = itemObj.getString("yj_time") + ":00";
+                        date2 = date2.replace("年", "-");
+                        date2 = date2.replace("月", "-");
+                        date2 = date2.replace("日", " ");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        int days = 0;
+                        try {
+                            Date date3 = format.parse(date2);
+                            String date = format.format(new Date());
+                            Date date4 = format.parse(date);
+                            days = differentDaysByMillisecond(date3, date4);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if (days < 1) {
+                            if (!TextUtils.isEmpty(id)) {
+                                is_readed = true;
+                                widget_title_icon.setVisibility(View.INVISIBLE);
+                            } else {
+                                widget_title_icon.setVisibility(View.VISIBLE);
+                                is_readed = false;
+                                break;
+                            }
+                        } else {
                             is_readed = true;
                             widget_title_icon.setVisibility(View.INVISIBLE);
-                        } else {
-                            widget_title_icon.setVisibility(View.VISIBLE);
-                            is_readed = false;
-                            break;
+                            SharedPreferencesUtil.putData(itemId, itemId);
                         }
-                    } else {
-                        is_readed = true;
-                        widget_title_icon.setVisibility(View.INVISIBLE);
-                        SharedPreferencesUtil.putData(bean.id, bean.id);
-                    }
 
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }
-        if (packWarnWeatherDown.county.size() != 0) {
-            for (int i = 0; i < packWarnWeatherDown.county.size(); i++) {
-                id = SharedPreferencesUtil.getData(packWarnWeatherDown.county.get(i).id, "");
-                if (is_readed) {
-                    String date2 = packWarnWeatherDown.county.get(i).put_time + ":00";
-                    date2 = date2.replace("年", "-");
-                    date2 = date2.replace("月", "-");
-                    date2 = date2.replace("日", " ");
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    int days = 0;
-                    try {
-                        Date date3 = format.parse(date2);
-                        String date = format.format(new Date());
-                        Date date4 = format.parse(date);
-                        days = differentDaysByMillisecond(date3, date4);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
+        if (countryArray.length() != 0) {
+            for (int i = 0; i < countryArray.length(); i++) {
+                try {
+                    JSONObject itemObj = countryArray.getJSONObject(i);
+                    String itemId = "";
+                    if (!itemObj.isNull("id")) {
+                        itemId = itemObj.getString("id");
                     }
-                    if (days < 1) {
-                        if (!TextUtils.isEmpty(id)) {
+                    id = SharedPreferencesUtil.getData(itemId, "");
+                    if (is_readed) {
+                        String date2 = itemObj.getString("yj_time") + ":00";
+                        date2 = date2.replace("年", "-");
+                        date2 = date2.replace("月", "-");
+                        date2 = date2.replace("日", " ");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        int days = 0;
+                        try {
+                            Date date3 = format.parse(date2);
+                            String date = format.format(new Date());
+                            Date date4 = format.parse(date);
+                            days = differentDaysByMillisecond(date3, date4);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if (days < 1) {
+                            if (!TextUtils.isEmpty(id)) {
+                                is_readed = true;
+                                widget_title_icon.setVisibility(View.INVISIBLE);
+                            } else {
+                                widget_title_icon.setVisibility(View.VISIBLE);
+                                is_readed = false;
+                                break;
+                            }
+                        } else {
                             is_readed = true;
                             widget_title_icon.setVisibility(View.INVISIBLE);
-                        } else {
-                            widget_title_icon.setVisibility(View.VISIBLE);
-                            is_readed = false;
-                            break;
+                            SharedPreferencesUtil.putData(itemId, itemId);
                         }
-                    } else {
-                        is_readed = true;
-                        widget_title_icon.setVisibility(View.INVISIBLE);
-                        SharedPreferencesUtil.putData(packWarnWeatherDown.county.get(i).id,
-                                packWarnWeatherDown
-                                        .county.get(i).id);
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -478,13 +608,11 @@ public class CommandMainRow1 extends CommandMainBase {
                     break;
                 case R.id.layout_wind:
                     //风雨查询
-
                     it.setClass(mActivity, ActivityLiveQuery.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("city", cityMain);
                     it.putExtras(bundle);
                     mActivity.startActivity(it);
-
                     break;
                 case R.id.layout_air:
                     // 空气质量
@@ -494,16 +622,6 @@ public class CommandMainRow1 extends CommandMainBase {
                     if (packCity == null || packCity.ID == null) {
                         return;
                     }
-
-//                    mPackAirUp.setCity(packCity);
-//                    mPackAirUp.type = "1";
-//                    PackAirInfoSimpleDown packAirDown = (PackAirInfoSimpleDown) PcsDataManager
-//                    .getInstance()
-//                            .getNetPack(mPackAirUp.getName());
-//                    if (packAirDown == null || TextUtils.isEmpty(packAirDown.airInfoSimple
-//                    .quality)) {
-//                        break;
-//                    }
                     if (packCity.isFjCity) {
                         it.setClass(mActivity, ActivityAirQualitySH.class);
                         it.putExtra("id", cityMain.ID);
@@ -579,7 +697,6 @@ public class CommandMainRow1 extends CommandMainBase {
     private void gotoWarn(boolean isFjCity) {
         Intent intent = new Intent(mActivity, ActivityWarningCenterNotFjCity.class);
         mActivity.startActivity(intent);
-
     }
 
     private View view;

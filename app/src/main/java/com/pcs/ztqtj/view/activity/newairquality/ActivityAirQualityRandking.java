@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Z 空气质量
+ * 空气质量，今日排行，昨日排行
  */
 public class ActivityAirQualityRandking extends FragmentActivityZtqBase implements View.OnClickListener{
     private PackKeyDescDown packKey = new PackKeyDescDown();

@@ -33,9 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 数值预报
- *
- * @author chenjh
+ * 监测预报-模式预报
  */
 public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
     //private ListView listview;
