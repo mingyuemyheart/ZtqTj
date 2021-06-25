@@ -38,21 +38,15 @@ public class ZtqImageTool {
 
 	/**
 	 * 获取天气图标
-	 * 
-	 * @param context
-	 *            上下文
-	 * @param isDay
-	 *            是否是白天，是的话则取白天的天气图标
-	 * @param icon_when
-	 *            天气图标标识
+	 * @param context 上下文
+	 * @param isDay 是否是白天，是的话则取白天的天气图标
+	 * @param icon_when 天气图标标识
 	 * @return Bitmap
 	 * @throws IOException
 	 */
-	public Bitmap getWeatherIcon(Context context, boolean isDay,
-			String icon_when) throws IOException {
+	public Bitmap getWeatherIcon(Context context, boolean isDay, String icon_when) throws IOException {
 		if (icon_when == null || "".equals(icon_when)) {
-			Bitmap bm = BitmapFactory.decodeResource(context.getResources(),
-					R.drawable.icon_weather_default);
+			Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_weather_default);
 			return bm;
 		}
 		String iconpath = "weather_icon/";

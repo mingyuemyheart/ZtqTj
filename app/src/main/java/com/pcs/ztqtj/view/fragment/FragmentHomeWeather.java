@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -36,8 +33,6 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.BannerInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.command.CommandBatching;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
@@ -50,12 +45,10 @@ import com.pcs.ztqtj.control.main_weather.CommandMain24Hours;
 import com.pcs.ztqtj.control.main_weather.CommandMain7DaysWeather;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow0;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow1;
-import com.pcs.ztqtj.control.main_weather.CommandMainRow2;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow3;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow4;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow5;
 import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
-import com.pcs.ztqtj.control.tool.LocalDataHelper;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ServiceLoginTool;
@@ -71,12 +64,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 首页天气
- *
- * @author JiangZy
+ * 首页
  */
 @SuppressLint({"InflateParams", "UseSparseArrays"})
 public class FragmentHomeWeather extends SupportMapFragment {
+
     private View mView;
     //缩略图
     private ImageView mThumbView;
@@ -93,10 +85,8 @@ public class FragmentHomeWeather extends SupportMapFragment {
     // 其他页面的刷新动画
     private InterfaceRefresh mOtherRefreshAnim;
     // 天气广播列表
-    private static Map<Integer, WeatherReceiver> mListReceiver = new HashMap<Integer, WeatherReceiver>();
+    private static Map<Integer, WeatherReceiver> mListReceiver = new HashMap<>();
     private ImageFetcher mImageFetcher;
-    // 上传包：实时天气
-    private PackSstqUp mPackSstqUp = new PackSstqUp();
     // 数据命令
     private CommandBatching mDataCommand = null;
 
@@ -105,7 +95,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
 
     private CommandMainRow0 mCommandMainRow0;
     private CommandMain7DaysWeather commandMain7DaysWeather;
-    private CommandMainRow2 mCommandMainRow2;
 
     private MyRecevier recevier = new MyRecevier();
     // 世界气象日活动上传包
@@ -113,22 +102,17 @@ public class FragmentHomeWeather extends SupportMapFragment {
 
     //是否已改变城市
     private boolean isChangedCity = false;
-    private boolean is_flagcity = true;
     private LinearLayout lay_bt_setting;
 
     public FragmentHomeWeather() {
 
     }
 
-    private ImageView popbg;
-
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_home, container, false);
         mThumbView = (ImageView) mView.findViewById(R.id.image_blur);
         mDarkView = (ImageView) mView.findViewById(R.id.image_dark);
-        popbg = (ImageView) mView.findViewById(R.id.popbg);
         return mView;
     }
 
@@ -140,8 +124,7 @@ public class FragmentHomeWeather extends SupportMapFragment {
         mOtherRefreshAnim = null;
 
         mScrollView = (MyScrollView) mView.findViewById(R.id.scroll_view);
-        MainOnScrollListener onSrcollListener = new MainOnScrollListener(getActivity(), mThumbView, mDarkView,
-                savedInstanceState);
+        MainOnScrollListener onSrcollListener = new MainOnScrollListener(getActivity(), mThumbView, mDarkView, savedInstanceState);
         mScrollView.setListener(onSrcollListener);
 
         // 初始化行数据
@@ -167,20 +150,13 @@ public class FragmentHomeWeather extends SupportMapFragment {
         lay_bt_setting.setOnClickListener(mOnClick);
         btnCityList.setOnClickListener(mOnClick);
         btn_citylist.setOnClickListener(mOnClick);
-
-//        View btnPhoto = mView.findViewById(R.id.btn_photo);
-//        btnPhoto.setOnClickListener(mOnClick);
-        // 注册广播
-        //registerReceiver(getActivity(), mReceiver);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull final String[] permissions, @NonNull final int[]
-            grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == MyConfigure.REQUEST_PERMISSION_AUDIO) {
             PermissionsTools.onRequestPermissionsResult(getActivity(), permissions, grantResults, new PermissionsTools.RequestPermissionResultCallback() {
-
                 @Override
                 public void onSuccess() {
                     if(mDataCommand != null) {
@@ -201,76 +177,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
         }
     }
 
-    private PopupWindow popupWindow;
-    private boolean isShowIntro = false;
-
-
-    /**
-     * 弹出底部对话框
-     */
-    public void openPop() {
-        View btnWind = getView().findViewById(R.id.layout_wind);
-        if (isShowIntro && btnWind.getVisibility() == View.VISIBLE) {
-            return;
-        }
-        isShowIntro = !isShowIntro;
-        String configMainIntroduction = LocalDataHelper.getIntroduction(getActivity(), "main");
-        if (TextUtils.isEmpty(configMainIntroduction)) {
-            LocalDataHelper.saveIntroduction(getActivity(), "main", "main");
-            if (popupWindow != null && popupWindow.isShowing()) {
-                return;
-            }
-            View popView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_main_introduction, null);
-            ImageView imgView = (ImageView) popView.findViewById(R.id.imageViewIntroduction);
-            popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams
-                    .WRAP_CONTENT);
-            setBackgroundAlpha(0.4f);//设置屏幕透明度
-//            popupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-            popupWindow.setFocusable(true);// 点击空白处时，隐藏掉pop窗口
-            imgView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popupWindow.dismiss();
-                }
-            });
-            popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    // popupWindow隐藏时恢复屏幕正常透明度
-                    setBackgroundAlpha(1.0f);
-                }
-            });
-
-//        View btnWindRow = getView().findViewById(R.id.layout_home_weather_1);
-//        int H = getActivity().getWindowManager().getDefaultDisplay().getHeight();
-//        int btnTop = (int) btnWind.getTop();
-//        int btnViewRow=(int)btnWindRow.getY();
-//        int btnY = (int) btnWind.getY();
-            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.mipmap.main_intro);
-            int offYt = bm.getHeight();
-            popbg.setVisibility(View.VISIBLE);
-            popupWindow.showAsDropDown(btnWind, 0, -offYt);
-        }
-    }
-
-    /**
-     * 设置添加屏幕的背景透明度
-     *
-     * @param bgAlpha 屏幕透明度0.0-1.0 1表示完全不透明
-     */
-    public void setBackgroundAlpha(float bgAlpha) {
-        popbg.setVisibility(View.GONE);
-//        try {
-//            WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
-//            lp.alpha = bgAlpha;
-//            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//            getActivity().getWindow().setAttributes(lp);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -287,12 +193,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
         super.onStop();
         // 注销所有广播
         ungisterReceiverAll();
-
-
-        if (popupWindow != null && popupWindow.isShowing()) {
-            popupWindow.dismiss();
-        }
-
     }
 
     @Override
@@ -335,16 +235,12 @@ public class FragmentHomeWeather extends SupportMapFragment {
         if (mDataCommand == null) {
             return;
         }
-
         if (isChangeCity) {
             commandMain7DaysWeather.setChangeCity();
         }
         mDataCommand.execute();
-
         mPrevBg = "";
     }
-
-    private TextView text_cityname;
 
     /**
      * 刷新城市名
@@ -354,8 +250,7 @@ public class FragmentHomeWeather extends SupportMapFragment {
         if (cityMain == null) {
             return;
         }
-        text_cityname = (TextView) mView.findViewById(R.id.text_cityname);
-        // text_cityname.setText(cityMain.NAME);
+        TextView text_cityname = (TextView) mView.findViewById(R.id.text_cityname);
         TextView text_street = (TextView) mView.findViewById(R.id.text_cityname_street);
         PackLocalCityLocation packLocalCityLocation = ZtqLocationTool.getInstance().getLocationCity();
 
@@ -367,7 +262,7 @@ public class FragmentHomeWeather extends SupportMapFragment {
         PackLocalCity provinceInfo = ZtqCityDB.getInstance().getProvinceById(cityMain.PARENT_ID);
         // 上海市
         if (mRegeocode != null && cityMain.ID.equals(packLocalCityLocation.ID)) {
-            if (cityMain.ID.equals("72892")) {
+            if (cityMain.ID.equals("10102")) {
                 cityName = cityMain.NAME;
             } else {
                 if (cityMain.NAME.contains(cityMain.CITY)) {
@@ -413,37 +308,29 @@ public class FragmentHomeWeather extends SupportMapFragment {
      * 初始化行数据
      */
     private void initRowData(Bundle savedInstanceState) {
-        ViewGroup rootLayout = (ViewGroup) mScrollView
-                .findViewById(R.id.scroll_view_layout);
+        ViewGroup rootLayout = mScrollView.findViewById(R.id.scroll_view_layout);
 
         mDataCommand = new CommandBatching();
-        mCommandMainRow0 = new CommandMainRow0((ActivityMain) getActivity(), rootLayout, mImageFetcher,this);
+        mCommandMainRow0 = new CommandMainRow0((ActivityMain) getActivity(), rootLayout, mImageFetcher);
         mDataCommand.addCommand(mCommandMainRow0);
         mDataCommand.addCommand(new CommandMainRow1(getActivity(), rootLayout, mImageFetcher, mShowBg, this));
-//        mCommandMainRow2 = new CommandMainRow2(getActivity(), rootLayout, mImageFetcher, mShowBg);
-//        mDataCommand.addCommand(mCommandMainRow2);
-        //mDataCommand.addCommand(new CommandMain24HoursWeather(getActivity(), rootLayout));
         mDataCommand.addCommand(new CommandMain24Hours(getActivity(), rootLayout));
-        commandMain7DaysWeather=new CommandMain7DaysWeather(getActivity(), rootLayout, mShowBg);
+        commandMain7DaysWeather = new CommandMain7DaysWeather(getActivity(), rootLayout, mShowBg);
         mDataCommand.addCommand(commandMain7DaysWeather);
         mDataCommand.addCommand(new CommandMainRow3(getActivity(), rootLayout, mImageFetcher, savedInstanceState));
-
         mDataCommand.addCommand(new CommandMainRow4(getActivity(), rootLayout, mImageFetcher));
         mDataCommand.addCommand(new CommandMainRow5(getActivity(), rootLayout, mImageFetcher));
-
         mDataCommand.execute();
     }
 
     private class MyListenerRefreshTouch extends ListenerRefreshTouch {
-
         private boolean mScrollable = true;
 
         public MyListenerRefreshTouch(WindowManager windowManager,
                                       InterfacePulldownView pulldownView,
                                       InterfaceRefresh refreshView, InterfaceRefresh refreshAnim,
                                       InterfaceScrollView scrollView) {
-            super(windowManager, pulldownView, refreshView, refreshAnim,
-                    scrollView);
+            super(windowManager, pulldownView, refreshView, refreshAnim, scrollView);
         }
 
         @Override
@@ -484,12 +371,10 @@ public class FragmentHomeWeather extends SupportMapFragment {
 
     /**
      * 注册广播
-     *
      * @param context
      * @param receiver
      */
-    public static void registerReceiver(Context context,
-                                        PcsDataBrocastReceiver receiver) {
+    public static void registerReceiver(Context context, PcsDataBrocastReceiver receiver) {
         if (mListReceiver.containsKey(receiver.hashCode())) {
             return;
         }
@@ -512,8 +397,7 @@ public class FragmentHomeWeather extends SupportMapFragment {
                 continue;
             }
 
-            PcsDataBrocastReceiver.registerReceiver(wReceiver.context,
-                    wReceiver.receiver);
+            PcsDataBrocastReceiver.registerReceiver(wReceiver.context, wReceiver.receiver);
             wReceiver.isRegistered = true;
         }
 
@@ -544,7 +428,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
 
     /**
      * 天气广播
-     *
      * @author JiangZy
      */
     public static class WeatherReceiver {
@@ -594,7 +477,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
 
 
     private void refresh() {
-//        openPop();
         //刷新数据
         refreshData(isChangedCity);
         if (isChangedCity) {
@@ -604,17 +486,17 @@ public class FragmentHomeWeather extends SupportMapFragment {
         if (mListenerRefreshTouch != null) {
             mListenerRefreshTouch.reset();
         }
-        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-        if (cityMain != null) {
-            mPackSstqUp.area = cityMain.ID;
-            PackSstqDown pack = (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
-            if (pack == null || pack.upt_time == null || "".equals(pack.upt_time)) {
-            } else {
-                if (mListenerRefreshTouch != null) {
-                    mListenerRefreshTouch.setRefreshTime(Long.valueOf(pack.upt_time));
-                }
-            }
-        }
+//        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+//        if (cityMain != null) {
+//            mPackSstqUp.area = cityMain.ID;
+//            PackSstqDown pack = (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
+//            if (pack == null || pack.upt_time == null || "".equals(pack.upt_time)) {
+//            } else {
+//                if (mListenerRefreshTouch != null) {
+//                    mListenerRefreshTouch.setRefreshTime(Long.valueOf(pack.upt_time));
+//                }
+//            }
+//        }
     }
 
     private InterfaceShowBg mShowBg = new InterfaceShowBg() {
@@ -627,10 +509,8 @@ public class FragmentHomeWeather extends SupportMapFragment {
             if (bitmapBg == null) {
                 return;
             }
-//            BitmapDrawable bitmapThumb = mImageFetcher.getImageCache().getBitmapFromAssets(thumbPath);
             mView.setBackgroundDrawable(bitmapBg);
             mThumbView.setBackgroundDrawable(null);
-
             mPrevBg = bgPath;
         }
     };
@@ -663,7 +543,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
             ((ActivityMain) getActivity()).showSetting(true);
         }
     }
-
 
     private class MyRecevier extends PcsDataBrocastReceiver {
         @Override

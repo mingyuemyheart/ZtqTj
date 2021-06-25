@@ -1053,7 +1053,7 @@ public class LiveQueryView extends View {
         List<Float> listDataPre = new ArrayList<>();
         for (int i = 0; i < skList.size(); i++) {
             xValueButtom.add(skList.get(i).dt);
-            if (!TextUtils.isEmpty(skList.get(i).val)) {
+            if (!TextUtils.isEmpty(skList.get(i).val) && !TextUtils.equals("--", skList.get(i).val)) {
                 listData.add(Float.parseFloat(skList.get(i).val));
                 listDataAc.add(Float.parseFloat(skList.get(i).val));
             } else {
@@ -1062,7 +1062,7 @@ public class LiveQueryView extends View {
         }
         for (int i = 0; i < ybList.size(); i++) {
             xValueTop.add(ybList.get(i).dt);
-            if (!TextUtils.isEmpty(ybList.get(i).val)) {
+            if (!TextUtils.isEmpty(ybList.get(i).val) && !TextUtils.equals("--", ybList.get(i).val)) {
                 listData.add(Float.parseFloat(ybList.get(i).val));
                 listDataPre.add(Float.parseFloat(ybList.get(i).val));
             } else {

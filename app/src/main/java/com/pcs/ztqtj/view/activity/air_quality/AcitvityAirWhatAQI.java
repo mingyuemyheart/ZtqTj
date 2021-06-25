@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.pcs.ztqtj.R;
 
+/**
+ * 监测预报-天气形势-要素说明
+ */
 public class AcitvityAirWhatAQI extends Activity {
 	private Button positivebutton;
 	private Button close_btn;

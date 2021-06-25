@@ -40,9 +40,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 空气质量预报
+ * 监测预报-空气质量-空气质量预报
  */
-
 public class FragmentAirQualityLive extends Fragment {
 
     private AdapterAirLive adapterAirLive;
@@ -50,15 +49,12 @@ public class FragmentAirQualityLive extends Fragment {
     private AdapterAirLiveYb adapterAirLiveYb;
     private TextView tv_title, tv_clara, tv_air_yb_unit, tv_air_yb_time;
     private GridView tablegrid, lv_airlive, lv_airlive_down, tablegrid_down;
-    private PackAirInfoShUp packAirInfoShUp;
     private ArrayList<AirInfoSh> list_grid;
     private ArrayList<AirInfoYb> list_yb;
     private ArrayList<String> list, list_down;
-    private PackAirYbUp airYbUp;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_airlive, container, false);
     }
 
@@ -67,7 +63,6 @@ public class FragmentAirQualityLive extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initView();
         initData();
-        req();
     }
 
     private void initData() {
@@ -85,27 +80,19 @@ public class FragmentAirQualityLive extends Fragment {
 
         tablegrid.setAdapter(adapterAirLive);
         tablegrid_down.setAdapter(adapterAirLiveYb);
-    }
 
-    private void req() {
         okHttpAirinfoYb();
         okHttpAirinfoSYb();
     }
 
-    private String ids, names;
-
     public void setDate(String id, String name) {
-        this.ids = id;
-        this.names = name;
     }
 
     private void initView() {
-
-        tv_title = (TextView) getView().findViewById(R.id.tv_airlive_time);
-        tv_clara = (TextView) getView().findViewById(R.id.tv_airlive_clara);
-        lv_airlive = (GridView) getView().findViewById(R.id.lv_airlive);
-        tablegrid = (GridView) getView().findViewById(R.id.tablegrid);
-
+        tv_title = getView().findViewById(R.id.tv_airlive_time);
+        tv_clara = getView().findViewById(R.id.tv_airlive_clara);
+        lv_airlive = getView().findViewById(R.id.lv_airlive);
+        tablegrid = getView().findViewById(R.id.tablegrid);
         tv_air_yb_unit = getView().findViewById(R.id.tv_air_yb_unit);
         tv_air_yb_time = getView().findViewById(R.id.tv_air_yb_time);
         lv_airlive_down = getView().findViewById(R.id.lv_airlive_down);
@@ -131,70 +118,9 @@ public class FragmentAirQualityLive extends Fragment {
     }
 
     /**
-     * 获取天津分区预报
-     */
-    private void okHttpAirinfoYb() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject param  = new JSONObject();
-                    param.put("token", MyApplication.TOKEN);
-                    String json = param.toString();
-                    final String url = CONST.BASE_URL+"airinfo_yb";
-                    Log.e("airinfo_yb", url);
-                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        }
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                return;
-                            }
-                            final String result = response.body().string();
-                            Log.e("airinfo_yb", result);
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("airinfo_yb")) {
-                                                JSONObject air_remark = bobj.getJSONObject("airinfo_yb");
-                                                PackAirYbDown down = new PackAirYbDown();
-                                                down.fillData(air_remark.toString());
-                                                tv_air_yb_unit.setText(down.pub_unit);
-                                                tv_air_yb_time.setText("天津市空气质量168小时预报（"+down.time_pub+" 发布)");
-                                                list_down.clear();
-                                                list_down.addAll(down.list_arr);
-                                                adapterAirLive_list_down.notifyDataSetChanged();
-
-                                                list_yb.clear();
-                                                list_yb.addAll(down.list);
-                                                adapterAirLiveYb.notifyDataSetChanged();
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    /**
      * 获取天津168h预报
      */
-    private void okHttpAirinfoSYb() {
+    private void okHttpAirinfoYb() {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -225,6 +151,67 @@ public class FragmentAirQualityLive extends Fragment {
                                             JSONObject bobj = obj.getJSONObject("b");
                                             if (!bobj.isNull("airinfo_s_yb")) {
                                                 JSONObject air_remark = bobj.getJSONObject("airinfo_s_yb");
+                                                PackAirYbDown down = new PackAirYbDown();
+                                                down.fillData(air_remark.toString());
+                                                tv_air_yb_unit.setText(down.pub_unit);
+                                                tv_air_yb_time.setText("天津市空气质量168小时预报（"+down.time_pub+" 发布)");
+                                                list_down.clear();
+                                                list_down.addAll(down.list_arr);
+                                                adapterAirLive_list_down.notifyDataSetChanged();
+
+                                                list_yb.clear();
+                                                list_yb.addAll(down.list);
+                                                adapterAirLiveYb.notifyDataSetChanged();
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取天津分区预报
+     */
+    private void okHttpAirinfoSYb() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"airinfo_yb";
+                    Log.e("airinfo_yb", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("airinfo_yb", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("airinfo_yb")) {
+                                                JSONObject air_remark = bobj.getJSONObject("airinfo_yb");
                                                 PackAirInfoShDown packAirInfoShDown = new PackAirInfoShDown();
                                                 packAirInfoShDown.fillData(air_remark.toString());
                                                 list_grid.clear();

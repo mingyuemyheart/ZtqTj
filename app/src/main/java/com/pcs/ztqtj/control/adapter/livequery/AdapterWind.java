@@ -63,6 +63,8 @@ public class AdapterWind extends BaseAdapter {
 		} else {
 			handler = (Handler) view.getTag();
 		}
+
+		FltjZd dto = temfalllist.get(position);
 		if (position == 0) {
 			handler.country.setBackgroundResource(R.drawable.bg_livequery_item);
 			handler.windpower.setBackgroundResource(R.drawable.bg_livequery_item);
@@ -76,13 +78,21 @@ public class AdapterWind extends BaseAdapter {
 			handler.time.setBackgroundColor(context.getResources().getColor(R.color.alpha100));
 			handler.livequery_wind_power.setBackgroundColor(context.getResources().getColor(R.color.alpha100));
 		}
-		try {
-			handler.country.setText(temfalllist.get(position).county);
-			handler.windpower.setText(temfalllist.get(position).windpower);
-			handler.winddirection.setText(temfalllist.get(position).winddirection);
-			handler.time.setText(temfalllist.get(position).time);
-			handler.livequery_wind_power.setText(temfalllist.get(position).windFengLi);
-		} catch (Exception e) {
+
+		if (dto.county != null) {
+			handler.country.setText(dto.county);
+		}
+		if (dto.windpower != null) {
+			handler.windpower.setText(dto.windpower);
+		}
+		if (dto.winddirection != null) {
+			handler.winddirection.setText(dto.winddirection);
+		}
+		if (dto.time != null) {
+			handler.time.setText(dto.time);
+		}
+		if (dto.windFengLi != null) {
+			handler.livequery_wind_power.setText(dto.windFengLi);
 		}
 		return view;
 	}

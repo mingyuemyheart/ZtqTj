@@ -4,10 +4,8 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityUnit;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalStation;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalWarn;
-import com.pcs.ztqtj.model.pack.TrafficHighWay;
+import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.AroundCityBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2019/04/03.
+ * 数据解析工具类
  */
 public class CityDBParseTool {
 
@@ -57,11 +55,6 @@ public class CityDBParseTool {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-//            try {
-//                inputStream.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             if(reader != null) {
                 try {
                     reader.close();
@@ -86,15 +79,31 @@ public class CityDBParseTool {
             for (int i = 0; i < rowJSON.length(); i++) {
                 JSONObject cityJSON = rowJSON.getJSONObject(i);
                 PackLocalCity city = new PackLocalCity();
-                city.ID = cityJSON.optString("ID");
-                city.NAME = cityJSON.optString("NAME");
-                city.CODE = cityJSON.optString("CODE");
-                city.PARENT_ID = cityJSON.optString("PARENTID");
-                city.SHOW_NAME = cityJSON.optString("SHOW_NAME");
-                city.PINGYIN = cityJSON.optString("PIN_YIN");
-                city.PY = cityJSON.optString("PY");
-                city.PROVINCE = cityJSON.optString("PNAME");
-                city.isFjCity = city.PARENT_ID.equals("25149");
+                if (!cityJSON.isNull("ID")) {
+                    city.ID = cityJSON.optString("ID");
+                }
+                if (!cityJSON.isNull("NAME")) {
+                    city.NAME = cityJSON.optString("NAME");
+                }
+                if (!cityJSON.isNull("CODE")) {
+                    city.CODE = cityJSON.optString("CODE");
+                }
+                if (!cityJSON.isNull("PARENTID")) {
+                    city.PARENT_ID = cityJSON.optString("PARENTID");
+                }
+                if (!cityJSON.isNull("SHOW_NAME")) {
+                    city.SHOW_NAME = cityJSON.optString("SHOW_NAME");
+                }
+                if (!cityJSON.isNull("PIN_YIN")) {
+                    city.PINGYIN = cityJSON.optString("PIN_YIN");
+                }
+                if (!cityJSON.isNull("PY")) {
+                    city.PY = cityJSON.optString("PY");
+                }
+                if (!cityJSON.isNull("PNAME")) {
+                    city.PROVINCE = cityJSON.optString("PNAME");
+                }
+                city.isFjCity = city.PARENT_ID.equals("10103");
                 cityList.add(city);
             }
         } catch (JSONException e) {
@@ -105,17 +114,8 @@ public class CityDBParseTool {
 
     public static List<PackLocalCity> parseTJCity(List<PackLocalCity> cityList) {
         List<PackLocalCity> lv1List = new ArrayList<>();
-        PackLocalCity tjCity = new PackLocalCity();
-        tjCity.ID = "25183";
-        tjCity.NAME = "天津";
-        tjCity.CODE = "25183";
-        tjCity.PARENT_ID = "25149";
-        tjCity.SHOW_NAME = "天津-天津";
-        tjCity.PINGYIN = "TianJin";
-        tjCity.PY = "TJ";
-        lv1List.add(tjCity);
         for(PackLocalCity city : cityList) {
-            if(city.PARENT_ID.equals("25149")) {
+            if(city.PARENT_ID.equals("10103")) {
                 lv1List.add(city);
             }
         }
@@ -131,14 +131,68 @@ public class CityDBParseTool {
             for (int i = 0; i < rowJSON.length(); i++) {
                 JSONObject cityJSON = rowJSON.getJSONObject(i);
                 PackLocalStation station = new PackLocalStation();
-                station.ID = cityJSON.optString("ID");
-                station.STATIONID = cityJSON.optString("STATIONID");
-                station.STATIONNAME = cityJSON.optString("STATIONNAME");
-                station.LONGITUDE = cityJSON.optString("LONGITUDE");
-                station.LATITUDE = cityJSON.optString("LATITUDE");
-                station.IS_BASE = cityJSON.optString("IS_BASE");
-                station.AREA = cityJSON.optString("AREA");
+                if (!cityJSON.isNull("ID")) {
+                    station.ID = cityJSON.optString("ID");
+                }
+                if (!cityJSON.isNull("STATIONID")) {
+                    station.STATIONID = cityJSON.optString("STATIONID");
+                }
+                if (!cityJSON.isNull("STATIONNAME")) {
+                    station.STATIONNAME = cityJSON.optString("STATIONNAME");
+                }
+                if (!cityJSON.isNull("LONGITUDE")) {
+                    station.LONGITUDE = cityJSON.optString("LONGITUDE");
+                }
+                if (!cityJSON.isNull("LATITUDE")) {
+                    station.LATITUDE = cityJSON.optString("LATITUDE");
+                }
+                if (!cityJSON.isNull("IS_BASE")) {
+                    station.IS_BASE = cityJSON.optString("IS_BASE");
+                }
+                if (!cityJSON.isNull("AREA")) {
+                    station.AREA = cityJSON.optString("AREA");
+                }
                 cityList.add(station);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return cityList;
+    }
+
+    /**
+     * 解析天津及周边城市
+     * @return
+     */
+    public static List<AroundCityBean> parseAroundCity(JSONObject jsonObject) {
+        if(jsonObject == null) return null;
+        List<AroundCityBean> cityList = new ArrayList<>();
+        try {
+            if (!jsonObject.isNull("b")) {
+                JSONObject obj = jsonObject.getJSONObject("b");
+                if (!obj.isNull("around_area")) {
+                    JSONObject around_area = obj.getJSONObject("around_area");
+                    if (!around_area.isNull("info_list")) {
+                        JSONArray info_list = around_area.getJSONArray("info_list");
+                        for (int i = 0; i < info_list.length(); i++) {
+                            JSONObject cityJSON = info_list.getJSONObject(i);
+                            AroundCityBean city = new AroundCityBean();
+                            if (!cityJSON.isNull("id")) {
+                                city.id = cityJSON.optString("id");
+                            }
+                            if (!cityJSON.isNull("name")) {
+                                city.name = cityJSON.optString("name");
+                            }
+                            if (!cityJSON.isNull("parent_id")) {
+                                city.parent_id = cityJSON.optString("parent_id");
+                            }
+                            if (!cityJSON.isNull("parent_name")) {
+                                city.parent_name = cityJSON.optString("parent_name");
+                            }
+                            cityList.add(city);
+                        }
+                    }
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -160,104 +214,6 @@ public class CityDBParseTool {
             }
         }
         return result;
-    }
-
-    /**
-     * 获取单位列表
-     * @return
-     */
-    public static List<PackLocalCityUnit> getUnitList(Context context) {
-        String string = getStringFromAssets(context, "unit.json");
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(string);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(jsonObject == null) return null;
-        List<PackLocalCityUnit> unitList = new ArrayList<>();
-        JSONArray rowJSON = jsonObject.optJSONArray("ROW");
-        if(rowJSON == null) return null;
-        try {
-            for (int i = 0; i < rowJSON.length(); i++) {
-                JSONObject cityJSON = rowJSON.getJSONObject(i);
-                PackLocalCityUnit unit = new PackLocalCityUnit();
-                unit.CITY = cityJSON.optString("CITY");
-                unit.UNIT = cityJSON.optString("UNIT");
-                unitList.add(unit);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return unitList;
-    }
-
-    /**
-     * 获取高速数据
-     * @param context
-     * @return
-     */
-    public static List<TrafficHighWay> getHighWayList(Context context) {
-        String string = getStringFromAssets(context, "highway.json");
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(string);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(jsonObject == null) return null;
-        List<TrafficHighWay> roadList = new ArrayList<>();
-        JSONArray rowJSON = jsonObject.optJSONArray("ROW");
-        if(rowJSON == null) return null;
-        try {
-            for (int i = 0; i < rowJSON.length(); i++) {
-                JSONObject roadJSON = rowJSON.getJSONObject(i);
-                TrafficHighWay road = new TrafficHighWay();
-                road.ID = roadJSON.optString("ID");
-                road.NAME = roadJSON.optString("NAME");
-                road.SEARCH_NAME = roadJSON.optString("SEARCH_NAME");
-                road.SHOW_LATITUDE = roadJSON.optDouble("SHOW_LATITUDE");
-                road.SHOW_LONGITUDE = roadJSON.optDouble("SHOW_LONGITUDE");
-                road.IMAGE_PATH = roadJSON.optString("IMAGE_PATH");
-                road.DETAIL_IMAGE = roadJSON.optString("DETAIL_IMAGE");
-                roadList.add(road);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return roadList;
-    }
-
-    /**
-     * 获取预警信息列表
-     * @param context
-     * @return
-     */
-    public static List<PackLocalWarn> getWarnList(Context context) {
-        String string = getStringFromAssets(context, "warn.json");
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = new JSONObject(string);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if(jsonObject == null) return null;
-        List<PackLocalWarn> warnList = new ArrayList<>();
-        JSONArray rowJSON = jsonObject.optJSONArray("ROW");
-        if(rowJSON == null) return null;
-        try {
-            for (int i = 0; i < rowJSON.length(); i++) {
-                JSONObject warnJSON = rowJSON.getJSONObject(i);
-                PackLocalWarn warn = new PackLocalWarn();
-                warn.TYPE = warnJSON.optString("TYPE");
-                warn.LEVEL_STR = warnJSON.optString("LEVEL_STR");
-                warn.ICO = warnJSON.optString("ICO");
-                warnList.add(warn);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return warnList;
     }
 
     /**

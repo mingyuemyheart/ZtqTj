@@ -15,10 +15,7 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 
 /**
- * 显示一个完整的照片
- * 
- * @author JiangZy
- * 
+ * 图片预览
  */
 public class ActivityPhotoFullDetail extends FragmentActivityBase {
 	private ImageTouchView imageView;

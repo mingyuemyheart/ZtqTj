@@ -137,7 +137,6 @@ public class ListenerRefreshTouch implements OnTouchListener {
 
 	/**
 	 * 设置更新时间
-	 * 
 	 * @param time
 	 */
 	public void setRefreshTime(long time) {

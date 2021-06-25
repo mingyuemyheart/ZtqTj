@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Z 空气质量列表
+ * 监测预报-空气质量-空气质量预报
  */
 public class AdapterAirLiveYb extends BaseAdapter {
 
@@ -50,11 +50,9 @@ public class AdapterAirLiveYb extends BaseAdapter {
             holder.tv_air_aqi = (TextView) view.findViewById(R.id.tv_air_aqi);
             holder.tv_aqi_index = (TextView) view.findViewById(R.id.tv_aqi_index);
             holder.tv_pri_pollutant = (TextView) view.findViewById(R.id.tv_air_pri_pollutant);
-
             holder.tv_pollutant_index = (TextView) view.findViewById(R.id.tv_air_pollutant_index);
             holder.tv_haze = (TextView) view.findViewById(R.id.tv_air_haze);
             holder.tv_sandstorm = (TextView) view.findViewById(R.id.tv_air_sandstorm);
-
             view.setTag(holder);
         } else {
             holder = (Holder) view.getTag();

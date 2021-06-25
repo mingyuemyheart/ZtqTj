@@ -11,6 +11,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
@@ -53,6 +54,7 @@ import okhttp3.Response;
  * 专项服务-决策服务-我的服务 getintent()中 subtitle--是否显示副标题：-决策报告- 0为不显示，其他只为显示
  */
 public class ActivityMyServer extends FragmentActivityZtqWithHelp {
+
     private PackLocalUser localUserinfo;
     private MyReceiver receiver = new MyReceiver();
     private TextView null_data;
@@ -60,7 +62,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     private AdapterServerMyServer listAdatper;
     private String channel = "";
     private String showSubtitle = "1";
-
     private String url = "";
     private String channel_title = "";
     private String style = "";
@@ -176,7 +177,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         showSubtitle = getIntent().getStringExtra("subtitle");// 是否显示副标题：-决策报告-
         // 0为不显示，其他只为显示
         channel = getIntent().getStringExtra("channel");
-
     }
 
     private void initView() {
@@ -193,8 +193,7 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         });
         explistviw.setOnChildClickListener(new OnChildClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition,
-                                        long id) {
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 isClickMore = false;
                 currentDes = (PackQxfuMyproV2Down.DesServer) listAdatper.getChild(groupPosition, childPosition);
                 currentSubClass = (PackQxfuMyproV2Down.SubClassList) listAdatper.getGroup(groupPosition);
@@ -203,8 +202,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
                 return true;
             }
         });
-
-
     }
 
     private boolean show_warn = true;
@@ -229,13 +226,10 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         if (TextUtils.isEmpty(localUserinfo.user_id)) {
 
         } else {
-
-
             if(!isOpenNet()){
                 showToast(getString(R.string.net_err));
                 return ;
             }
-
             checkDown = new PackQxfwAuthenticationProductDown();
             checkUp = new PackQxfwAuthenticationProductUp();
             checkUp.product_id = proId;
@@ -371,7 +365,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
                     if (isClickMore && moreBean != null) {
                         gotoServiceMore();
                     }
-
                 }
 
                 @Override
@@ -470,10 +463,11 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
                     JSONObject param  = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", "101030301");
+                    info.put("stationId", "101030109");//101030301决策服务，101030109决策报告都是一样的数据
                     info.put("extra", "");
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("info_list", json);
                     final String url = CONST.BASE_URL+"info_list";
                     Log.e("info_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -490,6 +484,7 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     if (!TextUtil.isEmpty(result)) {
                                         Log.e("info_list", result);
                                         try {
@@ -504,6 +499,13 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
                                                         if (down != null) {
                                                             dealWithData(down);
                                                         }
+                                                    }
+                                                }
+                                            } else {
+                                                if (!obj.isNull("errorMessage")) {
+                                                    String errorMessage = obj.getString("errorMessage");
+                                                    if (errorMessage != null) {
+                                                        Toast.makeText(ActivityMyServer.this, errorMessage, Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             }

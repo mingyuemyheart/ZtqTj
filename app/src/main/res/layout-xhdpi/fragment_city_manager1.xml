@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/bg_white"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white">
 
     <LinearLayout
         android:id="@+id/layout_head"
@@ -11,11 +10,10 @@
         android:layout_height="60dp"
         android:background="@drawable/bg_city_manager_title"
         android:orientation="vertical"
-        android:paddingBottom="10dp"
         android:paddingLeft="@dimen/activity_marginleft_right"
-        android:paddingRight="@dimen/activity_marginleft_right"
         android:paddingTop="10dp"
-        >
+        android:paddingRight="@dimen/activity_marginleft_right"
+        android:paddingBottom="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,8 +31,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btn_closefragement"
@@ -46,8 +43,7 @@
                     android:background="@drawable/btn_city_home"
                     android:gravity="center"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_footnote"
-                    />
+                    android:textSize="@dimen/text_footnote" />
             </LinearLayout>
 
             <Button
@@ -57,8 +53,7 @@
                 android:layout_marginLeft="40dp"
                 android:text="模拟定位"
                 android:textSize="15dp"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -66,8 +61,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/editcity"
@@ -80,8 +74,7 @@
                     android:gravity="center"
                     android:text="@string/edit"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_footnote"
-                    />
+                    android:textSize="@dimen/text_footnote" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -89,15 +82,14 @@
                     android:text="@string/main"
                     android:textColor="@color/text_white"
                     android:textSize="@dimen/text_footnote"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/btn_back_right"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -107,8 +99,7 @@
                 android:layout_centerInParent="true"
                 android:text="@string/manager_city"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_the_page_title"
-                />
+                android:textSize="@dimen/text_the_page_title" />
         </RelativeLayout>
 
     </LinearLayout>
@@ -119,8 +110,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_head"
         android:layout_margin="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center_vertical">
 
         <!-- 自动定位文字 -->
@@ -132,7 +123,7 @@
             android:layout_alignParentLeft="true"
             android:text="@string/auto_location"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/text_content"/>
+            android:textSize="@dimen/text_content" />
 
         <!-- 自动定位按钮 -->
 
@@ -144,7 +135,7 @@
             android:background="@drawable/checkbox_commom"
             android:button="@null"
             android:checked="true"
-            android:focusable="false"/>
+            android:focusable="false" />
     </RelativeLayout>
 
     <ScrollView
@@ -159,9 +150,8 @@
             android:gravity="top"
             android:orientation="vertical"
             android:paddingLeft="15dp"
-            android:paddingRight="15dp"
             android:paddingTop="10dp"
-            >
+            android:paddingRight="15dp">
 
             <!-- 城市列表 -->
 
@@ -170,19 +160,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@null"
-                android:listSelector="@android:color/transparent"/>
+                android:listSelector="@android:color/transparent" />
 
             <LinearLayout
                 android:id="@+id/layout_city_add"
-                android:gravity="center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/addcity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btn_citymanager_addctiybtns"/>
+                    android:background="@drawable/btn_citymanager_addctiybtns" />
 
                 <TextView
                     android:id="@+id/city_state_info"
@@ -190,14 +180,13 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginTop="@dimen/activity_marginleft_right"
                     android:layout_marginBottom="@dimen/activity_marginleft_right"
                     android:paddingLeft="10dp"
-                    android:layout_marginTop="@dimen/activity_marginleft_right"
                     android:text="添加城市"
                     android:textColor="@color/text_black_common"
-                    android:textSize="@dimen/text_content"/>
+                    android:textSize="@dimen/text_content" />
                 <!-- 添加按钮 -->
-
 
             </LinearLayout>
         </LinearLayout>
@@ -221,7 +210,7 @@
             android:paddingLeft="70dp"
             android:text="快搜国内城市"
             android:textColor="@color/text_white"
-            android:textSize="@dimen/text_content"/>
+            android:textSize="@dimen/text_content" />
 
     </RelativeLayout>
 

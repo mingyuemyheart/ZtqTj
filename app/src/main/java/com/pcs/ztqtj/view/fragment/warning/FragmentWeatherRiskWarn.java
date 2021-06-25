@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,39 +18,45 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterTfggsjDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterTfggsjUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjColumnGradeDown;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.adapter_warn.AdatperWeaRiskWarn;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.fragment.FragmentWebView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * Created by tyaathome on 2016/6/14.
+ * 预警中心-气象预警-风险预警
  */
 public class FragmentWeatherRiskWarn extends Fragment {
 
     private ListView listview;
     private RadioGroup radioGroup;
-    private MyReceiver receiver = new MyReceiver();
     private AdatperWeaRiskWarn adatper;
     private List<PackWarningCenterTfggsjDown.WarnTFGGSJ> datalist;
     private TextView textnull;
     private LinearLayout llFragmentContent = null;
     private ArrayList<YjColumnGradeDown> list_column;
-    // 上传下载包
-    private PackWarningCenterTfggsjUp packup;
     private PackWarningCenterTfggsjDown packdown;
-
-    /** 第几个单选按钮被选择 */
-    private int checkRadioPostion = 0;
 
     @Nullable
     @Override
@@ -72,24 +80,6 @@ public class FragmentWeatherRiskWarn extends Fragment {
     }
 
     private void initEvent() {
-//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                reqWarn(checkedId-100);
-//            }
-//        });
-//        for(int i = 0; i < radioGroup.getChildCount(); i++) {
-//            final int index = i;
-//            RadioButton btn = (RadioButton) radioGroup.getChildAt(i);
-//            btn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    checkRadioPostion = index;
-//                    reqWarn(checkRadioPostion);
-//                }
-//            });
-//        }
-
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -97,7 +87,6 @@ public class FragmentWeatherRiskWarn extends Fragment {
                                     int position, long id) {
                 String htmlpath;
                 htmlpath = packdown.list.get(position).html_path;
-
                 SharedPreferencesUtil.putData(htmlpath,htmlpath);
 
                 // 隐藏列表和暂无数据，显示网页fragment
@@ -106,7 +95,6 @@ public class FragmentWeatherRiskWarn extends Fragment {
                 llFragmentContent.setVisibility(View.VISIBLE);
 
                 Bundle bundle = new Bundle();
-                // 传入完整url
                 bundle.putString("url", getString(R.string.file_download_url) + htmlpath);
                 FragmentWebView fragmentWebView = new FragmentWebView();
                 fragmentWebView.setArguments(bundle);
@@ -119,7 +107,6 @@ public class FragmentWeatherRiskWarn extends Fragment {
 
     /**
      * 添加标题的单选按钮
-     *
      */
     private void addRadioButton() {
         radioGroup.removeAllViews();
@@ -133,13 +120,10 @@ public class FragmentWeatherRiskWarn extends Fragment {
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setGravity(Gravity.CENTER);
-            radioButton.setTextColor(getResources()
-                    .getColor(R.color.text_black));
-            radioButton
-                    .setBackgroundResource(R.drawable.btn_disaster_reporting);
+            radioButton.setTextColor(getResources().getColor(R.color.text_black));
+            radioButton.setBackgroundResource(R.drawable.btn_disaster_reporting);
             radioButton.setPadding(pad, 0, pad, 0);
-            radioButton.setButtonDrawable(getResources().getDrawable(
-                    android.R.color.transparent));
+            radioButton.setButtonDrawable(getResources().getDrawable(android.R.color.transparent));
             radioButton.setText(list_column.get(i).name);
             radioButton.setSingleLine(true);
             radioButton.setChecked(false);
@@ -174,27 +158,10 @@ public class FragmentWeatherRiskWarn extends Fragment {
         }
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(getActivity(), receiver);
-            receiver = null;
-        }
-    }
-
     private void initData() {
         Bundle bundle = getArguments();
         list_column = bundle.getParcelableArrayList("list");
         addRadioButton();
-//        if (list_column.size()!=0){
-//            rb01.setText(list_column.get(0).name);
-//            rb02.setText(list_column.get(1).name);
-//            rb03.setText(list_column.get(2).name);
-//        }
-        PcsDataBrocastReceiver.registerReceiver(getActivity(),
-                receiver);
 
         datalist = new ArrayList<>();
         adatper = new AdatperWeaRiskWarn(getActivity(), datalist);
@@ -203,17 +170,12 @@ public class FragmentWeatherRiskWarn extends Fragment {
     }
 
     private void reqWarn(int position) {
-//        datalist.clear();
-//        adatper.notifyDataSetChanged();
         String type = list_column.get(position).type;
-        packup = new PackWarningCenterTfggsjUp();
-        packup.type = type;
-        PcsDataDownload.addDownload(packup);
+        okHttpAcciWarning(type);
     }
 
     /**
      * 处理数据
-     *
      */
     private void dealWithData() {
         if (packdown == null) {
@@ -234,17 +196,65 @@ public class FragmentWeatherRiskWarn extends Fragment {
         adatper.notifyDataSetChanged();
     }
 
+    /**
+     * 获取风险预警数据
+     * @param warningType FW_DZZH(地质灾害),FW_NLDZ(内涝),FW_SLHX(森林火险)，FW_SH(山洪)，FW_ZXHL(中小河流)
+     */
+    private void okHttpAcciWarning(final String warningType) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("extra", warningType);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("pub_warn_acci_health", json);
+                    final String url = CONST.BASE_URL + "pub_warn_acci_health";
+                    Log.e("pub_warn_acci_health", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (name.equals(packup.getName())) {
-                packdown = (PackWarningCenterTfggsjDown) PcsDataManager.getInstance().getNetPack(packup.getName());
-                if(packdown==null){
-                    return;
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("pub_warn_acci_health", result);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("pub_warn_acci_health")) {
+                                                JSONObject itemObj = bobj.getJSONObject("pub_warn_acci_health");
+                                                if (!TextUtils.isEmpty(itemObj.toString())) {
+                                                    packdown = new PackWarningCenterTfggsjDown();
+                                                    packdown.fillData(itemObj.toString());
+                                                    dealWithData();
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                dealWithData();
             }
-        }
+        }).start();
     }
+
 }

@@ -31,9 +31,10 @@ import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
 /**
- * @author Z 关于知天气
+ * 设置-二维码
  */
 public class AcitvityAboutZTQ extends FragmentActivityZtqBase {
+
     private TextView versionTextView;
     private ImageView qr_code;
     private MyReceiver myReceiver = new MyReceiver();
@@ -46,62 +47,59 @@ public class AcitvityAboutZTQ extends FragmentActivityZtqBase {
         Bundle bundle = getIntent().getExtras();
         setTitleText(bundle.getString("title"));
         setContentView(R.layout.activity_about_ztq);
-        PcsDataBrocastReceiver.registerReceiver(AcitvityAboutZTQ.this,
-                myReceiver);
+        PcsDataBrocastReceiver.registerReceiver(AcitvityAboutZTQ.this, myReceiver);
         initView();
-        initEvent();
+//        initEvent();
         // 设置关于
         setAbout();
     }
 
-
-    /**
-     * 切换地址结束处理
-     */
-    private void finishHolder() {
-        String defaultUrl = getString(R.string.url);
-        String debugUrl = getString(R.string.url_debug);
-        PackLocalUrl packUrl = (PackLocalUrl) PcsDataManager.getInstance().getLocalPack(PackLocalUrl.KEY);
-        if (packUrl != null) {
-            // 如果缓存中不是测试地址(true)，则将url设置成测试地址
-            boolean isDebug = !LocalDataHelper.getDebug(this);
-            if (isDebug) {
-                packUrl.changeUrl(debugUrl);
-            } else {
-                packUrl.changeUrl(defaultUrl);
-            }
-            LocalDataHelper.saveDebug(this, isDebug);
-            PcsDataManager.getInstance().saveLocalData(PackLocalUrl.KEY, packUrl);
-            PcsDataManager.getInstance().removeLocalData(PackInitUp.NAME);
-            setResult(Activity.RESULT_OK);
-            finish();
-        }
-    }
-
-    private int clickCount = 0;
-    private Handler handlerClick = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            clickCount = 0;
-        }
-    };
-
-    private void initEvent() {
-        careabout_weathericon.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                clickCount++;
-                handlerClick.removeMessages(0);
-                handlerClick.sendEmptyMessageDelayed(0, 1500);
-                if (clickCount == 10) {
-                    finishHolder();
-                }
-            }
-        });
-    }
+//    /**
+//     * 切换地址结束处理
+//     */
+//    private void finishHolder() {
+//        String defaultUrl = getString(R.string.url);
+//        String debugUrl = getString(R.string.url_debug);
+//        PackLocalUrl packUrl = (PackLocalUrl) PcsDataManager.getInstance().getLocalPack(PackLocalUrl.KEY);
+//        if (packUrl != null) {
+//            // 如果缓存中不是测试地址(true)，则将url设置成测试地址
+//            boolean isDebug = !LocalDataHelper.getDebug(this);
+//            if (isDebug) {
+//                packUrl.changeUrl(debugUrl);
+//            } else {
+//                packUrl.changeUrl(defaultUrl);
+//            }
+//            LocalDataHelper.saveDebug(this, isDebug);
+//            PcsDataManager.getInstance().saveLocalData(PackLocalUrl.KEY, packUrl);
+//            PcsDataManager.getInstance().removeLocalData(PackInitUp.NAME);
+//            setResult(Activity.RESULT_OK);
+//            finish();
+//        }
+//    }
+//
+//    private int clickCount = 0;
+//    private Handler handlerClick = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            clickCount = 0;
+//        }
+//    };
+//
+//    private void initEvent() {
+//        careabout_weathericon.setOnClickListener(new OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                clickCount++;
+//                handlerClick.removeMessages(0);
+//                handlerClick.sendEmptyMessageDelayed(0, 1500);
+//                if (clickCount == 10) {
+//                    finishHolder();
+//                }
+//            }
+//        });
+//    }
 
     @Override
     protected void onDestroy() {
@@ -188,7 +186,6 @@ public class AcitvityAboutZTQ extends FragmentActivityZtqBase {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 
     /**

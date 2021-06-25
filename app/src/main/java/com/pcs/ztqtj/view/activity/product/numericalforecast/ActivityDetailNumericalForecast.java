@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,44 +42,59 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.TitleListBe
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
+import com.pcs.ztqtj.control.adapter.product_numerical.AdapterColumn;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * @author Z 数值预报详情界面——除了中央和福建气象台指导预报
+ * 监测预报-模式预报-详情界面——除了中央和福建气象台指导预报
  */
-public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
-        implements OnClickListener {
+public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase implements OnClickListener {
+
     private TextView subtitle_tv;
     private TextView spinner_text;
     private TextView spinner_title;
-    private TextView n_content, text_title;
+    private TextView n_content;
     private ImageTouchView image_show;
     private RadioGroup number_radio_group;
-    //    private int screenHight = 0;
-    private PackNumericalForecastUp packup;
-    private List<String> spinner_data;
-    private List<String> spinner_title_data;
-    private PackNumericalForecastDown packDown;
+    private List<String> spinner_data = new ArrayList<>();
+    private List<String> spinner_title_data = new ArrayList<>();
     private MyReceiver receiver = new MyReceiver();
     private ScrollView content_scrollview;
 
     /**
      * 数据解析完成取得源数据
      */
-    public List<LmListBean> lmBeanListData;
-    public List<List<TitleListBean>> TitleBeanListData;
+    public List<LmListBean> lmBeanListData = new ArrayList<>();
+    public List<List<TitleListBean>> TitleBeanListData = new ArrayList<>();
     /**
      * 头部下拉选项数据
      */
-    private List<String> subTitleList;
+    private List<String> subTitleList = new ArrayList<>();
     /**
      * 时间段标记
      */
@@ -91,20 +107,25 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
      * 头部下下拉标记
      */
     private final int SUBTITLE = 3;
-    private PackNumericalForecastColumnUp packNumericalForecastColumnUp = new PackNumericalForecastColumnUp();
-    private PackNumericalForecastColumnDown packNumericalForecastColumnDown;
     /**
      * 头部下拉选项源数据
      */
-    private List<ForList> forList2 = new ArrayList<ForList>();// 二级目录
+    private List<ForList> forList2 = new ArrayList<>();// 二级目录
     private ImageButton image_left;
     private ImageButton image_right;
     private Button image_share;
     private LinearLayout layout_root;
     private int screenwidth = 0;
     private String imageKey = "";
-
     private WebView webview;
+    /**
+     * 单选按钮第几个被选中
+     */
+    private int raidoItemSelect = 0;
+    /**
+     * 记录下拉时间选择当前选中的位置
+     */
+    private int tiemposition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +135,7 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         setContentView(R.layout.activity_numerical_forecast_detail);
         initView();
         initEvent();
-        initData();
     }
-
 
     private PackShareAboutUp aboutShare = new PackShareAboutUp();
     private PackShareAboutDown shareDwon;
@@ -142,12 +161,10 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         textButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                createPopupWindow(textButton, subTitleList, SUBTITLE, listener,
-                        screenwidth / 2).showAsDropDown(textButton);
+                createPopupWindow(textButton, subTitleList, SUBTITLE, listener, screenwidth / 2).showAsDropDown(textButton);
             }
         });
-        number_radio_group
-                .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        number_radio_group.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         raidoItemSelect = checkedId - 101;
@@ -155,14 +172,11 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
                         changeValue(0);
                     }
                 });
-
     }
-
 
     private void initView() {
         content_scrollview = (ScrollView) findViewById(R.id.content_scrollview);
         subtitle_tv = (TextView) findViewById(R.id.subtitle_tv);
-        text_title = (TextView) findViewById(R.id.text_title);
         spinner_text = (TextView) findViewById(R.id.spinner_text);
         spinner_title = (TextView) findViewById(R.id.spinner_title);
         n_content = (TextView) findViewById(R.id.n_content);
@@ -174,9 +188,21 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         image_right = (ImageButton) findViewById(R.id.image_right);
         layout_root = (LinearLayout) findViewById(R.id.layout_root);
         image_share = (Button) findViewById(R.id.image_share);
-        initWebView();
-    }
 
+        screenwidth = Util.getScreenWidth(ActivityDetailNumericalForecast.this);
+
+        initWebView();
+
+        getShareContext();
+
+        Intent intent = getIntent();
+        String title = intent.getStringExtra("t");
+        String parentId = intent.getStringExtra("c");
+        String type = intent.getStringExtra("type");
+        setTitleText(title);
+
+        okHttpModelList(parentId);
+    }
 
     private void initWebView() {
         webview = (WebView) findViewById(R.id.webview);
@@ -226,250 +252,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         webSettings.setLoadWithOverviewMode(true);
     }
 
-    private String type = "";
-
-    private void initData() {
-        Intent intent = getIntent();
-        String title = intent.getStringExtra("t");
-        String code = intent.getStringExtra("c");
-        type = intent.getStringExtra("type");
-        setTitleText(title);
-        try {
-            subTitleList = new ArrayList<String>();
-            // 获取一级code对应的二级列表
-            requestForecastColumn(code);
-            for (int i = 0; i < forList2.size(); i++) {
-                subTitleList.add(forList2.get(i).name);
-            }
-            textButton.setVisibility(View.VISIBLE);
-            int width = (int) (Util.getScreenWidth(this) / 2.0f) - Util.dip2px(this, 20);
-            setRightButtonText(R.drawable.bg_drowdown, forList2.get(0).name, width);
-
-            spinner_data = new ArrayList<String>();
-            spinner_title_data = new ArrayList<String>();
-            lmBeanListData = new ArrayList<LmListBean>();
-            TitleBeanListData = new ArrayList<List<TitleListBean>>();
-            screenwidth = Util.getScreenWidth(ActivityDetailNumericalForecast.this);
-            getserverData(0);
-            getShareContext();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 请求获取对应的二级列表
-     **/
-    private void requestForecastColumn(String code) {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        packNumericalForecastColumnUp.type = "1";
-        PcsDataDownload.addDownload(packNumericalForecastColumnUp);
-        packNumericalForecastColumnDown = (PackNumericalForecastColumnDown) PcsDataManager.getInstance().getNetPack
-                (packNumericalForecastColumnUp.getName());
-        if (packNumericalForecastColumnDown == null) {
-            return;
-        }
-        for (int i = 0; i < packNumericalForecastColumnDown.forlist.size(); i++) {
-            if (packNumericalForecastColumnDown.forlist.get(i).parent_id.equals(code)) {
-                forList2.add(packNumericalForecastColumnDown.forlist.get(i));
-            }
-        }
-    }
-
-    /**
-     * 栏目切换、重新取数据
-     *
-     * @param itemPostion
-     */
-    private void getserverData(int itemPostion) {
-        if (forList2.size() == 0) {
-            return;
-        }
-        subtitle_tv.setText("预报时效");
-        int width = (int) (Util.getScreenWidth(this) / 2.0f) - Util.dip2px(this, 20);
-        setRightButtonText(R.drawable.bg_drowdown,
-                forList2.get(itemPostion).name, width);
-        showProgressDialog();
-        request(forList2.get(itemPostion).id);
-    }
-
-    /**
-     * 请求数据
-     *
-     * @param reqCode
-     */
-    private void request(String reqCode) {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        packDown = new PackNumericalForecastDown();
-        packup = new PackNumericalForecastUp();
-        packup.lm = reqCode;
-        PcsDataDownload.addDownload(packup);
-        packDown = (PackNumericalForecastDown) PcsDataManager.getInstance().getNetPack(packup.getName());
-        if (packDown == null) {
-        } else {
-            showProgressDialog();
-            dealWidth(packDown);
-        }
-    }
-
-    /**
-     * 解析完数据处理
-     */
-    private void dealWidth(PackNumericalForecastDown packDown) {
-        if (packup == null) {
-            return;
-        }
-        lmBeanListData.clear();
-        TitleBeanListData.clear();
-        for (int i = 0; i < packDown.lmBeanList.size(); i++) {
-            lmBeanListData.add(packDown.lmBeanList.get(i));
-            List<TitleListBean> TitleBeanList = new ArrayList<TitleListBean>();
-            for (int j = 0; j < packDown.TitleBeanList.size(); j++) {
-                if (packDown.TitleBeanList.get(j).lm
-                        .equals(packDown.lmBeanList.get(i).id)) {
-                    TitleBeanList.add(packDown.TitleBeanList.get(j));
-                }
-            }
-            TitleBeanListData.add(TitleBeanList);
-        }
-        raidoItemSelect = 0;
-        changeValue(0);
-
-//        if ("高度场和风场".endsWith(textButton.getText().toString().trim()) || "降水".endsWith(textButton.getText().toString
-//                ().trim()) || "相对湿度+风场".endsWith(textButton.getText().toString().trim())) {
-        tiemposition = 0;
-        // 如果为高度场与风场这数据比较场用下拉形式而不用单选形式
-        if (lmBeanListData.size() > 0) {
-            if (lmBeanListData.size()==1){
-                spinner_title.setVisibility(View.GONE);
-            }else{
-                spinner_title.setVisibility(View.VISIBLE);
-            }
-            spinner_title_data.clear();
-            number_radio_group.setVisibility(View.GONE);
-            spinner_title.setText(lmBeanListData.get(0).name);
-            for (int i = 0; i < lmBeanListData.size(); i++) {
-                spinner_title_data.add(lmBeanListData.get(i).name);
-            }
-        } else {
-            number_radio_group.setVisibility(View.GONE);
-            spinner_title.setVisibility(View.GONE);
-        }
-//        }
-//        else {
-//            number_radio_group.removeAllViews();
-//            int width = Util.getScreenWidth(ActivityDetailNumericalForecast.this);
-//            int radioWidth = width / lmBeanListData.size();
-//            int pad = Util.dip2px(ActivityDetailNumericalForecast.this, 10);
-//            number_radio_group.setVisibility(View.VISIBLE);
-//            spinner_title.setVisibility(View.GONE);
-//            if (lmBeanListData.size() > 0) {
-//                for (int i = 0; i < lmBeanListData.size(); i++) {
-//                    RadioButton radioButton = new RadioButton(ActivityDetailNumericalForecast.this);
-//                    radioButton.setId(101 + i);
-//                    radioButton.setGravity(Gravity.CENTER);
-//                    radioButton.setTextColor(getResources().getColor(R.color.text_black));
-//                    radioButton.setBackgroundResource(R.drawable.radio_number);
-//                    radioButton.setPadding(0, pad, 0, pad);
-//                    radioButton.setButtonDrawable(R.drawable.bgalph100);
-//                    // radioButton.setButtonDrawable(getResources().getDrawable(android.R.color.transparent));
-//                    if (i == 0) {
-//                        radioButton.setChecked(true);
-//                    }
-//                    radioButton.setText(lmBeanListData.get(i).name);
-//                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                            radioWidth, LayoutParams.WRAP_CONTENT);
-//                    number_radio_group.addView(radioButton, lp);
-//                }
-//            } else {
-//                number_radio_group.setVisibility(View.GONE);
-//                spinner_title.setVisibility(View.GONE);
-//            }
-//        }
-    }
-
-    /**
-     * 子标题改变
-     *
-     * @param position
-     */
-    private void changeValue(int position) {
-        n_content.setText("");
-
-        if (packDown == null) {
-            return;
-        }
-        spinner_data.clear();
-        for (int i = 0; i < TitleBeanListData.get(raidoItemSelect).size(); i++) {
-            spinner_data.add(TitleBeanListData.get(raidoItemSelect).get(i).title + "小时");
-        }
-        if (spinner_data.size() > 1) {
-            left_right_btn_layout.setVisibility(View.VISIBLE);
-        } else {
-            left_right_btn_layout.setVisibility(View.GONE);
-        }
-        if (spinner_data.size() > 0 && spinner_data.size() > position) {
-            spinner_text.setText(spinner_data.get(position));
-        } else {
-            spinner_text.setText("");
-        }
-
-        if (TitleBeanListData.size() > raidoItemSelect && TitleBeanListData.get(raidoItemSelect).size() > position &&
-                TitleBeanListData.get(raidoItemSelect).get(position).type
-                        .equals("1")) {
-            content_scrollview.setVisibility(View.VISIBLE);
-            image_show.setVisibility(View.GONE);
-            webview.setVisibility(View.GONE);
-            n_content.setTextColor(getResources().getColor(R.color.text_black));
-            n_content.setText(TitleBeanListData.get(raidoItemSelect).get(
-                    position).str);
-        } else if (TitleBeanListData.size() > raidoItemSelect && TitleBeanListData.get(raidoItemSelect).size() >
-                position && TitleBeanListData.get(raidoItemSelect).get(position).type
-                .equals("2")) {
-            content_scrollview.setVisibility(View.GONE);
-            image_show.setVisibility(View.VISIBLE);
-            webview.setVisibility(View.GONE);
-            //showProgressDialog();
-
-            if (!TextUtils.isEmpty(TitleBeanListData.get(raidoItemSelect).get(
-                    position).img)) {
-                imageKey = TitleBeanListData.get(raidoItemSelect).get(position).img;
-                getImageFetcher().addListener(mImageListener);
-                getImageFetcher().loadImage(imageKey, null, ImageConstant.ImageShowType.NONE);
-            } else {
-                showToast("服务器不存在这张图标");
-            }
-        } else if (TitleBeanListData.size() > raidoItemSelect && TitleBeanListData.get(raidoItemSelect).size() >
-                position && TitleBeanListData.get(raidoItemSelect).get(position).type.equals("3")) {
-            content_scrollview.setVisibility(View.GONE);
-            image_show.setVisibility(View.GONE);
-            webview.setVisibility(View.VISIBLE);
-            //showProgressDialog();
-            if (!TextUtils.isEmpty(TitleBeanListData.get(0).get(position).html)) {
-                String path = getString(R.string.file_download_url) + TitleBeanListData.get(0).get(position).html;
-                webview.loadUrl(path);
-            }
-        } else {
-            content_scrollview.setVisibility(View.VISIBLE);
-            image_show.setVisibility(View.GONE);
-            webview.setVisibility(View.GONE);
-            // 暂无数据
-            n_content.setGravity(Gravity.CENTER);
-            n_content.setText("暂无数据");
-            n_content.setTextColor(getResources().getColor(R.color.bg_black_alpha20));
-        }
-    }
-
-    /**
-     * 单选按钮第几个被选中
-     */
-    private int raidoItemSelect = 0;
     /**
      * 左右按钮布局
      */
@@ -485,9 +267,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
                     changeValue(item);
                 } else if (floag == SPINNERTIME) {
                     dismissProgressDialog();
-//                    if (spinner_data.size()>0){
-//                        spinner_text.setText(spinner_data.get(0));
-//                    }
                     raidoItemSelect = item;
                     spinner_title.setText(spinner_title_data.get(item));
                     changeValue(0);
@@ -520,7 +299,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
                             spinner_title);
                 }
                 break;
-
             case R.id.image_left:
                 if (spinner_data.size() > 1) {
                     if (tiemposition == 0) {
@@ -531,7 +309,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
                     changeValue(tiemposition);
                     spinner_text.setText(spinner_data.get(tiemposition));
                 }
-
                 break;
             case R.id.image_right:
                 if (spinner_data.size() > 1) {
@@ -544,7 +321,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
                     spinner_text.setText(spinner_data.get(tiemposition));
                 }
                 break;
-
             case R.id.image_share:
                 if (shareDwon == null) {
                     shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(aboutShare.getName());
@@ -563,49 +339,25 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         }
     }
 
-    /**
-     * 记录下拉时间选择当前选中的位置
-     */
-    private int tiemposition = 0;
-
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String name, String errorStr) {
-            if (name.contains(PackNumericalForecastUp.NAME)) {
-                //     dismissProgressDialog();
-                if (TextUtils.isEmpty(errorStr)) {
-                    packDown = (PackNumericalForecastDown) PcsDataManager.getInstance().getNetPack(name);
-                    if (packDown == null) {
-                        return;
-                    }
-                    showProgressDialog();
-                    dealWidth(packDown);
-                    dismissProgressDialog();
-                }
-            } else if (aboutShare != null && aboutShare.getName().equals(name)) {
+            if (aboutShare != null && aboutShare.getName().equals(name)) {
                 dismissProgressDialog();
                 shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(name);
             }
         }
     }
 
-
     /**
      * 创建下拉选择列表
      */
-    public PopupWindow createPopupWindow(TextView dropDownView,
-                                         final List<String> dataeaum, final int floag,
-                                         final DrowListClick listener, int popwidth) {
-        AdapterData dataAdapter = new AdapterData(
-                ActivityDetailNumericalForecast.this, dataeaum);
-        View popcontent = LayoutInflater.from(
-                ActivityDetailNumericalForecast.this).inflate(
-                R.layout.pop_list_layout, null);
-
+    public PopupWindow createPopupWindow(TextView dropDownView, final List<String> dataeaum, final int floag, final DrowListClick listener, int popwidth) {
+        AdapterData dataAdapter = new AdapterData(ActivityDetailNumericalForecast.this, dataeaum);
+        View popcontent = LayoutInflater.from(ActivityDetailNumericalForecast.this).inflate(R.layout.pop_list_layout, null);
         ListView lv = (ListView) popcontent.findViewById(R.id.mylistviw);
         lv.setAdapter(dataAdapter);
-        final PopupWindow pop = new PopupWindow(
-                ActivityDetailNumericalForecast.this);
+        final PopupWindow pop = new PopupWindow(ActivityDetailNumericalForecast.this);
         pop.setContentView(popcontent);
         pop.setOutsideTouchable(false);
         pop.setWidth(popwidth);
@@ -614,7 +366,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         // 判断哪里的下拉框
         if (dropDownView.equals(textButton)) {
             pop.setHeight(LayoutParams.WRAP_CONTENT);
-
         } else if (dropDownView.equals(spinner_text)) {
             if (lv.getCount() < 10) {
                 pop.setHeight(android.view.WindowManager.LayoutParams.WRAP_CONTENT);
@@ -622,7 +373,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
                 int screenHight = Util.getScreenHeight(ActivityDetailNumericalForecast.this);
                 pop.setHeight((int) (screenHight * 0.55));
             }
-
         } else if (dropDownView.equals(spinner_title)) {
             if (lv.getCount() < 7) {
                 pop.setHeight(android.view.WindowManager.LayoutParams.WRAP_CONTENT);
@@ -658,8 +408,7 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
         public void done(String key, boolean isSucc) {
             if (imageKey.equals(key)) {
                 if (isSucc && getImageFetcher().getImageCache() != null) {
-                    Bitmap bm = getImageFetcher().getImageCache()
-                            .getBitmapFromAllCache(key).getBitmap();
+                    Bitmap bm = getImageFetcher().getImageCache().getBitmapFromAllCache(key).getBitmap();
                     image_show.setMyImageBitmap(bm);
                 } else {
                     showToast("图片为空");
@@ -667,4 +416,251 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase
             }
         }
     };
+
+    /**
+     * 获取模式预报数据
+     */
+    private void okHttpModelList(final String parentId) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"modelprediction_list";
+                    Log.e("modelprediction_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("modelprediction_list", result);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("forecast_column_n2")) {
+                                                JSONObject itemObj = bobj.getJSONObject("forecast_column_n2");
+                                                if (!TextUtils.isEmpty(itemObj.toString())) {
+                                                    PackNumericalForecastColumnDown down = new PackNumericalForecastColumnDown();
+                                                    down.fillData(itemObj.toString());
+                                                    for (int i = 0; i < down.forlist.size(); i++) {
+                                                        if (down.forlist.get(i).parent_id.equals(parentId)) {
+                                                            forList2.add(down.forlist.get(i));
+                                                            subTitleList.add(down.forlist.get(i).name);
+                                                        }
+                                                    }
+                                                    textButton.setVisibility(View.VISIBLE);
+                                                    getserverData(0);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 栏目切换、重新取数据
+     * @param itemPostion
+     */
+    private void getserverData(int itemPostion) {
+        if (forList2.size() == 0) {
+            return;
+        }
+        subtitle_tv.setText("预报时效");
+        int width = (int) (Util.getScreenWidth(this) / 2.0f) - Util.dip2px(this, 20);
+        setRightButtonText(R.drawable.bg_drowdown, forList2.get(itemPostion).name, width);
+        okHttpModelPic(forList2.get(itemPostion).id);
+    }
+
+    /**
+     * 获取指导预报数据
+     */
+    private void okHttpModelPic(final String stationId) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("model_pic", json);
+                    final String url = CONST.BASE_URL+"model_pic";
+                    Log.e("model_pic", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("model_pic", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("szyb_new")) {
+                                                    JSONObject listobj = bobj.getJSONObject("szyb_new");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackNumericalForecastDown packDown = new PackNumericalForecastDown();
+                                                        packDown.fillData(listobj.toString());
+                                                        dealWidth(packDown);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 解析完数据处理
+     */
+    private void dealWidth(PackNumericalForecastDown packDown) {
+        lmBeanListData.clear();
+        TitleBeanListData.clear();
+        for (int i = 0; i < packDown.lmBeanList.size(); i++) {
+            lmBeanListData.add(packDown.lmBeanList.get(i));
+            List<TitleListBean> TitleBeanList = new ArrayList<>();
+            for (int j = 0; j < packDown.TitleBeanList.size(); j++) {
+                if (packDown.TitleBeanList.get(j).lm.equals(packDown.lmBeanList.get(i).id)) {
+                    TitleBeanList.add(packDown.TitleBeanList.get(j));
+                }
+            }
+            TitleBeanListData.add(TitleBeanList);
+        }
+        raidoItemSelect = 0;
+        changeValue(0);
+
+        tiemposition = 0;
+        // 如果为高度场与风场这数据比较场用下拉形式而不用单选形式
+        if (lmBeanListData.size() > 0) {
+            if (lmBeanListData.size()==1){
+                spinner_title.setVisibility(View.GONE);
+            }else{
+                spinner_title.setVisibility(View.VISIBLE);
+            }
+            spinner_title_data.clear();
+            number_radio_group.setVisibility(View.GONE);
+            spinner_title.setText(lmBeanListData.get(0).name);
+            for (int i = 0; i < lmBeanListData.size(); i++) {
+                spinner_title_data.add(lmBeanListData.get(i).name);
+            }
+        } else {
+            number_radio_group.setVisibility(View.GONE);
+            spinner_title.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 子标题改变
+     * @param position
+     */
+    private void changeValue(int position) {
+        n_content.setText("");
+        spinner_data.clear();
+        if (TitleBeanListData.size() == 0) {
+            return;
+        }
+        for (int i = 0; i < TitleBeanListData.get(raidoItemSelect).size(); i++) {
+            spinner_data.add(TitleBeanListData.get(raidoItemSelect).get(i).title + "小时");
+        }
+        if (spinner_data.size() > 1) {
+            left_right_btn_layout.setVisibility(View.VISIBLE);
+        } else {
+            left_right_btn_layout.setVisibility(View.GONE);
+        }
+        if (spinner_data.size() > 0 && spinner_data.size() > position) {
+            spinner_text.setText(spinner_data.get(position));
+        } else {
+            spinner_text.setText("");
+        }
+
+        if (TitleBeanListData.size() > raidoItemSelect && TitleBeanListData.get(raidoItemSelect).size() > position &&
+                TitleBeanListData.get(raidoItemSelect).get(position).type.equals("1")) {
+            content_scrollview.setVisibility(View.VISIBLE);
+            image_show.setVisibility(View.GONE);
+            webview.setVisibility(View.GONE);
+            n_content.setTextColor(getResources().getColor(R.color.text_black));
+            n_content.setText(TitleBeanListData.get(raidoItemSelect).get(position).str);
+        } else if (TitleBeanListData.size() > raidoItemSelect && TitleBeanListData.get(raidoItemSelect).size() >
+                position && TitleBeanListData.get(raidoItemSelect).get(position).type.equals("2")) {
+            content_scrollview.setVisibility(View.GONE);
+            image_show.setVisibility(View.VISIBLE);
+            webview.setVisibility(View.GONE);
+            //showProgressDialog();
+
+            if (!TextUtils.isEmpty(TitleBeanListData.get(raidoItemSelect).get(position).img)) {
+                imageKey = getString(R.string.file_download_url)+TitleBeanListData.get(raidoItemSelect).get(position).img;
+                getImageFetcher().addListener(mImageListener);
+                getImageFetcher().loadImage(imageKey, null, ImageConstant.ImageShowType.NONE);
+            } else {
+                showToast("服务器不存在这张图标");
+            }
+        } else if (TitleBeanListData.size() > raidoItemSelect && TitleBeanListData.get(raidoItemSelect).size() >
+                position && TitleBeanListData.get(raidoItemSelect).get(position).type.equals("3")) {
+            content_scrollview.setVisibility(View.GONE);
+            image_show.setVisibility(View.GONE);
+            webview.setVisibility(View.VISIBLE);
+            //showProgressDialog();
+            if (!TextUtils.isEmpty(TitleBeanListData.get(0).get(position).html)) {
+                String path = getString(R.string.file_download_url) + TitleBeanListData.get(0).get(position).html;
+                webview.loadUrl(path);
+            }
+        } else {
+            content_scrollview.setVisibility(View.VISIBLE);
+            image_show.setVisibility(View.GONE);
+            webview.setVisibility(View.GONE);
+            // 暂无数据
+            n_content.setGravity(Gravity.CENTER);
+            n_content.setText("暂无数据");
+            n_content.setTextColor(getResources().getColor(R.color.bg_black_alpha20));
+        }
+    }
+
 }

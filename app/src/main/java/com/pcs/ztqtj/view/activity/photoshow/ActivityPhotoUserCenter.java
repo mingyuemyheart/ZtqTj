@@ -82,12 +82,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 实景个人中心
- * 
- * @author JiangZy
- * 
+ * 设置-我的
  */
 public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
+
 	// 适配器
 	private AdapterPhotoCenter mAdapter;
 	// 用户中心上传包
@@ -137,11 +135,13 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
 		});
         initPopupWindow();
 	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 		rightbtn_ok.setVisibility(View.GONE);
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -151,11 +151,9 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
 		PcsDataBrocastReceiver.registerReceiver(this, mReceiver);
         if(viewHead != null) {
             ImageView iv = (ImageView) viewHead.findViewById(R.id.iv_head);
-
             getImageView.setImageView(this, localUser.sys_head_url, iv);
         }
         reqCenterData();
-
 	}
 
 	@Override
@@ -165,8 +163,7 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
 	}
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -194,8 +191,7 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
 		//SlideCutListView listView = (SlideCutListView) findViewById(R.id.listview);
         MyListView listView = (MyListView) findViewById(R.id.listview);
 		// 添加顶部视图
-		viewHead = LayoutInflater.from(this).inflate(
-				R.layout.view_photo_center_head, null);
+		viewHead = LayoutInflater.from(this).inflate(R.layout.view_photo_center_head, null);
         textHead= (TextView) viewHead.findViewById(R.id.my_name_tv);
 //		textHead.setText(PhotoShowDB.getInstance().getUserPack().nickName);//【以前使用】
 		textHead.setText(localUser.sys_nick_name);
@@ -233,12 +229,10 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
                     return ;
                 }
                 Intent intent = new Intent();
-                intent.setClass(ActivityPhotoUserCenter.this,
-                        ActivityPhotoDetail.class);
+                intent.setClass(ActivityPhotoUserCenter.this, ActivityPhotoDetail.class);
                 intent.putExtra("position", position-1);
                 intent.putExtra("ActivityPhotoUserCenter", true);
                 mClickPosition = position-1;
-
                 startActivity(intent);
             }
         });
@@ -266,8 +260,7 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
      * 初始化弹出框
      */
     private void initPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.pop_photograph,
-                null);
+        View view = LayoutInflater.from(this).inflate(R.layout.pop_photograph, null);
         mPopupWindow = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT, true);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -285,7 +278,6 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
         mPopupWindow.setTouchable(true);
         // 设置弹窗外可点击
         mPopupWindow.setOutsideTouchable(true);
-
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 
         view.setOnKeyListener(new View.OnKeyListener() {
@@ -361,8 +353,7 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
      */
     private void clickAlbum() {
         dismissPopupWindow();
-        Intent it = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent it = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         this.startActivityForResult(it, MyConfigure.REQUEST_ALBUM);
     }
 
@@ -463,7 +454,6 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
 	 * 请求用户中心数据
 	 */
 	private void reqCenterData() {
-
         if(!isOpenNet()){
             showToast(getString(R.string.net_err));
             return ;
@@ -477,7 +467,6 @@ public class ActivityPhotoUserCenter extends FragmentActivityZtqBase {
 	 * 请求删除数据
 	 */
 	private void reqDeleteData(int position) {
-
         if(!isOpenNet()){
             showToast(getString(R.string.net_err));
             return ;

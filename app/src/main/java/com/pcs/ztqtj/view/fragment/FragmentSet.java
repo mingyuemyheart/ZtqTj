@@ -78,27 +78,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 设置中心
- *
- * @author JiangZy
+ * 设置
  */
 public class FragmentSet extends Fragment implements OnClickListener, InterfaceRefresh {
 
     private ActivityMain activity;
-
     private MyReceiver mReceiver = null;
-
-    private List<HotAppInfo> urlList = new ArrayList<HotAppInfo>();
-
     private Button btnUserLogin = null;
-
     private Button btnLogin;
     private TextView tvUserName;
     private ImageView ivHead;
     private DialogTwoButton dialogClearCache;
-
     private GetImageView imageTool = new GetImageView();
-
     private MyListView listView;
     private AdapterColumnManager adapter;
     private List<Map<String, String>> listData = new ArrayList<>();
@@ -127,10 +118,8 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_set, null);
-        return view;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_set, null);
     }
 
     @Override
@@ -150,12 +139,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         reqNet();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mReceiver != null) {
@@ -166,27 +149,21 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     private void reqNet() {
         if (!isOpenNet()) {
-            Toast.makeText(getActivity(), getString(R.string.net_err),
-                    Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), getString(R.string.net_err), Toast.LENGTH_SHORT);
             return;
         }
-        // 上传包
         uppack = new PackCheckVersionUp();
         pack = new PackCheckVersionDown();
-        // 请求网络
         PcsDataDownload.addDownload(uppack);
     }
 
     private void reqNetgetsharefriend() {
         if (!isOpenNet()) {
-            Toast.makeText(getActivity(), getString(R.string.net_err),
-                    Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), getString(R.string.net_err), Toast.LENGTH_SHORT);
             return;
         }
-        // 上传包
         uppackgetshareinfo = new PackgetrecommendfriendsmsgUP();
         Downpackgetshareinfo = new PackgetrecommendfriendsmsgDown();
-        // 请求网络
         PcsDataDownload.addDownload(uppackgetshareinfo);
     }
 
@@ -207,7 +184,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     }
 
     private void initData() {
-
         listData = new ArrayList<>();
         Map<String, String> itemBootStart = new HashMap<String, String>();
         itemBootStart.put("t", "清除缓存");
@@ -219,12 +195,10 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         version.put("i", R.drawable.icon_column_manager_advice + "");
         listData.add(version);
 
-
         Map<String, String> itemUpdate = new HashMap<String, String>();
         itemUpdate.put("t", "免责申明");
         itemUpdate.put("i", "" + R.drawable.icon_column_manager_update);
         listData.add(itemUpdate);
-
 
         Map<String, String> itemAutoShare = new HashMap<String, String>();
         itemAutoShare.put("t", "版本检测");
@@ -283,8 +257,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
      * 页面切换动画
      */
     private void rightInAnimation() {
-        getActivity().overridePendingTransition(R.anim.slide_right_in,
-                R.anim.slide_left_out);
+        getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
 
     /**
@@ -300,11 +273,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         SetsBean bean4 = new SetsBean(R.drawable.icon_set_item_useguide, "功能导航");
         setsBeanList.add(bean1);
         setsBeanList.add(bean2);
-        setsBeanList.add(bean3);
+//        setsBeanList.add(bean3);
         setsBeanList.add(bean4);
-
     }
-
 
     public void initListener() {
         gridSets.setOnItemClickListener(new OnItemClickListener() {
@@ -323,12 +294,12 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                         // 关于
                         gotoAcitvity(AcitvityAboutZTQ.class, "二维码");
                         break;
+//                    case 2:
+//                        // 推送设置
+//                        gotoAcitvity(ActivityPushMain.class, "推送设置");
+//                        break;
                     case 2:
-                        // 推送设置
-                        gotoAcitvity(ActivityPushMain.class, "推送设置");
-                        break;
-                    case 3:
-                        // 使用指南
+                        // 功能导航
                         gotoAcitvity(ActivityHelpQuestion.class, "功能导航");
                         break;
                     default:
@@ -342,18 +313,16 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        // 开机自启动
+                        // 清除缓存
                         clearCache();
                         break;
                     case 1:
                         // 您的建议
                         gotoAcitvity(AcitvityFeedBack.class, listData.get(position).get("t"));
-
                         break;
                     case 2:
                         // 免责声明
                         gotoAcitvity(ActivityDisclaimer.class, listData.get(position).get("t"));
-
                         break;
                     case 3:
                         // 版本监测
@@ -362,13 +331,11 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                     case 4:
                         // 更新频率
                         itemUpdate();
-
                         break;
                     case 5:
                         // 推荐好友
                         if (getShareFriendDataDialog == null) {
-                            getShareFriendDataDialog = (DialogWaiting) DialogFactory.getWaitDialog(getActivity(),
-                                    "正在准备分享数据");
+                            getShareFriendDataDialog = (DialogWaiting) DialogFactory.getWaitDialog(getActivity(), "正在准备分享数据");
                         }
                         getShareFriendDataDialog.show();
                         reqNetgetsharefriend();
@@ -391,8 +358,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         if (dialogClearCache == null) {
             TextView tv = (TextView) view.findViewById(R.id.dialogmessage);
             tv.setText("即将清除缓存的图片，是否继续？");
-            tv.setTextColor(getResources().getColor(
-                    R.color.text_color));
+            tv.setTextColor(getResources().getColor(R.color.text_color));
             dialogClearCache = new DialogTwoButton(getActivity(), view, "继续", "返回", new DialogFactory.DialogListener() {
                 @Override
                 public void click(String str) {
@@ -410,17 +376,14 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     private static final int toanther = 9154;
 
-
     /**
      * 跳转到下一级页面
-     *
      * @param intentactivity 跳转的class
      * @param titletext      绑定的标题
      */
     private void gotoAcitvity(Class intentactivity, String titletext) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        PackLocalCityInfo citylist = ZtqCityDB.getInstance().getCurrentCityInfo();
         PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
         bundle.putSerializable("city", cityMain);
         bundle.putString("title", titletext);
@@ -435,7 +398,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         initUser();
     }
 
-
     /**
      * java.lang.IllegalStateException: No activity 错误解决方案
      */
@@ -443,8 +405,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     public void onDetach() {
         super.onDetach();
         try {
-            Field childFragmentManager = Fragment.class
-                    .getDeclaredField("mChildFragmentManager");
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
         } catch (NoSuchFieldException e) {
@@ -453,8 +414,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             throw new RuntimeException(e);
         }
     }
-
-
 
     @Override
     public void onClick(View v) {
@@ -470,9 +429,10 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                 }
                 break;
             case R.id.rl_user:
+            case R.id.tv_username:
+            case R.id.iv_head:
                 if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
-                    Intent intent = new Intent(getActivity(),
-                            ActivityPhotoUserCenter.class);
+                    Intent intent = new Intent(getActivity(), ActivityPhotoUserCenter.class);
                     startActivityForResult(intent, MyConfigure.RESULT_SET_TO_USER);
                 }
                 break;
@@ -483,14 +443,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             case R.id.btn_login2:
                 if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
                     gotoLogin();
-                }
-                break;
-            case R.id.tv_username:
-            case R.id.iv_head:
-                if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
-                    Intent intent = new Intent(getActivity(),
-                            ActivityPhotoUserCenter.class);
-                    startActivityForResult(intent, MyConfigure.RESULT_SET_TO_USER);
                 }
                 break;
         }
@@ -520,11 +472,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     /**
      * 广播接收
-     *
      * @author tya
      */
     private class MyReceiver extends PcsDataBrocastReceiver {
-
         @Override
         public void onReceive(String nameStr, String errorStr) {
             if (uppack != null && uppack.getName().equals(nameStr)) {
@@ -532,11 +482,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                 if (pack == null) {
                     return;
                 }
-
                 if (pack.nv == null || "".equals(pack.nv)) {
                     return;
                 }
-
                 PackageManager packageManager = getActivity().getPackageManager();
                 // getPackageName()是你当前类的包名，0代表是获取版本信息
                 PackageInfo packInfo;
@@ -551,8 +499,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                 String versionName = "";
                 // 获取版本名
                 try {
-                    versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0)
-                            .versionName;
+                    versionName = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
                 } catch (PackageManager.NameNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -565,7 +512,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                     text = !TextUtils.isEmpty(versionName) ? "当前" + versionName : versionName;
                     adapter.setRightText(text, getResources().getColor(R.color.text_black_login));
                 }
-
                 adapter.notifyDataSetChanged();
             } else if (uppackgetshareinfo != null && uppackgetshareinfo.getName().equals(nameStr)) {
                 if (getShareFriendDataDialog != null) {
@@ -573,14 +519,12 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                         getShareFriendDataDialog.dismiss();
                     }
                 }
-                Downpackgetshareinfo =
-                        (PackgetrecommendfriendsmsgDown) PcsDataManager.getInstance().getNetPack(nameStr);
+                Downpackgetshareinfo = (PackgetrecommendfriendsmsgDown) PcsDataManager.getInstance().getNetPack(nameStr);
                 if (Downpackgetshareinfo == null) {
                     return;
                 }
                 share(getActivity(), Downpackgetshareinfo.result);
             }
-
         }
 
     }
@@ -678,7 +622,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-
             if (mFileDownload == null) {
                 mFileDownload = new PcsFileDownload();
             }
@@ -709,7 +652,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             }
         }
     };
-
 
     PcsFileDownloadListener downloadlistener = new PcsFileDownloadListener() {
         @Override
@@ -742,7 +684,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             Toast.makeText(getActivity(), errMsg, Toast.LENGTH_SHORT).show();
         }
     };
-
 
     private List<Map<String, Object>> dialoglistData;
 
@@ -801,11 +742,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     private void showUpdateDialog() {
         if (updateDialog == null) {
-            View view = LayoutInflater.from(getActivity()).inflate(
-                    R.layout.setfragmetnt_dialog_layout, null);
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.setfragmetnt_dialog_layout, null);
             dialogListview = (MyListView) view.findViewById(R.id.listview);
-            dialogadapter = new AdapterSetDialogList(getActivity(), dialoglistData,
-                    radioClick);
+            dialogadapter = new AdapterSetDialogList(getActivity(), dialoglistData, radioClick);
             dialogListview.setAdapter(dialogadapter);
             updateDialog = new DialogOneButton(getActivity(), view, "确定",
                     new DialogFactory.DialogListener() {
@@ -828,8 +767,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             for (int i = 0; i < dialoglistData.size(); i++) {
                 if (i == position) {
                     dialoglistData.get(i).put("r", true);
-                    PackLocalSetUpdate pack = SettingDB.getInstance()
-                            .getSetUpdate();
+                    PackLocalSetUpdate pack = SettingDB.getInstance().getSetUpdate();
                     pack.choiceItem = i;
                     SettingDB.getInstance().saveSetUpdate(pack);
                 } else {
@@ -842,16 +780,14 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     /* 判断是否是处于wifi状态下*/
     protected boolean isWiFiNewWord() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     /* 判断是否是有网络*/
     public boolean isOpenNet() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
         if (activeNetInfo != null) {
             return true;

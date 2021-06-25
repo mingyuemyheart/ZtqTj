@@ -28,18 +28,13 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirLevelDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirLevelUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirPollutionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirStationUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirTrendDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirTrendUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.air_qualitydetail.AdapterAirStations;
@@ -68,6 +63,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -78,18 +74,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 空气质量实况
+ * 监测预报-空气质量-空气质量实况，天津
  */
 public class FragmentAirQualityPre extends Fragment implements View.OnClickListener {
 
     private AirQualityView airQueryView;
-    private FragmentAirQueryDetailControl control;
     private TextView null_air_data, tv_choose_station;
     private LinearLayout lay_citiao, lay_PM2, lay_PM10, lay_CO, lay_NO2, lay_SO2, lay_031h, lay_038h;
     private MyReceiver receiver = new MyReceiver();
     private LinearLayout lay_airRanking, lay_choose_station;
     private ImageView iv_choose_station;
-    private String areatype = "1";
     /**
      * 城市ID
      */
@@ -98,17 +92,9 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
      * 城市名称
      */
     private String s_area_name;
-    /**
-     * 显示城市/站点
-     */
-    private boolean s_show_city = true;
 
     private TextView tv_038h, tv_031h, tv_pm2, tv_pm10, tv_co, tv_no2, tv_so2, tv_aqi, tv_quality, tv_city_num,
             tv_pub_time, tv_healthy, tv_airquality_name, tv_aqi_name, tv_city_total;
-    /**
-     * 上传包(城市)
-     */
-    private PackAirInfoUp mPackInfoUp = new PackAirInfoUp();
     /**
      * 上传包(站点)
      */
@@ -120,11 +106,12 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     private String type="0";
 
     private TextView tv_ys, tv_zd, tv_zdwr, tv_qd, tv_l, tv_y;
+    private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH", Locale.CHINA);
+    private SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd HH:mm", Locale.CHINA);
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_airqualityquery, null);
     }
 
@@ -145,7 +132,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
             tv_choose_station.setText(s_area_name + "总体");
         }
         okHttpAirRemark();
-        reqAirInfo();
+        okHttpAirCityStation();
         reqStationList2();
     }
 
@@ -160,7 +147,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
 
     private void initView() {
         null_air_data = (TextView) getActivity().findViewById(R.id.null_air_data);
-        control = new FragmentAirQueryDetailControl(FragmentAirQualityPre.this, getActivity());
         airQueryView = (AirQualityView) getActivity().findViewById(R.id.airQueryView);
         airQueryView.setItemName("", AirQualityView.IsDrawRectangele.BROKENLINE);
         airQueryView.setClickPositionListener(clicklistener);
@@ -223,12 +209,9 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     private Handler handler = new Handler();
     private int curProgress = 0;
     Runnable runnableProgress = new Runnable() {
-
         @Override
         public void run() {
-
             if (circle_progress_view != null) {
-
                 if (curProgress <= 100) {
                     curProgress += 1;
                 }
@@ -238,7 +221,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
             //handler自带方法实现定时器
         }
     };
-    private final int TIME_PROGRESS = 18;
 
     public void reFlushList(PackAirTrendDown trendDown) {
         if (trendDown.skList.size() == 0) {
@@ -279,7 +261,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
         }
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -287,16 +268,11 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
         PcsDataBrocastReceiver.registerReceiver(getActivity(), receiver);
     }
 
-    private List<PackAirStationDown.PackAirStation> list = new ArrayList<PackAirStationDown.PackAirStation>();
+    private List<PackAirStationDown.PackAirStation> list = new ArrayList<>();
     private PackAirStationUp mPackStationUp = new PackAirStationUp();
 
     private void reqStationList2() {
-        //showProgressDialog();
-//        if (s_show_city) {
         mPackStationUp.area_id = s_area_id;
-//        } else {
-//            mPackStationUp.area_id = station_id;
-//        }
         NetTask task = new NetTask(getActivity(), new NetTask.NetListener() {
             @Override
             public void onComplete(PcsPackDown down) {
@@ -313,23 +289,10 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                 if (mPackStationDown == null) {
                     return;
                 }
-
-                if (mPackStationDown.list.size() == 0) {
-//                    Toast.makeText(getActivity(), "暂无站点",
-//                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 list.addAll(mPackStationDown.list);
             }
         });
         task.execute(mPackStationUp);
-    }
-
-    private void reqAirInfo() {
-        // 城市
-        mPackInfoUp.area = s_area_id;
-        okHttpAirCityStation(s_area_id);
     }
 
     private void reqAirStationInfo(String name, int id) {
@@ -353,17 +316,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     }
 
     private ArrayList<PackAirLevelDown.AirLecel> list_level = new ArrayList<>();
-    private PackAirLevelUp airLevelUp = new PackAirLevelUp();
-
-    private void getTrend(String stationID, String sx, String areatype) {
-        showProgressDialog();
-        PackAirTrendUp airTrendUp = new PackAirTrendUp();
-        airTrendUp.num = "24";
-        airTrendUp.station_id = stationID;
-        airTrendUp.sx = sx;
-        airTrendUp.areatype = areatype;
-        okHttpAirTrend(sx);
-    }
 
     @Override
     public void onPause() {
@@ -376,7 +328,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     private int aqi;
 
     public void refreshData(PackAirInfoDown packAirInfoDown, int delay) {
-
         tv_aqi.setText(packAirInfoDown.aqi);
         tv_pm2.setText(packAirInfoDown.pm2_5);
         tv_031h.setText(packAirInfoDown.o3);
@@ -406,13 +357,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String name, String errorStr) {
-            if (name.equals(PackKeyDescUp.NAME)) {
-                packKey = (PackKeyDescDown) PcsDataManager.getInstance().getNetPack(name);
-                if (packKey == null) {
-                    return;
-                }
-                dealWidthKeyData(packKey);
-            } else if (name.equals(mPackStationUp.getName())) {
+            if (name.equals(mPackStationUp.getName())) {
                 if (!TextUtils.isEmpty(errorStr)) {
                     return;
                 }
@@ -434,16 +379,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                     return;
                 }
                 list.addAll(mPackStationDown.list);
-            } else if (name.equals(mPackInfoUp.getName())) {
-                if (!TextUtils.isEmpty(errorStr)) {
-                    return;
-                }
-                // 加载数据
-//                PackAirInfoDown packAirInfoDown = (PackAirInfoDown) PcsDataManager.getInstance().getNetPack(mPackInfoUp.getName());
-//                if (packAirInfoDown == null) {
-//                    return;
-//                }
-                okHttpAirCityStation(mPackInfoUp.getName());
             } else if (name.equals(mPackStationInfoUp.getName())) {
                 if (!TextUtils.isEmpty(errorStr)) {
                     return;
@@ -462,14 +397,9 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     }
 
     private List<PackKeyDescDown.DicListBean> dataeaum = new ArrayList<>();
-    /**
-     * 關鍵字在列表中的位置
-     */
-    private int keyPosition = 0;
 
     /**
      * 处理aqi字段
-     *
      * @param packKey
      */
     private void dealWidthKeyData(PackKeyDescDown packKey) {
@@ -488,7 +418,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
 
     private void changeValueKey(int position) {
         try {
-            keyPosition = position;
             if (packKey.dicList == null || packKey.dicList.size() == 0) {
 
             } else {
@@ -506,82 +435,51 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.lay_citiao:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(0);
+            case R.id.rel_circle_aqi:
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("AQI走势图");
-                getTrend(s_area_id, "aqi", "1");
+                okHttpAirTrend("aqi");
                 break;
             case R.id.lay_PM2:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(1);
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("PM2.5走势图");
-                getTrend(s_area_id, "pm2", "1");
+                okHttpAirTrend("pm2");
                 break;
             case R.id.lay_PM10:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(2);
                 type="0";
                 setTextContentColor("0");
                 tv_type.setText("PM10走势图");
-                getTrend(s_area_id, "pm10", "1");
+                okHttpAirTrend("pm10");
                 break;
             case R.id.lay_CO:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(3);
                 type="1";
                 setTextContentColor("1");
                 tv_type.setText("CO走势图");
-                getTrend(s_area_id, "co", "1");
+                okHttpAirTrend("co");
                 break;
             case R.id.lay_N02:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(4);
                 type="2";
                 setTextContentColor("2");
                 tv_type.setText("NO₂走势图");
-                getTrend(s_area_id, "no2", "1");
+                okHttpAirTrend("no2");
                 break;
             case R.id.lay_SO2:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(7);
                 type="3";
                 setTextContentColor("1");
                 tv_type.setText("SO₂走势图");
-                getTrend(s_area_id, "so2", "1");
+                okHttpAirTrend("so2");
                 break;
             case R.id.lay_031h:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(5);
                 type="4";
                 setTextContentColor("3");
                 tv_type.setText("O₃-1H走势图");
-                getTrend(s_area_id, "o3", "1");
+                okHttpAirTrend("o3");
                 break;
             case R.id.lay_038h:
-//                if (packKey == null) {
-//                    return;
-//                }
-//                changeValueKey(6);
                 tv_type.setText("O₃-8H走势图");
-                getTrend(s_area_id, "o3", "1");
+                okHttpAirTrend("o3");
                 break;
             case R.id.lay_airRanking:
                 Intent intent = new Intent(getActivity(), ActivityAirQualityRandking.class);
@@ -591,15 +489,8 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
             case R.id.lay_choose_station:
                 showStationPopup();
                 break;
-            case R.id.rel_circle_aqi:
-//                changeValueKey(0);
-                type="0";
-                setTextContentColor("0");
-                tv_type.setText("AQI走势图");
-                getTrend(s_area_id, "aqi", "1");
-                break;
             case R.id.ll_map:
-                gotoMap();
+                startActivity(new Intent(getActivity(), ActivityAir.class));
                 break;
 //            case R.id.btn_right:
 //                View layout = getActivity().findViewById(R.id.all_view);
@@ -618,7 +509,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
 //                } else {
 //                    control.reqData(ControlDistribution.ColumnCategory.TEMPERATURE, station_id, "2", "aqi");
 //                }
-//
 //                break;
         }
     }
@@ -677,9 +567,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
             tv_y.setText("优");
             tv_y.setTextColor(getResources().getColor(R.color.air_quality_1));
         }
-
     }
-
 
     private int screenwidth = 0;
 
@@ -718,16 +606,13 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                     pop.dismiss();
                     tv_choose_station.setText(list.get(position).position_name);
                     showProgressDialog();
-                    areatype = "2";
                     if (position == 0) {
-                        getTrend(s_area_id, "AQI", "1");
-                        reqAirInfo();
-                        s_show_city = true;
+                        okHttpAirTrend("AQI");
+                        okHttpAirCityStation();
                     } else {
-                        s_show_city = false;
                         station_id = list.get(position).station_code;
                         station_name = list.get(position).position_name;
-                        getTrend(station_id, "AQI", areatype);
+                        okHttpAirTrend("AQI");
                         reqAirStationInfo(station_name, 1);
                     }
                     handler.removeCallbacks(runnableProgress);
@@ -740,7 +625,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
 
     /**
      * 将长时间格式字符串转换为时间 yyyy-MM-dd HH:mm:ss
-     *
      * @param strDate
      * @return
      */
@@ -768,11 +652,6 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     }
 
     private String station_name, station_id;
-
-    private void gotoMap() {
-        startActivity(new Intent(getActivity(), ActivityAir.class));
-    }
-
 
     public void getTvColor(int aqi) {
         curProgress = 0;
@@ -965,11 +844,12 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                                 return;
                             }
                             final String result = response.body().string();
-                            Log.e("air_lev", result);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     try {
+                                        Log.e("air_lev", result);
                                         if (!TextUtil.isEmpty(result)) {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -983,7 +863,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                                                         airLevelDown.fillData(oobj.toString());
                                                         list_level.clear();
                                                         list_level.addAll(airLevelDown.list);
-                                                        getTrend(s_area_id, "aqi", areatype);
+                                                        okHttpAirTrend("aqi");
                                                     }
                                                 }
                                             }
@@ -1005,8 +885,8 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     /**
      * 获取空气质量实况、排名信息
      */
-    private void okHttpAirCityStation(final String stationId) {
-        dismissProgressDialog();
+    private void okHttpAirCityStation() {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1014,7 +894,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                     JSONObject param  = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", stationId);
+                    info.put("stationId", s_area_id);
                     param.put("paramInfo", info);
                     String json = param.toString();
                     String url = CONST.BASE_URL+"air_city_station";
@@ -1035,6 +915,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     try {
                                         if (!TextUtil.isEmpty(result)) {
                                             JSONObject obj = new JSONObject(result);
@@ -1049,7 +930,12 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                                                         refreshData(packAirInfoDown, 300);
                                                         tv_city_num.setText(packAirInfoDown.city_num + "/");
                                                         tv_city_total.setText(packAirInfoDown.totalCity + "位");
-                                                        tv_pub_time.setText(strToDateLong(packAirInfoDown.pub_time) + " 更新");
+                                                        tv_pub_time.setText(packAirInfoDown.pub_time + " 更新");
+                                                        try {
+                                                            tv_pub_time.setText(sdf2.format(sdf1.parse(packAirInfoDown.pub_time)) + " 更新");
+                                                        } catch (ParseException e) {
+                                                            e.printStackTrace();
+                                                        }
                                                         tv_airquality_name.setText(packAirInfoDown.pub_unit);
                                                     }
                                                 }
@@ -1070,6 +956,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     }
 
     private void okHttpAirRemark() {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1124,6 +1011,7 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
      * 获取空气质量趋势数据，图表
      */
     private void okHttpAirTrend(final String airType) {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1151,10 +1039,11 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     try {
+                                        Log.e("air_trend", result);
                                         dismissProgressDialog();
                                         if (!TextUtil.isEmpty(result)) {
-                                            Log.e("air_trend", result);
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
                                                 JSONObject bobj = obj.getJSONObject("b");

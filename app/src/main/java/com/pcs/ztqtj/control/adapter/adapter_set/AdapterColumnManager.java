@@ -29,8 +29,7 @@ public class AdapterColumnManager extends AdapterFragmentSetManager {
         super(context, listdata, rebootIndex);
     }
 
-    public AdapterColumnManager(Context context, List<Map<String, String>> listdata, int rebootIndex, int
-            versionIndex) {
+    public AdapterColumnManager(Context context, List<Map<String, String>> listdata, int rebootIndex, int versionIndex) {
         super(context, listdata, rebootIndex, versionIndex);
     }
 
@@ -39,10 +38,8 @@ public class AdapterColumnManager extends AdapterFragmentSetManager {
         Holder holder;
         if (view == null) {
             holder = new Holder();
-            view = LayoutInflater.from(context).inflate(
-                    R.layout.item_fragmentset_2, null);
-            holder.layout = (RelativeLayout) view
-                    .findViewById(R.id.item_fragmentset_id);
+            view = LayoutInflater.from(context).inflate(R.layout.item_fragmentset_2, null);
+            holder.layout = (RelativeLayout) view.findViewById(R.id.item_fragmentset_id);
             holder.choosebutton= (CheckBox) view.findViewById(R.id.open_icon);
             holder.itemTest = (TextView) view.findViewById(R.id.explain_text);
             holder.icon = (ImageView) view.findViewById(R.id.setimage_icon);
@@ -86,8 +83,7 @@ public class AdapterColumnManager extends AdapterFragmentSetManager {
             holder.rightText.setVisibility(View.VISIBLE);
             String versionName = "";
             try {
-                versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0)
-                        .versionName;
+                versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
@@ -103,9 +99,7 @@ public class AdapterColumnManager extends AdapterFragmentSetManager {
         }
 
         try {
-            holder.choosebutton.setChecked(Util.getPreferencesBooleanValue(
-                    context, "root", "start"));
-
+            holder.choosebutton.setChecked(Util.getPreferencesBooleanValue(context, "root", "start"));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,8 +108,7 @@ public class AdapterColumnManager extends AdapterFragmentSetManager {
             holder.icon.setVisibility(View.GONE);
         } else {
             try {
-                holder.icon.setImageResource(Integer.parseInt((listdata
-                        .get(position).get("i"))));
+                holder.icon.setImageResource(Integer.parseInt((listdata.get(position).get("i"))));
             } catch (Exception e) {
                 e.printStackTrace();
             }

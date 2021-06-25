@@ -36,9 +36,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 气象报告
+ * 监测预报-气象报告
  */
 public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
+
     private TextView content;
     private TextView null_context, tv_time;
 
@@ -49,13 +50,14 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
         setTitleText("气象报告");
         initView();
         initEvent();
-        initData();
     }
 
     private void initView() {
         content = findViewById(R.id.tv_qxb_content);
         null_context = findViewById(R.id.null_context);
         tv_time = findViewById(R.id.tv_qxbg_time);
+
+        okHttpContent();
     }
 
     private void initEvent() {
@@ -97,57 +99,11 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
         });
     }
 
-    private void initData() {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        showProgressDialog();
-        okHttpContent();
-    }
-
-//    /**
-//     * 添加标题的单选按钮 动态添加radiobutton
-//     *
-//     * @param number_radio_group
-//     */
-//    @SuppressWarnings("ResourceType")
-//    private void addRadioButton(RadioGroup number_radio_group, int countRadio) {
-//        int width = Util.getScreenWidth(ActivityWeatherSummary.this);
-//        int radioWidth = width / countRadio;
-//        int pad = Util.dip2px(ActivityWeatherSummary.this, 10);
-//        for (int i = 0; i < countRadio; i++) {
-//            RadioButton radioButton = new RadioButton(
-//                    ActivityWeatherSummary.this);
-//            radioButton.setId(10 + i);
-//            radioButton.setGravity(Gravity.CENTER);
-//            radioButton.setTextColor(getResources()
-//                    .getColor(R.color.text_black));
-//            radioButton
-//                    .setBackgroundResource(R.drawable.btn_warn_radiobutton_select);
-//            radioButton.setPadding(0, pad, 0, pad);
-//            radioButton.setButtonDrawable(getResources().getDrawable(
-//                    android.R.color.transparent));
-//            radioButton.setText(weatherList.get(i).title);
-//            radioButton.setSingleLine(true);
-//
-//            if (i == 0) {
-//                radioButton.setChecked(true);
-//            }
-//
-//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                    radioWidth, LayoutParams.WRAP_CONTENT);
-//            number_radio_group.addView(radioButton, lp);
-//        }
-//        if (countRadio > 0) {
-//            number_radio_group.check(10);
-//        }
-//    }
-
     /**
      * 获取气象报告数据
      */
     private void okHttpContent() {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -172,8 +128,8 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
                                 @Override
                                 public void run() {
                                     dismissProgressDialog();
+                                    Log.e("qxbg", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("qxbg", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -212,6 +168,5 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
             }
         }).start();
     }
-
 
 }

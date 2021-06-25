@@ -15,7 +15,6 @@ import android.provider.MediaStore.Images;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -28,7 +27,6 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -54,18 +52,15 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListDown.StationInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.RadarImgInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.MyListBaseAdapter;
 import com.pcs.ztqtj.control.adapter.radar.AdapterRadar;
 import com.pcs.ztqtj.control.livequery.ControlDistributionBase;
 import com.pcs.ztqtj.control.livequery.ControlMapBound;
-import com.pcs.ztqtj.control.main_weather.CommandMainRow0;
 import com.pcs.ztqtj.control.radar.RadarMapControl;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.ShareTools;
@@ -103,29 +98,28 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 雷达回波
- * @author chenjh
+ * 监测预报-雷达回波
  */
 public class ActivityWeatherRadar extends FragmentActivityWithShare implements View.OnClickListener, AnimationListener {
-    private MyReceiver receiver = new MyReceiver();
-    private PackRadarListUp packRadarListUp = new PackRadarListUp();
-    private PackRadarUp packRadarUp = new PackRadarUp();
-    private List<StationInfo> stationList = new ArrayList<StationInfo>(); // 气象雷达列表
+
+    private List<StationInfo> stationList = new ArrayList<>(); // 气象雷达列表
     /***
      * 拼图列表
      */
-    public List<StationInfo> puzzleList = new ArrayList<StationInfo>();
-    private List<RadarImgInfo> radarImgList = new ArrayList<RadarImgInfo>();// 雷达图片列表
+    public List<StationInfo> puzzleList = new ArrayList<>();
+    private List<RadarImgInfo> radarImgList = new ArrayList<>();// 雷达图片列表
 
     private MyListBaseAdapter myBaseAdapter;
     private Bitmap[] comm_imgs;
     private int imgCount = 8;
     private int index;
-    private LinearLayout tabLayout;
     public MySeekBar myPopSeekBar;
     public TextView tvPopProgress;
     public SeekBar mSeekBar;
@@ -140,7 +134,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
     private ImageTouchView mImage;
     public ImageView btnStart;
     private PopupWindow mPopWindow;
-    private int currTab = 0;
     private TextureMapView mapView;
     protected AMap aMap;
     private static final LatLng INIT_LATLNG = new LatLng(39.0851000000,117.1993700000);
@@ -187,8 +180,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // 禁止休眠
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams
-                .FLAG_KEEP_SCREEN_ON);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setTitleText("雷达回波");
         setContentView(R.layout.weather_radar_main);
@@ -224,7 +216,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
     private void initView() {
         iv_radar_example= (ImageView) findViewById(R.id.iv_radar_example);
         radarView = (RelativeLayout) findViewById(R.id.radarView);
-        tabLayout = (LinearLayout) findViewById(R.id.tab_layout);
         mBottomBar = findViewById(R.id.bottom_bar);
         mImage = (ImageTouchView) findViewById(R.id.img);
         mImage.setHightFillScale(true);
@@ -260,18 +251,8 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
 
     private void initData() {
         addLocationMarkerToMap();
-        showProgressDialog();
-        // 注册广播接收
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         comm_imgs = new Bitmap[imgCount];
-        getStationList();
-        if (!isOpenNet()) {
-            showToast(getString(R.string.open_netword));
-        } else {
-            if (!isWiFiNewWord()) {
-                showToast(getString(R.string.un_wifi_desc));
-            }
-        }
+        okHttpRadarStations();
 
         ControlMapBound controlMapBound = new ControlMapBound(ActivityWeatherRadar.this, aMap, Color.BLACK);
         controlMapBound.setLineWidth(4);
@@ -285,7 +266,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
      * 初始化适配器
      */
     private void initControls() {
-        createControls();
         for (ControlDistributionBase bean : controlList) {
             bean.init();
         }
@@ -297,11 +277,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
     public AMap getMap() {
         return aMap;
     }
-
-
-    private void createControls() {
-    }
-
 
     /**
      * 执行控制器中清除
@@ -324,68 +299,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         }
     }
 
-
-    /**
-     * 获取雷达站点列表
-     **/
-    private void getStationList() {
-//        if (!isOpenNet()) {
-//            showToast(getString(R.string.net_err));
-//            return;
-//        }
-        packRadarListUp.type = "1";
-        okHttpRadarStations(packRadarListUp.getName(), false);
-        PcsDataDownload.addDownload(packRadarListUp);
-    }
-
-    /**
-     * 获取雷达站点列表
-     */
-    private void okHttpRadarStations(final String name, final boolean isnet) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("leidanewlist", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("leidanewlist")) {
-                                                JSONObject leidanewlist = bobj.getJSONObject("leidanewlist");
-                                                if (!TextUtil.isEmpty(leidanewlist.toString())) {
-                                                    PackRadarListDown down = new PackRadarListDown();
-                                                    down.fillData(leidanewlist.toString());
-                                                    dealListDown(down, isnet);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
-    }
-
     /**
      * 添加定位点
      */
@@ -393,83 +306,21 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(INIT_LATLNG, MAP_ZOOM));
     }
 
-
-    private void dealListDown(PackRadarListDown packRadarListDown, boolean isnet) {
-        if (packRadarListDown == null) {
-            if (isnet) {
-                okHttpRadarStations(packRadarListUp.getName(), isnet);
-            }
-        } else {
-            stationList.clear();
-            puzzleList.clear();
-            stationList.addAll(packRadarListDown.stationList);
-            puzzleList.addAll(packRadarListDown.stationList);
-            updateStationList();
-//        showProgressDialog();
-            itemName = puzzleList.get(0).station_name;
-            tab_name.setText(itemName);
-            switchTab(0, puzzleList.get(0).station_id);
-        }
+    private void dealListDown(PackRadarListDown packRadarListDown) {
+        stationList.clear();
+        puzzleList.clear();
+        stationList.addAll(packRadarListDown.stationList);
+        puzzleList.addAll(packRadarListDown.stationList);
+        updateStationList();
+        itemName = puzzleList.get(0).station_name;
+        tab_name.setText(itemName);
+        switchTab(0, puzzleList.get(0).station_id);
     }
 
-    private void dealRadarDown(PackRadarDown packRadarDown, boolean isnet) {
-        if (packRadarDown == null) {
-            if (isnet) {
-                okHttpRadarDetail(packRadarUp.getName(), isnet);
-            }
-        } else {
-            mImage.setVisibility(View.VISIBLE);
-            radarImgList = packRadarDown.radarImgList;
-            updateRadarData();
-        }
-    }
-
-    /**
-     * 获取雷达站点详情
-     */
-    private void okHttpRadarDetail(final String name, final boolean isnet) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("leida", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("leida")) {
-                                                JSONObject leida = bobj.getJSONObject("leida");
-                                                if (!TextUtil.isEmpty(leida.toString())) {
-                                                    PackRadarDown down = new PackRadarDown();
-                                                    down.fillData(leida.toString());
-                                                    dealRadarDown(down, isnet);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
+    private void dealRadarDown(PackRadarDown packRadarDown) {
+        mImage.setVisibility(View.VISIBLE);
+        radarImgList = packRadarDown.radarImgList;
+        updateRadarData();
     }
 
     /**
@@ -478,40 +329,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String name, String error) {
-            if (packRadarListUp != null && packRadarListUp.getName().equals(name)) {
-                dismissProgressDialog();
-                okHttpRadarStations(packRadarListUp.getName(), true);
-
-//                PackRadarListDown packRadarListDown = (PackRadarListDown) PcsDataManager.getInstance().getNetPack(name);
-//                if (packRadarListDown == null) {
-//                    return;
-//                }
-//                stationList.clear();
-//                puzzleList.clear();
-//                stationList.addAll(packRadarListDown.stationList);
-//                puzzleList.addAll(packRadarListDown.stationList);
-//                updateStationList();
-//
-//                showProgressDialog();
-//                itemName = puzzleList.get(0).station_name;
-//                tab_name.setText(itemName);
-//                switchTab(0, puzzleList.get(0).station_id);
-
-            } else if (packRadarUp != null && packRadarUp.getName().equals(name)) {
-                dismissProgressDialog();
-                okHttpRadarDetail(packRadarUp.getName(), true);
-
-//                PackRadarDown packRadarDown = (PackRadarDown) PcsDataManager.getInstance().getNetPack(name);
-//                radarImgList.clear();
-//                if (packRadarDown == null||packRadarDown.radarImgList.size()==0) {
-////                    updateRadarData();
-//                    mImage.setVisibility(View.GONE);
-//                    return;
-//                }
-//                mImage.setVisibility(View.VISIBLE);
-//                radarImgList.addAll(packRadarDown.radarImgList);
-//                updateRadarData();
-            } else if (packRadarNewUp.getName().equals(name)) {
+            if (packRadarNewUp.getName().equals(name)) {
                 dismissProgressDialog();
                 PackRadarNewDown down = (PackRadarNewDown) PcsDataManager.getInstance().getNetPack(name);
                 if (down == null) {
@@ -605,18 +423,9 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         btnStart.setEnabled(true);
         index = 1;
         count = 0;
-        currTab = position;
 
-//        if (!isOpenNet()) {
-//            showToast(getString(R.string.net_err));
-//            return;
-//        }
-//        showProgressDialog();
         mSeekBar.setProgress(imgCount - 1);
-        packRadarUp.station_id = station_id;
-        packRadarUp.count = "8";
-        okHttpRadarDetail(packRadarUp.getName(), false);
-        PcsDataDownload.addDownload(packRadarUp);
+        okHttpRadarDetail(station_id);
     }
 
     /**
@@ -643,7 +452,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
             comm_imgs = new Bitmap[radarImgList.size()];
             // 显示最后一张图片
             RadarImgInfo info = radarImgList.get(radarImgList.size() - 1);
-            String url = info.img;
+            String url = getString(R.string.file_download_url)+info.img;
             getImageFetcher().loadImage(url, null, ImageConstant.ImageShowType.NONE);
             initSeekBar(radarImgList.size());
             if (TextUtils.isEmpty(info.actiontime)) {
@@ -677,7 +486,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
                 if (isSucc && getImageFetcher().getImageCache() != null) {
                     for (int i = 0; i < radarImgList.size(); i++) {
                         RadarImgInfo info = radarImgList.get(i);
-                        String url = info.img;
+                        String url = getString(R.string.file_download_url)+info.img;
                         if (key.equals(url)) {
                             comm_imgs[i] = getImageFetcher().getImageCache()
                                     .getBitmapFromAllCache(key).getBitmap();
@@ -706,7 +515,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         if (count < radarImgList.size()) {
             // 下载第count张图片
             RadarImgInfo info = radarImgList.get(count);
-            String url = info.img;
+            String url = getString(R.string.file_download_url)+info.img;
             getImageFetcher().addListener(loadImageListener);
             getImageFetcher().loadImage(url, null, ImageConstant.ImageShowType.NONE);
         } else {
@@ -1232,7 +1041,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         super.onDestroy();
         //图像加载监听
         getImageFetcher().removeListener(loadImageListener);
-        this.unregisterReceiver(receiver);
         for (int i = 0; i < comm_imgs.length; i++) {
             comm_imgs[i] = null;
         }
@@ -1242,5 +1050,123 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         destroyControls();
     }
 
+    /**
+     * 获取雷达站点列表
+     */
+    private void okHttpRadarStations() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"leidanew_list";
+                    Log.e("leidanew_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("leidanew_list", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("leidanewlist")) {
+                                                    JSONObject leidanewlist = bobj.getJSONObject("leidanewlist");
+                                                    if (!TextUtil.isEmpty(leidanewlist.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackRadarListDown down = new PackRadarListDown();
+                                                        down.fillData(leidanewlist.toString());
+                                                        dealListDown(down);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取雷达站点详情
+     */
+    private void okHttpRadarDetail(final String stationId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"leida_pic";
+                    Log.e("leida_pic", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("leida_pic", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("leida")) {
+                                                    JSONObject leida = bobj.getJSONObject("leida");
+                                                    if (!TextUtil.isEmpty(leida.toString())) {
+                                                        PackRadarDown down = new PackRadarDown();
+                                                        down.fillData(leida.toString());
+                                                        dealRadarDown(down);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
 }

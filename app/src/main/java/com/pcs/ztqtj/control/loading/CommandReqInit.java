@@ -22,24 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * 请求初始化
- *
- * @author JiangZY
+ * 闪屏页面，请求初始化
  */
 public class CommandReqInit extends AbstractCommand {
-    /**
-     * 上下文
-     */
+
     private Context mContext;
     /**
      * 初始化上传包
      */
     private PackInitUp packInitUp = new PackInitUp();
-
-//    /**
-//     * 初始化下载包
-//     */
-//    private PackInitDown packInitDown = new PackInitDown();
 
     /**
      * 当前版本号
@@ -53,31 +44,24 @@ public class CommandReqInit extends AbstractCommand {
     @Override
     public void execute() {
         super.execute();
-        Log.e("jzy", "执行CommandLoadingInit");
-        // 当前版本号
         versionCode = getVersionCode();
-        // 检查本地版本
         if (checkLocalVersion() && checkInitDown()) {
-            // 成功
             setStatus(Status.SUCC);
             return;
         }
 
         // 注册广播接收
-        PcsDataBrocastReceiver.registerReceiver(mContext,
-                mPcsDataBrocastReceiver);
+        PcsDataBrocastReceiver.registerReceiver(mContext,mPcsDataBrocastReceiver);
         // 初始化包
         packInitUp.app = "10001";
-        TelephonyManager tm = (TelephonyManager) mContext
-                .getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
         packInitUp.imei = tm.getDeviceId();
         packInitUp.meid = getDeviceId(2);
         packInitUp.sv = versionCode;
         packInitUp.xh = android.os.Build.MODEL;
         packInitUp.sys = android.os.Build.VERSION.RELEASE;
         packInitUp.sim = tm.getSimSerialNumber();
-        packInitUp.androidCode = Settings.Secure.getString(mContext.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+        packInitUp.androidCode = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
         LocalDataHelper.saveMyImei(mContext, "imei", tm.getDeviceId());
         // 请求初始化数据
         PcsDataDownload.addDownload(packInitUp);
@@ -97,7 +81,6 @@ public class CommandReqInit extends AbstractCommand {
 
     /**
      * 检查本地版本
-     *
      * @return
      */
     private boolean checkLocalVersion() {
@@ -105,26 +88,20 @@ public class CommandReqInit extends AbstractCommand {
         if (packLocalInit == null || !versionCode.equals(packLocalInit.versionCode)) {
             return false;
         }
-
         return true;
     }
 
     /**
      * 检查初始化下载
-     *
      * @return
      */
     private boolean checkInitDown() {
-
         PackInitDown packInitDown = (PackInitDown) PcsDataManager.getInstance().getLocalPack(PackInitUp.NAME);
         if (packInitDown == null || TextUtils.isEmpty(packInitDown.pid)) {
             return false;
         }
         // 设置pid
         PcsDataDownload.setP(packInitDown.pid);
-        Log.i("z","get pid  success,pid is"+packInitDown.pid);
-
-
         return true;
     }
 
@@ -158,21 +135,15 @@ public class CommandReqInit extends AbstractCommand {
         @Override
         public void onReceive(String name, String error) {
             if (packInitUp.getName().equals(name)) {
-
-                PcsDataBrocastReceiver.unregisterReceiver(mContext,
-                        mPcsDataBrocastReceiver);
-
+                PcsDataBrocastReceiver.unregisterReceiver(mContext, mPcsDataBrocastReceiver);
                 if (!TextUtils.isEmpty(error)) {
-                    // 失败
                     setStatus(Status.FAIL);
                     return;
                 }
-                Log.i("z","get pid  success-----------------");
                 if (checkInitDown()) {
                     setStatus(Status.SUCC);
                     return;
                 }
-                // 失败
                 setStatus(Status.FAIL);
                 return;
             }

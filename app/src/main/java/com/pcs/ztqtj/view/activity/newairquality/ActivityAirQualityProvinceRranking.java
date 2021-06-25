@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +15,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
-import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceType;
-import com.pcs.ztqtj.control.adapter.air_qualitydetail.AdapterAirQualityRanking;
-import com.pcs.ztqtj.control.inter.DrowListClick;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.air_quality.AcitvityAirWhatAQI;
-import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
@@ -32,7 +24,24 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
+import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceType;
+import com.pcs.ztqtj.control.adapter.air_qualitydetail.AdapterAirQualityRanking;
+import com.pcs.ztqtj.control.inter.DrowListClick;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+import com.pcs.ztqtj.view.activity.air_quality.AcitvityAirWhatAQI;
+import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,8 +49,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * JiangZy on 2016/8/5.
+ * 空气质量-全省排行
  */
 public class ActivityAirQualityProvinceRranking extends FragmentActivityZtqBase implements View.OnClickListener {
     private ListView cityList;
@@ -101,50 +118,8 @@ public class ActivityAirQualityProvinceRranking extends FragmentActivityZtqBase 
         airListData.clear();
         airListDataAll.clear();
 //-------------------------------------------
-        PackAirRankNewUp airPackup = new PackAirRankNewUp();
-        airPackup.rank_type = reqCode;
-        PackAirRankNewDown packAirRankDown = (PackAirRankNewDown) PcsDataManager.getInstance().getNetPack(airPackup.getName());
-        airListDataSourse.clear();
-        airListDataSourse.addAll(packAirRankDown.rank_list);
-        adapter.isDown = true;
-        airListDataParent.clear();
-        for (int i = 0; i < packAirRankDown.rank_list.size(); i++) {
-            if (packAirRankDown.rank_list.get(i).province.equals(province)) {
-                airListData.add(packAirRankDown.rank_list.get(i));
-            }
-        }
-        airListDataAll.addAll(packAirRankDown.rank_list);
-        Iterator it = packAirRankDown.allProvince.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            airListDataParent.add((AirRankNew) entry.getValue());
-        }
-        if (reqCode.trim().equals("aqi") || reqCode.trim().toLowerCase().equals("aqi")) {
-            adapter.isAQI = true;
-        } else {
-            adapter.isAQI = false;
-        }
-        adapter.setData(airListData);
-        adapter.notifyDataSetChanged();
-        packKey = (PackKeyDescDown) PcsDataManager.getInstance().getNetPack(PackKeyDescUp.NAME);
-        dataeaum.clear();
-        if (packKey.dicList.size()>0){
-            for (int i = 0; i < packKey.dicList.size(); i++) {
-                dataeaum.add(packKey.dicList.get(i));
-            }
-        }
-        // 设置rankname
-        String showKey = dataeaum.get(keyPosition).rankType;
-        if (showKey.equals("O3")) {
-            showKey = "O3_1H";
-        } else if (showKey.equals("PM2_5")) {
-            showKey = "PM2.5";
-        }
-        pm_rank_name.setText(showKey);
 
-        changeValueKey(keyPosition);
-        //初始化下拉列表
-        initPopList();
+        okHttpAirRankNew(reqCode);
     }
 
     /**
@@ -567,16 +542,150 @@ public class ActivityAirQualityProvinceRranking extends FragmentActivityZtqBase 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 pop.dismiss();
                 String showKey = dataeaum.get(position).rankType;
-                if (showKey.equals("O3")) {
-                    showKey = "O3_1H";
-                } else if (showKey.equals("PM2_5")) {
-                    showKey = "PM2.5";
-                }
                 dropDownView.setText(showKey);
                 listener.itemClick(floag, position);
             }
         });
         return pop;
+    }
+
+    private void okHttpAirRankNew(final String airType) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("airType", airType);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_rank_new";
+                    Log.e("air_rank_new", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_rank_new", result);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_rank_new")) {
+                                                JSONObject air_rank = bobj.getJSONObject("air_rank_new");
+                                                PackAirRankNewDown packAirRankDown = new PackAirRankNewDown();
+                                                packAirRankDown.fillData(air_rank.toString());
+                                                airListDataSourse.clear();
+                                                airListDataSourse.addAll(packAirRankDown.rank_list);
+                                                adapter.isDown = true;
+                                                airListDataParent.clear();
+                                                for (int i = 0; i < packAirRankDown.rank_list.size(); i++) {
+                                                    if (packAirRankDown.rank_list.get(i).province.equals(province)) {
+                                                        airListData.add(packAirRankDown.rank_list.get(i));
+                                                    }
+                                                }
+                                                airListDataAll.addAll(packAirRankDown.rank_list);
+                                                Iterator it = packAirRankDown.allProvince.entrySet().iterator();
+                                                while (it.hasNext()) {
+                                                    Map.Entry entry = (Map.Entry) it.next();
+                                                    airListDataParent.add((AirRankNew) entry.getValue());
+                                                }
+                                                if (reqCode.trim().equals("aqi") || reqCode.trim().toLowerCase().equals("aqi")) {
+                                                    adapter.isAQI = true;
+                                                } else {
+                                                    adapter.isAQI = false;
+                                                }
+                                                adapter.setData(airListData);
+                                                adapter.notifyDataSetChanged();
+
+                                                okHttpAirRemark();
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void okHttpAirRemark() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"air_remark";
+                    Log.e("air_remark", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("air_remark", result);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("air_remark")) {
+                                                JSONObject air_remark = bobj.getJSONObject("air_remark");
+                                                packKey.fillData(air_remark.toString());
+                                                dataeaum.clear();
+                                                if (packKey.dicList.size()>0){
+                                                    for (int i = 0; i < packKey.dicList.size(); i++) {
+                                                        dataeaum.add(packKey.dicList.get(i));
+                                                    }
+                                                }
+                                                // 设置rankname
+                                                String showKey = dataeaum.get(keyPosition).rankType;
+                                                pm_rank_name.setText(showKey);
+
+                                                changeValueKey(keyPosition);
+                                                //初始化下拉列表
+                                                initPopList();
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

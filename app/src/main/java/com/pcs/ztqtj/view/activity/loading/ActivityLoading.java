@@ -32,6 +32,9 @@ import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivityBase;
 import com.pcs.ztqtj.view.dialog.PermissionVerifyDialog;
 
+/**
+ * 闪屏页
+ */
 public class ActivityLoading extends FragmentActivityBase {
 
     private String[] needPermissions = {
@@ -52,7 +55,6 @@ public class ActivityLoading extends FragmentActivityBase {
             Manifest.permission.ACCESS_FINE_LOCATION,
     };
 
-    private boolean mResult = true;
     private boolean requestOnResume = false;
     private PermissionVerifyDialog dialog;
 
@@ -80,8 +82,7 @@ public class ActivityLoading extends FragmentActivityBase {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull final String[] permissions, @NonNull int[]
-            grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull final String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionsTools.PERMISSON_REQUESTCODE) {
             if(PermissionsTools.verifyNessaryPermissions(nessaryPermissions, permissions, grantResults)) {
@@ -107,28 +108,23 @@ public class ActivityLoading extends FragmentActivityBase {
                         @Override
                         public void onClick(View v) {
                             checkPermissions(nessaryPermissions);
-                            //requestOnResume = false;
                         }
                     });
-
                 } else {
                     dialog.setOKButtonMessage("去设置");
                     dialog.setOnConfirmListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             gotoSystemPermissionActivity();
-                            //handler.sendEmptyMessageDelayed(0, 500);
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     requestOnResume = true;
                                 }
                             }, 1000);
-
                         }
                     });
                 }
-
                 dialog.show();
             }
         }
@@ -172,7 +168,6 @@ public class ActivityLoading extends FragmentActivityBase {
                 //检查初始化
                 CommandLoadingCheck commandCheck = new CommandLoadingCheck(getApplicationContext());
                 batchingLoading.addCommand(commandCheck);
-
                 // 城市
                 CommandLoadingCity commandCity = new CommandLoadingCity(ActivityLoading.this);
                 batchingLoading.addCommand(commandCity);
@@ -206,9 +201,8 @@ public class ActivityLoading extends FragmentActivityBase {
             }
             SharedPreferences.Editor editor = shared.edit();
             editor.putBoolean("first", false);
-            editor.commit();
+            editor.apply();
         }
-
     }
 
     private InterCommand.InterCommandListener mLoadingListener = new InterCommand.InterCommandListener() {
@@ -218,7 +212,6 @@ public class ActivityLoading extends FragmentActivityBase {
                 Toast.makeText(ActivityLoading.this, R.string.init_error, Toast.LENGTH_SHORT).show();
                 return;
             }
-//            changeCityName();
             // 跳转
             CommandLoadingGoto commandGoto = new CommandLoadingGoto(ActivityLoading.this, getImageFetcher());
             commandGoto.execute();

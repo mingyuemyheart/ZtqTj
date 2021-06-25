@@ -32,21 +32,23 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjMyReportDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjMyReportUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjMyReport;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.disaster.AdatperReporting;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
 import com.pcs.ztqtj.control.tool.AppTool;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.control.tool.youmeng.LoginAnther;
 import com.pcs.ztqtj.control.tool.youmeng.ToolQQPlatform;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoRegister;
 import com.pcs.ztqtj.view.fragment.warning.FragmentDisasterReporting;
 import com.tencent.tauth.IUiListener;
@@ -54,9 +56,11 @@ import com.tencent.tauth.UiError;
 import com.umeng.socialize.UMAuthListener;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,11 +70,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-/**
- * Created by Administrator on 2017/8/2 0002.
- * chen_jx
- */
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+/**
+ * 首页-预警中心-灾害直报-我的预报
+ */
 public class FragmentDisasterMyreport extends FragmentReportBase implements View.OnClickListener {
 
     private ListView lv_disaster_report;
@@ -116,7 +126,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
 
     private void initData() {
         showProgressDialog();
-        Check_yjtj();
+        okHttpAlarmType();
         Calendar c = Calendar.getInstance();
         String t_time = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1);
         year = c.get(Calendar.YEAR);
@@ -138,8 +148,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         mlist = new ArrayList<>();
         mlist_id = new ArrayList<>();
         if (!TextUtils.isEmpty(user_id)) {
-            showProgressDialog();
-            Check_Search();
+            okHttpReportList();
         }
     }
     @Override
@@ -147,24 +156,12 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         super.onHiddenChanged(hidden);
         if (!hidden){
             if (!TextUtils.isEmpty(user_id)) {
-                Check_Search();
+                okHttpReportList();
             }
         }
     }
 
-    private PackYjMyReportUp packYjmyreportUp = new PackYjMyReportUp();
-    private PackColumnUp packYjZqColumnUp = new PackColumnUp();
-    //查询灾情统计
-    private void Check_yjtj() {
-        packYjZqColumnUp.column_type = "18";
-        try {
-            PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceivers);
-            PcsDataDownload.addDownload(packYjZqColumnUp);
-        } catch (Exception e) {
-        }
-    }
-
-    public void refreshDate(String id) {
+    public void refreshDate() {
         user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
         if (!TextUtils.isEmpty(user_id)) {
             Calendar c = Calendar.getInstance();
@@ -175,85 +172,13 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
             }
             showProgressDialog();
             time = str[0] + "-" + str[1];
-            //请求
-            packYjmyreportUp.userid = user_id;
-            packYjmyreportUp.zq_id = ids;
-            packYjmyreportUp.pub_time = time;
-            packYjmyreportUp.status = status;
-            //下载
-            PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceivers);
-            PcsDataDownload.addDownload(packYjmyreportUp);
+            okHttpReportList();
         }
-    }
-
-    private void Check_Search() {
-        //请求
-        packYjmyreportUp.userid = user_id;
-        packYjmyreportUp.zq_id = ids;
-        packYjmyreportUp.pub_time = time;
-        packYjmyreportUp.status = status;
-        //下载
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceivers);
-        PcsDataDownload.addDownload(packYjmyreportUp);
     }
 
     private List<YjMyReport> lists = new ArrayList<>();
-    private PcsDataBrocastReceiver mReceivers = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (TextUtils.isEmpty(nameStr)) {
-                return;
-            }
-
-            if (nameStr.equals(packYjmyreportUp.getName())) {
-                //等待框
-                dismissProgressDialog();
-                PackYjMyReportDown packDown = (PackYjMyReportDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDown == null) {
-                    PcsDataDownload.addDownload(packYjmyreportUp);
-                    return;
-                }
-                //PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceivers);
-                if (packDown.list_2.size() > 0) {
-                    lists.clear();
-                    lists.addAll(packDown.list_2);
-                    adapter.notifyDataSetChanged();
-                    lay_report_title.setVisibility(View.VISIBLE);
-                    tv_search_retult.setVisibility(View.GONE);
-                } else {
-                    lists.clear();
-                    lay_report_title.setVisibility(View.GONE);
-                    tv_search_retult.setVisibility(View.VISIBLE);
-                    tv_search_retult.setText(time + ",您"+disaster_reprot_status.getText().toString()+"的灾情报告为 0 条");
-                }
-            }
-            if (nameStr.equals(packYjZqColumnUp.getName())) {
-                dismissProgressDialog();
-                PackColumnDown packDowns = (PackColumnDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDowns == null) {
-                    PcsDataDownload.addDownload(packYjZqColumnUp);
-                    return;
-                }
-                //PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceivers);
-                if (packDowns.arrcolumnInfo != null) {
-                    mlist.clear();
-                    mlist_id.clear();
-                    mlist.add("所有灾情");
-                    mlist_id.add("");
-                    for (int i = 0; i < packDowns.arrcolumnInfo.size(); i++) {
-                        mlist.add(packDowns.arrcolumnInfo.get(i).name);
-                        mlist_id.add(packDowns.arrcolumnInfo.get(i).type);
-                    }
-                }
-            }
-        }
-    };
-
-
-    private Calendar c;
 
     private void initView() {
-
         lv_disaster_report = (ListView) getView().findViewById(R.id.lv_disaster_report);
         adapter = new AdatperReporting(getActivity(), lists);
         lv_disaster_report.setAdapter(adapter);
@@ -270,7 +195,6 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         disaster_reprot_status.setOnClickListener(this);
         disaster_search_btn = (Button) getView().findViewById(R.id.disaster_search_btn);
         disaster_search_btn.setOnClickListener(this);
-        c = Calendar.getInstance();
         disaster_reprot_date = (TextView) getView().findViewById(R.id.disaster_reprot_date);
         disaster_reprot_date.setOnClickListener(this);
         disaster_reprot_date.setText(time);
@@ -294,14 +218,9 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         tv_register = (TextView) getView().findViewById(R.id.tv_disaster_register);
         tv_register.setOnClickListener(this);
         setvisibility();
-
-//        if (type.equals("1")){
-//            refreshDate();
-//        }
     }
 
     public void setvisibility() {
-
         if (TextUtils.isEmpty(user_id)) {
             lay_resptor_login.setVisibility(View.VISIBLE);
             lay_report_title.setVisibility(View.GONE);
@@ -311,7 +230,6 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
             lay_report_title.setVisibility(View.VISIBLE);
             lv_disaster_report.setVisibility(View.VISIBLE);
         }
-
     }
 
     public Date getPastHalfYear() {
@@ -355,8 +273,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
                 } else if (time.equals("发布时间")) {
                     Toast.makeText(getActivity(), "您还未选择发布时间", Toast.LENGTH_SHORT).show();
                 } else {
-                    showProgressDialog();
-                    Check_Search();
+                    okHttpReportList();
                 }
                 break;
             case R.id.btn_disaster_password:
@@ -453,7 +370,6 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         mPack.platform_user_id = username;
         mPack.pwd = PcsMD5.Md5(password);
         mPack.platform_type = PackPhotoLoginUp.PLAFORM_TYPE_ZTQ;
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceivers);
         PcsDataDownload.addDownload(mPack);
     }
 
@@ -686,7 +602,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
                     user_id = packDown.user_id;
                     setvisibility();
                     showProgressDialog();
-                    Check_Search();
+                    okHttpReportList();
                     Toast.makeText(getActivity(),
                             getString(R.string.login_succ), Toast.LENGTH_SHORT)
                             .show();
@@ -884,7 +800,6 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         mPack.nick_name = userName;
         mPack.platform_user_id = userId;
         mPack.platform_type = platForm;
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceivers);
         PcsDataDownload.addDownload(mPack);
     }
 
@@ -918,7 +833,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         if (!TextUtils.isEmpty(user_id)) {
             showProgressDialog();
             status=id;
-            refreshDate(id);
+            refreshDate();
             if (id.equals("1")){
                 disaster_reprot_status.setText("已通过");
             }else if(id.equals("2")){
@@ -930,8 +845,6 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
             }
         }
     }
-
-
 
     public ArrayList<String> getTimes(int year, int month) {
         ArrayList<String> str = new ArrayList<>();
@@ -1001,4 +914,149 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
         }
         return str;
     }
+
+    /**
+     * 获取预警分类
+     */
+    private void okHttpAlarmType() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"alarm/getAlarmTypeList";
+                    Log.e("getAlarmTypeList", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("getAlarmTypeList", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("column")) {
+                                                    JSONObject columnObj = bobj.getJSONObject("column");
+                                                    if (!TextUtil.isEmpty(columnObj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackColumnDown packDowns = new PackColumnDown();
+                                                        packDowns.fillData(columnObj.toString());
+                                                        if (packDowns.arrcolumnInfo != null) {
+                                                            mlist.clear();
+                                                            mlist_id.clear();
+                                                            mlist.add("所有灾情");
+                                                            mlist_id.add("");
+                                                            for (int i = 0; i < packDowns.arrcolumnInfo.size(); i++) {
+                                                                mlist.add(packDowns.arrcolumnInfo.get(i).name);
+                                                                mlist_id.add(packDowns.arrcolumnInfo.get(i).type);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取我的报告
+     */
+    private void okHttpReportList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("user_id", user_id);
+                    info.put("pub_time", time);
+                    info.put("status", status);
+                    info.put("zq_id", ids);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("disasterReportList", json);
+                    final String url = CONST.BASE_URL+"alarm/disasterReportList";
+                    Log.e("disasterReportList", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    Log.e("addDisasterReport", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yj_my_zq")) {
+                                                    JSONObject itemObj = bobj.getJSONObject("yj_my_zq");
+                                                    if (!TextUtil.isEmpty(itemObj.toString())) {
+                                                        PackYjMyReportDown packDown = new PackYjMyReportDown();
+                                                        packDown.fillData(itemObj.toString());
+                                                        if (packDown.list_2.size() > 0) {
+                                                            lists.clear();
+                                                            lists.addAll(packDown.list_2);
+                                                            adapter.notifyDataSetChanged();
+                                                            lay_report_title.setVisibility(View.VISIBLE);
+                                                            tv_search_retult.setVisibility(View.GONE);
+                                                        } else {
+                                                            lists.clear();
+                                                            lay_report_title.setVisibility(View.GONE);
+                                                            tv_search_retult.setVisibility(View.VISIBLE);
+                                                            tv_search_retult.setText(time + ",您"+disaster_reprot_status.getText().toString()+"的灾情报告为 0 条");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

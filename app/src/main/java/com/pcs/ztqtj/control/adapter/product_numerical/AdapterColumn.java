@@ -16,8 +16,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
 import java.util.List;
 
 /**
- * 图片加标题栏目的adapter
- * Created by tyaathome on 2016/8/8.
+ * 监测预报-模式预报
  */
 public class AdapterColumn extends BaseAdapter{
 
@@ -53,14 +52,14 @@ public class AdapterColumn extends BaseAdapter{
         if(convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.item_column, null);
-            holder.itemImage = (ImageView) convertView.findViewById(R.id.item_image);
-            holder.itemText = (TextView) convertView.findViewById(R.id.item_text);
+            holder.itemImage = convertView.findViewById(R.id.item_image);
+            holder.itemText = convertView.findViewById(R.id.item_text);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String path = context.getResources().getString(R.string.file_download_url) + dataList.get(position).getIconPath();
+        String path = context.getResources().getString(R.string.msyb) + dataList.get(position).getIconPath();
         imageFetcher.loadImage(path, holder.itemImage, ImageConstant.ImageShowType.SRC);
         holder.itemText.setText(dataList.get(position).getTitle());
 

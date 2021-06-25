@@ -13,22 +13,19 @@ import android.widget.TextView;
 
 import com.pcs.ztqtj.R;
 
+/**
+ * 监测预报
+ */
 public class AdapterProductGridView extends BaseAdapter {
 
 	private Context context;
-	List<Map<String, Object>> dataList;
+	private List<Map<String, Object>> dataList;
 
-	public AdapterProductGridView(Context context,
-			List<Map<String, Object>> data) {
+	public AdapterProductGridView(Context context, List<Map<String, Object>> data) {
 		this.context = context;
 		this.dataList = data;
 	}
 	
-
-	public void setData(List<Map<String, Object>> data) {
-		this.dataList = data;
-	}
-
 	@Override
 	public int getCount() {
 		return dataList.size();
@@ -49,10 +46,9 @@ public class AdapterProductGridView extends BaseAdapter {
 		Holder holder;
 		if (view == null) {
 			holder = new Holder();
-			view = LayoutInflater.from(context).inflate(
-					R.layout.productgridview_content, null);
-			holder.itemImage = (ImageView) view.findViewById(R.id.item_image);
-			holder.itemName = (TextView) view.findViewById(R.id.item_name);
+			view = LayoutInflater.from(context).inflate(R.layout.productgridview_content, null);
+			holder.itemImage = view.findViewById(R.id.item_image);
+			holder.itemName = view.findViewById(R.id.item_name);
 			view.setTag(holder);
 		} else {
 			holder = (Holder) view.getTag();

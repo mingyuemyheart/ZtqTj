@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="5dp"
-                android:paddingTop="5dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/icon_item_city"
         android:gravity="center_vertical"
@@ -29,7 +29,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="center"
                 android:src="@drawable/icon_citylistmanager_defaultcity"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/img_location"
@@ -40,7 +40,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="center"
                 android:src="@drawable/icon_citylistmanager_icurrectcity"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/deletecity"
@@ -50,7 +50,7 @@
                 android:adjustViewBounds="true"
                 android:focusable="false"
                 android:src="@drawable/icon_citylistmanager_delete"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/cityname"
@@ -61,7 +61,7 @@
                 android:singleLine="true"
                 android:text="@string/fuzhou"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content"/>
+                android:textSize="@dimen/text_content" />
         </FrameLayout>
 
         <LinearLayout
@@ -75,7 +75,7 @@
                 android:id="@+id/progressbar"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="35dp"
@@ -86,7 +86,7 @@
                     android:id="@+id/weathericon"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView
@@ -97,7 +97,7 @@
                 android:singleLine="true"
                 android:textColor="@color/text_white"
                 android:textSize="@dimen/text_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 

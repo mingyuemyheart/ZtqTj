@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2018/3/22.
+ * 设置
  */
-
 public class AdapterRightSets extends BaseAdapter {
 
     private List<SetsBean> setsList = new ArrayList<>();
+
     public AdapterRightSets(List<SetsBean> setsList) {
         this.setsList = setsList;
     }

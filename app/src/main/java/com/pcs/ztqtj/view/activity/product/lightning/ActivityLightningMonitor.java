@@ -34,25 +34,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 雷电监测
- * 
- * @author E.Sun 2015年10月10日
+ * 监测预报-闪电定位
  */
-public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
-		OnClickListener {
+public class ActivityLightningMonitor extends FragmentActivityZtqBase implements OnClickListener {
 
 	private ControlThirdMonitor controlMonitor;
 	private ControlNearWarn controlWarn;
 	private ControlDefenseGuide controlGuide;
 
-	/**
-	 * 地图
-	 */
 	private MapView mMapView;
-
-	/**
-	 * 地图驱动
-	 */
 	private AMap mAMap;
 
 	/**
@@ -67,11 +57,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 
 	/** 是否进行自动缩放效果优化 */
 	private boolean isOptimize = false;
-
-	/**
-	 * 地图默认缩放级别
-	 */
-	public static final float DEFAULT_ZOOM = 5f;
 
     // 高德地图截图
     protected Bitmap mAmapBitmap;
@@ -109,7 +94,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		controlMonitor.unregisterReceiver();
 		controlWarn.unregisterReceiver();
 		controlGuide.unregisterReceiver();
 		mMapView.onDestroy();
@@ -135,7 +119,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 	 */
 	private void initParam() {
 		controlMonitor = new ControlThirdMonitor(this, mAMap);
-		controlMonitor.registerReceiver();
 		controlWarn = new ControlNearWarn(this, mAMap);
 		controlWarn.registerReceiver();
 		controlGuide = new ControlDefenseGuide(this);
@@ -257,19 +240,16 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 	 * 重置定位信息
 	 */
 	public void resetLocation() {
-
 //        LatLng latLng=new LatLng(  34.2345123624, 107.7539062500);
 		LatLng latLng = ZtqLocationTool.getInstance().getLatLng();
 		if (latLng != null) {
 			isOptimize = true;
-			mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,
-					5));
+			mAMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));
 		}
 	}
 
 	/**
 	 * 格式化经纬度坐标
-	 * 
 	 * @param latLng
 	 * @return
 	 */
@@ -298,7 +278,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 
 	/**
 	 * 自动缩放地图
-	 * 
 	 * @param latLngList
 	 */
 	public void zoomToSpan(List<LatLng> latLngList) {
@@ -383,7 +362,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 
 	/**
 	 * 标记点点击事件
-	 * 
 	 * @author E.Sun 2015年11月9日
 	 */
 	private class MyOnMarkerClickListener implements OnMarkerClickListener {
@@ -396,7 +374,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 
 	/**
 	 * 地图加载动画
-	 * 
 	 * @author E.Sun 2015年11月9日
 	 */
 	private class MyOnCameraChangeListener implements OnCameraChangeListener {
@@ -419,7 +396,6 @@ public class ActivityLightningMonitor extends FragmentActivityZtqBase implements
 
 	/**
 	 * 地图加载完成回调事件
-	 * 
 	 * @author E.Sun 2015年10月13日
 	 */
 	private class MyOnMapLoadedListener implements OnMapLoadedListener {

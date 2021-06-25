@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AdatperWeaRiskWarn extends BaseAdapter {
+
     private Context context;
     private List<PackWarningCenterTfggsjDown.WarnTFGGSJ> datalist;
 
@@ -93,7 +94,6 @@ public class AdatperWeaRiskWarn extends BaseAdapter {
 
     /**
      * 通过时间秒毫秒数判断两个时间的间隔
-     *
      * @param date1
      * @param date2
      * @return

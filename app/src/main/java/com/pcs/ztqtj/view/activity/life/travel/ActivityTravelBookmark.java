@@ -140,7 +140,6 @@ public class ActivityTravelBookmark extends FragmentActivityZtqBase {
 
     /**
      * 向列表中添加城市并刷新
-     *
      * @param cityInfo
      */
     private void addcityinfo(PackLocalCity cityInfo) {
@@ -163,7 +162,6 @@ public class ActivityTravelBookmark extends FragmentActivityZtqBase {
         if (listCityInfo.size() >= 8) {
             listCityInfo.remove(0);
         }
-        listCityInfo.add(packDown);
         saveLocalTravelViewInfo(cityInfo);
         okHttpWeeklytq(cityInfo.ID, cityInfo.NAME);
     }

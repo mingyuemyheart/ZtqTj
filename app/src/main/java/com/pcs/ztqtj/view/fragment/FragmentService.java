@@ -35,27 +35,23 @@ import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import java.lang.reflect.Field;
 
 /**
- * 专项服务-决策服务
+ * 专项服务
  */
 public class FragmentService extends Fragment implements OnClickListener {
+
     private ImageButton imageghelp;
     private Button loginBtn;
     private Button logoutBtn;
-    private Button bt_service_hy;
     //是否是第一次进入该页面
     private boolean isFirst = true;
     private MyReceiver receiver = new MyReceiver();
     private PackLocalUser localUserinfo;
-    private TextView tv_service_tj, tv_bhxq, tv_dlq, tv_xqq, tv_jnq, tv_bcq, tv_wqq, tv_bdq, tv_nhq, tv_jhq, tv_jzq;
-    private ImageView iv_service_ad;
     private ImageFetcher mImageFetcher;
-    private TextView tv_service_person_office, tv_service_weather_office;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         isFirst = true;
-        View view = inflater.inflate(R.layout.fragment_service, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_service, container, false);
     }
 
     @Override
@@ -85,9 +81,6 @@ public class FragmentService extends Fragment implements OnClickListener {
                         if (TextUtils.isEmpty(area_id)) {
                             gotoService();
                         } else {
-//                            Intent intent = new Intent(getActivity(), ActivityServerSecond.class);
-//                            intent.putExtra("area_id", area_id);
-//                            startActivity(intent);
                             toServiceActivity(area_id);
                         }
                         logoutBtn.setText("退出");
@@ -101,35 +94,35 @@ public class FragmentService extends Fragment implements OnClickListener {
         imageghelp = (ImageButton) getView().findViewById(R.id.imageghelp);
         loginBtn = (Button) getView().findViewById(R.id.bt_service_jc);
         logoutBtn = (Button) getView().findViewById(R.id.bt_service_login);
-        bt_service_hy = getView().findViewById(R.id.bt_service_hy);
+        Button bt_service_hy = getView().findViewById(R.id.bt_service_hy);
         bt_service_hy.setOnClickListener(this);
-        tv_service_tj = (TextView) getView().findViewById(R.id.tv_service_tj);
+        TextView tv_service_tj = (TextView) getView().findViewById(R.id.tv_service_tj);
         tv_service_tj.setOnClickListener(this);
-        tv_bhxq = (TextView) getView().findViewById(R.id.tv_bhxq);
+        TextView tv_bhxq = (TextView) getView().findViewById(R.id.tv_bhxq);
         tv_bhxq.setOnClickListener(this);
-        tv_dlq = (TextView) getView().findViewById(R.id.tv_dlq);
+        TextView tv_dlq = (TextView) getView().findViewById(R.id.tv_dlq);
         tv_dlq.setOnClickListener(this);
-        tv_xqq = (TextView) getView().findViewById(R.id.tv_xqq);
+        TextView tv_xqq = (TextView) getView().findViewById(R.id.tv_xqq);
         tv_xqq.setOnClickListener(this);
-        tv_jnq = (TextView) getView().findViewById(R.id.tv_jnq);
+        TextView tv_jnq = (TextView) getView().findViewById(R.id.tv_jnq);
         tv_jnq.setOnClickListener(this);
-        tv_bcq = (TextView) getView().findViewById(R.id.tv_bcq);
+        TextView tv_bcq = (TextView) getView().findViewById(R.id.tv_bcq);
         tv_bcq.setOnClickListener(this);
-        tv_wqq = (TextView) getView().findViewById(R.id.tv_wqq);
+        TextView tv_wqq = (TextView) getView().findViewById(R.id.tv_wqq);
         tv_wqq.setOnClickListener(this);
-        tv_bdq = (TextView) getView().findViewById(R.id.tv_bdq);
+        TextView tv_bdq = (TextView) getView().findViewById(R.id.tv_bdq);
         tv_bdq.setOnClickListener(this);
-        tv_nhq = (TextView) getView().findViewById(R.id.tv_nhq);
+        TextView tv_nhq = (TextView) getView().findViewById(R.id.tv_nhq);
         tv_nhq.setOnClickListener(this);
-        tv_jhq = (TextView) getView().findViewById(R.id.tv_jhq);
+        TextView tv_jhq = (TextView) getView().findViewById(R.id.tv_jhq);
         tv_jhq.setOnClickListener(this);
-        tv_jzq = (TextView) getView().findViewById(R.id.tv_jzq);
+        TextView tv_jzq = (TextView) getView().findViewById(R.id.tv_jzq);
         tv_jzq.setOnClickListener(this);
-        tv_service_person_office = getView().findViewById(R.id.tv_service_person_office);
+        TextView tv_service_person_office = getView().findViewById(R.id.tv_service_person_office);
         tv_service_person_office.setOnClickListener(this);
-        tv_service_weather_office = getView().findViewById(R.id.tv_service_weather_office);
+        TextView tv_service_weather_office = getView().findViewById(R.id.tv_service_weather_office);
         tv_service_weather_office.setOnClickListener(this);
-        iv_service_ad = getView().findViewById(R.id.iv_service_ad);
+        ImageView iv_service_ad = getView().findViewById(R.id.iv_service_ad);
         iv_service_ad.setOnClickListener(this);
         refreshAD("35", iv_service_ad);
     }
@@ -165,7 +158,6 @@ public class FragmentService extends Fragment implements OnClickListener {
                 gotoHelp();
             }
         });
-
         loginBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,7 +169,6 @@ public class FragmentService extends Fragment implements OnClickListener {
                 }
             }
         });
-
         logoutBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,9 +254,7 @@ public class FragmentService extends Fragment implements OnClickListener {
                 clickAD("35");
                 break;
             case R.id.bt_service_hy:
-                Intent intent = new Intent(getActivity(), ActivityServerHyqx.class);
-                startActivity(intent);
-
+                startActivity(new Intent(getActivity(), ActivityServerHyqx.class));
                 break;
         }
     }
@@ -296,8 +285,7 @@ public class FragmentService extends Fragment implements OnClickListener {
             } else {
                 imageView.setVisibility(View.VISIBLE);
             }
-            String url = getResources().getString(R.string.file_download_url) + packDown.arrBannerInfo.get(0)
-                    .img_path;
+            String url = getResources().getString(R.string.file_download_url) + packDown.arrBannerInfo.get(0).img_path;
             mImageFetcher.loadImage(url, imageView, ImageConstant.ImageShowType.SRC);
         }
 
@@ -311,7 +299,6 @@ public class FragmentService extends Fragment implements OnClickListener {
             return;
         }
 
-
         Intent it = new Intent(getActivity(), ActivityWebView.class);
         it.putExtra("title", packDown.arrBannerInfo.get(0).title);
         it.putExtra("url", packDown.arrBannerInfo.get(0).url);
@@ -323,7 +310,6 @@ public class FragmentService extends Fragment implements OnClickListener {
      * 数据更新广播接收
      */
     private class MyReceiver extends PcsDataBrocastReceiver {
-
         @Override
         public void onReceive(String name, String error) {
             if (!TextUtils.isEmpty(error)) {
@@ -343,9 +329,7 @@ public class FragmentService extends Fragment implements OnClickListener {
                 public void onFail() {
                     logout();
                     if (!isFirst) {
-                        ServiceLoginTool.getInstance().createAlreadyLogined(getActivity(), new ServiceLoginTool
-                                .DialogClickListener() {
-
+                        ServiceLoginTool.getInstance().createAlreadyLogined(getActivity(), new ServiceLoginTool.DialogClickListener() {
                             @Override
                             public void onPositive() {
                                 gotoHelp();
@@ -365,13 +349,6 @@ public class FragmentService extends Fragment implements OnClickListener {
     }
 
     private void gotoService() {
-//        Intent intent = new Intent(getActivity(), ActivityMyServerMain.class);
-//        intent.putExtra("channel", "");
-//        intent.putExtra("title", "我的服务");
-//        intent.putExtra("subtitle", "1");
-//        intent.putExtra("area_id", area_id);
-//        startActivity(intent);
-
         Intent intent = new Intent(getActivity(), ActivityMyServer.class);
         intent.putExtra("channel", "");
         intent.putExtra("title", "我的服务");
@@ -389,7 +366,6 @@ public class FragmentService extends Fragment implements OnClickListener {
         PcsDataBrocastReceiver.registerReceiver(getActivity(), receiver);
     }
 
-
     @Override
     public void onPause() {
         super.onPause();
@@ -398,7 +374,6 @@ public class FragmentService extends Fragment implements OnClickListener {
             receiver = null;
         }
     }
-
 
     @Override
     public void onDestroyView() {

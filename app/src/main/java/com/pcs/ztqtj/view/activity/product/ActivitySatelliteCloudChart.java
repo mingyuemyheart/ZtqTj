@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Contacts;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -31,15 +30,12 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteDown.Satellite;
 import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteListDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteListUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.satellite.PackSatelliteUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdatperSatelliteCloudTab;
 import com.pcs.ztqtj.control.tool.CommUtils;
@@ -60,37 +56,26 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 卫星云图
- *
- * @author chenjh
+ * 监测预报-卫星云图
  */
-public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
-        implements View.OnClickListener, AnimationListener {
+public class ActivitySatelliteCloudChart extends FragmentActivityWithShare implements View.OnClickListener, AnimationListener {
 
-    private final MyReceiver receiver = new MyReceiver();
-    private final PackSatelliteUp packSatelliteUp = new PackSatelliteUp();
     public List<Satellite> mySatelliteList = new ArrayList<Satellite>();
 
     private AdatperSatelliteCloudTab myBaseAdapter;
-
-    /**
-     * 卫星云图列表上传包
-     */
-    private PackSatelliteListUp mPackSatelliteListUp = new PackSatelliteListUp();
 
     /**
      * 卫星云图列表下载包
      */
     private PackSatelliteListDown mPackSatelliteListDown;
 
-    /**
-     * 当前栏目类型
-     */
-    private int currTab = 0;
     /**
      * 存放bitmap图片
      */
@@ -197,11 +182,8 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
     }
 
     private void initData() {
-        showProgressDialog();
-        // 注册广播接收
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         // 获取卫星云图列表
-        getSatelliteList();
+        okHttpCloudStations();
         comm_imgs = new Bitmap[imgCount];
         if (!isOpenNet()) {
             showToast(getString(R.string.open_netword));
@@ -210,69 +192,6 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
                 showToast(getString(R.string.un_wifi_desc));
             }
         }
-
-    }
-
-    /**
-     * 获取卫星云图列表
-     */
-    private void getSatelliteList() {
-
-//        if (!isOpenNet()) {
-//            showToast(getString(R.string.net_err));
-//            return;
-//        }
-        mPackSatelliteListUp = new PackSatelliteListUp();
-        okHttpCloudStations(mPackSatelliteListUp.getName(), false);
-        PcsDataDownload.addDownload(mPackSatelliteListUp);
-    }
-
-    /**
-     * 获取云图列表
-     */
-    private void okHttpCloudStations(final String name, final boolean isnet) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("nephanalysis_list", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("nephanalysis_list")) {
-                                                JSONObject nephanalysis_list = bobj.getJSONObject("nephanalysis_list");
-                                                if (!TextUtil.isEmpty(nephanalysis_list.toString())) {
-                                                    mPackSatelliteListDown = new PackSatelliteListDown();
-                                                    mPackSatelliteListDown.fillData(nephanalysis_list.toString());
-                                                    dealListDown(isnet);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
     }
 
     /**
@@ -302,163 +221,32 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
 
     /**
      * 获取图片信息，
-     *
-     * @param type 栏目： 云图类型: type=1.彩色云图、 type=2.红外云图、 type=3.可见光图、 type=4.水汽云图
      */
-    private void getImageInformation(int type) {
-
-//        if (!isOpenNet()) {
-//            showToast(getString(R.string.net_err));
-//            return;
-//        }
+    private void getImageInformation(String type) {
         mHandler.removeMessages(1);
         showButton();
         mSeekBar.setEnabled(false);
         status = STATUS_PAUSE;
         btnStart.setImageResource(R.drawable.btn_play);
         btnStart.setEnabled(true);
-        currTab = type;
         index = 1;
         count = 0;
 
         mSeekBar.setProgress(imgCount - 1);
-        packSatelliteUp.type = (type) + "";
-        packSatelliteUp.count = imgCount + "";
-        okHttpCloudDetail(packSatelliteUp.getName(), false);
-        PcsDataDownload.addDownload(packSatelliteUp);
+        okHttpCloudDetail(type);
     }
 
-    /**
-     * 获取云图详情
-     */
-    private void okHttpCloudDetail(final String name, final boolean isnet) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("wxyt", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("wxyt")) {
-                                                JSONObject wxyt = bobj.getJSONObject("wxyt");
-                                                if (!TextUtil.isEmpty(wxyt.toString())) {
-                                                    PackSatelliteDown packSatelliteDown = new PackSatelliteDown();
-                                                    packSatelliteDown.fillData(wxyt.toString());
-                                                    dealSatellite(packSatelliteDown, isnet);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
+    private void dealSatellite(PackSatelliteDown packSatelliteDown) {
+        mySatelliteList.clear();
+        mySatelliteList.addAll(packSatelliteDown.satelliteList);
+        refreshData();
     }
 
-    private void dealSatellite(PackSatelliteDown packSatelliteDown, boolean isnet) {
-        if (packSatelliteDown == null) {
-            if (isnet) {
-                okHttpCloudDetail(packSatelliteUp.getName(), isnet);
-            }
-        } else {
-            mySatelliteList.clear();
-            mySatelliteList.addAll(packSatelliteDown.satelliteList);
-            refreshData();
-        }
-    }
-
-    private void dealListDown(boolean isnet) {
-        if (mPackSatelliteListDown == null) {
-            if (isnet) {
-                okHttpCloudStations(mPackSatelliteListUp.getName(), isnet);
-            }
-        } else {
-            if (tabName != null && mPackSatelliteListDown.nephanalysis_list.size() > 0) {
-                tabName.setText(mPackSatelliteListDown.nephanalysis_list.get(0).name);
-                String type = mPackSatelliteListDown.nephanalysis_list.get(0).type;
-                if (!TextUtils.isEmpty(type)) {
-                    try {
-                        int typeInt = Integer.parseInt(type);
-                        getImageInformation(typeInt);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-    }
-
-
-    /**
-     * 数据更新广播接收
-     */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String error) {
-//            if (!TextUtils.isEmpty(error)) {
-////                showToast(error);
-//                return;
-//            }
-
-            if (packSatelliteUp != null && packSatelliteUp.getName().equals(name)) {
-                dismissProgressDialog();
-                okHttpCloudDetail(packSatelliteUp.getName(), true);
-            } else if (mPackSatelliteListUp != null && mPackSatelliteListUp.getName().equals(name)) {
-                // 获取卫星云图列表成功
-                okHttpCloudStations(mPackSatelliteListUp.getName(), true);
-            }
-
-//            if (packSatelliteUp!=null&&packSatelliteUp.getName().equals(name)) {
-//                dismissProgressDialog();
-//                PackSatelliteDown packSatelliteDown = (PackSatelliteDown) PcsDataManager.getInstance().getNetPack(name);
-//                if (packSatelliteDown == null) {
-//                    return;
-//                }
-//                mySatelliteList.clear();
-//                mySatelliteList.addAll(packSatelliteDown.satelliteList);
-//                refreshData();
-//            } else if (mPackSatelliteListUp!=null&&mPackSatelliteListUp.getName().equals(name)) {
-//                // 获取卫星云图列表成功
-//                mPackSatelliteListDown = (PackSatelliteListDown) PcsDataManager.getInstance().getNetPack(name);
-//                if (mPackSatelliteListDown == null) {
-//                    return;
-//                }
-//                if (tabName != null && mPackSatelliteListDown.nephanalysis_list.size() > 0) {
-//                    tabName.setText(mPackSatelliteListDown.nephanalysis_list.get(0).name);
-//                    String type = mPackSatelliteListDown.nephanalysis_list.get(0).type;
-//                    if (!TextUtils.isEmpty(type)) {
-//                        try {
-//                            int typeInt = Integer.parseInt(type);
-//                            getImageInformation(typeInt);
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//
-//            }
+    private void dealListDown() {
+        if (tabName != null && mPackSatelliteListDown.nephanalysis_list.size() > 0) {
+            tabName.setText(mPackSatelliteListDown.nephanalysis_list.get(0).name);
+            String type = mPackSatelliteListDown.nephanalysis_list.get(0).type;
+            getImageInformation(type);
         }
     }
 
@@ -481,10 +269,9 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 window.dismiss();
-                showProgressDialog();
                 tabName.setText(mPackSatelliteListDown.nephanalysis_list.get(position).name);
                 draSelectPosition = position;
-                getImageInformation(Integer.parseInt(mPackSatelliteListDown.nephanalysis_list.get(position).type));
+                getImageInformation(mPackSatelliteListDown.nephanalysis_list.get(position).type);
             }
         });
         int[] coords = new int[2];
@@ -512,9 +299,8 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
                 if (isSucc) {
                     for (int i = 0; i < mySatelliteList.size(); i++) {
                         Satellite info = mySatelliteList.get(i);
-                        String url = info.url;
+                        String url = getString(R.string.file_download_url)+info.url;
                         if (key.equals(url)) {
-                            // Log.i("z", "result=" + i + "   " + url);
                             if (getImageFetcher().getImageCache() != null) {
                                 comm_imgs[i] = getImageFetcher().getImageCache()
                                         .getBitmapFromAllCache(key).getBitmap();
@@ -555,7 +341,7 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
             comm_imgs = new Bitmap[mySatelliteList.size()];
             // 显示最后一张图片
             Satellite info = mySatelliteList.get(mySatelliteList.size() - 1);
-            String url = info.url;
+            String url = getString(R.string.file_download_url)+info.url;
             getImageFetcher().addListener(listener);
             getImageFetcher().loadImage(url, null, ImageConstant.ImageShowType.NONE);
             initSeekBar(mySatelliteList.size());
@@ -775,7 +561,7 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
         if (count < mySatelliteList.size()) {
             // 下载第count张图片
             Satellite info = mySatelliteList.get(count);
-            String url = info.url;
+            String url = getString(R.string.file_download_url)+info.url;
             getImageFetcher().addListener(listener);
             getImageFetcher().loadImage(url, null, ImageConstant.ImageShowType.NONE);
         } else {
@@ -819,7 +605,6 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.unregisterReceiver(receiver);
         for (int i = 0; i < comm_imgs.length; i++) {
             comm_imgs[i] = null;
         }
@@ -849,4 +634,125 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare
     public void onAnimationStart(Animation animation) {
 
     }
+
+    /**
+     * 获取云图列表
+     */
+    private void okHttpCloudStations() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"nephanalysis_list";
+                    Log.e("nephanalysis_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("nephanalysis_list", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("nephanalysis_list")) {
+                                                    JSONObject nephanalysis_list = bobj.getJSONObject("nephanalysis_list");
+                                                    if (!TextUtil.isEmpty(nephanalysis_list.toString())) {
+                                                        mPackSatelliteListDown = new PackSatelliteListDown();
+                                                        mPackSatelliteListDown.fillData(nephanalysis_list.toString());
+                                                        dealListDown();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取云图详情
+     * @type 1202-FY4A可见光，1203-FY4A红外，1204-FY4A真彩色，1205-FY4A水汽
+     */
+    private void okHttpCloudDetail(final String type) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", type);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"wxyt";
+                    Log.e("wxyt", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("wxyt", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("wxyt")) {
+                                                    JSONObject wxyt = bobj.getJSONObject("wxyt");
+                                                    if (!TextUtil.isEmpty(wxyt.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackSatelliteDown packSatelliteDown = new PackSatelliteDown();
+                                                        packSatelliteDown.fillData(wxyt.toString());
+                                                        dealSatellite(packSatelliteDown);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

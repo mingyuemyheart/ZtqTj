@@ -25,20 +25,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JiangZy on 2016/6/3.
+ * 首页-广告
  */
 public class CommandMainRow5 extends CommandMainBase {
+
     private Activity mActivity;
     private ViewGroup mRootLayout;
     private ImageFetcher mImageFetcher;
-    //行视图
     private View mRowView;
-    // 广告使用
     private AdapterControlMainRow8 adapter;
     private ViewPager vp = null;
     private int pagerCurrentPosition = 0;
     private LeadPoint pointlayout;
-    private List<String> list = new ArrayList<String>();
+    private List<String> list = new ArrayList<>();
     private PackBannerUp mPackBannerUp = new PackBannerUp();
     private PackBannerDown mPackBannerDown = null;
 
@@ -66,11 +65,8 @@ public class CommandMainRow5 extends CommandMainBase {
 
     @Override
     protected void init() {
-
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        mRowView = LayoutInflater.from(mActivity).inflate(
-                R.layout.item_home_weather_5, null);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mRowView = LayoutInflater.from(mActivity).inflate(R.layout.item_home_weather_5, null);
         mRowView.setLayoutParams(params);
 
         // 设置高度
@@ -82,8 +78,8 @@ public class CommandMainRow5 extends CommandMainBase {
         rootLayout.setLayoutParams(rootParams);
 
         mRootLayout.addView(mRowView);
-        vp = (ViewPager) mRowView.findViewById(R.id.viewpager);
-        pointlayout = (LeadPoint) mRowView.findViewById(R.id.pointlayout);
+        vp = mRowView.findViewById(R.id.viewpager);
+        pointlayout = mRowView.findViewById(R.id.pointlayout);
 
         setStatus(Status.SUCC);
         initData();
@@ -100,8 +96,7 @@ public class CommandMainRow5 extends CommandMainBase {
         list.clear();
         // 当数据不为空时
         for (int i = 0; i < mPackBannerDown.arrBannerInfo.size(); i++) {
-            list.add(mActivity.getString(R.string.file_download_url)
-                    + mPackBannerDown.arrBannerInfo.get(i).img_path);
+            list.add(mActivity.getString(R.string.file_download_url) + mPackBannerDown.arrBannerInfo.get(i).img_path);
         }
         adapter.notifyDataSetChanged();
 
@@ -116,8 +111,7 @@ public class CommandMainRow5 extends CommandMainBase {
             pointlayout.setVisibility(View.VISIBLE);
             vp.setVisibility(View.VISIBLE);
             mRowView.findViewById(R.id.root_layout).setVisibility(View.VISIBLE);
-            pagerCurrentPosition = ((adapter.getCount() / list.size()) / 2)
-                    * list.size();
+            pagerCurrentPosition = ((adapter.getCount() / list.size()) / 2)* list.size();
             vp.setCurrentItem(pagerCurrentPosition);
         }
         if (list.size() > 1) {
@@ -202,8 +196,7 @@ public class CommandMainRow5 extends CommandMainBase {
                 return;
             }
             Intent intent = new Intent(mActivity, MyWebView.class);
-            intent.putExtra("title",
-                    packDown.arrBannerInfo.get(position).title);
+            intent.putExtra("title", packDown.arrBannerInfo.get(position).title);
             intent.putExtra("url", url);
             mActivity.startActivity(intent);
         }

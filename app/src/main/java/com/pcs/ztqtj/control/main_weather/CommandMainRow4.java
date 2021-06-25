@@ -49,13 +49,13 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 生活指数
+ * 首页-生活指数
  */
 public class CommandMainRow4 extends CommandMainBase {
+
     private Activity mActivity;
     private ViewGroup mRootLayout;
     private ImageFetcher mImageFetcher;
-    // 生活指数的适配器
     private AdapterLifeNumberGridView mLifeNumberAdapter = null;
     private List<PackLifeNumberDown.LifeNumber> dataList = new ArrayList<>();
 
@@ -77,8 +77,7 @@ public class CommandMainRow4 extends CommandMainBase {
 
     @Override
     protected void refresh() {
-        if(mLifeNumberAdapter!=null){
-            // 刷新
+        if (mLifeNumberAdapter!=null){
             mLifeNumberAdapter.notifyDataSetChanged();
         }
         setStatus(Status.SUCC);
@@ -156,12 +155,6 @@ public class CommandMainRow4 extends CommandMainBase {
                 Toast.makeText(mActivity, "获取生活指数失败", Toast.LENGTH_SHORT).show();
                 return;
             }
-//            // 跳转
-//            Intent it = new Intent();
-//            it.putExtra("key", pack.id);
-//            it.setClass(mActivity, ActivityLifeNumberDetail.class);
-//            mActivity.startActivity(it);
-
             dialogAqi(pack);
         }
     };
@@ -202,6 +195,7 @@ public class CommandMainRow4 extends CommandMainBase {
                     info.put("stationId", city.ID);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("shzs", json);
                     final String url = CONST.BASE_URL+"shzs";
                     Log.e("shzs", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -218,8 +212,8 @@ public class CommandMainRow4 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("shzs", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("shzs", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

@@ -38,7 +38,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 生活气象-天气新闻
+ * 生活气象-气象科普-列表
  */
 public class ActivityChannelList extends FragmentActivityZtqBase {
 
@@ -47,10 +47,11 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 	private View lineview;
 	private AdapterChannelList mAdapter;
 
-	private List<ArtTitleInfo> airTitleList = new ArrayList<ArtTitleInfo>();
+	private List<ArtTitleInfo> airTitleList = new ArrayList<>();
 
 	private String title = "";
 	private String channel_id;
+	private String interfaceUrl = "art_title";//默认为
 
 	/** 每页要加载的数量 **/
 	public static final int PAGE_SIZE = 10;
@@ -85,6 +86,9 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 		showProgressDialog();
 		title = getIntent().getStringExtra("title");
 		channel_id = getIntent().getStringExtra("channel_id");
+		if (getIntent().hasExtra("interfaceUrl")) {
+			interfaceUrl = getIntent().getStringExtra("interfaceUrl");
+		}
 		setTitleText(title);
 		getTitleList();
 	}
@@ -159,9 +163,13 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 				try {
 					JSONObject param  = new JSONObject();
 					param.put("token", MyApplication.TOKEN);
+					JSONObject info = new JSONObject();
+					info.put("stationId", channel_id);
+					param.put("paramInfo", info);
 					String json = param.toString();
-					final String url = CONST.BASE_URL+"art_title";
-					Log.e("art_title", url);
+					Log.e(interfaceUrl, json);
+					final String url = CONST.BASE_URL+interfaceUrl;
+					Log.e(interfaceUrl, url);
 					RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
 					OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
 						@Override
@@ -176,8 +184,8 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 							runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
+									Log.e(interfaceUrl, result);
 									if (!TextUtil.isEmpty(result)) {
-										Log.e("art_title", result);
 										try {
 											JSONObject obj = new JSONObject(result);
 											if (!obj.isNull("b")) {

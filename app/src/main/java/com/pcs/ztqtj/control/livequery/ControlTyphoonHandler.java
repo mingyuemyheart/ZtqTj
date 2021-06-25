@@ -31,10 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 台风操作控制器
- * Created by tyaathome on 2017/6/3.
+ * 监测预报-实况查询-要素分布图-台风操作控制器
  */
-
 public class ControlTyphoonHandler extends ControlDistributionBase {
 
     private FragmentDistributionMap mFragment;

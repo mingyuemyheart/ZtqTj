@@ -14,9 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 空气质量-天津
+ * 监测预报-空气质量-空气质量实况，天津内
  */
 public class ActivityAirQualitySH extends FragmentActivityZtqBase {
+
     private RadioGroup radioGroup;
     private static String s_area_name;
     private String id;
@@ -35,12 +36,11 @@ public class ActivityAirQualitySH extends FragmentActivityZtqBase {
     }
 
     private void initView() {
-        radioGroup = (RadioGroup) findViewById(R.id.radiogroups);
+        radioGroup = findViewById(R.id.radiogroups);
     }
 
     public void initEvent() {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
                 switch (i) {
@@ -55,10 +55,9 @@ public class ActivityAirQualitySH extends FragmentActivityZtqBase {
         });
     }
 
-    private List<Fragment> mListFragment = new ArrayList<Fragment>();
+    private List<Fragment> mListFragment = new ArrayList<>();
     private FragmentAirQualityPre fragmentAirQualityPre = new FragmentAirQualityPre();
     private FragmentAirQualityLive fragmentAirQualityLive = new FragmentAirQualityLive();
-
 
     public void initData() {
         mListFragment.add(fragmentAirQualityLive);
@@ -82,6 +81,6 @@ public class ActivityAirQualitySH extends FragmentActivityZtqBase {
             tran.replace(R.id.airfragment, fragmentAirQualityPre);
             tran.commitAllowingStateLoss();
         }
-
     }
+
 }

@@ -1,19 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 首页天气第4行（生活指数） -->
-<LinearLayout android:id="@+id/layout_home_weather_4"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white_alpha5"
-              android:orientation="vertical">
+<?xml version="1.0" encoding="utf-8"?><!-- 首页天气第4行（生活指数） -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_home_weather_4"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_alpha5"
+    android:orientation="vertical">
     <!-- 分割线 -->
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_margintop"
         android:layout_marginTop="@dimen/activity_margintop"
-        android:background="@color/white_alpha20"/>
+        android:layout_marginBottom="@dimen/activity_margintop"
+        android:background="@color/white_alpha20" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,15 +42,15 @@
                     android:layout_marginRight="@dimen/activity_marginleft_right"
                     android:text="@string/life_number"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_content"/>
+                    android:textSize="@dimen/text_content" />
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_margintop"
                     android:layout_marginTop="@dimen/activity_margintop"
+                    android:layout_marginBottom="@dimen/activity_margintop"
                     android:background="@drawable/line_common"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
 
             <!-- 按钮：更多 -->
@@ -62,7 +61,7 @@
                 android:layout_height="23dp"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/btn_life_more"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <!-- 分割线 -->
@@ -70,42 +69,42 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_margintop"
             android:layout_marginTop="@dimen/activity_margintop"
-            android:background="@color/white_alpha20"/>
+            android:layout_marginBottom="@dimen/activity_margintop"
+            android:background="@color/white_alpha20" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:gravity="center_vertical"
-            android:layout_height="35dp">
+            android:layout_height="35dp"
+            android:gravity="center_vertical">
 
             <ImageView
-                android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/icon_calendar"/>
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/icon_calendar" />
 
             <TextView
                 android:id="@+id/tv_calendar_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/dimen15"
                 android:layout_marginLeft="20dp"
-                android:textColor="@color/text_white"/>
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/dimen15" />
         </LinearLayout>
 
         <com.pcs.ztqtj.view.myview.MyGridView
             android:id="@+id/gridView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_margintop"
             android:layout_marginLeft="@dimen/activity_margintop"
             android:layout_marginRight="@dimen/activity_margintop"
+            android:layout_marginBottom="@dimen/activity_margintop"
             android:gravity="center"
             android:horizontalSpacing="5dp"
             android:listSelector="@color/alpha100"
             android:numColumns="2"
-            android:verticalSpacing="5dp"/>
+            android:verticalSpacing="5dp" />
     </LinearLayout>
 
 </LinearLayout>

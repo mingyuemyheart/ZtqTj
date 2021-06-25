@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Z 空气质量列表
+ * 监测预报-空气质量-空气质量预报
  */
 public class AdapterAirLive extends BaseAdapter {
 

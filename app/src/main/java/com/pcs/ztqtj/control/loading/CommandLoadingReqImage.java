@@ -10,9 +10,10 @@ import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
 
 /**
- * 请求图片URL
+ * 闪屏页面，请求图片URL
  */
 public class CommandLoadingReqImage extends AbstractCommand {
+
     private Activity mActivity;
 
     public CommandLoadingReqImage(Activity activity) {
@@ -22,7 +23,6 @@ public class CommandLoadingReqImage extends AbstractCommand {
     @Override
     public void execute() {
         super.execute();
-        Log.e("jzy", "执行CommandLoadingReqImage");
         // 图片URL包
         PcsPackUp packImage = createPackUp();
         // 请求图片url
@@ -38,7 +38,6 @@ public class CommandLoadingReqImage extends AbstractCommand {
         if (metric.widthPixels > 480) {
             packImage.size_type = 1;
         }
-
         return packImage;
     }
 }

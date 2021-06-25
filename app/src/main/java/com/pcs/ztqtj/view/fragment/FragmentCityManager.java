@@ -22,17 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.ControlTestLocation;
 import com.pcs.ztqtj.control.adapter.adapter_citymanager.AdapterCityList;
 import com.pcs.ztqtj.control.adapter.adapter_citymanager.AdapterCityList.CityListDeleteBtnClick;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
@@ -49,12 +44,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 城市管理
- *
- * @author JiangZy
+ * 管理城市
  */
 @SuppressLint("InflateParams")
 public class FragmentCityManager extends Fragment implements OnClickListener,InterfaceRefresh {
+
     // 初始化完成
     private boolean mInitSucc = false;
     /**
@@ -69,15 +63,12 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
      * 列表数据
      */
     private List<PackLocalCity> listCityInfo;
-    // 刚添加的城市
-    private PackMainWeekWeatherUp mPackAddedWeatherUp = new PackMainWeekWeatherUp();
     /**
      * 添加城市按钮
      */
     private ImageView addCityButton;
     private View layoutCityAdd;
 
-    private MyReceiver receiver = new MyReceiver();
     /**
      * 设置最多城市个数
      */
@@ -89,60 +80,36 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
     private ImageFetcher mImageFetcher;
     private RelativeLayout rl_family_city;
     private CheckBox mCheckBoxLocation;
-
     private TextView city_state_info;
-
-    private View btnTestLocation;
+    private Button editcity;
 
     public FragmentCityManager() {
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater,
-                             @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_city_manager1, null);
         initView(view);
         return view;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 注销广播
-        getActivity().unregisterReceiver(receiver);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        // 注册广播
-        PcsDataBrocastReceiver.registerReceiver(this.getActivity(), receiver);
         initData();
         initEvent();
         refreshData();
         mInitSucc = true;
-        //测试升级
-        new ControlTestLocation(getActivity(), btnTestLocation);
     }
 
-    private TextView showLocation;
-
     private void initView(View viewRoot) {
-        showLocation = (TextView) viewRoot.findViewById(R.id.showLocation);
         city_state_info = (TextView) viewRoot.findViewById(R.id.city_state_info);
         addCityButton = (ImageView) viewRoot.findViewById(R.id.addcity);
         layoutCityAdd = viewRoot.findViewById(R.id.layout_city_add);
         listview = (MyListView) viewRoot.findViewById(R.id.fracitylistview);
-//        View view = new View(getActivity());
-//        view.setBackgroundResource(R.drawable.line_common);
-//        listview.addFooterView(view);
-//        listview.setFooterDividersEnabled(false);
         rl_family_city = (RelativeLayout) viewRoot.findViewById(R.id.rl_family_city);
         // 自动定位复选框
         mCheckBoxLocation = (CheckBox) viewRoot.findViewById(R.id.cb_auto_location);
-        //测试定位
-        btnTestLocation = viewRoot.findViewById(R.id.btn_test_location);
     }
 
     /**
@@ -154,9 +121,8 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
             mRefreshView = ((ActivityMain)getActivity()).getRefreshView();
         }
         doAutoDownload();
-        listCityInfo = new ArrayList<PackLocalCity>();
-        adapter = new AdapterCityList(getActivity(), listCityInfo,
-                btnClickListener, mImageFetcher);
+        listCityInfo = new ArrayList<>();
+        adapter = new AdapterCityList(getActivity(), listCityInfo, btnClickListener, mImageFetcher);
         listview.setAdapter(adapter);
         mCheckBoxLocation.setChecked(ZtqLocationTool.getInstance().getIsAutoLocation());
     }
@@ -178,7 +144,7 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
             ZtqCityDB.getInstance().setCurrentCityInfo(packChoiced);
         }
 
-//    列表去重
+        //列表去重
         for (int i = 0; i < packChoiced.localCityList.size(); i++) {
             boolean addToList = true;
             for (int j = 0; j < listCityInfo.size(); j++) {
@@ -193,21 +159,17 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
         }
         // 当城市个数大于规定的个数是这跳转按钮隐藏，不让跳转
         showAddCityButton();
-        // 刷新
-//        adapter.setData(listCityInfo);
         adapter.notifyDataSetChanged();
     }
 
-    private Button editcity;
     /**
      * 事件监听
      */
     private void initEvent() {
-        editcity= (Button) getView().findViewById(R.id.editcity);
+        editcity= getView().findViewById(R.id.editcity);
         editcity.setOnClickListener(this);
         addCityButton.setOnClickListener(this);
         layoutCityAdd.setOnClickListener(this);
-        showLocation.setOnClickListener(this);
         getView().findViewById(R.id.closefragement).setOnClickListener(this);
         getView().findViewById(R.id.btn_closefragement).setOnClickListener(this);
         listview.setOnItemClickListener(listItemClick);
@@ -216,20 +178,9 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
         mCheckBoxLocation.setOnCheckedChangeListener(mOnChecked);
     }
 
-    private Toast taost;
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.showLocation:
-//                 显示当前定位的城市信息。
-//                if (taost == null) {
-//                    taost = Toast.makeText(getActivity(), "", Toast.LENGTH_LONG);
-//                }
-//                String str = ZtqLocationTool.getInstance().getLocationName();
-//                taost.setText(str);
-//                taost.show();
-                break;
             case R.id.editcity:
                 // 删除城市
                 if (adapter.showDeleteBtn) {
@@ -291,6 +242,7 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
                 closeFragment();
             }
         }
+        refreshData();
     }
 
     private OnCheckedChangeListener mOnChecked = new OnCheckedChangeListener() {
@@ -311,21 +263,11 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
      */
     private OnItemClickListener listItemClick = new OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // 选择默认城市
             closeEditState();
             PackLocalCity packCity = (PackLocalCity) adapter.getItem(position);
-            // 是否有一周
-            PackMainWeekWeatherUp packMainWeekWeather = new PackMainWeekWeatherUp();
-            packMainWeekWeather.setCity(packCity);
-            PackMainWeekWeatherDown down = (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack(packMainWeekWeather.getName());
-
-            if (down == null) {
-                // 没有数据
-                Toast.makeText(getActivity(), R.string.no_data, Toast.LENGTH_SHORT).show();
-                return;
-            } else if (position == 0 && ZtqLocationTool.getInstance().getIsAutoLocation()) {
+            if (position == 0 && ZtqLocationTool.getInstance().getIsAutoLocation()) {
                 // 定位城市
                 if (TextUtils.isEmpty(packCity.ID)) {
                     Toast.makeText(getActivity(), packCity.NAME, Toast.LENGTH_SHORT).show();
@@ -457,25 +399,11 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
         }
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (TextUtils.isEmpty(name)) {
-                return;
-            }
-            // 添加城市一周
-            else if (name.startsWith(mPackAddedWeatherUp.NAME)) {
-                refreshData();
-            }
-        }
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
         try {
-            Field childFragmentManager = Fragment.class
-                    .getDeclaredField("mChildFragmentManager");
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
         } catch (NoSuchFieldException e) {

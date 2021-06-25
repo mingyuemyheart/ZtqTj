@@ -5,55 +5,68 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterExpertList;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.ItemExpert;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListUp;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Z on 2016/11/9.
- */
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
+/**
+ * 生活气象-专家解读
+ */
 public class ActivityExpertList extends FragmentActivityZtqBase {
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mReceiver);
+    public class MyItemExpert {
+        public String id;
+        public String title;
+        public String release_time;
+        public String small_img;
+        public String big_img;
+        public String desc;
+        public String link;
     }
 
     private EditText search_text;
     private ListView list_content;
     private AdapterExpertList adapterExpertList;
-    private List<ItemExpert> listData;
-    private List<ItemExpert> listDataSource;
+    private List<MyItemExpert> listData;
+    private List<MyItemExpert> listDataSource;
 
     /**
      * 记录当前已加载到第几页
      **/
     private int page = 1;
 
-    private PackExpertListUp expertListUp;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expert_list);
-        PcsDataBrocastReceiver.registerReceiver(this, mReceiver);
         initView();
         initData();
         initEvent();
@@ -65,8 +78,6 @@ public class ActivityExpertList extends FragmentActivityZtqBase {
     }
 
     private void initData() {
-        expertListUp = new PackExpertListUp();
-        expertListUp.channel_id = "100014";
         setTitleText("专家解读");
         listData = new ArrayList<>();
         listDataSource = new ArrayList<>();
@@ -82,6 +93,10 @@ public class ActivityExpertList extends FragmentActivityZtqBase {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(ActivityExpertList.this, ActivityExpertDetail.class);
                 intent.putExtra("id", listData.get(position).id);
+                intent.putExtra("big_img", listData.get(position).big_img);
+                intent.putExtra("desc", listData.get(position).desc);
+                intent.putExtra("title", listData.get(position).title);
+                intent.putExtra("release_time", listData.get(position).release_time);
                 startActivity(intent);
             }
         });
@@ -108,43 +123,12 @@ public class ActivityExpertList extends FragmentActivityZtqBase {
                 listData.addAll(listDataSource);
                 adapterExpertList.notifyDataSetChanged();
             }
-
-
         }
 
         @Override
         public void afterTextChanged(Editable s) {
         }
     };
-
-
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (TextUtils.isEmpty(nameStr) || !TextUtils.isEmpty(errorStr)) {
-                return;
-            }
-            if (expertListUp != null && expertListUp.getName().equals(nameStr)) {
-                dismissProgressDialog();
-                PackExpertListDown sharePackDown = (PackExpertListDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (sharePackDown == null) {
-                    page = -1;
-                } else {
-                    listDataSource.addAll(sharePackDown.dataList);
-                    listData.addAll(sharePackDown.dataList);
-                    adapterExpertList.notifyDataSetChanged();
-                    if (sharePackDown.dataList.size() == expertListUp.count) {
-                        page++;
-                        System.out.println("有更多数据");
-                    } else {
-                        System.out.println("无更多数据");
-                        page = -1;
-                    }
-                }
-            }
-        }
-    };
-
 
     private AbsListView.OnScrollListener myOnScrollListener = new AbsListView.OnScrollListener() {
         @Override
@@ -174,9 +158,84 @@ public class ActivityExpertList extends FragmentActivityZtqBase {
         if (page == -1) {
             return;
         }
-        expertListUp.page = page;
-        PcsDataDownload.addDownload(expertListUp);
+        okHttpExpertList();
     }
+
+    /**
+     * 获取专家解读列表
+     */
+    private void okHttpExpertList() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", "");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"zjjd";
+                    Log.e("zjjd", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        Log.e("zjjd", result);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("tq_zx")) {
+                                                    JSONObject tq_zx = bobj.getJSONObject("tq_zx");
+                                                    dismissProgressDialog();
+                                                    listDataSource.clear();
+                                                    listData.clear();
+                                                    if (!tq_zx.isNull("info_list")) {
+                                                        JSONArray array = tq_zx.getJSONArray("info_list");
+                                                        for (int i = 0; i < array.length(); i++) {
+                                                            MyItemExpert myItemExpert = new MyItemExpert();
+                                                            JSONObject itemObj = array.getJSONObject(i);
+                                                            myItemExpert.id = itemObj.getString("id");
+                                                            myItemExpert.title = itemObj.getString("title");
+                                                            myItemExpert.small_img = itemObj.getString("small_img");
+                                                            myItemExpert.big_img = itemObj.getString("big_img");
+                                                            myItemExpert.link = itemObj.getString("link");
+                                                            myItemExpert.desc = itemObj.getString("desc");
+                                                            myItemExpert.release_time = itemObj.getString("release_time");
+                                                            listData.add(myItemExpert);
+                                                            listDataSource.add(myItemExpert);
+                                                        }
+                                                    }
+                                                    adapterExpertList.notifyDataSetChanged();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }
 
 

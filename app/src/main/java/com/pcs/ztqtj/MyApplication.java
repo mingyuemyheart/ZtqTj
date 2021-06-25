@@ -53,10 +53,7 @@ import okhttp3.Response;
 public class MyApplication extends MultiDexApplication {
 
     public static Application application;
-
     public static final long START_INTERVAL = 300;
-
-    private final int WHAT_CHECK_INIT = 101;
 
     {
         //初始化分享
@@ -64,24 +61,10 @@ public class MyApplication extends MultiDexApplication {
         ShareUtil.initShare();
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void dispatchMessage(Message msg) {
-            super.dispatchMessage(msg);
-            if (msg.what == WHAT_CHECK_INIT) {
-//                //初始化
-//                ControlAppInit.getInstance().init(MyApplication.this);
-//                //注册锁屏广播接收
-//                registLockReceiver();
-            }
-        }
-    };
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
-        //StubAppUtils.attachBaseContext(this);
     }
 
     @Override
@@ -97,7 +80,6 @@ public class MyApplication extends MultiDexApplication {
         UpdateWidgetJob.scheduleJob();
         ControlAppInit.getInstance().setIs_Main(true);
         application = this;
-        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_INIT, START_INTERVAL);
         // bugly
         CrashReport.initCrashReport(this, "959e7bdb27", false);
         //崩溃重启
@@ -109,7 +91,6 @@ public class MyApplication extends MultiDexApplication {
         ControlAppInit.getInstance().init(MyApplication.this);
         //注册锁屏广播接收
         registLockReceiver();
-        //CrashReport.testJavaCrash();
     }
 
     /**
@@ -124,7 +105,6 @@ public class MyApplication extends MultiDexApplication {
 
     /**
      * 是否主进程
-     *
      * @return
      */
     private boolean isMainProcess() {
@@ -132,7 +112,6 @@ public class MyApplication extends MultiDexApplication {
         if (getPackageName().equals(process)) {
             return true;
         }
-
         return false;
     }
 
@@ -151,8 +130,6 @@ public class MyApplication extends MultiDexApplication {
             }
         }
     };
-
-
 
     //本地保存用户信息参数
     public static String USERNAME = "";
@@ -288,9 +265,9 @@ public class MyApplication extends MultiDexApplication {
         }).start();
     }
 
-    /**
-     * 获取站点信息
-     */
+//    /**
+//     * 获取站点信息
+//     */
 //    public static void okHttpGeo(final double lat, final double lng) {
 //        new Thread(new Runnable() {
 //            @Override

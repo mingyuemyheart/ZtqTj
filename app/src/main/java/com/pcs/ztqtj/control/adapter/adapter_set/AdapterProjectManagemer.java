@@ -15,9 +15,10 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.LocalDataHelper;
 
 /**
- * @author Z 列表适配器
+ * 监测预报-栏目管理
  */
 public class AdapterProjectManagemer extends BaseAdapter {
+
 	private Context context;
 	private List<String> listdata;
 
@@ -46,8 +47,7 @@ public class AdapterProjectManagemer extends BaseAdapter {
 		Holder holder;
 		if (view == null) {
 			holder = new Holder();
-			view = LayoutInflater.from(context).inflate(
-					R.layout.item_projectmanager_listview, null);
+			view = LayoutInflater.from(context).inflate(R.layout.item_projectmanager_listview, null);
 			holder.checkbox = (CheckBox) view.findViewById(R.id.checkbox);
 			holder.warncontent = (TextView) view.findViewById(R.id.warncontent);
 			holder.itemLayout = (RelativeLayout) view.findViewById(R.id.item_layout);
@@ -67,7 +67,6 @@ public class AdapterProjectManagemer extends BaseAdapter {
 		}else{
 			holder.itemLayout.setBackgroundResource(R.drawable.white_background);
 		}
-
 		return view;
 	}
 

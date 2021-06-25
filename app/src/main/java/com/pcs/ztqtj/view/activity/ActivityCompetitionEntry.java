@@ -26,9 +26,6 @@ import com.pcs.ztqtj.control.tool.youmeng.ShareUtil;
 
 /**
  * 主播比赛报名
- * 
- * @author JiangZy
- * 
  */
 public class ActivityCompetitionEntry extends FragmentActivityZtqBase {
 	// 对话框

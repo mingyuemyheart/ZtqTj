@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#F8F6F7"
-              android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F6F7"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -19,8 +18,8 @@
                 android:id="@+id/rl_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/dimen8"
                 android:paddingTop="@dimen/dimen8"
+                android:paddingBottom="@dimen/dimen8"
                 android:visibility="gone">
 
                 <ImageView
@@ -28,7 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/icon_set_user"/>
+                    android:src="@drawable/icon_set_user" />
 
                 <Button
                     android:id="@+id/btn_login"
@@ -38,7 +37,7 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/btn_set_user_login"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_content"/>
+                    android:textSize="@dimen/text_content" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -54,7 +53,7 @@
                         android:layout_gravity="bottom"
                         android:layout_marginLeft="@dimen/activity_margintop"
                         android:textColor="@color/item_textcolor"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -70,8 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:orientation="horizontal"
-                    >
+                    android:orientation="horizontal">
 
                     <!--<ImageButton-->
                     <!--android:id="@+id/btn_closefragement"-->
@@ -98,8 +96,7 @@
                         android:background="@drawable/btn_city_home"
                         android:gravity="center"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"
-                        />
+                        android:textSize="@dimen/text_footnote" />
 
                 </LinearLayout>
 
@@ -107,12 +104,12 @@
                     android:id="@+id/iv_head"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:layout_alignParentLeft="true"
                     android:layout_below="@+id/closefragement"
+                    android:layout_alignParentLeft="true"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/icon_head_default"/>
+                    android:src="@drawable/icon_head_default" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -121,8 +118,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="@dimen/dimen10"
-                    android:layout_toRightOf="@+id/iv_head"
-                    >
+                    android:layout_toRightOf="@+id/iv_head">
 
                     <Button
                         android:id="@+id/btn_login2"
@@ -132,7 +128,7 @@
                         android:background="@drawable/btn_set_user_login"
                         android:text="@string/login"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
 
                     <TextView
                         android:id="@+id/tv_username"
@@ -140,7 +136,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
 
                 </RelativeLayout>
 
@@ -150,8 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -164,15 +159,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
                         android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
                         android:layout_marginBottom="10dp"
                         android:horizontalSpacing="15dp"
                         android:listSelector="@android:color/transparent"
                         android:numColumns="4"
                         android:scrollbars="none"
-                        android:verticalSpacing="20dp"
-                        />
+                        android:verticalSpacing="20dp" />
 
                 </LinearLayout>
 
@@ -188,7 +182,7 @@
                         android:layout_height="wrap_content"
                         android:cacheColorHint="@color/alpha100"
                         android:divider="@drawable/line_set"
-                        android:listSelector="@color/alpha100"/>
+                        android:listSelector="@color/alpha100" />
                 </LinearLayout>
 
 

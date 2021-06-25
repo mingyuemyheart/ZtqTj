@@ -47,7 +47,6 @@ import okhttp3.Response;
  */
 public class ActivityServerHyqx extends FragmentActivityZtqBase {
 
-    private GridView mGridView;
     private MyGridViewAdapter mGridViewAdapter;
 
     @Override
@@ -56,7 +55,6 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
         setContentView(R.layout.activity_server_hyqx);
         setTitleText("行业气象");
         createImageFetcher();
-        // 初始化GridView
         initGridView();
         okHttpColumnList();
     }
@@ -65,15 +63,9 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
      * 初始化GridView
      */
     private void initGridView() {
-        mGridView = (GridView) findViewById(R.id.gridview);
+        GridView mGridView = findViewById(R.id.gridview);
         mGridViewAdapter = new MyGridViewAdapter(this);
         mGridView.setAdapter(mGridViewAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
     }
 
     /**
@@ -85,10 +77,10 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
 
     /**
      * GridView适配器
-     *
      * @author JiangZy
      */
     private class MyGridViewAdapter extends BaseAdapter {
+
         private Context mContext;
 
         public MyGridViewAdapter(Context context) {
@@ -124,28 +116,20 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
             Holder holder;
             if (view == null) {
                 holder = new Holder();
-                view = LayoutInflater.from(mContext).inflate(
-                        R.layout.item_server_second, null);
-                holder.itemImageView = (ImageView) view
-                        .findViewById(R.id.itemImageView);
-                holder.itemimageview_top = (ImageView) view
-                        .findViewById(R.id.itemimageview_top);
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_server_second, null);
+                holder.itemImageView = (ImageView) view.findViewById(R.id.itemImageView);
+                holder.itemimageview_top = (ImageView) view.findViewById(R.id.itemimageview_top);
                 holder.itemName = (TextView) view.findViewById(R.id.itemName);
-
                 view.setTag(holder);
             } else {
                 holder = (Holder) view.getTag();
             }
+
             holder.itemimageview_top.setVisibility(View.GONE);
             final ColumnInfo info = arrcolumnInfo.get(position);
             if (!TextUtils.isEmpty(info.ioc)) {
-                String url = ActivityServerHyqx.this
-                        .getString(R.string.file_download_url)
-                        + "/"
-                        + info.ioc;
-                getImageFetcher().loadImage(url, holder.itemImageView,
-                        ImageConstant.ImageShowType.SRC);
+                String url = mContext.getString(R.string.file_download_url) + info.ioc;
+                getImageFetcher().loadImage(url, holder.itemImageView, ImageConstant.ImageShowType.SRC);
             }
 
             holder.itemImageView.setOnClickListener(new View.OnClickListener() {
@@ -154,9 +138,9 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
                 public void onClick(View arg0) {
                     Intent intent = null;
                     if (info.type.equals("10103030201")) {
-                        intent = new Intent(ActivityServerHyqx.this, ActivityTraffic.class);
+                        intent = new Intent(mContext, ActivityTraffic.class);
                     } else if (info.type.equals("10103030202")) {
-                        intent = new Intent(ActivityServerHyqx.this, ActivityAgricultureWeatherColumn.class);
+                        intent = new Intent(mContext, ActivityAgricultureWeatherColumn.class);
                     }
                     if (intent != null) {
                         intent.putExtra("type", info.type);
@@ -164,9 +148,7 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
                     }
                 }
             });
-
             holder.itemName.setText(info.name);
-
             return view;
         }
 
@@ -177,7 +159,7 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
         }
     }
 
-    public List<ColumnInfo> arrcolumnInfo = new ArrayList<ColumnInfo>();
+    public List<ColumnInfo> arrcolumnInfo = new ArrayList<>();
 
     /**
      * 获取行业气象列表
@@ -207,8 +189,8 @@ public class ActivityServerHyqx extends FragmentActivityZtqBase {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("column_list", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("column_list", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

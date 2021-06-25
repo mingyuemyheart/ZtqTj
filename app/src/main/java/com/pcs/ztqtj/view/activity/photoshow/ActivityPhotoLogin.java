@@ -1,10 +1,7 @@
 package com.pcs.ztqtj.view.activity.photoshow;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -15,7 +12,6 @@ import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,14 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.AppTool;
@@ -65,38 +55,20 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 实景登陆
- *
- * @author JiangZy
+ * 登录
  */
 public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnClickListener {
+
     private LoginAnther login;
-
-    /**
-     * 输入法驱动
-     */
-    private InputMethodManager mIMM;
-
-    /**
-     * 编辑框：账号、密码
-     */
     private EditText etPhone, etPassword;
-
-    /**
-     * 账号、密码
-     */
     private String phone, password;
-
     private boolean changePressword = false;
-
-    private TextView tvFindPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_login);
         setTitleText(R.string.login);
-        // 初始化按钮
         initView();
         initData();
     }
@@ -131,8 +103,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
             case R.id.btn_sina:
                 // 点击新浪微博登陆
                 showToast("登录失败，请使用手机号码登录！");
-
-              //clickLoginOtherWay(SHARE_MEDIA.SINA);
                 break;
             case R.id.tv_change_password:
                 // 点击修改密码
@@ -176,8 +146,7 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
         tv.setOnClickListener(this);
         tv = (TextView) findViewById(R.id.tv_register);
         tv.setOnClickListener(this);
-
-        tvFindPassword = (TextView) findViewById(R.id.tv_find_password);
+        TextView tvFindPassword = (TextView) findViewById(R.id.tv_find_password);
         tvFindPassword.setOnClickListener(this);
     }
 
@@ -189,12 +158,10 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
     private void initData() {
         toolQQLogin = new ToolQQPlatform(this, qqLoginListener);
         login = new LoginAnther(ActivityPhotoLogin.this);
-        mIMM = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     /**
      * 获取超链接文本
-     *
      * @return
      */
     private SpannableString getClickableSpan() {
@@ -292,22 +259,11 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
         loginZTQ();
     }
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void dispatchMessage(Message msg) {
-            super.dispatchMessage(msg);
-            dismissProgressDialog();
-            showToast("登录失败，请使用手机号注册");
-        }
-    };
-
     /**
      * 点击第三方登录按钮
-     *
      * @param share
      */
     private void clickLoginOtherWay(SHARE_MEDIA share) {
-        //mHandler.sendEmptyMessageDelayed(0, 1000);
         currentPathFrom = share;
         if (share == SHARE_MEDIA.WEIXIN) {
             if (AppTool.isInstalled(ActivityPhotoLogin.this, "com.tencent.mm")) {
@@ -327,15 +283,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
      * 点击修改密码按钮
      */
     private void clickChangePassword() {
-//        Intent intent = new Intent(this, ActivityPhotoRegister.class);
-//        Bundle bundle = new Bundle();
-//        bundle.putString("register_type", "1");
-//        bundle.putString("title", "设置密码");
-//        intent.putExtras(bundle);
-//        startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
-//        // startActivityForResult(intent,
-//        // RequestCodePublic.REQUEST_CHANGESECRET);
-
         Intent intent = new Intent(this, ActivityPhotoPasswordManager.class);
         // 1:修改密码 2:找回密码
         intent.putExtra("type", 1);
@@ -370,7 +317,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
         }
     }
 
-
     /**
      * 点击注册按钮
      */
@@ -382,7 +328,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
         intent.putExtras(bundle);
         startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
     }
-
 
     /**
      * 点击找回密码
@@ -396,7 +341,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
     /**
      * 验证是否输入手机号
-     *
      * @param phone
      * @return
      */
@@ -409,7 +353,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
     /**
      * 验证手机号长度
-     *
      * @param phone
      * @return
      */
@@ -422,13 +365,11 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
     /**
      * 验证密码长度
-     *
      * @param password
      * @return
      */
     private boolean checkPasswordLength(String password) {
-        if (TextUtils.isEmpty(password) || password.length() < 6
-                || password.length() > 16) {
+        if (TextUtils.isEmpty(password) || password.length() < 6 || password.length() > 16) {
             return false;
         }
         return true;
@@ -436,7 +377,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
     /**
      * 验证密码有效性
-     *
      * @param password
      * @return
      */
@@ -509,7 +449,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
             } else if (currentPathFrom == SHARE_MEDIA.WEIXIN) {
                 getWeiXinInfoSuccess(map);
             }
-
         }
 
         @Override
@@ -524,7 +463,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
         /**
          * 打印返回值
-         *
          * @param info
          */
         private void logInfo(Map<String, String> info) {
@@ -540,7 +478,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
     /**
      * 新浪获取数据成功
-     *
      * @param info
      */
     private void getSINAInfoSuccess(Map<String, String> info) {
@@ -566,7 +503,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
 
     /**
      * 腾讯获取数据成功
-     *
      * @param info
      */
     private void getQQInfoSuccess(Map<String, String> info) {
@@ -608,7 +544,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
         }
     }
 
-
     /**
      * 向我们的服务器提交数据 platForm: 1为新浪，2为qq，3为微信
      */
@@ -622,6 +557,28 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
         okHttpLogin(userName, userId);
     }
 
+    private IUiListener qqLoginListener = new IUiListener() {
+        @Override
+        public void onError(UiError e) {
+            showToast("获取信息失败");
+            dismissProgressDialog();
+        }
+        @Override
+        public void onComplete(final Object response) {
+            dismissProgressDialog();
+//                    showToast("获取消息完成");
+            JSONObject json = (JSONObject) response;
+            loginWeServer(toolQQLogin.getOpenId(), json.optString("nickname"), json.optString("figureurl_qq_2"), "2");
+//                    loginWeServer(json.optString("openid"), json.optString("nickname"), json.optString("figureurl_qq_2"), "2");
+        }
+
+        @Override
+        public void onCancel() {
+            showToast("取消获取信息");
+            dismissProgressDialog();
+        }
+    };
+
     /**
      * 用户登录
      */
@@ -631,6 +588,7 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
             @Override
             public void run() {
                 String url = CONST.BASE_URL+"user/login";
+                Log.e("login", url);
                 JSONObject param = new JSONObject();
                 try {
                     param.put("loginName", uName);
@@ -651,6 +609,7 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
                                 @Override
                                 public void run() {
                                     dismissProgressDialog();
+                                    Log.e("login", result);
                                     if (!TextUtils.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -694,8 +653,6 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
                                                 myUserInfo.sys_nick_name = MyApplication.NAME;
                                                 myUserInfo.sys_head_url = MyApplication.PORTRAIT;
                                                 myUserInfo.mobile = MyApplication.MOBILE;
-//                                                myUserInfo.type = packDown.platform_type;
-//                                                myUserInfo.is_jc = packDown.is_jc;
                                                 PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
                                                 packLocalUserInfo.currUserInfo = myUserInfo;
                                                 ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
@@ -725,27 +682,5 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
             }
         }).start();
     }
-
-    private IUiListener qqLoginListener = new IUiListener() {
-        @Override
-        public void onError(UiError e) {
-            showToast("获取信息失败");
-            dismissProgressDialog();
-        }
-        @Override
-        public void onComplete(final Object response) {
-            dismissProgressDialog();
-//                    showToast("获取消息完成");
-            JSONObject json = (JSONObject) response;
-            loginWeServer(toolQQLogin.getOpenId(), json.optString("nickname"), json.optString("figureurl_qq_2"), "2");
-//                    loginWeServer(json.optString("openid"), json.optString("nickname"), json.optString("figureurl_qq_2"), "2");
-        }
-
-        @Override
-        public void onCancel() {
-            showToast("取消获取信息");
-            dismissProgressDialog();
-        }
-    };
 
 }

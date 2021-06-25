@@ -10,19 +10,16 @@ import android.widget.TextView;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.model.pack.ItemLiveQuery;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * @author chenjh
+ * 监测预报-整点天气，实况查询的详情
  */
 public class AdapterLiveQueryDetail extends BaseAdapter {
     private List<ItemLiveQuery> mItems;
-    private SimpleDateFormat mDateFormat;
 
     public AdapterLiveQueryDetail(List<ItemLiveQuery> items) {
         this.mItems = items;
-        mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
     @Override

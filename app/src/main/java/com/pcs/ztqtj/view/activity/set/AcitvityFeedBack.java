@@ -22,17 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Z 意见反馈
+ * 设置-您的建议
  */
 public class AcitvityFeedBack extends AbsActivityFeekTu {
+
     public void proInitData() {
         Bundle bundle = getIntent().getExtras();
-        PackLocalCity ssta = (PackLocalCity) bundle.getSerializable("city");
         setTitleText(bundle.getString("title"));
     }
 
     private PackSuggestListUp packSuggestListUp;
-    public List<SuggestListInfo> arrsuggestListInfo = new ArrayList<SuggestListInfo>();
+    public List<SuggestListInfo> arrsuggestListInfo = new ArrayList<>();
 
     @Override
     public void reqComment() {

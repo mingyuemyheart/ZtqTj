@@ -747,10 +747,11 @@ public class AirQualityView extends View {
         List<Float> listDataAc = new ArrayList<>();
         List<Float> listDataPre = new ArrayList<>();
         for (int i = 0; i < skList.size(); i++) {
-            xValueButtom.add(skList.get(i).time);
-            if (!TextUtils.isEmpty(skList.get(i).val)) {
-                listData.add(Float.parseFloat(skList.get(i).val));
-                listDataAc.add(Float.parseFloat(skList.get(i).val));
+            PackAirTrendDown.AirMapBean bean = skList.get(i);
+            xValueButtom.add(bean.time);
+            if (!TextUtils.isEmpty(bean.val) && !TextUtils.equals(bean.val, "null")) {
+                listData.add(Float.parseFloat(bean.val));
+                listDataAc.add(Float.parseFloat(bean.val));
             } else {
                 listDataAc.add(DataNull);
             }

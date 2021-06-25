@@ -54,9 +54,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 指点天气
+ * 首页-指点天气
  */
 public class ActivityMapForecast extends FragmentActivityZtqBase {
+
 	private AMap mAMap;
 	private MapView mMapView;
 	// 地图默认每像素密度
@@ -173,7 +174,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
             listView.setVisibility(View.VISIBLE);
             lay_nulldata.setVisibility(View.GONE);
         }
-
     }
 
 	/**
@@ -311,7 +311,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 
 	/**
 	 * 获取纬度显示偏移
-	 * 
 	 * @return
 	 */
 	private double getLatitudeAdd() {
@@ -325,7 +324,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 
 	/**
 	 * 显示数据列表
-	 * 
 	 * @param latLng
 	 */
 	private void showDataList(LatLng latLng) {
@@ -336,20 +334,17 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 
 	/**
 	 * 调用地理编码搜索（获取地名）
-	 * 
 	 * @param latLonPoint
 	 */
 	private void callGeocodeSearch(final LatLonPoint latLonPoint) {
 		// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
-		RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200,
-				GeocodeSearch.AMAP);
+		RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 200, GeocodeSearch.AMAP);
 		// 设置同步逆地理编码请求
 		mGeocodeSearch.getFromLocationAsyn(query);
 	}
 
 	/**
 	 * 显示地名
-	 * 
 	 * @param addrName
 	 */
 	private void showAddrName(String addrName) {
@@ -457,15 +452,12 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 	 * 搜索框监听
 	 */
 	private TextWatcher mTextWatcher = new TextWatcher() {
-
 		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count,
-				int after) {
+		public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 		}
 
 		@Override
-		public void onTextChanged(CharSequence s, int start, int before,
-				int count) {
+		public void onTextChanged(CharSequence s, int start, int before, int count) {
 			String newText = s.toString().trim();
 			Inputtips inputTips = new Inputtips(ActivityMapForecast.this,
 					new InputtipsListener() {
@@ -478,9 +470,7 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 									listString.add(tipList.get(i).getName());
 								}
 								ArrayAdapter<String> aAdapter = new ArrayAdapter<String>(
-										getApplicationContext(),
-										R.layout.item_map_forecast_search,
-										listString);
+										getApplicationContext(), R.layout.item_map_forecast_search, listString);
 								mAutoText.setAdapter(aAdapter);
 								aAdapter.notifyDataSetChanged();
 							}
@@ -488,7 +478,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 					});
 			try {
 				inputTips.requestInputtips(newText, "福建");
-
 			} catch (AMapException e) {
 				e.printStackTrace();
 			}
@@ -498,7 +487,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 		public void afterTextChanged(Editable s) {
 
 		}
-
 	};
 
 	/**
@@ -517,7 +505,6 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 	 * 地理编码搜索监听
 	 */
 	private OnGeocodeSearchListener mGeocodeSearchListener = new OnGeocodeSearchListener() {
-
 		@Override
 		public void onGeocodeSearched(GeocodeResult result, int rCode) {
 
@@ -534,26 +521,21 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
                     String district = result.getRegeocodeAddress().getDistrict();
                     String city = result.getRegeocodeAddress().getCity();
 					if (!TextUtils.isEmpty(district) && tempAddr.indexOf(district) > -1) {
-						tempAddr = tempAddr.substring(tempAddr.indexOf(district)
-								+ district.length());
+						tempAddr = tempAddr.substring(tempAddr.indexOf(district) + district.length());
 					} else if (!TextUtils.isEmpty(city) && tempAddr.indexOf(city) > -1) {
-						tempAddr = tempAddr.substring(tempAddr.indexOf(city)
-								+ district.length());
+						tempAddr = tempAddr.substring(tempAddr.indexOf(city) + district.length());
 					}
-
 					// 显示地名
 					showAddrName(tempAddr);
 				}
 			}
 		}
-
 	};
 
 	/**
 	 * 搜索地名回调
 	 */
 	private OnPoiSearchListener mPoiListener = new OnPoiSearchListener() {
-
 		@Override
 		public void onPoiSearched(PoiResult result, int rCode) {
 			dismissProgressDialog();// 隐藏对话框
@@ -564,11 +546,8 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 						List<PoiItem> poiItems = result.getPois();// 取得第一页的poiitem数据，页数从数字0开始
 
 						if (poiItems != null && poiItems.size() > 0) {
-							LatLonPoint lalLonPoint = poiItems.get(0)
-									.getLatLonPoint();
-							LatLng latLnn = new LatLng(
-									lalLonPoint.getLatitude(),
-									lalLonPoint.getLongitude());
+							LatLonPoint lalLonPoint = poiItems.get(0).getLatLonPoint();
+							LatLng latLnn = new LatLng(lalLonPoint.getLatitude(), lalLonPoint.getLongitude());
 							// 显示标记
 							setLocation(latLnn);
 							// 显示数据
@@ -578,25 +557,19 @@ public class ActivityMapForecast extends FragmentActivityZtqBase {
 							searchGAS(latLnn);
 						} else {
 							// 提示无结果
-							Toast.makeText(ActivityMapForecast.this,
-									R.string.search_no_result,
-									Toast.LENGTH_SHORT).show();
+							Toast.makeText(ActivityMapForecast.this, R.string.search_no_result, Toast.LENGTH_SHORT).show();
 						}
 					}
 				} else {
 					// 提示无结果
-					Toast.makeText(ActivityMapForecast.this,
-							R.string.search_no_result, Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(ActivityMapForecast.this, R.string.search_no_result, Toast.LENGTH_SHORT).show();
 				}
 			} else if (rCode == 27) {
 				// 网络错误
-				Toast.makeText(ActivityMapForecast.this,
-						R.string.search_net_error, Toast.LENGTH_SHORT).show();
+				Toast.makeText(ActivityMapForecast.this, R.string.search_net_error, Toast.LENGTH_SHORT).show();
 			} else {
 				// 其他错误
-				Toast.makeText(ActivityMapForecast.this, R.string.search_error,
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(ActivityMapForecast.this, R.string.search_error, Toast.LENGTH_SHORT).show();
 			}
 		}
 

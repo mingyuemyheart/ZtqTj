@@ -799,12 +799,9 @@ public class ControlDefenseGuide implements OnClickListener {
             city_spinner_data.clear();
             city_spinner_data.add("不限地市");
             for (int i = 0; i < cityCount; i++) {
-                city_spinner_data
-                        .add(packThunderListDown.area_list1.get(i).city_name);
+                city_spinner_data.add(packThunderListDown.area_list1.get(i).city_name);
             }
-
         }
-
 	}
 
 	/**

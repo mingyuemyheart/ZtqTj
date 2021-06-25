@@ -15,17 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2018/3/21.
+ * 添加城市-天津及周边城市
  */
-
 public class AdapterHotCity extends RecyclerView.Adapter<AdapterHotCity.ViewHolder> {
 
     private List<AroundCityBean> cityList = new ArrayList<>();
     private List<Boolean> selectCityList = new ArrayList();
     private ClickImpl<AroundCityBean> listener;
     private Context mcontext;
-    public AdapterHotCity(Context context,List<AroundCityBean> cityList, List<Boolean> selectCityList, ClickImpl<AroundCityBean>
-            listener) {
+
+    public AdapterHotCity(Context context,List<AroundCityBean> cityList, List<Boolean> selectCityList, ClickImpl<AroundCityBean> listener) {
         this.cityList = cityList;
         this.selectCityList = selectCityList;
         this.listener = listener;

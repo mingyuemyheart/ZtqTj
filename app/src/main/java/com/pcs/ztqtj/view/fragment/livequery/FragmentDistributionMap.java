@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.FycxFbtBean;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.livequery.ControlDistribution;
 import com.pcs.ztqtj.control.livequery.ControlDistributionBase;
@@ -40,9 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 实况查询-要素分布图
+ * 监测预报-实况查询-要素分布图
  */
 public class FragmentDistributionMap extends FragmentLiveQueryCommon {
+
     private TextureMapView mapView;
     protected AMap aMap;
 
@@ -74,8 +77,7 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_distribution2, null);
     }
 
@@ -88,7 +90,7 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mapView = (TextureMapView) getView().findViewById(R.id.mapview);
+        mapView = getView().findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
         initView();
         initEvent();
@@ -124,7 +126,6 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
                 }
             }
         });
-
     }
 
     private void initData() {
@@ -197,35 +198,50 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
 //        RadioButton rbRain = (RadioButton) getView().findViewById(rb_rain);
         View radar = getView().findViewById(R.id.layout_radar);
         CheckBox cbGj = getView().findViewById(R.id.rb_gj);
-        CheckBox cbZd = (CheckBox) getView().findViewById(R.id.rb_zd);
+        CheckBox cbZd = getView().findViewById(R.id.rb_zd);
         CheckBox cbDb = getView().findViewById(R.id.rb_db);
         CheckBox cbTyphoon = getView().findViewById(R.id.cb_typhoon);
-        if (isProvince) { // 全国风雨查询
-            radar.setVisibility(View.GONE);
-//            rbRain.setText("降水");
-            //cbGj.setText("基本站");
-            cbGj.setVisibility(View.VISIBLE);
-            cbDb.setVisibility(View.GONE);
-            cbZd.setVisibility(View.GONE);
-            cbTyphoon.setVisibility(View.GONE);
-        } else { // 省内风雨查询
+        if (isProvince) { // 天津内
             radar.setVisibility(View.VISIBLE);
-//            rbRain.setText("雨量");
-            //cbGj.setText("国家站");
             cbGj.setVisibility(View.VISIBLE);
             cbDb.setVisibility(View.VISIBLE);
             cbZd.setVisibility(View.VISIBLE);
             cbTyphoon.setVisibility(View.VISIBLE);
             ControlMapBound controlMapBound = new ControlMapBound(getActivity(), aMap, R.color.gray);
             controlMapBound.start();
-        }
-        if(!ZtqCityDB.getInstance().isServiceAccessible()) {
+        } else { // 全国
+            radar.setVisibility(View.GONE);
+            cbGj.setVisibility(View.VISIBLE);
             cbDb.setVisibility(View.GONE);
             cbZd.setVisibility(View.GONE);
+            cbTyphoon.setVisibility(View.GONE);
+        }
+        if(!isHaveAuth("10103020403")) {
+            cbDb.setVisibility(View.GONE);
+        }
+        if(!isHaveAuth("10103020404")) {
+            cbZd.setVisibility(View.GONE);
+        }
+        if(!isHaveAuth("10103020405")) {
             radar.setVisibility(View.GONE);
+        }
+        if(!isHaveAuth("10103020406")) {
             cbTyphoon.setVisibility(View.GONE);
         }
         update(ControlDistribution.getColumnType(type));
+    }
+
+    /**
+     * 判断是否有查看权限
+     * @param columnId
+     * @return
+     */
+    private boolean isHaveAuth(String columnId) {
+        Log.e("limitinfo", MyApplication.LIMITINFO);
+        if (MyApplication.LIMITINFO.contains(columnId)) {
+            return true;
+        }
+        return false;
     }
 
     private void createControls() {

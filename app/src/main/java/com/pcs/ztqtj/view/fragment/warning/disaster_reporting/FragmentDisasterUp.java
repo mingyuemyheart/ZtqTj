@@ -36,7 +36,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -49,35 +48,28 @@ import android.widget.Toast;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUrl;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqReleaseDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqReleaseUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjfileDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjfileUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjzqtjDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjzqtjUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
 import com.pcs.ztqtj.control.tool.CommUtils;
-import com.pcs.ztqtj.control.tool.KWHttpRequest;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.control.tool.videocompressor.MediaController;
 import com.pcs.ztqtj.control.tool.videocompressor.VideoFileUtils;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
 import com.pcs.ztqtj.view.fragment.warning.FragmentDisasterReporting;
 import com.pcs.ztqtj.view.fragment.warning.picture.ActivityPhotoFull;
@@ -85,6 +77,10 @@ import com.pcs.ztqtj.view.fragment.warning.video.ActivityVideoPlay;
 import com.pcs.ztqtj.view.fragment.warning.video.Code;
 import com.pcs.ztqtj.view.fragment.warning.video.VideoListActivity;
 import com.pcs.ztqtj.view.myview.MultiEditInputView;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,12 +93,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * Created by Administrator on 2017/8/2 0002.
- * chen_jx
+ * 首页-预警中心-灾害直报-灾情上传
  */
-
 public class FragmentDisasterUp extends FragmentReportBase implements View.OnClickListener {
 
     private LinearLayout  lay_disaster_pic, lay_disaster_voice, lay_dsiaster_video;
@@ -122,7 +124,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
     private String user_id;
     private LinearLayout lay_disaster_manager_up, lay_disaster_bottom, lay_disaster_tg, lay_disaster_sh,
             lay_disaster_bh;
-    private KWHttpRequest mKWHttpRequest;
     private String zq_id, zq_time, zq_addr, zq_desc, pic_id, voi_id, vid_id, tub_id,
             zq_town_id;
     private MultiEditInputView id_meiv;
@@ -140,8 +141,7 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_disaster_up, container, false);
     }
 
@@ -152,15 +152,12 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
         initPopupWindow();
     }
 
-
     private List<PackLocalCity> list;
-    private InputMethodManager manager;
 
     /**
      * 初始化控件
      */
     private void initView() {
-        manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         user_id =ZtqCityDB.getInstance().getMyInfo().sys_user_id;
         tv_disaster_type = (TextView) getView().findViewById(R.id.tv_disaster_type);
         tv_disaster_type.setOnClickListener(this);
@@ -233,12 +230,10 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
             tv_disaster.measure(spec, spec);
 
             WindowManager wm = getActivity().getWindowManager();
-
             int screen_width = wm.getDefaultDisplay().getWidth();
 
             int w0 = tv_disaster.getMeasuredWidth();//控件宽度
             // double w1=tv_disaster_address.getPaint().measureText(tv_disaster_address.getText().toString());//文本宽度
-
             Rect bounds = new Rect();
             TextPaint paint;
             String text = tv_disaster_address.getText().toString();
@@ -248,7 +243,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
             if (width > screen_width - w0 - 100) {
                 tv_disaster.setGravity(Gravity.TOP);
             }
-
         } else {
             tv_disaster_address.setVisibility(View.GONE);
             disaster_up_street.setVisibility(View.VISIBLE);
@@ -262,7 +256,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
             }
         }
         setvisibity(user_id);
-        initKWHttpRequest();
     }
 
     /**
@@ -272,14 +265,13 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
      */
     public void setvisibity(String userid) {
         user_id = userid;
-        Check_type();
+        okHttpAlarmType();
         if (TextUtils.isEmpty(userid)) {
             lay_disaster_bottom.setVisibility(View.INVISIBLE);
         } else {
             lay_disaster_bottom.setVisibility(View.VISIBLE);
-            Check_yjtj(userid);
+            okHttpStatic();
         }
-
     }
 
     private Intent intent;
@@ -473,8 +465,7 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
                 } else if (TextUtils.isEmpty(zq_id)) {
                     Toast.makeText(getActivity(), "您还未填选择灾情类型", Toast.LENGTH_SHORT).show();
                 } else {
-                    showProgressDialog();
-                    CommitRelease();
+                    okHttpReport();
                 }
                 break;
         }
@@ -499,146 +490,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
             getActivity().getWindow().setAttributes(lps);
         }
     }
-
-
-    private PackYjZqReleaseUp packYjZqReleaseUp = new PackYjZqReleaseUp();
-
-    //提交发布请求
-    private void CommitRelease() {
-        packYjZqReleaseUp.user_id = user_id;
-        packYjZqReleaseUp.town_id = zq_town_id;
-        packYjZqReleaseUp.pic_id = pic_id;
-        packYjZqReleaseUp.tub_id = tub_id;
-        packYjZqReleaseUp.vid_id = vid_id;
-        packYjZqReleaseUp.voi_id = voi_id;
-        packYjZqReleaseUp.zq_addr = zq_addr;
-        packYjZqReleaseUp.zq_desc = zq_desc;
-        packYjZqReleaseUp.zq_id = zq_id;
-        packYjZqReleaseUp.zq_time = zq_time;
-        //广播接收
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
-        PcsDataDownload.addDownload(packYjZqReleaseUp);
-    }
-
-    private PackYjzqtjUp packYjzqtjUp = new PackYjzqtjUp();
-    ;
-    private PackColumnUp packYjZqColumnUp = new PackColumnUp();
-
-    //灾情类型请求
-    private void Check_type() {
-        showProgressDialog();
-        packYjZqColumnUp.column_type = "18";
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
-        PcsDataDownload.addDownload(packYjZqColumnUp);
-    }
-
-    //查询灾情统计
-    private void Check_yjtj(String user_id) {
-        //下载
-        //showProgressDialog();
-        packYjzqtjUp.user_id = user_id;
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
-        PcsDataDownload.addDownload(packYjzqtjUp);
-    }
-
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (TextUtils.isEmpty(nameStr)) {
-                return;
-            }
-            if (nameStr.equals(packYjzqtjUp.getName())) {
-                //等待框
-                dismissProgressDialog();
-                PackYjzqtjDown packDown = (PackYjzqtjDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDown == null) {
-                    return;
-                }
-                //PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceiver);
-                if (TextUtils.isEmpty(packDown.tg_num)) {
-                    tv_disaster_tg.setText("已通过: " + "暂无  >>");
-                } else {
-                    tv_disaster_tg.setText("已通过: " + packDown.tg_num + "条  >>");
-                }
-                if (TextUtils.isEmpty(packDown.ds_num)) {
-                    tv_disaster_sh.setText("待审核: " + "暂无  >>");
-                } else {
-                    num_shs = Integer.valueOf(packDown.ds_num);
-                    tv_disaster_sh.setText("待审核: " + packDown.ds_num + "条  >>");
-                }
-                if (TextUtils.isEmpty(packDown.bh_num)) {
-                    tv_disaster_bh.setText("被驳回: " + "暂无  >>");
-                } else {
-                    tv_disaster_bh.setText("被驳回: " + packDown.bh_num + "条  >>");
-                }
-            }
-            if (nameStr.equals(packYjZqColumnUp.getName())) {
-                dismissProgressDialog();
-                PackColumnDown packDowns = (PackColumnDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDowns == null) {
-                    return;
-                }
-                // PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceiver);
-                if (packDowns.arrcolumnInfo != null) {
-                    mlist.clear();
-                    mlist_id.clear();
-                    for (int i = 0; i < packDowns.arrcolumnInfo.size(); i++) {
-                        mlist.add(packDowns.arrcolumnInfo.get(i).name);
-                        mlist_id.add(packDowns.arrcolumnInfo.get(i).type);
-                    }
-                    tv_disaster_type.setText(mlist.get(0));
-                    zq_id = mlist_id.get(0);
-                }
-            }
-            if (nameStr.equals(packUp.getName())) {
-                dismissProgressDialog();
-                PackYjfileDown packDowns = (PackYjfileDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                //PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceiver);
-                if (packDowns != null) {
-                    if (file_type == "1") {
-                        pic_id = packDowns.file_id;
-                        BitmapDrawable drawable = new BitmapDrawable(mFilePhoto.getPath());
-                        iv_disaster_pic_show.setVisibility(View.VISIBLE);
-                        iv_disaster_pic_show.setBackgroundDrawable(drawable);
-                        iv_disaster_pic.setVisibility(View.GONE);
-                        tv_disater_pic.setVisibility(View.GONE);
-                        is_phonoUp = true;
-                    } else if (file_type == "2") {
-                        is_voiceUp = true;
-                        voi_id = packDowns.file_id;
-                        iv_disaster_voice_show.setVisibility(View.VISIBLE);
-                        iv_disaster_voice_show.setImageResource(R.drawable
-                                .recordresource);
-                        iv_disaster_voice.setVisibility(View.GONE);
-                        tv_disater_voice.setVisibility(View.GONE);
-                    } else {
-                        vid_id = packDowns.file_id;
-                        tub_id = packDowns.tub_id;
-                    }
-                    Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show();
-                }
-            }
-            if (nameStr.equals(packYjZqReleaseUp.getName())) {
-                dismissProgressDialog();
-                PackYjZqReleaseDown packDowns = (PackYjZqReleaseDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDowns != null) {
-                    if (packDowns.result.equals("1")) {
-                        // PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceiver);
-                        Toast.makeText(getActivity(), "发布成功", Toast.LENGTH_SHORT).show();
-                        is_voiceEnd = true;
-                        is_voiceFirst = true;
-                        refresh();
-                        FragmentDisasterReporting fragment2 = (FragmentDisasterReporting) getParentFragment();
-//                        // fragment2.clickButton(R.id.btn_disaster_report);
-                        fragment2.updateFragment(2, "1");
-//                        fragment2.updateFragment(4, "1");
-                    } else {
-                        Toast.makeText(getActivity(), "发布失败,请重新提交", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }
-    };
 
     private ImageFetcher mImageFetcher;
 
@@ -670,65 +521,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
     private final int REQUEST_ALBUM = 101;
     // 拍照
     private final int REQUEST_CAMERA = 102;
-
-    /**
-     * 初始化HTTP请求
-     */
-    private void initKWHttpRequest() {
-        PackLocalUrl packUrl = (PackLocalUrl) PcsDataManager.getInstance().getLocalPack(PackLocalUrl.KEY);
-        PackInitUp initUp = new PackInitUp();
-        PackInitDown packInit = (PackInitDown) PcsDataManager.getInstance().getNetPack(initUp.getName());
-        mKWHttpRequest = new KWHttpRequest(getActivity());
-        mKWHttpRequest.setURL(packUrl.url);
-        mKWHttpRequest.setmP(packInit.pid);
-        mKWHttpRequest.setListener(0, new KWHttpRequest.KwHttpRequestListener() {
-            @Override
-            public void loadFinished(int nThreadID, byte[] b) {
-
-            }
-
-            @Override
-            public void loadFailed(int nThreadID, int nErrorCode) {
-
-            }
-        });
-    }
-
-    private PackYjfileUp packUp = new PackYjfileUp();
-
-    //文件提交类型
-    private void reqChangeInfo(String type) {
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        showProgressDialog("上传中...");
-        packUp.file_type = type;
-        // 请求网络
-        if (mFilePhoto != null) {
-            if (type.equals("1")) {
-                mKWHttpRequest.setFilePath(mFilePhoto.getPath(), KWHttpRequest.FILETYPE.IMG);
-                mKWHttpRequest.addDownload(packUp);
-                mKWHttpRequest.startAsynchronous();
-            }
-        }
-        if (mFileName != null) {
-            if (type.equals("2")) {
-                mKWHttpRequest.setFilePath(mFileName, KWHttpRequest.FILETYPE.NONE);
-                mKWHttpRequest.addDownload(packUp);
-                mKWHttpRequest.startAsynchronous();
-            }
-            dismissPopupWindow();
-        }
-        if (filPaths != null) {
-            if (type.equals("3")) {
-                mKWHttpRequest.setFilePath(filPaths, KWHttpRequest.FILETYPE.VIDEO);
-                mKWHttpRequest.addDownload(packUp);
-                mKWHttpRequest.startAsynchronous();
-            }
-        }
-    }
 
     private Toast toast;
 
@@ -1100,7 +892,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
         }
         ImageResizer resizer = new ImageResizer();
         resizer.resizeSD(mFilePhoto.getPath(), maxSize, mImageResizerListener);
-        // reqChangeInfo("1");
     }
 
     private ImageResizer.ImageResizerListener mImageResizerListener = new ImageResizer.ImageResizerListener() {
@@ -1595,7 +1386,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
         is_phonoUp = false;
         num_shs = num_shs + 1;
         tv_disaster_sh.setText("待审核: " + num_shs + "条  >>");
-//        Check_yjtj(user_id);
     }
 
     private void stopRecording() {
@@ -1649,5 +1439,336 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
         }
     }
 
+    /**
+     * 获取预警分类
+     */
+    private void okHttpAlarmType() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"alarm/getAlarmTypeList";
+                    Log.e("getAlarmTypeList", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("getAlarmTypeList", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("column")) {
+                                                    JSONObject columnObj = bobj.getJSONObject("column");
+                                                    if (!TextUtil.isEmpty(columnObj.toString())) {
+                                                        PackColumnDown packDowns = new PackColumnDown();
+                                                        packDowns.fillData(columnObj.toString());
+                                                        if (packDowns.arrcolumnInfo != null) {
+                                                            mlist.clear();
+                                                            mlist_id.clear();
+                                                            for (int i = 0; i < packDowns.arrcolumnInfo.size(); i++) {
+                                                                mlist.add(packDowns.arrcolumnInfo.get(i).name);
+                                                                mlist_id.add(packDowns.arrcolumnInfo.get(i).type);
+                                                            }
+                                                            tv_disaster_type.setText(mlist.get(0));
+                                                            zq_id = mlist_id.get(0);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取灾害直报用户通过、驳回、待审核统计
+     */
+    private void okHttpStatic() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("user_id", user_id);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"alarm/userDisasterStatistics";
+                    Log.e("userDisasterStatistics", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("userDisasterStatistics", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yj_my_zq_tj")) {
+                                                    JSONObject columnObj = bobj.getJSONObject("yj_my_zq_tj");
+                                                    if (!TextUtil.isEmpty(columnObj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackYjzqtjDown packDown = new PackYjzqtjDown();
+                                                        packDown.fillData(columnObj.toString());
+                                                        if (TextUtils.isEmpty(packDown.tg_num)) {
+                                                            tv_disaster_tg.setText("已通过: " + "暂无  >>");
+                                                        } else {
+                                                            tv_disaster_tg.setText("已通过: " + packDown.tg_num + "条  >>");
+                                                        }
+                                                        if (TextUtils.isEmpty(packDown.ds_num)) {
+                                                            tv_disaster_sh.setText("待审核: " + "暂无  >>");
+                                                        } else {
+                                                            num_shs = Integer.valueOf(packDown.ds_num);
+                                                            tv_disaster_sh.setText("待审核: " + packDown.ds_num + "条  >>");
+                                                        }
+                                                        if (TextUtils.isEmpty(packDown.bh_num)) {
+                                                            tv_disaster_bh.setText("被驳回: " + "暂无  >>");
+                                                        } else {
+                                                            tv_disaster_bh.setText("被驳回: " + packDown.bh_num + "条  >>");
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 灾害直报发布
+     */
+    private void okHttpReport() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("user_id", user_id);
+                    info.put("town_id", zq_town_id);
+                    info.put("pic_id", pic_id);
+                    info.put("tub_id", tub_id);
+                    info.put("vid_id", vid_id);
+                    info.put("voi_id", voi_id);
+                    info.put("zq_addr", zq_addr);
+                    info.put("zq_desc", zq_desc);
+                    info.put("zq_id", zq_id);
+                    info.put("zq_time", zq_time);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("addDisasterReport", json);
+                    final String url = CONST.BASE_URL+"alarm/addDisasterReport";
+                    Log.e("addDisasterReport", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("addDisasterReport", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yj_sh_zq_tj")) {
+                                                    JSONObject itemObj = bobj.getJSONObject("yj_sh_zq_tj");
+                                                    if (!TextUtil.isEmpty(itemObj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackYjZqReleaseDown packDowns = new PackYjZqReleaseDown();
+                                                        packDowns.fillData(itemObj.toString());
+                                                        if (packDowns != null) {
+                                                            if (packDowns.result.equals("1")) {
+                                                                Toast.makeText(getActivity(), "发布成功", Toast.LENGTH_SHORT).show();
+                                                                is_voiceEnd = true;
+                                                                is_voiceFirst = true;
+                                                                refresh();
+                                                                FragmentDisasterReporting fragment2 = (FragmentDisasterReporting) getParentFragment();
+                                                                fragment2.updateFragment(2, "1");
+                                                            } else {
+                                                                Toast.makeText(getActivity(), "发布失败,请重新提交", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 上传图片、视频、音频
+     */
+    private void reqChangeInfo(final String type) {
+        if (!isOpenNet()) {
+            showToast(getString(R.string.net_err));
+            return;
+        }
+        showProgressDialog("上传中...");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MultipartBody.Builder builder = new MultipartBody.Builder();
+                builder.setType(MultipartBody.FORM);
+                builder.addFormDataPart("token", MyApplication.TOKEN);
+                builder.addFormDataPart("file_type", type);
+                builder.addFormDataPart("user_id", user_id);
+                if (mFilePhoto != null) {
+                    if (type.equals("1")) {
+                        File file = new File(mFilePhoto.getPath());
+                        builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                    }
+                }
+                if (mFileName != null) {
+                    if (type.equals("2")) {
+                        File file = new File(mFileName);
+                        builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dismissPopupWindow();
+                        }
+                    });
+                }
+                if (filPaths != null) {
+                    if (type.equals("3")) {
+                        File file = new File(filPaths);
+                        builder.addFormDataPart("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
+                    }
+                }
+                RequestBody body = builder.build();
+                final String url = CONST.BASE_URL+"alarm/upload";
+                Log.e("upload", url);
+                OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e("upload", result);
+                                if (!TextUtil.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("yj_sh_file_tj")) {
+                                                JSONObject itemObj = bobj.getJSONObject("yj_sh_file_tj");
+                                                if (!TextUtil.isEmpty(itemObj.toString())) {
+                                                    dismissProgressDialog();
+                                                    PackYjfileDown packDowns = new PackYjfileDown();
+                                                    packDowns.fillData(itemObj.toString());
+                                                    if (packDowns != null) {
+                                                        if (file_type == "1") {
+                                                            pic_id = packDowns.file_id;
+                                                            BitmapDrawable drawable = new BitmapDrawable(mFilePhoto.getPath());
+                                                            iv_disaster_pic_show.setVisibility(View.VISIBLE);
+                                                            iv_disaster_pic_show.setBackgroundDrawable(drawable);
+                                                            iv_disaster_pic.setVisibility(View.GONE);
+                                                            tv_disater_pic.setVisibility(View.GONE);
+                                                            is_phonoUp = true;
+                                                        } else if (file_type == "2") {
+                                                            is_voiceUp = true;
+                                                            voi_id = packDowns.file_id;
+                                                            iv_disaster_voice_show.setVisibility(View.VISIBLE);
+                                                            iv_disaster_voice_show.setImageResource(R.drawable
+                                                                    .recordresource);
+                                                            iv_disaster_voice.setVisibility(View.GONE);
+                                                            tv_disater_voice.setVisibility(View.GONE);
+                                                        } else {
+                                                            vid_id = packDowns.file_id;
+                                                            tub_id = packDowns.tub_id;
+                                                        }
+                                                        Toast.makeText(getActivity(), "上传成功", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
 
 }

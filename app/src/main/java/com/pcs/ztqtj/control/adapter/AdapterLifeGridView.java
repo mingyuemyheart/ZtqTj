@@ -14,10 +14,7 @@ import android.widget.TextView;
 import com.pcs.ztqtj.R;
 
 /**
- * 气象科普九宫格适配器
- *
- * @author chenjh
- *
+ * 生活气象-气象科普
  */
 public class AdapterLifeGridView extends BaseAdapter {
 	private Context context;

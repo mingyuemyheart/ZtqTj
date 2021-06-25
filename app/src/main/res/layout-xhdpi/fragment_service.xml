@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/layout_root"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/text_white"
-              android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/text_white"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -14,9 +14,9 @@
         <ImageView
             android:layout_width="85dp"
             android:layout_height="30dp"
-            android:visibility="gone"
             android:layout_centerVertical="true"
-            android:src="@drawable/icon_logo"/>
+            android:src="@drawable/icon_logo"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:text="@string/weather_service"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/text_the_page_title"/>
+            android:textSize="@dimen/text_the_page_title" />
 
         <ImageButton
             android:id="@+id/imageghelp"
@@ -35,14 +35,14 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:background="@drawable/serve_help"/>
+            android:background="@drawable/serve_help" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen8"
         android:layout_marginTop="@dimen/text_content"
+        android:layout_marginBottom="@dimen/dimen8"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_vertical"
@@ -52,59 +52,59 @@
             android:id="@+id/bt_service_jc"
             android:layout_width="0dp"
             android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="2"
             android:background="@drawable/corner_server_blue"
             android:gravity="center"
             android:padding="0dp"
-            android:paddingBottom="@dimen/dimen8"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:paddingTop="@dimen/dimen8"
+            android:paddingBottom="@dimen/dimen8"
             android:text="决策服务"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/textsize16"/>
+            android:textSize="@dimen/textsize16" />
 
         <Button
             android:id="@+id/bt_service_hy"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_weight="2"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_weight="2"
             android:background="@drawable/corner_server_blue"
             android:gravity="center"
             android:padding="0dp"
-            android:paddingBottom="@dimen/dimen8"
             android:paddingTop="@dimen/dimen8"
+            android:paddingBottom="@dimen/dimen8"
             android:text="行业气象"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/textsize16"/>
+            android:textSize="@dimen/textsize16" />
 
         <Button
             android:id="@+id/bt_service_login"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_weight="1"
             android:background="@drawable/corner_server_blue"
             android:gravity="center"
             android:padding="0dp"
-            android:paddingBottom="@dimen/dimen8"
             android:paddingTop="@dimen/dimen8"
+            android:paddingBottom="@dimen/dimen8"
             android:text="登录"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/textsize16"/>
+            android:textSize="@dimen/textsize16" />
 
         <LinearLayout
             android:id="@+id/lay_login_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
-            android:gravity="center"
-            android:visibility="gone"
             android:layout_marginRight="@dimen/dimen4"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:gravity="center"
+            android:visibility="gone">
 
             <Button
                 android:id="@+id/logoutbutton"
@@ -114,11 +114,11 @@
                 android:background="@drawable/btn_myser_exit"
                 android:gravity="center"
                 android:padding="0dp"
-                android:paddingBottom="@dimen/dimen8"
                 android:paddingTop="@dimen/dimen8"
+                android:paddingBottom="@dimen/dimen8"
                 android:text="@string/exit"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize16"/>
+                android:textSize="@dimen/textsize16" />
 
         </LinearLayout>
 
@@ -129,9 +129,9 @@
         android:layout_height="match_parent">
 
         <ScrollView
-            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -145,19 +145,19 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_service"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_service" />
 
 
                     <ImageView
-                        android:visibility="gone"
                         android:id="@+id/iv_service_ad"
-                        android:layout_gravity="right|bottom"
                         android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="right|bottom"
                         android:layout_marginRight="20dp"
-                        android:layout_height="40dp"/>
+                        android:visibility="gone" />
 
                 </FrameLayout>
 
@@ -165,8 +165,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp">
 
                     <TextView
@@ -177,7 +177,7 @@
                         android:gravity="center"
                         android:text="天津市气象台"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
 
                 </LinearLayout>
 
@@ -196,7 +196,7 @@
                         android:gravity="center"
                         android:text="天津市人工影响天气办公室"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
 
                 </LinearLayout>
 
@@ -206,8 +206,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:visibility="gone"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginBottom="5dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_service_weather_office"
@@ -217,10 +217,9 @@
                         android:gravity="center"
                         android:text="气象灾害应急指挥部办公室"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
 
                 </LinearLayout>
-
 
 
                 <LinearLayout
@@ -243,7 +242,7 @@
                             android:gravity="center"
                             android:text="滨海新区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                     </LinearLayout>
 
@@ -269,7 +268,7 @@
                             android:gravity="center"
                             android:text="东丽区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                     </LinearLayout>
 
@@ -290,7 +289,7 @@
                             android:gravity="center"
                             android:text="西青区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                         <TextView
                             android:id="@+id/tv_jnq"
@@ -302,7 +301,7 @@
                             android:gravity="center"
                             android:text="津南区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
 
                     </LinearLayout>
@@ -313,8 +312,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
                     android:layout_marginBottom="5dp">
 
 
@@ -332,7 +331,7 @@
                             android:gravity="center"
                             android:text="北辰区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                     </LinearLayout>
 
@@ -352,7 +351,7 @@
                             android:gravity="center"
                             android:text="武清区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                         <TextView
                             android:id="@+id/tv_bdq"
@@ -364,7 +363,7 @@
                             android:gravity="center"
                             android:text="宝坻区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -389,7 +388,7 @@
                             android:gravity="center"
                             android:text="静海区"
                             android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content"/>
+                            android:textSize="@dimen/text_content" />
 
                     </LinearLayout>
 
@@ -414,7 +413,7 @@
                                 android:gravity="center"
                                 android:text="宁河区"
                                 android:textColor="@color/text_white"
-                                android:textSize="@dimen/text_content"/>
+                                android:textSize="@dimen/text_content" />
 
 
                         </LinearLayout>
@@ -433,9 +432,8 @@
                                 android:gravity="center"
                                 android:text="蓟州区"
                                 android:textColor="@color/text_white"
-                                android:textSize="@dimen/text_content"/>
+                                android:textSize="@dimen/text_content" />
                         </LinearLayout>
-
 
 
                     </LinearLayout>

@@ -67,7 +67,6 @@
         android:alpha="0"
         android:src="@color/bg_black_alpha20" />
 
-
     <LinearLayout
         android:id="@+id/lay_bt_setting"
         android:layout_width="wrap_content"
@@ -90,7 +89,6 @@
         android:visibility="gone"
         android:layout_marginTop="10dp"
         android:src="@drawable/icon_logo" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -140,7 +138,7 @@
                 android:id="@+id/scroll_view_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical" />
         </com.pcs.ztqtj.view.myview.MyScrollView>
 
     </LinearLayout>

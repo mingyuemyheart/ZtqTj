@@ -20,6 +20,9 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.TravelWeatherColumn;
 
 import java.util.List;
 
+/**
+ * 生活气象-旅游气象
+ */
 public class AdapterTravelViewPager extends PagerAdapter {
 
 	private Context context = null;

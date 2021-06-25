@@ -18,15 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 气象科普
- * 
- * @author chenjh
+ * 生活气象-气象科普
  */
 public class ActivityMeteorologicalScience extends FragmentActivityZtqBase {
 
 	private MyGridView channel_gridView;
 	private ImageView head_iv, bottom_iv;
-	private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
+	private List<Map<String, Object>> data = new ArrayList<>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -51,7 +49,8 @@ public class ActivityMeteorologicalScience extends FragmentActivityZtqBase {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(ActivityMeteorologicalScience.this, ActivityChannelList.class);
 				intent.putExtra("title", "气候解读");
-				intent.putExtra("channel_id", "100013");
+				intent.putExtra("channel_id", "1");
+				intent.putExtra("interfaceUrl", "qxkp");
 				startActivity(intent);
 			}
 		});
@@ -61,7 +60,8 @@ public class ActivityMeteorologicalScience extends FragmentActivityZtqBase {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(ActivityMeteorologicalScience.this, ActivityImageDisaster.class);
 				intent.putExtra("title", "识图防灾");
-				intent.putExtra("channel_id", "100011");
+				intent.putExtra("channel_id", "6");
+				intent.putExtra("interfaceUrl", "qxkp");
 				startActivity(intent);
 			}
 		});
@@ -69,23 +69,22 @@ public class ActivityMeteorologicalScience extends FragmentActivityZtqBase {
 	}
 
 	private void initData() {
-		Map<String, Object> a = new HashMap<String, Object>();
+		Map<String, Object> a = new HashMap<>();
 		a.put("t", "气象美图");
 		a.put("i", R.drawable.channel_100008);
-		a.put("id", "100008");
-		Map<String, Object> b = new HashMap<String, Object>();
+		a.put("id", "3");
+		Map<String, Object> b = new HashMap<>();
 		b.put("t", "节气养生");
 		b.put("i", R.drawable.channel_100006);
-		b.put("id", "100006");
-		Map<String, Object> c = new HashMap<String, Object>();
+		b.put("id", "2");
+		Map<String, Object> c = new HashMap<>();
 		c.put("t", "天文地理");
 		c.put("i", R.drawable.channel_100007);
-		c.put("id", "100010");
-		Map<String, Object> d = new HashMap<String, Object>();
+		c.put("id", "5");
+		Map<String, Object> d = new HashMap<>();
 		d.put("t", "气象百科");
 		d.put("i", R.drawable.channel_100009);
-		d.put("id", "100009");
-		Map<String, Object> e = new HashMap<String, Object>();
+		d.put("id", "4");
 
 		data.add(a);// 气象美图
 		data.add(b);// 节气养生
@@ -102,8 +101,8 @@ public class ActivityMeteorologicalScience extends FragmentActivityZtqBase {
 			Intent intent = new Intent(ActivityMeteorologicalScience.this, ActivityChannelList.class);
 			intent.putExtra("title", map.get("t").toString());
 			intent.putExtra("channel_id", map.get("id").toString());
+			intent.putExtra("interfaceUrl", "qxkp");
 			startActivity(intent);
-
 		}
 	};
 

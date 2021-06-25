@@ -1,66 +1,49 @@
 package com.pcs.ztqtj.view.activity.service;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceUserLoginDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceUserLoginUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
-import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.help.ActivityHelp;
-import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
-import com.pcs.ztqtj.view.dialog.DialogTwoButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * 气象服务 登录
- *
- * @author chenjh
+ * 气象服务-登录
  */
-public class AcitvityServeLogin extends FragmentActivityZtqBase implements
-        View.OnClickListener {
+public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.OnClickListener {
 
     private EditText mobileEt, loginPwdEt;
     private ImageView mobileDel;
     private ImageView pwdDel;
     private Button commit;
-    private TextView promit;// 提示信息
     private TextView tvHelp;
-    private String mobile = "";
-    private String pwd = "";
-    private ProgressDialog dialog;
-    private MyReceiver receiver = new MyReceiver();
-    private PackServiceUserLoginUp serviceUserLoginUp = new PackServiceUserLoginUp();
-    // private boolean isServiceLogin = false;
-    /**
-     * 机身编码
-     **/
-    public String imei = "";
-    /**
-     * 手机型号
-     **/
-    public String mobile_type = "";
-    private DialogTwoButton myDialog2;
-    private TextView messageTextView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +52,6 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements
         setContentView(R.layout.serveloginacitvity);
         initview();
         initEvent();
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
-        // isServiceLogin = getIntent().getBooleanExtra("isServiceLogin",
-        // false);
     }
 
     private void initview() {
@@ -79,7 +59,6 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements
         loginPwdEt = (EditText) findViewById(R.id.pwd_et);
         mobileDel = (ImageView) findViewById(R.id.del_mobile_iv);
         pwdDel = (ImageView) findViewById(R.id.del_pwd_iv);
-        promit = (TextView) findViewById(R.id.toastinfomation);
         commit = (Button) findViewById(R.id.login_btn);
         tvHelp = (TextView) findViewById(R.id.help);
     }
@@ -93,18 +72,13 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements
     }
 
     private void checkLogin() {
-        mobile = mobileEt.getText().toString().trim();
-        pwd = loginPwdEt.getText().toString().trim();
+        String mobile = mobileEt.getText().toString().trim();
+        String pwd = loginPwdEt.getText().toString().trim();
 
         if (TextUtils.isEmpty(mobile)) {
-            // Toast.makeText(getApplicationContext(), "请输入手机号码！",
-            // Toast.LENGTH_SHORT).show();
             showToast("请输入手机号码！");
-
             return;
         } else if (TextUtils.isEmpty(pwd)) {
-            // Toast.makeText(getApplicationContext(), "请输入密码！ ",
-            // Toast.LENGTH_SHORT).show();
             showToast("请输入密码！");
             return;
         } else {
@@ -112,18 +86,7 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements
                 showToast(getString(R.string.net_err));
                 return;
             }
-            if (serviceUserLoginUp == null) {
-                serviceUserLoginUp = new PackServiceUserLoginUp();
-            }
-            showProgressDialog();
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            imei = tm.getDeviceId();
-            mobile_type = android.os.Build.MODEL;
-            serviceUserLoginUp.mobile = mobile;
-            serviceUserLoginUp.pwd = PcsMD5.Md5(pwd);
-            serviceUserLoginUp.imei = imei;
-            serviceUserLoginUp.mobile_type = mobile_type;
-            PcsDataDownload.addDownload(serviceUserLoginUp);
+            okHttpLogin(mobile, pwd);
         }
     }
 
@@ -131,7 +94,6 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_back:
-                //finishView();
                 finish();
                 break;
             case R.id.del_mobile_iv:
@@ -150,122 +112,105 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements
         }
     }
 
-    /**
-     * 数据更新广播接收
-     *
-     * @author JiangZy
-     */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String name, String error) {
-            if (!TextUtils.isEmpty(error)) {
-                return;
-            }
-            if (serviceUserLoginUp != null && serviceUserLoginUp.getName().equals(name)) {
-                dismissProgressDialog();
-                PackServiceUserLoginDown packServiceUserLoginDown =
-                        (PackServiceUserLoginDown) PcsDataManager.getInstance().getNetPack(name);
-                if (packServiceUserLoginDown == null) {
-                    showToast("提交失败，请稍后再试。");
-                    return;
-                }
-                int key = -1;
-                try {
-                    key = Integer.valueOf(packServiceUserLoginDown.type);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                switch (key) {
-                    case 0:
-                        Toast.makeText(AcitvityServeLogin.this,
-                                packServiceUserLoginDown.msg, Toast.LENGTH_SHORT)
-                                .show();
-
-                        // 缓存用户信息
-                        PackLocalUser myUserInfo = new PackLocalUser();
-
-                        myUserInfo.user_id = packServiceUserLoginDown.user_id;
-                        myUserInfo.mobile = mobile;
-                        myUserInfo.pwd = pwd;
-                        myUserInfo.nick_name = packServiceUserLoginDown.nick_name;
-                        myUserInfo.imei = imei;
-                        myUserInfo.mobile_type = mobile_type;
-                        myUserInfo.type = "4";
-                        myUserInfo.sys_head_url = packServiceUserLoginDown.sys_head_url;
-                        myUserInfo.sys_nick_name = packServiceUserLoginDown.sys_nick_name;
-                        myUserInfo.sys_user_id = packServiceUserLoginDown.sys_user_id;
-                        myUserInfo.is_jc = true;
-
-                        PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                        packLocalUserInfo.currUserInfo = myUserInfo;
-
-                        ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
-
-                        // ZtqCityDB.getInstance().setLogin(true);
-                        // if(!isServiceLogin){
-                        // Intent intent = new Intent(AcitvityServeLogin.this,
-                        // UserCenterActivity.class);
-                        // startActivity(intent);
-                        // }
-                        finishView();
-                        break;
-                    case -1:
-                        break;
-                    default:
-                        showCheckTipsDialog(packServiceUserLoginDown.msg);
-                        break;
-                }
-            }
-        }
-    }
-
-    private void showCheckTipsDialog(String msg) {
-        View view = LayoutInflater.from(AcitvityServeLogin.this).inflate(
-                R.layout.dialog_message, null);
-
-        if (myDialog2 == null) {
-            messageTextView2 = (TextView) view.findViewById(R.id.dialogmessage);
-            messageTextView2.setText(msg);
-            messageTextView2.setTextColor(getResources().getColor(
-                    R.color.text_color));
-            myDialog2 = new DialogTwoButton(AcitvityServeLogin.this, view,
-                    "帮助", "返回", new DialogListener() {
-                @Override
-                public void click(String str) {
-                    myDialog2.dismiss();
-                    if (str.equals("帮助")) {
-                        Intent intent = null;
-                        intent = new Intent(AcitvityServeLogin.this,
-                                ActivityHelp.class);
-                        startActivityForResult(intent,
-                                MyConfigure.RESULT_SERVICE_THREE);
-                    }
-                }
-            });
-            myDialog2.setTitle("天津气象提示");
-            myDialog2.showCloseBtn();
-        }
-
-        messageTextView2.setText(msg);
-        myDialog2.show();
-    }
-
     private void finishView() {
         CommUtils.closeKeyboard(this);
         setResult(RESULT_OK);
         finish();
     }
 
-    @Override
-    public void onBackPressed() {
-        //finishView();
-        super.onBackPressed();
+    /**
+     * 用户登录
+     */
+    private void okHttpLogin(final String uName, final String pwd) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/login";
+                Log.e("login", url);
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", uName);
+                    param.put("pwd", pwd);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    Log.e("login", result);
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                showToast(errorMessage);
+                                            }
+                                            if (!obj.isNull("token")) {
+                                                MyApplication.TOKEN = obj.getString("token");
+                                                Log.e("token", MyApplication.TOKEN);
+                                            }
+                                            if (!obj.isNull("limitInfo")) {
+                                                MyApplication.LIMITINFO = obj.getString("limitInfo");
+                                            }
+                                            if (!obj.isNull("userInfo")) {
+                                                JSONObject userInfo = obj.getJSONObject("userInfo");
+                                                if (!userInfo.isNull("userId")) {
+                                                    MyApplication.UID = userInfo.getString("userId");
+                                                }
+                                                if (!userInfo.isNull("loginName")) {
+                                                    MyApplication.USERNAME = userInfo.getString("loginName");
+                                                }
+                                                if (!userInfo.isNull("password")) {
+                                                    MyApplication.PASSWORD = userInfo.getString("password");
+                                                }
+                                                if (!userInfo.isNull("userName")) {
+                                                    MyApplication.NAME= userInfo.getString("userName");
+                                                }
+                                                if (!userInfo.isNull("phonenumber")) {
+                                                    MyApplication.MOBILE= userInfo.getString("phonenumber");
+                                                }
+                                                if (!userInfo.isNull("avatar")) {
+                                                    MyApplication.PORTRAIT= userInfo.getString("avatar");
+                                                }
+                                                MyApplication.saveUserInfo(AcitvityServeLogin.this);
+
+                                                //存储用户数据
+                                                PackLocalUser myUserInfo = new PackLocalUser();
+                                                myUserInfo.user_id = MyApplication.UID;
+                                                myUserInfo.sys_user_id = MyApplication.UID;
+                                                myUserInfo.sys_nick_name = MyApplication.NAME;
+                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
+                                                myUserInfo.mobile = MyApplication.MOBILE;
+                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
+                                                packLocalUserInfo.currUserInfo = myUserInfo;
+                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+
+                                                finishView();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.unregisterReceiver(receiver);
-    }
 }

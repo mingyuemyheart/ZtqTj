@@ -7,9 +7,7 @@ import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.lib.lib_pcs_v3.control.log.Log;
 
 /**
- *
- *
- * @author JiangZY
+ * 加载城市信息
  */
 public class CommandLoadingCity extends AbstractCommand {
 
@@ -22,7 +20,6 @@ public class CommandLoadingCity extends AbstractCommand {
     @Override
     public void execute() {
         super.execute();
-        Log.e("jzy", "CommandLoadingCity");
         setStatus(Status.SUCC);
         ZtqLocationTool.getInstance().refreshLocationCity(true);
     }

@@ -19,10 +19,10 @@ import com.pcs.ztqtj.control.adapter.AdapterUseGuide;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
 /**
- * @author Z
- *使用指南
+ * 设置-功能导航
  */
 public class ActivityHelpQuestion extends FragmentActivityZtqBase{
+
 	private ListView listview;
 	private PackUseGuideDown down;
 	private MyReceiver receiver = new MyReceiver();
@@ -39,12 +39,10 @@ public class ActivityHelpQuestion extends FragmentActivityZtqBase{
 		initData();
 	}
 
-
 	private void initView() {
 		listview = (ListView) findViewById(R.id.listview);
 		null_data=(TextView) findViewById(R.id.null_data);
 	}
-	
 
 	private void initEvent() {
 		listview.setOnItemClickListener(new OnItemClickListener() {
@@ -84,20 +82,19 @@ public class ActivityHelpQuestion extends FragmentActivityZtqBase{
 			dealWithData();
 		}
 	}
+
 	/**
 	 * 数据更新广播接收
 	 */
 	private class MyReceiver extends PcsDataBrocastReceiver {
 		@Override
 		public void onReceive(String name, String error) {
-
 				if (name.equals(PackUseGuideUp.NAME)) {
 					down = (PackUseGuideDown) PcsDataManager.getInstance().getNetPack(name);
 					if (down!=null) {
 						dealWithData();
 					}
 				}
-
 		}
 	}
 

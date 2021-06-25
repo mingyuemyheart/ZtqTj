@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/layout_root"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@drawable/bg_satellite"
-              android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_satellite"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
         <RadioGroup
             android:id="@+id/situation_radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bg_number_detail_subt_blue"
-            android:orientation="horizontal"></RadioGroup>
+            android:orientation="horizontal" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +39,7 @@
                     android:singleLine="true"
                     android:text="发布时间"
                     android:textColor="@color/text_black"
-                    android:textSize="@dimen/dimen14"/>
+                    android:textSize="@dimen/dimen14" />
             </LinearLayout>
 
             <LinearLayout
@@ -62,7 +61,7 @@
                     android:paddingLeft="0dp"
                     android:paddingRight="@dimen/dimen4"
                     android:singleLine="true"
-                    android:textColor="@color/text_black"/>
+                    android:textColor="@color/text_black" />
             </LinearLayout>
         </LinearLayout>
 
@@ -88,11 +87,11 @@
                     android:textColor="@color/text_black"
                     android:textSize="@dimen/text_content" />
             </ScrollView>
+
             <com.pcs.ztqtj.view.myview.ImageTouchView
                 android:id="@+id/situation_image_show"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
+                android:layout_height="match_parent" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -107,7 +106,7 @@
                     android:background="@drawable/icon_situation_bar"
                     android:text="要素说明"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_footnote"/>
+                    android:textSize="@dimen/text_footnote" />
 
                 <LinearLayout
                     android:id="@+id/left_right_btn_layout"
@@ -120,13 +119,13 @@
                         android:id="@+id/situation_image_left"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rainfallimage_left"/>
+                        android:background="@drawable/btn_rainfallimage_left" />
 
                     <ImageButton
                         android:id="@+id/situation_image_right"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/btn_rainfallimage_right"/>
+                        android:background="@drawable/btn_rainfallimage_right" />
                 </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>

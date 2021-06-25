@@ -31,7 +31,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 指点天气
+ * 首页-指点天气
  */
 public class AdapterMapForecast extends BaseAdapter {
 
@@ -110,7 +110,11 @@ public class AdapterMapForecast extends BaseAdapter {
         textView.setText(pack.winddir);
         // 风力
         textView = (TextView) view.findViewById(R.id.text_windspeed);
-        textView.setText(pack.windlevel);
+        if (!TextUtil.isEmpty(pack.windspeed)) {
+            textView.setText(pack.windspeed);
+        } else {
+            textView.setText(pack.windlevel);
+        }
 
         return view;
     }
@@ -130,6 +134,7 @@ public class AdapterMapForecast extends BaseAdapter {
                     info.put("lon", lng+"");
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("grid", json);
                     final String url = CONST.BASE_URL+"grid";
                     Log.e("grid", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -146,8 +151,8 @@ public class AdapterMapForecast extends BaseAdapter {
                             mUIHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("grid", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("grid", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

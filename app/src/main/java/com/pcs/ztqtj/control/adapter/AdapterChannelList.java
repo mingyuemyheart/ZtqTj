@@ -14,23 +14,20 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.ztqtj.R;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
- * 生活气象-天气新闻
+ * 生活气象-气象科普-列表
  */
 public class AdapterChannelList extends BaseAdapter {
 
 	private List<ArtTitleInfo> mItems;
-	private SimpleDateFormat mDateFormat;
-	private boolean mBusy = false;
 	private Context context;
     private ImageFetcher imageFetcher;
+
 	public AdapterChannelList(Context context, List<ArtTitleInfo> items, ImageFetcher imageFetcher) {
 		this.mItems = items;
 		this.context = context;
-		mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.imageFetcher = imageFetcher;
 	}
 
@@ -51,7 +48,7 @@ public class AdapterChannelList extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHodler viewHodler = null;
+		ViewHodler viewHodler;
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(R.layout.channel_list_item, null);
 			viewHodler = new ViewHodler();
@@ -63,24 +60,21 @@ public class AdapterChannelList extends BaseAdapter {
 		} else {
 			viewHodler = (ViewHodler) convertView.getTag();
 		}
+
 		ArtTitleInfo info = mItems.get(position);
-		String imageDownloadUrl = "";
-		// String tid= map.get("tid").toString();
 		String title = info.title;
 		String description = info.desc;
-		// String ico=map.get("ico").toString();
-		String formatDate = info.pubt;
-		String small_ico = info.small_ico;
-		String big_ico = info.big_ico;
-		if (formatDate == null) {
-			formatDate = "时间未知";
+		String small_ico = context.getString(R.string.msyb)+info.small_ico;
+		if (info.small_ico.startsWith("http")) {
+			small_ico = info.small_ico;
 		}
 		viewHodler.itemTitle.setText(title);
 		viewHodler.itemDes.setText(description);
-
         if (!TextUtils.isEmpty(info.small_ico) || "null".equals(info.small_ico)) {
             imageFetcher.loadImage(small_ico, viewHodler.itemImg, ImageConstant.ImageShowType.SRC);
-        }
+        } else {
+			viewHodler.itemImg.setImageResource(R.drawable.no_pic);
+		}
 
 		return convertView;
 	}
@@ -90,17 +84,12 @@ public class AdapterChannelList extends BaseAdapter {
 		ImageView itemImg;
 		TextView itemTitle;
 		TextView itemDes;
-		TextView itemSource;
-		TextView itemPubDateTime;
 	}
 
 	public void setFlagBusy(boolean busy) {
-		this.mBusy = busy;
 	}
 
 	public void destory() {
-		mDateFormat = null;
-		// mImageLoader = null;
 		mItems.clear();
 		mItems = null;
 	}

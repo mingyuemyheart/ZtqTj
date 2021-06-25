@@ -23,11 +23,10 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjLowZdzUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterCompImage;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterTempertureLow;
@@ -48,20 +47,26 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.pcs.ztqtj.R.id.livequery_city_spinner;
 import static com.pcs.ztqtj.R.id.livequery_town_spinner;
 
 /**
- * 实况查询-数据与统计-低温查询
+ * 监测预报-实况查询-数据与统计-低温查询
  */
 public class FragmentLowTemperature extends FragmentLiveQueryCommon {
 
@@ -94,9 +99,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
     // 当前时间段选择位置
     private int currentHourPosition = 0;
 
-    private PackWdtjLowZdzUp lowTempUp = new PackWdtjLowZdzUp();
-    private PackWdtjLowZdzUp low24HourUp = new PackWdtjLowZdzUp();
-    private PackWdtjLowZdzUp lowHoursUp = new PackWdtjLowZdzUp();
     /**
      * 半年对比图
      */
@@ -124,8 +126,7 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragement_livequery_low_tem, container, false);
     }
 
@@ -143,7 +144,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
         super.onAttach(activity);
         this.activity = (ActivityLiveQuery) activity;
     }
-
 
     @Override
     public void onDestroy() {
@@ -241,8 +241,7 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
         PackLocalCity currentParent = cityControl.getCutParentCity();
         if (currentParent != null) {
             if (currentParent.isFjCity) {
-                PackLocalCity currentChild = cityControl.getCutChildCity();
-                if(currentChild != null && currentChild.ID.equals("25183")) {
+                if(currentParent.ID.equals("10103")) {
                     lay_tem_a.setVisibility(View.GONE);
                 } else {
                     lay_tem_a.setVisibility(View.VISIBLE);
@@ -289,7 +288,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
 
     /**
      * 创建今日时间列表
-     *
      * @return
      */
     private List<String> createHoursList() {
@@ -305,40 +303,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
             }
         }
         return list;
-    }
-
-    /*isCity 获取的是否是九地市的，true为是*/
-    private void getOutoLine() {
-        if (cityControl.getParentData()) {
-            lowTempUp.type = "1";
-            lowTempUp.city = cityControl.getCutChildCity().NAME;
-            lowTempUp.county = "";
-            lowTempUp.province = cityControl.getCutParentCity().ID;
-            low24HourUp.type = "2";
-            low24HourUp.city = cityControl.getCutChildCity().NAME;
-            low24HourUp.county = "";
-            low24HourUp.province = cityControl.getCutParentCity().ID;
-            lowHoursUp.type = "3";
-            lowHoursUp.city = cityControl.getCutChildCity().NAME;
-            lowHoursUp.county = "";
-            lowHoursUp.province = cityControl.getCutParentCity().ID;
-        } else {
-            lowTempUp.type = "1";
-            lowTempUp.county = cityControl.getCutChildCity().NAME;
-            lowTempUp.city = "";
-            lowTempUp.province = cityControl.getCutParentCity().ID;
-            low24HourUp.type = "2";
-            low24HourUp.county = cityControl.getCutChildCity().NAME;
-            low24HourUp.city = "";
-            low24HourUp.province = cityControl.getCutParentCity().ID;
-            lowHoursUp.type = "3";
-            lowHoursUp.county = cityControl.getCutChildCity().NAME;
-            lowHoursUp.city = "";
-            lowHoursUp.province = cityControl.getCutParentCity().ID;
-        }
-        lowTempUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-        low24HourUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-        lowHoursUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
     }
 
     private void reFlushImage(String name) {
@@ -395,7 +359,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
             rect[5][i] = CompleView.DATANull;
         }
 
-
         List<Integer> sorting = new ArrayList<Integer>();
         for (int i = 0; i < yltjYearList.size(); i++) {
             if (yltjYearList.get(i).year.equals("m_year")) {
@@ -442,7 +405,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
             }
         }
 
-
         String[] listXValue = new String[]{
                 yltjYearList.get(0).month_name1.toString(),
                 yltjYearList.get(0).month_name2.toString(),
@@ -450,12 +412,10 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                 yltjYearList.get(0).month_name4.toString(),
                 yltjYearList.get(0).month_name5.toString(),
                 yltjYearList.get(0).month_name6.toString()};
-
         rainfall_comp_view.setViewData(h_rain, l_rain, rect, listXValue);
 
         try {
             if (sorting.size() == 4) {
-
                 year_darkblue.setVisibility(View.VISIBLE);
                 year_green.setVisibility(View.VISIBLE);
                 year_low_green.setVisibility(View.VISIBLE);
@@ -505,21 +465,70 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
 
     // 请求低温实况
     private void reqCurrentLow() {
-        getOutoLine();
-        PcsDataDownload.addDownload(lowTempUp);
+        try {
+            JSONObject param = new JSONObject();
+            param.put("token", MyApplication.TOKEN);
+            JSONObject info = new JSONObject();
+            String stationId = cityControl.getCutChildCity().ID;
+            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("flag", "minTempObs");//minTempObs （低温实况值）、min24h（24小时低温）
+            if (stationId.startsWith("10103")) {
+                info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
+            } else {
+                info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
+            }
+            param.put("paramInfo", info);
+            String json = param.toString();
+            okHttpRankLowTemp(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // 请求近24小时
     private void req24HourLow() {
-        getOutoLine();
-        PcsDataDownload.addDownload(low24HourUp);
+        try {
+            JSONObject param = new JSONObject();
+            param.put("token", MyApplication.TOKEN);
+            JSONObject info = new JSONObject();
+            String stationId = cityControl.getCutChildCity().ID;
+            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("flag", "min24h");//minTempObs （低温实况值）、min24h（24小时低温）
+            if (stationId.startsWith("10103")) {
+                info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
+            } else {
+                info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
+            }
+            info.put("time", "9999");//当flag为min24h的时候，分传时间和不传时间，不传的时候填 "9999" 传的时候格式为：0~23（代表今日多少时）
+            param.put("paramInfo", info);
+            String json = param.toString();
+            okHttpRankLowTemp(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // 请求时间段低温数据
     private void reqHour() {
-        getOutoLine();
-        lowHoursUp.s_hour = String.valueOf(currentHourPosition);
-        PcsDataDownload.addDownload(lowHoursUp);
+        try {
+            JSONObject param = new JSONObject();
+            param.put("token", MyApplication.TOKEN);
+            JSONObject info = new JSONObject();
+            String stationId = cityControl.getCutChildCity().ID;
+            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("flag", "min24h");//minTempObs （低温实况值）、min24h（24小时低温）
+            if (stationId.startsWith("10103")) {
+                info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
+            } else {
+                info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
+            }
+            info.put("time", currentHourPosition+"");//当flag为min24h的时候，分传时间和不传时间，不传的时候填 "9999" 传的时候格式为：0~23（代表今日多少时）
+            param.put("paramInfo", info);
+            String json = param.toString();
+            okHttpRankLowTemp(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void req() {
@@ -557,10 +566,10 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                 case livequery_town_spinner:
                     // 城镇列表
                     PackLocalCity city = cityControl.getCutParentCity();
-                    if(!city.isFjCity || ZtqCityDB.getInstance().isServiceAccessible()) {
+//                    if(!city.isFjCity || ZtqCityDB.getInstance().isServiceAccessible()) {
                         activity.createPopupWindow((TextView) v, cityControl.getChildShowNameList(), 1, dropDownListener)
                                 .showAsDropDown(v);
-                    }
+//                    }
                     break;
                 case R.id.rb_24h:
                     currentSelectType = SelectType._24HOUR;
@@ -749,13 +758,7 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.equals(lowTempUp.getName())) {
-                okHttpRankLowTemp(nameStr);
-            } else if (nameStr.equals(low24HourUp.getName())) {
-                okHttpRankLowTemp(nameStr);
-            } else if (nameStr.equals(lowHoursUp.getName())) {
-                okHttpRankLowTemp(nameStr);
-            } else if (yltjYearUp != null && nameStr.equals(yltjYearUp.getName())) {
+            if (yltjYearUp != null && nameStr.equals(yltjYearUp.getName())) {
                 reFlushImage(nameStr);
             }
         }
@@ -764,14 +767,16 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
     /**
      * 获取低温排行
      */
-    private void okHttpRankLowTemp(final String name) {
+    private void okHttpRankLowTemp(final String json) {
+        activity.showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = CONST.BASE_URL+name;
-                url = url.replace("wdtj_low_zdz", "wdtj_low_zdz_2");
-                Log.e("wdtj_low_zdz_2", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                Log.e("minTemp", json);
+                String url = CONST.BASE_URL+"minTemp";
+                Log.e("minTemp", url);
+                RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     }
@@ -795,9 +800,6 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                                                     activity.dismissProgressDialog();
                                                     PackWdtjLowZdzDown down = new PackWdtjLowZdzDown();
                                                     down.fillData(wdtj_low_zdz.toString());
-                                                    if (down == null) {
-                                                        return;
-                                                    }
                                                     mDataList.clear();
                                                     mDataList.add(titletemp);
                                                     mDataList.addAll(down.datalist);

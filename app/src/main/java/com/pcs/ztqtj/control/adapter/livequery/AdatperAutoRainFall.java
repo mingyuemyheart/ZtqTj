@@ -14,7 +14,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourDown.RainFall;
 import java.util.List;
 
 /**
- * @author Z 自动降雨量统计
+ * 监测预报-实况查询-数据与统计-雨量查询
  */
 public class AdatperAutoRainFall extends BaseAdapter {
     private Context context;
@@ -27,8 +27,6 @@ public class AdatperAutoRainFall extends BaseAdapter {
         this.rainfalllist = rainfalllist;
         this.listerner = listerner;
     }
-
-    ;
 
     @Override
     public int getCount() {
@@ -49,9 +47,7 @@ public class AdatperAutoRainFall extends BaseAdapter {
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
-
         Handler handler = null;
-
         if (view == null) {
             handler = new Handler();
             view = LayoutInflater.from(context).inflate(R.layout.item_livequery_autorainfall, null);
@@ -61,7 +57,6 @@ public class AdatperAutoRainFall extends BaseAdapter {
             handler.hourThreeText = (TextView) view.findViewById(R.id.livequeryhoursix);
             handler.hourTwelve = (TextView) view.findViewById(R.id.livequeryhourtwelve);
             handler.hourTownty_four = (TextView) view.findViewById(R.id.livequerytwenty_four);
-
             view.setTag(handler);
         } else {
             handler = (Handler) view.getTag();

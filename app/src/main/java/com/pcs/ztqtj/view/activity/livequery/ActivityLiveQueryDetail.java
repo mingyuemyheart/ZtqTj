@@ -25,8 +25,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationListener;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
@@ -59,12 +57,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Z on 2017/4/7.
- * <p>
- * 详情 列表详情
+ * 监测预报-整点天气，实况查询的详情
  */
+public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements AMap.OnMarkerClickListener {
 
-public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements AMapLocationListener, AMap.OnMarkerClickListener {
     private ListView rain_table;
     private LinearLayout layout_content_myview;//自定义视图布局
     private LiveQueryView liveQueryView;
@@ -130,7 +126,6 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
     private Button btn_to_pro, btn_to_live;
 
     private void initView() {
-
         layout_content_viewTableMap = (RelativeLayout) findViewById(R.id.layout_content_viewTableMap);
         table_layout = (LinearLayout) findViewById(R.id.table_layout);
         layout_content_myview = (LinearLayout) findViewById(R.id.layout_content_myview);
@@ -327,9 +322,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
         text_item_prediction24.setOnTouchListener(onTouchListener);
         rain_table.setOnTouchListener(onTouchListener);
         radioGroupItem.setOnTouchListener(onTouchListener);
-
     }
-
 
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @Override
@@ -338,7 +331,6 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
             return false;
         }
     };
-
 
     private void initData() {
         //城市
@@ -382,7 +374,6 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
 
         //updateSelectorCity(currentSelectedCityPosition);
     }
-
 
     private void searchStation(String str) {
         ViewGroup.LayoutParams lp = list_station.getLayoutParams();
@@ -442,14 +433,16 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
                         item.value_over24_value = trendDown.skList.get(i).val;
                     }
                 }
-                item.value_future24_hour = trendDown.ybList.get(i).dt;
-                if (TextUtils.isEmpty(trendDown.ybList.get(i).val)) {
-                    item.value_future24_value = "--";
-                } else {
-                    if (trendDown.ybList.get(i).val.equals("0.0")) {
-                        item.value_future24_value = "0";
+                if (trendDown.ybList.size() > 0) {
+                    item.value_future24_hour = trendDown.ybList.get(i).dt;
+                    if (TextUtils.isEmpty(trendDown.ybList.get(i).val)) {
+                        item.value_future24_value = "--";
                     } else {
-                        item.value_future24_value = trendDown.ybList.get(i).val;
+                        if (trendDown.ybList.get(i).val.equals("0.0")) {
+                            item.value_future24_value = "0";
+                        } else {
+                            item.value_future24_value = trendDown.ybList.get(i).val;
+                        }
                     }
                 }
                 this.mItems.add(item);
@@ -631,9 +624,6 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (control != null) {
-            control.setOnDestory();
-        }
         mMapView.onDestroy();
     }
 
@@ -691,7 +681,6 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
 
     /**
      * 设置定位点，显示标识
-     *
      * @param latLng
      */
     private void setLocation(LatLng latLng, String value) {
@@ -717,11 +706,8 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
                 .zIndex(1.f);
 //                .typeface(Typeface.DEFAULT_BOLD);
         mAMap.addText(textOptions);
-
-
         mMarker.position(latLng).icon(BitmapDescriptorFactory.fromBitmap(control.getIcon(this, value)));
         mAMap.addMarker(mMarker);
-
         LatLng tempLatLng = new LatLng(latLng.latitude, latLng.longitude);
         mAMap.moveCamera(CameraUpdateFactory.changeLatLng(tempLatLng));
     }
@@ -741,32 +727,10 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
         }
     };
 
-    @Override
-    public void onLocationChanged(AMapLocation amapLocation) {
-//        if (amapLocation != null) {
-//            if (amapLocation.getErrorCode() == 0) {
-//                //定位成功回调信息，设置相关消息
-//                amapLocation.getLocationType();//获取当前定位结果来源，如网络定位结果，详见定位类型表
-//                amapLocation.getLatitude();//获取纬度
-//                amapLocation.getLongitude();//获取经度
-//                amapLocation.getAccuracy();//获取精度信息
-//                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                Date date = new Date(amapLocation.getTime());
-//                df.format(date);//定位时间
-//            } else {
-//                //显示错误信息ErrCode是错误码，errInfo是错误信息，详见错误码表。
-//                Log.e("AmapError", "location Error, ErrCode:"
-//                        + amapLocation.getErrorCode() + ", errInfo:"
-//                        + amapLocation.getErrorInfo());
-//            }
-//        }
-    }
-
     /**
      * 创建下拉选择列表
      */
-    public PopupWindow createPopupWindow(final TextView dropDownView, final List<String> dataeaum, final int floag,
-                                         final DrowListClick listener) {
+    public PopupWindow createPopupWindow(final TextView dropDownView, final List<String> dataeaum, final int floag, final DrowListClick listener) {
         AdapterData dataAdapter = new AdapterData(this, dataeaum);
         View popcontent = LayoutInflater.from(this).inflate(R.layout.pop_list_layout, null);
         ListView lv = (ListView) popcontent.findViewById(R.id.mylistviw);
@@ -822,13 +786,13 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
                     break;
                 }
                 case R.id.tv_site: {
-                    if(ZtqCityDB.getInstance().isServiceAccessible()) {
+//                    if(ZtqCityDB.getInstance().isServiceAccessible()) {
                         List<PackLocalCity> cityList = ZtqCityDB.getInstance().getCityLv1WithoutTJ();
                         if (cityList != null && cityList.size() > currentSelectedCityPosition) {
                             final PackLocalCity city = cityList.get(currentSelectedCityPosition);
                             final String area = city.ID;
                             List<PackLocalStation> stationList;
-                            if (area.equals("25183")) {
+                            if (area.equals("10103")) {
                                 stationList = ZtqCityDB.getInstance().getAllStationList();
                             } else {
                                 stationList = ZtqCityDB.getInstance().getStationListByArea(area);
@@ -844,7 +808,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
                                 }
                             }).showAsDropDown(v);
                         }
-                    }
+//                    }
                     break;
                 }
             }
@@ -872,7 +836,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
     private void updateSelectorSite(String area, int position) {
         currentSelectedSitePosition = position;
         List<PackLocalStation> stationList;
-        if(area.equals("25183")) {
+        if(area.equals("10103")) {
             stationList = ZtqCityDB.getInstance().getAllStationList();
         } else {
             stationList = ZtqCityDB.getInstance().getStationListByArea(area);

@@ -13,10 +13,7 @@ import com.pcs.ztqtj.R;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackKeyDescDown.DicListBean;
 
 /**
- * 空气质量：选择类型
- * 
- * @author JiangZy
- * 
+ * 空气质量-排行选择类型的下拉框
  */
 public class AdapterAirChoiceType extends BaseAdapter {
 	private Context mContext;
@@ -51,11 +48,6 @@ public class AdapterAirChoiceType extends BaseAdapter {
 		textView = (TextView) convertView.findViewById(R.id.text_en);
 		
 		String showKey=dataeaum.get(position).rankType;
-		if(showKey.equals("O3")){
-			showKey="O3_1H";
-		}else if(showKey.equals("PM2_5")){
-			showKey="PM2.5";
-		}
 		textView.setText(showKey);
 		// 中文
 

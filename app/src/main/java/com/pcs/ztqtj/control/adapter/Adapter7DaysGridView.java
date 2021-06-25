@@ -16,19 +16,16 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceShowBg;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 /**
- * 逐日预报
+ * 首页-逐日预报
  */
 public class Adapter7DaysGridView extends BaseAdapter {
 
     private List<WeekWeatherInfo> weekList;
     private ImageFetcher imageFetcher;
     private int mCurrentPosition = 1;
-    private final SimpleDateFormat format = new SimpleDateFormat("M月d日", Locale.getDefault());
     private Context mcontext;
     private InterfaceShowBg mShowBg;
 
@@ -74,24 +71,11 @@ public class Adapter7DaysGridView extends BaseAdapter {
             holder.Img = (TextView) convertView.findViewById(R.id.week_bg);
             holder.hightImg = (ImageView) convertView.findViewById(R.id.hight_temp);
             holder.lowImg = (ImageView) convertView.findViewById(R.id.low_temp);
-            holder.fragement_week_item_layout =
-                    (LinearLayout) convertView.findViewById(R.id.fragement_week_item_layout);
+            holder.fragement_week_item_layout = (LinearLayout) convertView.findViewById(R.id.fragement_week_item_layout);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-//        if (position == 0) {
-//            holder.tv_low_temp.setVisibility(View.VISIBLE);
-//            holder.tv_hight_temp.setVisibility(View.VISIBLE);
-//            holder.hightImg.setVisibility(View.GONE);
-//            holder.lowImg.setVisibility(View.GONE);
-//        } else {
-//            holder.tv_low_temp.setVisibility(View.GONE);
-//            holder.tv_hight_temp.setVisibility(View.GONE);
-//            holder.hightImg.setVisibility(View.VISIBLE);
-//            holder.lowImg.setVisibility(View.VISIBLE);
-//        }
 
         WeekWeatherInfo info = (WeekWeatherInfo) getItem(position);
         if (info == null) {
@@ -121,10 +105,8 @@ public class Adapter7DaysGridView extends BaseAdapter {
 
             String strDay = "weather_icon/daytime/w" + info.wd_day_ico + ".png";
             String strNight = "weather_icon/night/n" + info.wd_night_ico + ".png";
-            BitmapDrawable drawableDay = imageFetcher.getImageCache()
-                    .getBitmapFromAssets(strDay);
-            BitmapDrawable drawableNight = imageFetcher
-                    .getImageCache().getBitmapFromAssets(strNight);
+            BitmapDrawable drawableDay = imageFetcher.getImageCache().getBitmapFromAssets(strDay);
+            BitmapDrawable drawableNight = imageFetcher.getImageCache().getBitmapFromAssets(strNight);
             holder.hightImg.setImageDrawable(drawableDay);
             holder.lowImg.setImageDrawable(drawableNight);
 
@@ -134,8 +116,7 @@ public class Adapter7DaysGridView extends BaseAdapter {
                 if (position == mCurrentPosition) {
                     holder.fragement_week_item_layout.setBackgroundResource(R.drawable.bg_week_sel);
                 } else {
-                    holder.fragement_week_item_layout.setBackgroundColor(mcontext.getResources().getColor(
-                            R.color.alpha100));
+                    holder.fragement_week_item_layout.setBackgroundColor(mcontext.getResources().getColor(R.color.alpha100));
                 }
             }
             holder.fragement_week_item_layout.setOnClickListener(new View.OnClickListener() {
@@ -172,25 +153,10 @@ public class Adapter7DaysGridView extends BaseAdapter {
         }
         WeekWeatherInfo info = weekList.get(mCurrentPosition);
 
-//      String weatherDesc = info.getWeatherContent(packCity.NAME);
         String weatherDesc = info.getWeatherContent("");
-        TextView viewContentDesc = (TextView) view.findViewById(R.id.text_content_desc);
+        TextView viewContentDesc = view.findViewById(R.id.text_content_desc);
         if (!TextUtils.isEmpty(weatherDesc)) {
-//            String[] str=weatherDesc.split("；");
-//            String strs="";
-//            String strs_2="";
-//            if (str.length==0){
             viewContentDesc.setText(weatherDesc);
-//            }else {
-//                for (int i = 0; i < str.length; i++) {
-//                    if (strs == "") {
-//                        strs = strs + ToDBC(str[i]);
-//                    } else {
-//                        strs = strs + ToDBC(" ； ") + ToDBC(str[i]);
-//                    }
-//                }
-//                viewContentDesc.setText(strs);
-//            }
         }
         String path = weekList.get(mCurrentPosition).getWeatherBg();
         String pathThumb = weekList.get(mCurrentPosition).getWeatherThumb();

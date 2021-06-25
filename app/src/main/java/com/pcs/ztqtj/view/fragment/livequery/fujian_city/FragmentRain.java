@@ -30,19 +30,16 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourDown.RainFall;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjHourUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown.RainFallRank;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjTimeDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjTimeUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterCompImage;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
@@ -51,9 +48,7 @@ import com.pcs.ztqtj.control.adapter.livequery.AdapterTempertureRainFall;
 import com.pcs.ztqtj.control.adapter.livequery.AdatperAutoRainFall;
 import com.pcs.ztqtj.control.adapter.livequery.AdatperAutoRainFall.RainFallIn;
 import com.pcs.ztqtj.control.inter.DrowListClick;
-import com.pcs.ztqtj.control.livequery.ControlDistribution;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityListCountry;
@@ -77,6 +72,8 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -84,16 +81,17 @@ import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.pcs.ztqtj.control.livequery.ControlDistribution.ColumnCategory.WIND;
-import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.SB;
-
 /**
- * 实况查询-数据与统计-雨量查询
+ * 监测预报-实况查询-数据与统计-雨量查询
  */
 public class FragmentRain extends FragmentLiveQueryCommon implements OnClickListener {
+
     private TextView view_desc;
     private LinearLayout table_layout;
     // 雨量查询下拉选项--------
@@ -120,12 +118,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private List<YltjYear> rainfallcomp;
     private AdapterCompImage adaptercomp;
 
-    private final List<RainFallRank> rank1hour = new ArrayList<RainFallRank>();
-    private final List<RainFallRank> rank3hour = new ArrayList<RainFallRank>();
-    private final List<RainFallRank> rank6hour = new ArrayList<RainFallRank>();
-    private final List<RainFallRank> rank12hour = new ArrayList<RainFallRank>();
-    private final List<RainFallRank> rank24hour = new ArrayList<RainFallRank>();
-    private final List<YltjYear> yltjYearList = new ArrayList<YltjYear>();
+    private final List<YltjYear> yltjYearList = new ArrayList<>();
 
     // 绘图说明
     private TextView year_darkblue;
@@ -147,7 +140,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private AdatperAutoRainFall rainfalladatper;
     private AdatperAutoRainFall baseRainfallAdatper;
     private AdapterTempertureRainFall rainfallMaxadatper;
-
 
     private RainFallRank titleRank;
     private RainFall titleauto;
@@ -187,12 +179,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private DialogWaiting searchDialog;
     private boolean isShowCompImage = true;
 
-
-    private PackYltjHourUp hourUp;
     private PackYltjHourDown hourDown;
-
-    private PackYltjRankUp rankUp;
-    private PackYltjRankDown rankDown;
 
     private PackYltjTimeDown searchpackdwon;
     private PackYltjTimeUp searchpack;
@@ -203,7 +190,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
 
     private Button time_search;
     private Button btnTimeSearchBase;
-
 
     private TextView history_avg;
     private TextView history_max;
@@ -253,27 +239,21 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         time_search = (Button) getView().findViewById(R.id.time_search);
         btnTimeSearchBase = getView().findViewById(R.id.time_search_base);
         to_citylist = (Button) getView().findViewById(R.id.to_citylist);
-
         table_layout = (LinearLayout) getView().findViewById(R.id.table_layout);
         view_desc = (TextView) getView().findViewById(R.id.view_desc);
         halfayear_data_introduction = (TextView) getView().findViewById(R.id.halfayear_data_introduction);
-
         livequery_start_date = (TextView) getView().findViewById(R.id.livequery_start_date);
         livequery_start_time = (TextView) getView().findViewById(R.id.livequery_start_time);
         livequery_todata = (TextView) getView().findViewById(R.id.livequery_todata);
         livequery_totime = (TextView) getView().findViewById(R.id.livequery_totime);
         livequery_city_spinner = (TextView) getView().findViewById(R.id.livequery_city_spinner);
         livequery_town_spinner = (TextView) getView().findViewById(R.id.livequery_town_spinner);
-
-
         livequery_search_btn = (Button) getView().findViewById(R.id.livequery_search_btn);
-
         livequery_auto_rainfall = (MyListView) getView().findViewById(R.id.livequery_auto_rainfall);
         lvBaseRainfall = getView().findViewById(R.id.livequery_auto_rainfall_base);
 
         // 福州24小时内最大雨量排名（1、3小时）
         livequery_max_rainfall = (MyListView) getView().findViewById(R.id.livequery_max_rainfall);
-
         description_title_search = (TextView) getView().findViewById(R.id.description_title_search);
 
         /************* 雨量分布图 **************/
@@ -294,7 +274,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         lay_auto_hiside=getView().findViewById(R.id.lay_auto_hiside);
         lay_is_tj=getView().findViewById(R.id.lay_is_tj);
     }
-
 
     private CityListControl cityControl;
 
@@ -347,8 +326,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         adaptercomp = new AdapterCompImage(getActivity(), rainfallcomp);
         livequery_rainfall_complete.setAdapter(adaptercomp);
 
-
-
         livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
         livequery_city_spinner.setText(cityControl.getCutParentCity().NAME);
 //			查询具体城市
@@ -356,7 +333,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         reflushListTitle();
         reqNet();
         redrawUI();
-
     }
 
     /***
@@ -428,9 +404,8 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         public void itemClick(int clickC, int position) {
             if (position == 0) {
                 if (clickC != 0) {
-                    activity.showProgressDialog();
-                    getOutoLine(clickC + "");
-                    baseRainfallAdatper.setClickposition(clickC);
+                    rainfalladatper.setClickposition(clickC);
+                    reRank(clickC, autoRainFall, rainfalladatper);
                 }
             } else {
                 String stationName = autoRainFall.get(position).county;
@@ -444,9 +419,8 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         public void itemClick(int clickC, int position) {
             if (position == 0) {
                 if (clickC != 0) {
-                    activity.showProgressDialog();
-                    getOutoLine(clickC + "");
-                    rainfalladatper.setClickposition(clickC);
+                    baseRainfallAdatper.setClickposition(clickC);
+                    reRank(clickC, baseRainFall, baseRainfallAdatper);
                 }
             } else {
                 String stationName = baseRainFall.get(position).county;
@@ -525,8 +499,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         to_citylist.setOnClickListener(this);
     }
 
-    private int screenHight = 0;
-
     /**
      * 创建下拉选择列表
      */
@@ -541,7 +513,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         pop.setOutsideTouchable(false);
         pop.setWidth((int) (dropDownView.getWidth() * 2));
         // 调整下拉框长度
-        screenHight = Util.getScreenHeight(getActivity());
+        int screenHight = Util.getScreenHeight(getActivity());
         if (dataeaum.size() < 9) {
             pop.setHeight(LayoutParams.WRAP_CONTENT);
         } else {
@@ -613,17 +585,15 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
             case R.id.livequery_city_spinner:
                 // 城市选择
                 activity.createPopupWindow(livequery_city_spinner, cityControl.getParentShowNameList(), city_spinner,
-                        listener)
-                        .showAsDropDown(livequery_city_spinner);
+                        listener).showAsDropDown(livequery_city_spinner);
                 break;
             case R.id.livequery_town_spinner:
                 // 镇选择
                 PackLocalCity city = cityControl.getCutParentCity();
-                if(!city.isFjCity || ZtqCityDB.getInstance().isServiceAccessible()) {
+//                if(!city.isFjCity || ZtqCityDB.getInstance().isServiceAccessible()) {
                     activity.createPopupWindow(livequery_town_spinner, cityControl.getChildShowNameList(), town_spinner,
-                            listener)
-                            .showAsDropDown(livequery_town_spinner);
-                }
+                            listener).showAsDropDown(livequery_town_spinner);
+//                }
                 break;
             case R.id.livequery_search_btn:
                 // 查询按钮
@@ -671,7 +641,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private void searchEvent() {
         SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
         for (int i = 0; i < start_date_data.size(); i++) {
-
             String showTimeStr = start_date_data.get(i);
             if (livequery_start_date.getText().toString().trim()
                     .equals(showTimeStr.substring(showTimeStr.indexOf("月") + 1, showTimeStr.indexOf("日")))) {
@@ -800,11 +769,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     rainfalladatper.setClickposition(0);
                     baseRainfallAdatper.setClickposition(0);
                     redrawUI();
-                    activity.showProgressDialog();
-                    rankUp.county = cityControl.getChildShowNameList().get(item);
-                    rankUp.province=cityControl.getCutChildCity().PARENT_ID;
-                    rankUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-                    PcsDataDownload.addDownload(rankUp);
+                    okHttpYltjRank();
                     break;
             }
         }
@@ -822,13 +787,12 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private void redrawUI() {
         PackLocalCity currentParent = cityControl.getCutParentCity();
         if (currentParent != null) {
-            if (currentParent.isFjCity && ZtqCityDB.getInstance().isServiceAccessible()) {
+            if (currentParent.isFjCity/* && ZtqCityDB.getInstance().isServiceAccessible()*/) {
                 lay_is_tj.setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.graph).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.time_search).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.time_search_base).setVisibility(View.VISIBLE);
-                PackLocalCity currentChild = cityControl.getCutChildCity();
-                if(currentChild != null && currentChild.ID.equals("25183")) {
+                if(currentParent.ID.equals("10103")) {
                     getView().findViewById(R.id.graph).setVisibility(View.GONE);
                 } else {
                     getView().findViewById(R.id.graph).setVisibility(View.VISIBLE);
@@ -842,57 +806,23 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         }
     }
 
-
     /**
      * 网络请求数据
      */
     private void reqNet() {
-        if (!activity.isOpenNet()) {
-            activity.showToast(getString(R.string.net_err));
-            return;
-        }
-        activity.showProgressDialog();
-        // 自动站雨量统计mm
-        hourUp = new PackYltjHourUp();
-        getOutoLine("1");
+        okHttpRankYltjHour();
+        okHttpYltjRank();
 
-
-        // 最大降雨量排名（1、3小时）
-        rankUp = new PackYltjRankUp();
-        rankUp.county = cityControl.getCutChildCity().NAME;
-        rankUp.province = cityControl.getCutParentCity().ID;
-        rankUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-        PcsDataDownload.addDownload(rankUp);
         // 雨量查询—地区半年降雨量对比（yltj_year）
         PackYltjYearUp yltjYearUp = new PackYltjYearUp();
         yltjYearUp.area_id = cityControl.getCutChildCity().ID;
         PcsDataDownload.addDownload(yltjYearUp);
     }
 
-    /*isCity 获取的是否是九地市的，true为是*/
-    private void getOutoLine(String type) {
-        if (cityControl.getParentData()) {
-            hourUp.city = cityControl.getCutChildCity().NAME;
-            hourUp.county = "";
-            hourUp.flag = type;
-        } else {
-            hourUp.county = cityControl.getCutChildCity().NAME;
-            hourUp.city = "";
-            hourUp.flag = type;
-        }
-        hourUp.province = cityControl.getCutParentCity().ID;
-        hourUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-        PcsDataDownload.addDownload(hourUp);
-    }
-
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String name, String errorStr) {
-            if (hourUp != null && name.equals(hourUp.getName())) {
-                okHttpRankYltjHour(name);
-            } else if (rankUp != null && name.equals(rankUp.getName())) {
-                okHttpYltjRank(name);
-            } else if (searchpack != null && name.equals(searchpack.getName())) {
+            if (searchpack != null && name.equals(searchpack.getName())) {
                 activity.dismissProgressDialog();
                 searchpackdwon = (PackYltjTimeDown) PcsDataManager.getInstance().getNetPack(name);
                 if (searchDialog.isShowing()) {
@@ -911,119 +841,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                 reFlushImage(name);
             }
         }
-    }
-
-    private void okHttpRankYltjHour(final String name) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String url = CONST.BASE_URL+name;
-                url = url.replace("yltj_hour", "yltj_hour_yl_2");
-                Log.e("yltj_hour_yl_2", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("yltj_hour")) {
-                                                JSONObject yltj_hour = bobj.getJSONObject("yltj_hour");
-                                                if (!TextUtil.isEmpty(yltj_hour.toString())) {
-                                                    activity.dismissProgressDialog();
-                                                    hourDown = new PackYltjHourDown();
-                                                    hourDown.fillData(yltj_hour.toString());
-                                                    autoRainFall.clear();
-                                                    autoRainFall.add(titleauto);
-                                                    baseRainFall.clear();
-                                                    baseRainFall.add(titleauto);
-                                                    if (hourDown != null) {
-                                                        autoRainFall.addAll(hourDown.dataList);
-                                                        baseRainFall.addAll(hourDown.baseList);
-//                    hour_data_introduction.setText(hourDown.a_desc);
-                                                    }
-                                                    rainfalladatper.notifyDataSetChanged();
-                                                    baseRainfallAdatper.notifyDataSetChanged();
-                                                    scrollView.scrollTo(0, 0);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
-    }
-
-    /**
-     * 获取排行
-     * 24小时内任意1、3小时最大雨量排名
-     */
-    private void okHttpYltjRank(final String name) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("yltj_rank", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("yltj_rank")) {
-                                                JSONObject yltj_rank = bobj.getJSONObject("yltj_rank");
-                                                if (!TextUtil.isEmpty(yltj_rank.toString())) {
-                                                    activity.dismissProgressDialog();
-                                                    rankDown = new PackYltjRankDown();
-                                                    rankDown.fillData(yltj_rank.toString());
-                                                    rankRainFall.clear();
-                                                    rankRainFall.add(titleRank);
-                                                    if (rankDown != null || rankDown.dataList.size() != 0) {
-                                                        rankRainFall.addAll(rankDown.dataList);
-                                                    }
-                                                    rainfallMaxadatper.notifyDataSetChanged();
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
     }
 
     private String[] getNumberList(String value) {
@@ -1157,7 +974,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
      * 趨勢圖數據處理
      */
     private void setRainView() {
-
         float[] h_rain = new float[6];
         float[] l_rain = new float[6];
         float[][] rect = new float[6][3];
@@ -1214,8 +1030,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                 rect[4][i] = getfloat(yltjYearList.get(sorting.get(i)).month5);
                 rect[5][i] = getfloat(yltjYearList.get(sorting.get(i)).month6);
             }
-
-
         }
         String[] listXValue = new String[]{
                 yltjYearList.get(0).month_name1.toString(),
@@ -1270,7 +1084,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private PopupWindow popDwon;
@@ -1313,4 +1126,194 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
             popDwon.showAtLocation(btn_jyqddjhf, Gravity.CENTER, 0, 0);
         }
     }
+
+    /**
+     * 自动站、国家站雨量统计mm
+     */
+    private void okHttpRankYltjHour() {
+        activity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("datastatis_rain", json);
+                    String url = CONST.BASE_URL+"datastatis_rain";
+                    Log.e("datastatis_rain", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.dismissProgressDialog();
+                                    Log.e("datastatis_rain", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yltj_hour")) {
+                                                    JSONObject yltj_hour = bobj.getJSONObject("yltj_hour");
+                                                    if (!TextUtil.isEmpty(yltj_hour.toString())) {
+                                                        activity.dismissProgressDialog();
+                                                        hourDown = new PackYltjHourDown();
+                                                        hourDown.fillData(yltj_hour.toString());
+                                                        autoRainFall.clear();
+                                                        autoRainFall.add(titleauto);
+                                                        baseRainFall.clear();
+                                                        baseRainFall.add(titleauto);
+                                                        if (hourDown != null) {
+                                                            autoRainFall.addAll(hourDown.dataList);
+                                                            baseRainFall.addAll(hourDown.baseList);
+                                                        }
+                                                        reRank(1, autoRainFall, rainfalladatper);
+                                                        reRank(1, baseRainFall, baseRainfallAdatper);
+                                                        scrollView.scrollTo(0, 0);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void reRank(final int clickPosition, List<RainFall> list, AdatperAutoRainFall adapter) {
+        if (list.size() <= 1) {
+            return;
+        }
+        Collections.sort(list, new Comparator<PackYltjHourDown.RainFall>() {
+            @Override
+            public int compare(PackYltjHourDown.RainFall arg0, PackYltjHourDown.RainFall arg1) {
+                String value0 = null,value1 = null;
+                if (clickPosition == 1) {
+                    value0 = arg0.hour1;
+                    value1 = arg1.hour1;
+                } else if (clickPosition == 2) {
+                    value0 = arg0.hour3;
+                    value1 = arg1.hour3;
+                } else if (clickPosition == 3) {
+                    value0 = arg0.hour6;
+                    value1 = arg1.hour6;
+                } else if (clickPosition == 4) {
+                    value0 = arg0.hour12;
+                    value1 = arg1.hour12;
+                } else if (clickPosition == 5) {
+                    value0 = arg0.hour24;
+                    value1 = arg1.hour24;
+                }
+                if (TextUtils.isEmpty(value0) || TextUtils.isEmpty(value1)) {
+                    return -1;
+                }
+                if (value0.contains("小时")) {
+                    return -1;
+                }
+                if (value1.contains("小时")) {
+                    return 1;
+                }
+                float a = Float.parseFloat(value0);
+                float b = Float.parseFloat(value1);
+                if (a > b) {
+                    return -1;
+                }
+                if (a < b) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 24小时内任意1、3小时最大雨量排名
+     */
+    private void okHttpYltjRank() {
+        activity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("datastatis_rain1h3h", json);
+                    final String url = CONST.BASE_URL+"datastatis_rain1h3h";
+                    Log.e("datastatis_rain1h3h", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.dismissProgressDialog();
+                                    Log.e("datastatis_rain1h3h", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yltj_rank")) {
+                                                    JSONObject yltj_rank = bobj.getJSONObject("yltj_rank");
+                                                    if (!TextUtil.isEmpty(yltj_rank.toString())) {
+                                                        PackYltjRankDown rankDown = new PackYltjRankDown();
+                                                        rankDown.fillData(yltj_rank.toString());
+                                                        rankRainFall.clear();
+                                                        rankRainFall.add(titleRank);
+                                                        if (rankDown != null || rankDown.dataList.size() != 0) {
+                                                            rankRainFall.addAll(rankDown.dataList);
+                                                        }
+                                                        rainfallMaxadatper.notifyDataSetChanged();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

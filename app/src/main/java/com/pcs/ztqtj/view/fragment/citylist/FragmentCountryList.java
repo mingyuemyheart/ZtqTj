@@ -20,20 +20,19 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 添加城市-国内城市
+ * 添加城市-国内城市列表
  */
 public class FragmentCountryList extends Fragment {
 
     private mExpandableListView exList;
     private List<PackLocalCity> province = new ArrayList<>();
-    private HashMap<String, List<PackLocalCity>> datasMap = new HashMap<String, List<PackLocalCity>>();
+    private HashMap<String, List<PackLocalCity>> datasMap = new HashMap<>();
     private AdapterSelectAreaExpandList adapter;
     private boolean isSingleCityList = false;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_country_list, container, false);
     }
 
@@ -41,16 +40,12 @@ public class FragmentCountryList extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initViews();
-        initEvent();
         initData();
     }
 
     private void initViews() {
         exList = (mExpandableListView) getView().findViewById(R.id.cityListView);
         exList.setHeaderView(getActivity().getLayoutInflater().inflate(R.layout.layout_citygroupitem, exList, false));
-    }
-
-    private void initEvent() {
         exList.setOnChildClickListener(new ExpendListener());
         exList.setOnGroupClickListener(new ExpendChildListener());
     }
@@ -64,9 +59,9 @@ public class FragmentCountryList extends Fragment {
         if(isSingleCityList) {
             for (PackLocalCity city : province) {
                 List<PackLocalCity> infoList = ZtqCityDB.getInstance().getCountryCityList(city.ID);
-                if(city.ID.equals("25148")) {
+                if(city.ID.equals("10103")) {
                     List<PackLocalCity> shList = ZtqCityDB.getInstance().getCityLv1();
-                    datasMap.put("25148", shList);
+                    datasMap.put("10103", shList);
                 } else {
                     datasMap.put(city.ID, infoList);
                 }

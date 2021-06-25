@@ -58,7 +58,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 海洋气象
+ * 监测预报-海洋气象
  */
 public class ActivityOceanMap extends AMapUtil {
 
@@ -75,7 +75,6 @@ public class ActivityOceanMap extends AMapUtil {
     // 地理编码搜索
 
     private GeocodeSearch mGeocodeSearch;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,10 +142,6 @@ public class ActivityOceanMap extends AMapUtil {
             aMap.setOnMarkerClickListener(mOnMarkerClick);
             aMap.moveCamera(CameraUpdateFactory.zoomTo(14));
         }
-//        LatLng locationLatlng = ZtqLocationTool.getInstance().getLatLng();
-//        if(locationLatlng != null) {
-//            setLocation(locationLatlng);
-//        }
     }
 
     /**
@@ -162,7 +157,6 @@ public class ActivityOceanMap extends AMapUtil {
             ZtqLocationTool.getInstance().addListener(mLocationListener);
         }
     }
-
 
     /**
      * 初始化地理编码搜索
@@ -185,7 +179,6 @@ public class ActivityOceanMap extends AMapUtil {
         });
     }
 
-
     /**
      * 高德地图截屏回调
      */
@@ -201,8 +194,7 @@ public class ActivityOceanMap extends AMapUtil {
 
             mShareBitmap = procImage(mAmapBitmap, bm, location[1]);
             mShareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityOceanMap.this, mShareBitmap);
-            PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share" +
-                    "#ABOUT_QXCP_DXFW");
+            PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share" + "#ABOUT_QXCP_DXFW");
             if (down != null) {
                 ShareTools.getInstance(ActivityOceanMap.this).setShareContent(getTitleText(), down.share_content,
                         mShareBitmap, "0").showWindow(layout);
@@ -223,7 +215,6 @@ public class ActivityOceanMap extends AMapUtil {
 
     /**
      * 设置定位点，显示标识
-     *
      * @param latLng
      */
     private void setLocation(LatLng latLng) {
@@ -393,13 +384,9 @@ public class ActivityOceanMap extends AMapUtil {
         }
     }
     private Bitmap getWeatherIcon() {
-
         View view = getLayoutInflater().inflate(R.layout.view_ocean_weather_map, null);
-
-
         return BitmapDescriptorFactory.fromView(view).getBitmap();
     }
-
 
     /**
      * 清除自动站数据
@@ -485,6 +472,7 @@ public class ActivityOceanMap extends AMapUtil {
                     info.put("stationId", area);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("hy_list", json);
                     final String url = CONST.BASE_URL+"hy_list";
                     Log.e("hy_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);

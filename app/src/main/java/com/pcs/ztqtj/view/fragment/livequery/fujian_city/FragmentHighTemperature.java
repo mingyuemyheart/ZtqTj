@@ -18,13 +18,20 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterCompImage;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterTempertureHight;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
@@ -33,15 +40,6 @@ import com.pcs.ztqtj.view.activity.livequery.LiveQueryPopupWindowTool;
 import com.pcs.ztqtj.view.fragment.livequery.FragmentLiveQueryCommon;
 import com.pcs.ztqtj.view.myview.CompleView;
 import com.pcs.ztqtj.view.myview.MyListView;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -54,17 +52,17 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.pcs.ztqtj.R.id.livequery_city_spinner;
 import static com.pcs.ztqtj.R.id.livequery_town_spinner;
-import static com.pcs.ztqtj.view.fragment.livequery.fujian_city.FragmentLowTemperature.SelectType.CURRENT;
-import static com.pcs.ztqtj.view.fragment.livequery.fujian_city.FragmentLowTemperature.SelectType.HOURS;
-import static com.pcs.ztqtj.view.fragment.livequery.fujian_city.FragmentLowTemperature.SelectType._24HOUR;
 
 /**
- * 实况查询-数据与统计-高温查询
+ * 监测预报-实况查询-数据与统计-高温查询
  */
 public class FragmentHighTemperature extends FragmentLiveQueryCommon {
 
@@ -97,9 +95,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
     // 当前时间段选择位置
     private int currentHourPosition = 0;
 
-    private PackWdtjZdzUp highTempUp = new PackWdtjZdzUp();
-    private PackWdtjZdzUp high24HourUp = new PackWdtjZdzUp();
-    private PackWdtjZdzUp highHoursUp = new PackWdtjZdzUp();
     /**
      * 半年对比图
      */
@@ -122,7 +117,7 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
      */
     private PackWdtjZdzDown.WdtjZdz titletemp = new PackWdtjZdzDown().new WdtjZdz();
 
-    private FragmentLowTemperature.SelectType currentSelectType = CURRENT;
+    private SelectType currentSelectType = SelectType.CURRENT;
 
     @Override
     public void onAttach(Activity activity) {
@@ -242,8 +237,7 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         PackLocalCity currentParent = cityControl.getCutParentCity();
         if (currentParent != null) {
             if (currentParent.isFjCity) {
-                PackLocalCity currentChild = cityControl.getCutChildCity();
-                if(currentChild != null && currentChild.ID.equals("25183")) {
+                if(currentParent.ID.equals("10103")) {
                     lay_tem_a.setVisibility(View.GONE);
                 } else {
                     lay_tem_a.setVisibility(View.VISIBLE);
@@ -303,40 +297,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         return list;
     }
 
-    /*isCity 获取的是否是九地市的，true为是*/
-    private void getOutoLine() {
-        if (cityControl.getParentData()) {
-            highTempUp.type = "1";
-            highTempUp.city = cityControl.getCutChildCity().NAME;
-            highTempUp.county="";
-            highTempUp.province = cityControl.getCutParentCity().ID;
-            high24HourUp.type = "2";
-            high24HourUp.city = cityControl.getCutChildCity().NAME;
-            high24HourUp.county="";
-            high24HourUp.province = cityControl.getCutParentCity().ID;
-            highHoursUp.type = "3";
-            highHoursUp.city = cityControl.getCutChildCity().NAME;
-            highHoursUp.county="";
-            highHoursUp.province = cityControl.getCutParentCity().ID;
-        } else {
-            highTempUp.type = "1";
-            highTempUp.county = cityControl.getCutChildCity().NAME;
-            highTempUp.city ="";
-            highTempUp.province = cityControl.getCutParentCity().ID;
-            high24HourUp.type = "2";
-            high24HourUp.county = cityControl.getCutChildCity().NAME;
-            high24HourUp.city ="";
-            high24HourUp.province = cityControl.getCutParentCity().ID;
-            highHoursUp.type = "3";
-            highHoursUp.county = cityControl.getCutChildCity().NAME;
-            highHoursUp.city="";
-            highHoursUp.province = cityControl.getCutParentCity().ID;
-        }
-        highTempUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-        high24HourUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-        highHoursUp.is_jc = ZtqCityDB.getInstance().isServiceAccessible();
-    }
-
     private void reFlushImage(String name) {
         // 雨量查询—地区半年降雨量对比（yltj_year）
         PackYltjYearTempDown yltjYearTempDown = (PackYltjYearTempDown) PcsDataManager.getInstance().getNetPack(name);
@@ -377,7 +337,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
      * 趨勢圖數據處理
      */
     private void setRainView() {
-
         float[] h_rain = new float[6];
         float[] l_rain = new float[6];
         float[][] rect = new float[6][3];
@@ -390,7 +349,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
             rect[4][i] = CompleView.DATANull;
             rect[5][i] = CompleView.DATANull;
         }
-
 
         List<Integer> sorting = new ArrayList<Integer>();
         for (int i = 0; i < yltjYearList.size(); i++) {
@@ -437,7 +395,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
             }
         }
 
-
         String[] listXValue = new String[]{
                 yltjYearList.get(0).month_name1.toString(),
                 yltjYearList.get(0).month_name2.toString(),
@@ -450,7 +407,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
 
         try {
             if (sorting.size() == 4) {
-
                 year_darkblue.setVisibility(View.VISIBLE);
                 year_green.setVisibility(View.VISIBLE);
                 year_low_green.setVisibility(View.VISIBLE);
@@ -500,21 +456,70 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
 
     // 请求高温实况
     private void reqCurrentLow() {
-        getOutoLine();
-        PcsDataDownload.addDownload(highTempUp);
+        try {
+            JSONObject param = new JSONObject();
+            param.put("token", MyApplication.TOKEN);
+            JSONObject info = new JSONObject();
+            String stationId = cityControl.getCutChildCity().ID;
+            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("flag", "maxTempObs");//maxTempObs （高温实况值）、max24h（24小时最高）
+            if (stationId.startsWith("10103")) {
+                info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
+            } else {
+                info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
+            }
+            param.put("paramInfo", info);
+            String json = param.toString();
+            okHttpRankHighTemp(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // 请求近24小时
     private void req24HourLow() {
-        getOutoLine();
-        PcsDataDownload.addDownload(high24HourUp);
+        try {
+            JSONObject param = new JSONObject();
+            param.put("token", MyApplication.TOKEN);
+            JSONObject info = new JSONObject();
+            String stationId = cityControl.getCutChildCity().ID;
+            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("flag", "max24h");//maxTempObs （高温实况值）、max24h（24小时最高）
+            if (stationId.startsWith("10103")) {
+                info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
+            } else {
+                info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
+            }
+            info.put("time", "9999");//当flag为max24h的时候，分传时间和不传时间，不传的时候填 "9999"传的时候格式为：20210505050000 精确到秒
+            param.put("paramInfo", info);
+            String json = param.toString();
+            okHttpRankHighTemp(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     // 请求时间段高温数据
     private void reqHour() {
-        getOutoLine();
-        highHoursUp.s_hour = String.valueOf(currentHourPosition);
-        PcsDataDownload.addDownload(highHoursUp);
+        try {
+            JSONObject param = new JSONObject();
+            param.put("token", MyApplication.TOKEN);
+            JSONObject info = new JSONObject();
+            String stationId = cityControl.getCutChildCity().ID;
+            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("flag", "max24h");//maxTempObs （高温实况值）、max24h（24小时最高）
+            if (stationId.startsWith("10103")) {
+                info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
+            } else {
+                info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
+            }
+            info.put("time", currentHourPosition+"");//当flag为max24h的时候，分传时间和不传时间，不传的时候填 "9999"传的时候格式为：20210505050000 精确到秒
+            param.put("paramInfo", info);
+            String json = param.toString();
+            okHttpRankHighTemp(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void req() {
@@ -552,17 +557,17 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
                 case livequery_town_spinner:
                     // 城镇列表
                     PackLocalCity city = cityControl.getCutParentCity();
-                    if(!city.isFjCity || ZtqCityDB.getInstance().isServiceAccessible()) {
+//                    if(!city.isFjCity || ZtqCityDB.getInstance().isServiceAccessible()) {
                         activity.createPopupWindow((TextView) v, cityControl.getChildShowNameList(), 1, dropDownListener)
                                 .showAsDropDown(v);
-                    }
+//                    }
                     break;
                 case R.id.rb_24h:
-                    currentSelectType = _24HOUR;
+                    currentSelectType = SelectType._24HOUR;
                     req24HourLow();
                     break;
                 case R.id.rb_hours:
-                    currentSelectType = HOURS;
+                    currentSelectType = SelectType.HOURS;
                     if(isShowPopupWindow) {
                         List<String> list = createHoursList();
                         if(list.size() > 0) {
@@ -633,7 +638,7 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
             switch (checkedId) {
                 case R.id.lowtemradiogroupleft:
-                    currentSelectType = CURRENT;
+                    currentSelectType = SelectType.CURRENT;
                     if (tvCityDropDown.getText().toString().equals("天津")){
                         tvTempDescTitle
                                 .setText(cityControl.getCutChildCity().NAME + " 自动站高温实况统计表");
@@ -656,7 +661,7 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
                     setHours();
                     break;
                 case R.id.rb_24h:
-                    currentSelectType = _24HOUR;
+                    currentSelectType = SelectType._24HOUR;
                     isShowPopupWindow = false;
                     if (tvCityDropDown.getText().toString().equals("天津")){
                         tvTempDescTitle.setText(cityControl.getCutChildCity().NAME + " 自动站近24小时最高气温统计表");
@@ -666,7 +671,7 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
 
                     break;
                 case R.id.rb_hours:
-                    currentSelectType = HOURS;
+                    currentSelectType = SelectType.HOURS;
                     isShowPopupWindow = false;
                     setTempDesc();
                     break;
@@ -739,13 +744,7 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String nameStr, String errorStr) {
-            if(nameStr.equals(highTempUp.getName())) {
-                okHttpRankHighTemp(nameStr);
-            } else if (nameStr.equals(high24HourUp.getName())) {
-                okHttpRankHighTemp(nameStr);
-            } else if (nameStr.equals(highHoursUp.getName())) {
-                okHttpRankHighTemp(nameStr);
-            } else if (yltjYearUp != null && nameStr.equals(yltjYearUp.getName())) {
+            if (yltjYearUp != null && nameStr.equals(yltjYearUp.getName())) {
                 reFlushImage(nameStr);
             }
         }
@@ -754,14 +753,16 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
     /**
      * 获取高温排行
      */
-    private void okHttpRankHighTemp(final String name) {
+    private void okHttpRankHighTemp(final String json) {
+        activity.showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = CONST.BASE_URL+name;
-                url = url.replace("wdtj_zdz", "wdtj_zdz_2");
-                Log.e("wdtj_zdz_2", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
+                Log.e("maxTemp", json);
+                String url = CONST.BASE_URL+"maxTemp";
+                Log.e("maxTemp", url);
+                RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     }
@@ -774,6 +775,8 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
                         activity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                Log.e("maxTemp", result);
+                                activity.dismissProgressDialog();
                                 if (!TextUtil.isEmpty(result)) {
                                     try {
                                         JSONObject obj = new JSONObject(result);
@@ -782,12 +785,8 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
                                             if (!bobj.isNull("wdtj_zdz")) {
                                                 JSONObject wdtj_zdz = bobj.getJSONObject("wdtj_zdz");
                                                 if (!TextUtil.isEmpty(wdtj_zdz.toString())) {
-                                                    activity.dismissProgressDialog();
                                                     PackWdtjZdzDown down = new PackWdtjZdzDown();
                                                     down.fillData(wdtj_zdz.toString());
-                                                    if(down == null) {
-                                                        return;
-                                                    }
                                                     mDataList.clear();
                                                     mDataList.add(titletemp);
                                                     mDataList.addAll(down.datalist);

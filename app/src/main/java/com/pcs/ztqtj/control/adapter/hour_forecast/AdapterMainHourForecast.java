@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.control.adapter.hour_forecast;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -16,67 +15,87 @@ import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
 /**
- * 适配器：逐小时预报
- *
- * @author JiangZy
+ * 首页-逐时预报
  */
-@SuppressLint({"RtlHardcoded"})
 public class AdapterMainHourForecast extends BaseAdapter {
+
     private Context mContext;
-    /**
-     * 数据列表
-     */
-    private List<MyPackHourForecastDown.HourForecast> mList = new ArrayList<MyPackHourForecastDown.HourForecast>();
+    private List<MyPackHourForecastDown.HourForecast> mArrayList;
 
     public AdapterMainHourForecast(Context context, List<MyPackHourForecastDown.HourForecast> mArrayList) {
         mContext = context;
-        mList = mArrayList;
-//        PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
-//        if (packCity == null) {
-//            return;
-//        }
-//        PackHourForecastUp packUp = new PackHourForecastUp();
-//        packUp.county_id = packCity.ID;
-//        PackHourForecastDown down = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packUp.getName());
-//        mList.clear();
-//        if (down != null) {
-//            mList.addAll(down.list);
-//        }
+        this.mArrayList = mArrayList;
     }
-
-//    @Override
-//    public void notifyDataSetChanged() {
-//        PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
-//        PackHourForecastUp packUp = new PackHourForecastUp();
-//        packUp.county_id = packCity.ID;
-//        PackHourForecastDown downData = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packUp.getName());
-//        mList.clear();
-//        if (downData != null) {
-//            mList.addAll(downData.list);
-//        }
-//        super.notifyDataSetChanged();
-//    }
 
     @Override
     public int getCount() {
-        return mList.size();
+        return mArrayList.size();
     }
 
     @Override
     public Object getItem(int position) {
-
-        return mList.get(position);
+        return mArrayList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        Holder holder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_mainhour_forecast_content, null);
+            holder = new Holder();
+            holder.textTime = convertView.findViewById(R.id.text_time);
+            holder.iconWeather = convertView.findViewById(R.id.icon_weather);
+            holder.textWeather = convertView.findViewById(R.id.text_weather);
+            holder.textSw = convertView.findViewById(R.id.text_sw);
+            holder.TextSpeed = convertView.findViewById(R.id.text_speed);
+            convertView.setTag(holder);
+        } else {
+            holder = (Holder) convertView.getTag();
+        }
+
+        MyPackHourForecastDown.HourForecast pack = mArrayList.get(position);
+        // 天气现象
+        if (pack.ico != null && !"".equals(pack.ico)) {
+            try {
+                Bitmap bitmap = ZtqImageTool.getInstance().getWeatherIcon(mContext, pack.isDayTime, pack.ico);
+                holder.iconWeather.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            holder.iconWeather.setVisibility(View.INVISIBLE);
+        }
+        holder.textWeather.setText(pack.desc);
+        holder.textSw.setText(pack.winddir);
+        if (!TextUtil.isEmpty(pack.windspeed)) {
+            if (position == 0) {
+                holder.TextSpeed.setText(pack.windspeed+"m/s");
+            } else {
+                holder.TextSpeed.setText(pack.windspeed);
+            }
+        } else {
+            holder.TextSpeed.setText(pack.windlevel);
+        }
+        holder.textTime.setText(pack.getTime());
+        return convertView;
+    }
+
+    private class Holder {
+        TextView textTime;//时间
+        ImageView iconWeather;//天气图标
+        TextView textWeather;//天气描述
+        TextView textSw;//风向
+        TextView TextSpeed;//风速
     }
 
     public String getWeek(Calendar c) {
@@ -98,62 +117,6 @@ public class AdapterMainHourForecast extends BaseAdapter {
             mWay = "六";
         }
         return " 星期" + mWay;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Holder holder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(
-                    R.layout.item_mainhour_forecast_content, null);
-            holder = new Holder();
-            holder.textTime = (TextView) convertView.findViewById(R.id.text_time);
-            holder.iconWeather = (ImageView) convertView.findViewById(R.id.icon_weather);
-            holder.textWeather = (TextView) convertView.findViewById(R.id.text_weather);
-            holder.textSw = (TextView) convertView.findViewById(R.id.text_sw);
-            holder.TextSpeed = (TextView) convertView.findViewById(R.id.text_speed);
-            convertView.setTag(holder);
-        } else {
-            holder = (Holder) convertView.getTag();
-        }
-        MyPackHourForecastDown.HourForecast pack = mList.get(position);
-        // 天气现象
-        if (pack.ico != null && !"".equals(pack.ico)) {
-            try {
-                Bitmap bitmap = ZtqImageTool.getInstance().getWeatherIcon(
-                        mContext, pack.isDayTime, pack.ico);
-                holder.iconWeather.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            holder.iconWeather.setVisibility(View.INVISIBLE);
-        }
-        holder.textWeather.setText(pack.desc);
-        holder.textSw.setText(pack.winddir);
-        if (position == 0) {
-            if (!TextUtil.isEmpty(pack.windspeed)) {
-                holder.TextSpeed.setText(pack.windspeed + "m/s");
-            } else {
-                holder.TextSpeed.setText(pack.windlevel);
-            }
-        } else {
-            if (!TextUtil.isEmpty(pack.windspeed)) {
-                holder.TextSpeed.setText(pack.windspeed);
-            } else {
-                holder.TextSpeed.setText(pack.windlevel);
-            }
-        }
-        holder.textTime.setText(pack.getTime());
-        return convertView;
-    }
-
-    private class Holder {
-        TextView textTime;//时间
-        ImageView iconWeather;//天气图标
-        TextView textWeather;//天气描述
-        TextView textSw;//风向
-        TextView TextSpeed;//风速
     }
 
 }

@@ -6,41 +6,33 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  * 命令接口
- *
- * @author JiangZY
  */
 public abstract class AbstractCommand implements InterCommand {
 
     private Status mStatus = Status.CREATE;
-
-    private List<InterCommandListener> mListListener = new ArrayList<InterCommandListener>();
+    private List<InterCommandListener> mListListener = new ArrayList<>();
 
     /**
      * 添加监听
-     *
      * @param listener
      */
     public void addListener(InterCommandListener listener) {
         if (listener == null) {
             throw new RuntimeException(Log.getClassMethodName() + "监听器为null");
         }
-
         mListListener.add(listener);
     }
 
     /**
      * 删除监听
-     *
      * @param listener
      */
     public void removeListener(InterCommandListener listener) {
         if (listener == null) {
             throw new RuntimeException(Log.getClassMethodName() + "监听器为null");
         }
-
         mListListener.remove(listener);
     }
 

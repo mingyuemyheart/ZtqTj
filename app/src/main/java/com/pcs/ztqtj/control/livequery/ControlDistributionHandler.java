@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,22 +16,34 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.amap.api.maps.model.GroundOverlayOptions;
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.waterflood.AdapterPopWindow;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
-import com.pcs.ztqtj.view.fragment.livequery.FragmentDistributionMap;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.ColumnInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.waterflood.AdapterPopWindow;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
+import com.pcs.ztqtj.view.fragment.livequery.FragmentDistributionMap;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.CLOUD;
 import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.DB;
@@ -40,7 +53,7 @@ import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionSt
 import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.ZD;
 
 /**
- * 实况查询-色斑图操作控制器
+ * 监测预报-实况查询-要素分布图-色斑图操作控制器
  */
 public class ControlDistributionHandler extends ControlDistributionBase {
 
@@ -62,8 +75,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
 
     // 时间段下拉菜单列表
     private List<ColumnInfo> timeColumnList = new ArrayList<>();
-    //栏目上传包
-    private PackColumnUp columnUp = new PackColumnUp();
     // 站点下拉菜单列表
     private List<ColumnInfo> siteColumnList = new ArrayList<>();
     // 是否是全国类型
@@ -76,9 +87,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
     ControlDistribution.ColumnCategory currentColumn;
     // 当前分布图状态
     private ControlDistribution.DistributionStatus currentStatus = SB;
-
-    private boolean isRadarCanPlay = false;
-    private boolean isCloudCanPlay = false;
 
     private static final int WHAT_PLAY = 0;
     private static final int WHAT_PAUSE = 1;
@@ -126,10 +134,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
 
     @Override
     public void destroy() {
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(mContext, receiver);
-            receiver = null;
-        }
     }
 
     private void initView() {
@@ -209,7 +213,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
     }
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(mContext, receiver);
         currentColumn = mFragment.getCurrentColumn();
     }
 
@@ -225,7 +228,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
 
     /**
      * 设置站点下拉弹窗数据
-     *
      * @param list
      */
     private void setSitePopupWindow(List<ColumnInfo> list) {
@@ -241,7 +243,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
 
     /**
      * 设置下拉弹框数据
-     *
      * @param list
      */
     private void setTimePopupWindow(List<ColumnInfo> list) {
@@ -255,23 +256,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         }
     }
 
-//    private void windowpopupItemClick(PopupWindow pop, TextView dropDownView, List<String> dataeaum, int position) {
-//        pop.dismiss();
-//        dropDownView.setText(dataeaum.get(position));
-//        currentFlagInfo = timeColumnList.get(position);
-//        controlDistribution.clearAll();
-//        if(cbSb.isChecked()) {
-//            controlDistribution.reqDistribution(currentColumn, SB, currentSiteInfo, currentFlagInfo);
-//        } else if(cbZd.isChecked()) {
-//            controlDistribution.reqDistribution(currentColumn, ZD, currentSiteInfo, currentFlagInfo);
-//        }
-//        if(cbRadar.isChecked()) {
-//            controlDistribution.reqDistribution(currentColumn, RADAR, currentSiteInfo, currentFlagInfo);
-//        } else if(cbCloud.isChecked()) {
-//            controlDistribution.reqDistribution(currentColumn, CLOUD, currentSiteInfo, currentFlagInfo);
-//        }
-//    }
-
     /**
      * 请求自动站列表
      */
@@ -279,13 +263,13 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         mActivity.showProgressDialog();
         siteColumnList.clear();
         tvSite.setText("");
-        columnUp = new PackColumnUp();
+        String column_type = "";
         if(isProvince) {
-            columnUp.column_type = "16";
+            column_type = "16";
         } else {
-            columnUp.column_type = "15";
+            column_type = "15";
         }
-        PcsDataDownload.addDownload(columnUp);
+        okHttpObsColumnList(column_type);
     }
 
     /**
@@ -296,28 +280,28 @@ public class ControlDistributionHandler extends ControlDistributionBase {
     private void reqColumnValue(ControlDistribution.ColumnCategory column) {
         timeColumnList.clear();
         tvTime.setText("");
-        columnUp = new PackColumnUp();
+        String column_type = "";
         switch (column) {
             case RAIN: // 雨量
-                columnUp.column_type = "10";
+                column_type = "10";
                 break;
             case TEMPERATURE:
-                columnUp.column_type = "11";
+                column_type = "11";
                 break;
             case WIND:
-                columnUp.column_type = "12";
+                column_type = "12";
                 break;
             case VISIBILITY:
-                columnUp.column_type = "13";
+                column_type = "13";
                 break;
             case PRESSURE:
-                columnUp.column_type = "14";
+                column_type = "14";
                 break;
             case HUMIDITY:
-                columnUp.column_type = "17";
+                column_type = "17";
                 break;
         }
-        PcsDataDownload.addDownload(columnUp);
+        okHttpObsColumnList(column_type);
     }
 
     /**
@@ -333,12 +317,9 @@ public class ControlDistributionHandler extends ControlDistributionBase {
      * @param dataeaum
      * @param type 0: 时间段下拉框 1: 站点下拉框
      */
-    private void createPopupWindow(final TextView dropDownView,
-                                   final List<String> dataeaum,
-                                   int type) {
+    private void createPopupWindow(final TextView dropDownView, final List<String> dataeaum, int type) {
         AdapterPopWindow dataAdapter = new AdapterPopWindow(mContext, dataeaum);
-        View popcontent = LayoutInflater.from(mContext).inflate(
-                R.layout.pop_list_layout, null);
+        View popcontent = LayoutInflater.from(mContext).inflate(R.layout.pop_list_layout, null);
         ListView lv = (ListView) popcontent.findViewById(R.id.mylistviw);
         lv.setAdapter(dataAdapter);
         final PopupWindow pop = new PopupWindow(mContext);
@@ -351,8 +332,7 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         if(type == 0) {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
                     pop.dismiss();
                     dropDownView.setText(dataeaum.get(position));
                     currentFlagInfo = timeColumnList.get(position);
@@ -379,8 +359,7 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         } else {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     pop.dismiss();
                     dropDownView.setText(dataeaum.get(position));
                     currentSiteInfo = siteColumnList.get(position);
@@ -747,38 +726,82 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         }
     };
 
-
-    private PcsDataBrocastReceiver receiver = new PcsDataBrocastReceiver() {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.contains(PackColumnUp.NAME)) {
-                PackColumnDown down = (PackColumnDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    mActivity.dismissProgressDialog();
-                    return;
-                }
-                // 自动站
-                if (!isProvince && columnUp.column_type.equals("15")) {
-                    setSitePopupWindow(down.arrcolumnInfo);
-                    reqColumnValue(currentColumn);
-                } else if (isProvince && columnUp.column_type.equals("16")) {
-                    setSitePopupWindow(down.arrcolumnInfo);
-                    //currentSiteInfo = getCurrentCityInfo();
-                    reqColumnValue(currentColumn);
-                } else {
-                    mActivity.dismissProgressDialog();
-                    setTimePopupWindow(down.arrcolumnInfo);
-                }
-                // 时间段和站点都有数据时取初始色斑图数据
-                if (!TextUtils.isEmpty(currentFlagInfo.type) && !TextUtils.isEmpty(currentSiteInfo.type)) {
-                    //cbZd.setChecked(true);
-                    cbSb.setChecked(true);
+    /**
+     * 获取下拉框时间数据
+     */
+    private void okHttpObsColumnList(final String column_type) {
+        mActivity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", column_type);//10(雨量),12(风况),11(气温),13(能见度),14(气压),17(相对湿度),16(天津)，15(全国)
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("obs_column_list", json);
+                    final String url = CONST.BASE_URL+"obs_column_list";
+                    Log.e("obs_column_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("obs_column_list", result);
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("column")) {
+                                                JSONObject column = bobj.getJSONObject("column");
+                                                if (!TextUtils.isEmpty(column.toString())) {
+                                                    mActivity.dismissProgressDialog();
+                                                    PackColumnDown down = new PackColumnDown();
+                                                    down.fillData(column.toString());
+                                                    // 自动站
+                                                    if (column_type.equals("15")) {
+                                                        setSitePopupWindow(down.arrcolumnInfo);
+                                                        reqColumnValue(currentColumn);
+                                                    } else if (column_type.equals("16")) {
+                                                        setSitePopupWindow(down.arrcolumnInfo);
+                                                        reqColumnValue(currentColumn);
+                                                    } else {
+                                                        mActivity.dismissProgressDialog();
+                                                        setTimePopupWindow(down.arrcolumnInfo);
+                                                    }
+                                                    // 时间段和站点都有数据时取初始色斑图数据
+                                                    if (!TextUtils.isEmpty(currentFlagInfo.type) && !TextUtils.isEmpty(currentSiteInfo.type)) {
+                                                        //cbZd.setChecked(true);
+                                                        cbSb.setChecked(true);
 //                    cbRadar.setChecked(false);
 //                    cbCloud.setChecked(false);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                //controlDistribution.reqDistribution(currentColumn, currentStatus, currentSiteInfo, currentFlagInfo);
             }
-        }
-    };
+        }).start();
+    }
+
 }

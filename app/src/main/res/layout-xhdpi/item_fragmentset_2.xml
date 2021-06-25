@@ -3,19 +3,17 @@
     android:id="@+id/item_fragmentset_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="@dimen/dimen10"
     android:paddingTop="@dimen/dimen15"
-    android:paddingBottom="@dimen/dimen15"
-                android:paddingLeft="@dimen/dimen10"
-                android:paddingRight="@dimen/dimen10"
-     >
+    android:paddingRight="@dimen/dimen10"
+    android:paddingBottom="@dimen/dimen15">
 
     <ImageView
         android:id="@+id/setimage_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dimen10"
-         />
+        android:layout_marginLeft="@dimen/dimen10" />
 
     <CheckBox
         android:id="@+id/open_icon"
@@ -34,34 +32,33 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:textColor="@color/text_black_login"
-        android:textSize="@dimen/text_footnote"/>
+        android:textSize="@dimen/text_footnote" />
 
-    <LinearLayout 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-       	android:layout_toLeftOf="@id/open_icon"
-       	android:layout_toRightOf="@id/setimage_icon"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dimen10"
-        android:layout_centerVertical="true">
-	    <TextView
-	        android:id="@+id/explain_text"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="bottom"
-	        android:textSize="@dimen/text_content"
-	        android:textColor="@color/text_black_common"
-	        android:layout_marginLeft="@dimen/activity_margintop"
-	    />
-	    
-	    <TextView 
-	        android:id="@+id/sub_text"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_gravity="bottom"
-	        android:textSize="@dimen/text_footnote"
-	        android:textColor="@color/text_gray_light"
-	        android:layout_marginLeft="@dimen/activity_margintop"
-	        />
+        android:layout_toLeftOf="@id/open_icon"
+        android:layout_toRightOf="@id/setimage_icon">
+
+        <TextView
+            android:id="@+id/explain_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/activity_margintop"
+            android:textColor="@color/text_black_common"
+            android:textSize="@dimen/text_content" />
+
+        <TextView
+            android:id="@+id/sub_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/activity_margintop"
+            android:textColor="@color/text_gray_light"
+            android:textSize="@dimen/text_footnote" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,17 +18,13 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
 import com.pcs.ztqtj.MyApplication;
@@ -65,8 +60,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 预警中心
- * Created by tyaathome on 2016/6/13.
+ * 预警中心-气象预警-气象预警
  */
 public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmentUpdateImpl {
 
@@ -78,28 +72,17 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
      * 市级对话框
      */
     private DialogOneButton mDialogStation = null;
-    /**
-     * 县级对话框
-     */
-    private DialogOneButton mmDialogStation = null;
 
     private List<String> titleData = new ArrayList<>();
     private List<List<WarnCenterYJXXGridBean>> warnList = new ArrayList<>();
     private List<WarnCenterYJXXGridBean> currentWarnList = new ArrayList<>();
 
     // 上传下载包
-    private PackWarnWeatherDown packDown = new PackWarnWeatherDown();
+    private MyPackWarnWeatherDown packDown = new MyPackWarnWeatherDown();
 
     private AdapterWeaWarnList adapter = null;
 
     private List<PackLocalCity> contentList=new ArrayList<>();
-
-    // 市级城市ID
-    private String parentId;
-
-    // 从首页传入的首页单条预警信息
-    private WarnBean mainSingleWarnBean = null;
-
 
     @Nullable
     @Override
@@ -136,7 +119,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferencesUtil.putData(currentWarnList.get(position).id,currentWarnList.get(position).id);
-                reqDetail(currentWarnList.get(position));
+                okHttpWarningDetail(currentWarnList.get(position).id);
             }
         });
         tvPush.setOnClickListener(new View.OnClickListener() {
@@ -153,30 +136,13 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
     private void initData() {
         adapter = new AdapterWeaWarnList(getActivity(), currentWarnList);
         listView.setAdapter(adapter);
-        Bundle bundle = getArguments();
-        if(bundle != null) {
-            mainSingleWarnBean = (WarnBean) bundle.getSerializable("warninfo");
-            initDetailFragment(mainSingleWarnBean);
-        } else {
-            final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
-            if (city == null) return;
-            okHttpWarningList(city.ID);
-        }
-    }
-
-    /**
-     * 查询详情
-     *
-     * @param bean
-     */
-    private void reqDetail(WarnCenterYJXXGridBean bean) {
-        ((ActivityWarningCenterNotFjCity) getActivity()).showProgressDialog();
-        okHttpWarningDetail(bean.id);
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if (city == null) return;
+        okHttpWarningList(city.ID);
     }
 
     /**
      * 初始化预警详情fragment
-     *
      * @param bean
      */
     private void initDetailFragment(final WarnBean bean) {
@@ -211,159 +177,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
         }
     }
 
-    /**
-     * 获取预警列表信息
-     */
-    private void okHttpWarningList(final String stationId) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject param  = new JSONObject();
-                    param.put("token", MyApplication.TOKEN);
-                    JSONObject info = new JSONObject();
-                    info.put("stationId", stationId);
-                    param.put("paramInfo", info);
-                    String json = param.toString();
-                    final String url = CONST.BASE_URL+"warningcenterqx_fb";
-                    Log.e("warningcenterqx_fb", url);
-                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        }
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                return;
-                            }
-                            final String result = response.body().string();
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!TextUtil.isEmpty(result)) {
-                                        Log.e("warningcenterqx_fb", result);
-                                        try {
-                                            JSONObject obj = new JSONObject(result);
-                                            if (!obj.isNull("b")) {
-                                                JSONObject bobj = obj.getJSONObject("b");
-                                                if (!bobj.isNull("warningcenterqx_fb")) {
-                                                    JSONObject fbObj = bobj.getJSONObject("warningcenterqx_fb");
-                                                    packDown = new PackWarnWeatherDown();
-                                                    packDown.fillData(fbObj.toString());
-                                                    dealWidthData(packDown);
-                                                }
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    /**
-     * 下载完成后处理数据
-     *
-     * @param pack
-     */
-    private void dealWidthData(PackWarnWeatherDown pack) {
-        if (pack.county.size() == 0 && pack.province.size() == 0 && pack.city.size() == 0) {
-            return;
-        }
-        titleData.clear();
-        warnList.clear();
-        // 取出对应城市的预警列表
-        if (pack.province.size() != 0) {
-            titleData.add(pack.provincesName);
-            warnList.add(pack.province);
-        }
-        if (pack.city.size() != 0) {
-            titleData.add(pack.cityname);
-            warnList.add(pack.city);
-        }
-        if (pack.county.size() != 0) {
-            titleData.add(pack.countyname);
-            warnList.add(pack.county);
-        }
-        addRadioButton();
-    }
-
-    /**
-     * 添加标题的单选按钮
-     *
-     */
-    private void addRadioButton() {
-        radioGroup.removeAllViews();
-        int width = Util.getScreenWidth(getActivity());
-        int _10dp = Util.dip2px(getActivity(), 10);
-        int _35dp = Util.dip2px(getActivity(), 35);
-        int radioWidth = (width - _10dp*(titleData.size()-1))
-                / titleData.size();
-        int pad = Util.dip2px(getActivity(), 10);
-        // 这里修改过，省市县的显示顺序有变化
-        for (int i = titleData.size(); i > 0; i--) {
-            RadioButton radioButton = new RadioButton(getActivity());
-            //radioButton.setId(1000 + i);
-            radioButton.setGravity(Gravity.CENTER);
-            radioButton.setTextColor(getResources()
-                    .getColor(R.color.text_black));
-//            radioButton
-//                    .setBackgroundResource(R.drawable.selector_blue_line);
-            radioButton
-                    .setBackgroundResource(R.drawable.btn_disaster_reporting);
-            radioButton.setPadding(0, 0, 0, 0);
-            radioButton.setButtonDrawable(getResources().getDrawable(
-                    android.R.color.transparent));
-            radioButton.setText(titleData.get(i - 1));
-            radioButton.setSingleLine(true);
-            radioButton.setChecked(false);
-            radioButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    radioButtonClick(v.getId());
-                }
-            });
-            RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(radioWidth, _35dp, 1.0f);
-//            if(i != 1) {
-                lp.rightMargin = _10dp;
-//            }
-            radioGroup.addView(radioButton, lp);
-        }
-
-        if (titleData.size() > 0) {
-            // 默认选中的栏目序号
-            int index = 0;
-            if (mainSingleWarnBean != null) {
-                String put_str = mainSingleWarnBean.put_str;
-                if (put_str.contains("市")) {
-                    index = titleData.size() - 1 - 1;
-                } else if (put_str.contains("省")) {
-                    index = titleData.size() - 1;
-                }
-            }
-            if (index > titleData.size() - 1) {
-                index = 0;
-            }
-            if (index==-1){
-                index = 0;
-            }
-            RadioButton btn = (RadioButton) radioGroup.getChildAt(index);
-            if(btn==null){
-                return;
-            }
-            // 点击按钮
-            btn.performClick();
-        }
-    }
-
     public void notifyadapter(int item) {
         if(item < 0) {
             return;
@@ -372,23 +185,18 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
         for (int i = 0; i < warnList.get(item).size(); i++) {
             currentWarnList.add(warnList.get(item).get(i));
         }
-        if (mainSingleWarnBean != null) {
-            initDetailFragment(mainSingleWarnBean);
-            mainSingleWarnBean = null;
-        } else {
-            adapter.notifyDataSetChanged();
-            // 隐藏detail，显示列表
-            llWarningDetailContent.setVisibility(View.GONE);
-            listView.setVisibility(View.VISIBLE);
-            // 显示预警查询
-            tvShare.setText(getActivity().getResources().getString(R.string.warning_query));
-            tvShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showDialogStation();
-                }
-            });
-        }
+        adapter.notifyDataSetChanged();
+        // 隐藏detail，显示列表
+        llWarningDetailContent.setVisibility(View.GONE);
+        listView.setVisibility(View.VISIBLE);
+        // 显示预警查询
+        tvShare.setText(getActivity().getResources().getString(R.string.warning_query));
+        tvShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogStation();
+            }
+        });
     }
 
     private void radioButtonClick(int id) {
@@ -425,7 +233,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
 
     /**
      * 设置ListView一屏显示的条数
-     *
      * @param listView
      */
     private void setListViewHeightBasedOnChildren(ListView listView) {
@@ -462,7 +269,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            parentId = contentList.get(position).ID;
             okHttpWarningList(contentList.get(position).ID);
             // 关闭对话框
             mDialogStation.hide();
@@ -481,25 +287,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
         }
     };
 
-    /**
-     * 市级对话框按钮点击事件
-     */
-    private final DialogFactory.DialogListener mmDialogListener = new DialogFactory.DialogListener() {
-        @Override
-        public void click(String str) {
-            // 对话框取消按钮
-            mmDialogStation.dismiss();
-        }
-    };
-
-
-    /**
-     * 获取详情失败
-     */
-    private void showDetilError() {
-        Toast.makeText(getActivity(), R.string.get_detail_error, Toast.LENGTH_SHORT).show();
-    }
-
     private void refresh() {
         if(radioGroup != null && radioGroup.getChildCount() > 0) {
             radioButtonClick(radioGroup.getChildAt(0).getId());
@@ -512,9 +299,146 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
     }
 
     /**
+     * 获取预警列表信息
+     */
+    private void okHttpWarningList(final String stationId) {
+        ((ActivityWarningCenterNotFjCity) getActivity()).showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", stationId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"warningcenterqx_fb";
+                    Log.e("warningcenterqx_fb", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("warningcenterqx_fb", result);
+                                    ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("warningcenterqx_fb")) {
+                                                    JSONObject fbObj = bobj.getJSONObject("warningcenterqx_fb");
+                                                    packDown.fillData(fbObj.toString());
+                                                    dealWidthData();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 下载完成后处理数据
+     */
+    private void dealWidthData() {
+        if (packDown.county.size() == 0 && packDown.province.size() == 0 && packDown.city.size() == 0) {
+            return;
+        }
+        titleData.clear();
+        warnList.clear();
+        // 取出对应城市的预警列表
+        if (packDown.province.size() != 0) {
+            titleData.add(packDown.provincesName);
+            warnList.add(packDown.province);
+        }
+        if (packDown.city.size() != 0) {
+            titleData.add(packDown.cityname);
+            warnList.add(packDown.city);
+        }
+        if (packDown.county.size() != 0) {
+            titleData.add(packDown.countyname);
+            warnList.add(packDown.county);
+        }
+
+        Bundle bundle = getArguments();
+        boolean isDisWaring = false;
+        String warningId = null;
+        if(bundle != null) {
+            warningId = bundle.getString("warningId");
+            isDisWaring = bundle.getBoolean("isDisWaring");
+            okHttpWarningDetail(warningId);
+        }
+        addRadioButton(isDisWaring);
+    }
+
+    /**
+     * 添加标题的单选按钮
+     */
+    private void addRadioButton(boolean isDisWaring) {
+        radioGroup.removeAllViews();
+        int width = Util.getScreenWidth(getActivity());
+        int _10dp = Util.dip2px(getActivity(), 10);
+        int _35dp = Util.dip2px(getActivity(), 35);
+        int radioWidth = (width - _10dp*(titleData.size()-1)) / titleData.size();
+        // 这里修改过，省市县的显示顺序有变化
+        for (int i = titleData.size(); i > 0; i--) {
+            RadioButton radioButton = new RadioButton(getActivity());
+            radioButton.setGravity(Gravity.CENTER);
+            radioButton.setTextColor(getResources().getColor(R.color.text_black));
+            radioButton.setBackgroundResource(R.drawable.btn_disaster_reporting);
+            radioButton.setPadding(0, 0, 0, 0);
+            radioButton.setButtonDrawable(getResources().getDrawable(android.R.color.transparent));
+            radioButton.setText(titleData.get(i - 1));
+            radioButton.setSingleLine(true);
+            radioButton.setChecked(false);
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    radioButtonClick(v.getId());
+                }
+            });
+            RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(radioWidth, _35dp, 1.0f);
+            lp.rightMargin = _10dp;
+            radioGroup.addView(radioButton, lp);
+        }
+
+        if (titleData.size() > 0) {
+            // 默认选中的栏目序号
+            int index = isDisWaring ? 0 : 1;
+            RadioButton btn = (RadioButton) radioGroup.getChildAt(index);
+            if(btn==null){
+                return;
+            }
+            // 点击按钮
+            btn.performClick();
+        }
+    }
+
+    /**
      * 预警详情
      */
     private void okHttpWarningDetail(final String id) {
+        ((ActivityWarningCenterNotFjCity) getActivity()).showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -525,6 +449,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
                     info.put("stationId", id);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("yjxx_info_query", json);
                     final String url = CONST.BASE_URL+"yjxx_info_query";
                     Log.e("yjxx_info_query", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -541,34 +466,35 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
+                                    Log.e("yjxx_info_query", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("yjxx_info_query", result);
-                                    }
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("yjxx_info_query")) {
-                                                JSONObject yjxx_info_query = bobj.getJSONObject("yjxx_info_query");
-                                                if (!TextUtil.isEmpty(yjxx_info_query.toString())) {
-                                                    ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
-                                                    //预警详情
-                                                    PackWarnPubDetailDown packDown = new PackWarnPubDetailDown();
-                                                    packDown.fillData(yjxx_info_query.toString());
-                                                    //数据
-                                                    WarnBean bean = new WarnBean();
-                                                    bean.level = packDown.desc;
-                                                    bean.ico = packDown.ico;
-                                                    bean.msg = packDown.content;
-                                                    bean.pt = packDown.pt;
-                                                    bean.defend = packDown.defend;
-                                                    bean.put_str = packDown.put_str;
-                                                    initDetailFragment(bean);
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yjxx_info_query")) {
+                                                    JSONObject yjxx_info_query = bobj.getJSONObject("yjxx_info_query");
+                                                    if (!TextUtil.isEmpty(yjxx_info_query.toString())) {
+                                                        ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
+                                                        //预警详情
+                                                        PackWarnPubDetailDown down = new PackWarnPubDetailDown();
+                                                        down.fillData(yjxx_info_query.toString());
+                                                        //数据
+                                                        WarnBean bean = new WarnBean();
+                                                        bean.level = down.desc;
+                                                        bean.ico = down.ico;
+                                                        bean.msg = down.content;
+                                                        bean.pt = down.pt;
+                                                        bean.defend = down.defend;
+                                                        bean.put_str = down.put_str;
+                                                        initDetailFragment(bean);
+                                                    }
                                                 }
                                             }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
                                 }
                             });

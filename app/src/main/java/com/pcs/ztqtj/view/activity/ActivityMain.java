@@ -1,5 +1,6 @@
 package com.pcs.ztqtj.view.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,17 +41,14 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
@@ -65,7 +63,6 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
-import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
@@ -93,6 +90,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * 主页面
+ */
 public class ActivityMain extends FragmentActivity {
 
     // 图片获取类
@@ -108,7 +108,6 @@ public class ActivityMain extends FragmentActivity {
     // 底部菜单监听
     private MyRadioListener mRadioListener = null;
     private DialogTwoButton checkDialogdescribe;
-    private PackCheckVersionUp packcheckversiona;
     private PackCheckVersionDown packcheckversion;
     private DialogOneButton checkDialogdownload;
     private TextView desc_download;
@@ -118,27 +117,19 @@ public class ActivityMain extends FragmentActivity {
 
     // 等待对话框
     private ProgressDialog mProgressDialog = null;
-    // 首页刷新间隔
-    private long REFRESH_INTERVAL = 60 * 1000;
-
     private WeatherReceiver mWeatherReceiver = null;
 
-    // 上传包：实时天气
-    private PackSstqUp mPackSstqUp = new PackSstqUp();
     //文件下载
     private PcsFileDownload mFileDownload;
     //点击回退时间
     private long mBackTime = 0;
-
     private DrawerLayout drawerLayout;
-
-//    //TODO 下载演示数据
-//    private TempAutoData mTempAutoData = new TempAutoData();
 
     /**
      * 处理升级
      */
-    private Handler handlerVersion = new Handler() {
+    @SuppressLint("HandlerLeak")
+    private final Handler handlerVersion = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -146,12 +137,9 @@ public class ActivityMain extends FragmentActivity {
                 if (mFileDownload == null) {
                     mFileDownload = new PcsFileDownload();
                 }
-                View viewdownload = LayoutInflater.from(ActivityMain.this)
-                        .inflate(R.layout.dialog_download, null);
-                desc_download = (TextView) viewdownload
-                        .findViewById(R.id.desc_download);
-                progerssBar = (ProgressBar) viewdownload
-                        .findViewById(R.id.progressbar);
+                View viewdownload = LayoutInflater.from(ActivityMain.this).inflate(R.layout.dialog_download, null);
+                desc_download = viewdownload.findViewById(R.id.desc_download);
+                progerssBar = viewdownload.findViewById(R.id.progressbar);
                 checkDialogdownload = new DialogOneButton(ActivityMain.this,
                         viewdownload, "取消", new DialogFactory.DialogListener() {
                     @Override
@@ -163,33 +151,20 @@ public class ActivityMain extends FragmentActivity {
                 checkDialogdownload.setTitle("正在下载");
                 checkDialogdownload.show();
                 String[] appname = packcheckversion.file.split("/");
-                mFileDownload.downloadFile(
-                        downloadlistener,
-                        getString(R.string.file_download_url)
-                                + packcheckversion.file,
-                        PcsGetPathValue.getInstance().getAppPath()
-                                + appname[appname.length - 1]);
+                mFileDownload.downloadFile(downloadlistener, getString(R.string.file_download_url) + packcheckversion.file,
+                        PcsGetPathValue.getInstance().getAppPath() + appname[appname.length - 1]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        AnalyticsConfig.enableEncrypt(true);
-
-//        try {
-//            getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
-//        } catch (NoSuchFieldException e) {
-//        } catch (IllegalAccessException e) {
-//        }
         createImageFetcher(this.getResources()
                 .getDimensionPixelSize(R.dimen.dimen480));
-        // 创建fragment
         createFragment();
         initDrawerLayout();
         initBottomMenu();
@@ -202,36 +177,28 @@ public class ActivityMain extends FragmentActivity {
         checkCity();
         // 打开动画
         if (getIntent().getBooleanExtra("back", false)) {
-            overridePendingTransition(R.anim.slide_left_in,
-                    R.anim.slide_right_out);
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
         Bundle bundle = getIntent().getBundleExtra(MyConfigure.EXTRA_BUNDLE);
         if(bundle != null) {
             String type = bundle.getString("type");
             if(!TextUtils.isEmpty(type)) {
                 if(type.equals("warn")) {
-//                    String title = bundle.getString("t");
-//                    String icon = bundle.getString("i");
-//                    String id = bundle.getString("id");
-//                    Intent intent = new Intent(this, ActivityWarnDetails.class);
-//                    intent.putExtra("t", title);
-//                    intent.putExtra("i", icon);
-//                    intent.putExtra("id", id);
                     Intent intent = new Intent(this, ActivityWarnDetails.class);
                     intent.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
                     startActivity(intent);
                 } else if (type.equals("widget_warn")) {
-                    WarnBean bean = (WarnBean) bundle.getSerializable("warninfo");
-                    if(bean.currentCity != null) {
-                        ZtqCityDB.getInstance().setCityMain(bean.currentCity, false);
-                    }
-                    boolean isfj = bundle.getBoolean("isfj");
-                    String unitType = bundle.getString("yj_type");
-                    Intent intent = new Intent();
-                    intent.setClass(this, ActivityWarningCenterNotFjCity.class);
-                    intent.putExtra("warninfo", bean);
-                    intent.putExtra("yj_type", unitType);
-                    startActivity(intent);
+//                    WarnBean bean = (WarnBean) bundle.getSerializable("warninfo");
+//                    if(bean.currentCity != null) {
+//                        ZtqCityDB.getInstance().setCityMain(bean.currentCity, false);
+//                    }
+//                    boolean isfj = bundle.getBoolean("isfj");
+//                    String unitType = bundle.getString("yj_type");
+//                    Intent intent = new Intent();
+//                    intent.setClass(this, ActivityWarningCenterNotFjCity.class);
+//                    intent.putExtra("warninfo", bean);
+//                    intent.putExtra("yj_type", unitType);
+//                    startActivity(intent);
                 }
             }
             getIntent().removeExtra(MyConfigure.EXTRA_BUNDLE);
@@ -247,6 +214,23 @@ public class ActivityMain extends FragmentActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void createImageFetcher(int imageThumbSize) {
+        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(this);
+        cacheParams.setMemCacheSizePercent(0.25f);
+        mImageFetcher = new ImageFetcher(this);
+        mImageFetcher.addImageCache(this.getSupportFragmentManager(),cacheParams);
+    }
+
+    /**
+     * 创建fragment
+     */
+    private void createFragment() {
+        // 左滑动Fragment
+        mFragmentLeft = new FragmentCityManager();
+        // 右边滑动Fragment
+        mFragmentRight = new FragmentSet();
     }
 
     private void dialogPrivacy(final String ver) {
@@ -355,7 +339,6 @@ public class ActivityMain extends FragmentActivity {
         //停止首页数据下载
         AutoDownloadWeather.getInstance().setMainDataPause(true);
         AutoDownloadWeather.getInstance().stopMainData();
-
     }
 
     @Override
@@ -369,7 +352,6 @@ public class ActivityMain extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //UMShareAPI.get(this).onActivityResult(requestCode, resultCode, data);
         if (mImageFetcher != null && !mFetcherResumed) {
             mFetcherResumed = true;
             mImageFetcher.setExitTasksEarly(false);
@@ -385,17 +367,9 @@ public class ActivityMain extends FragmentActivity {
         }
     }
 
-    protected void createImageFetcher(int imageThumbSize) {
-        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(this);
-        cacheParams.setMemCacheSizePercent(0.25f);
-        mImageFetcher = new ImageFetcher(this);
-        mImageFetcher.addImageCache(this.getSupportFragmentManager(),cacheParams);
-    }
-
     private void initDrawerLayout() {
         drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
-        //drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View view, float v) {
@@ -410,7 +384,6 @@ public class ActivityMain extends FragmentActivity {
                             content.setX(-view.getWidth() * v);
                             break;
                     }
-
                 }
             }
 
@@ -475,32 +448,22 @@ public class ActivityMain extends FragmentActivity {
     }
 
     /**
-     * 创建fragment
-     */
-    private void createFragment() {
-        // 左滑动Fragment
-        mFragmentLeft = new FragmentCityManager();
-        // 右边滑动Fragment
-        mFragmentRight = new FragmentSet();
-    }
-
-    /**
      * 初始化底部菜单
      */
     private void initBottomMenu() {
         RadioButton radio;
         mRadioListener = new MyRadioListener();
 
-        radio = (RadioButton) findViewById(R.id.radio_home);
+        radio = findViewById(R.id.radio_home);
         radio.setOnCheckedChangeListener(mRadioListener);
 
-        radio = (RadioButton) findViewById(R.id.radio_product);
+        radio = findViewById(R.id.radio_product);
         radio.setOnCheckedChangeListener(mRadioListener);
 
-        radio = (RadioButton) findViewById(R.id.radio_service);
+        radio = findViewById(R.id.radio_service);
         radio.setOnCheckedChangeListener(mRadioListener);
 
-        radio = (RadioButton) findViewById(R.id.radio_live);
+        radio = findViewById(R.id.radio_live);
         radio.setOnCheckedChangeListener(mRadioListener);
     }
 
@@ -510,7 +473,7 @@ public class ActivityMain extends FragmentActivity {
 
     private class MyRadioListener implements CompoundButton.OnCheckedChangeListener {
         private int mCurrIndex = -1;
-        private List<Fragment> mFragmentList = new ArrayList<Fragment>();
+        private final List<Fragment> mFragmentList = new ArrayList<>();
 
         public MyRadioListener() {
             // 首页
@@ -529,7 +492,6 @@ public class ActivityMain extends FragmentActivity {
             if (!isChecked) {
                 return;
             }
-
             switch (buttonView.getId()) {
                 case R.id.radio_home:
                     // 首页
@@ -579,7 +541,6 @@ public class ActivityMain extends FragmentActivity {
 
         /**
          * 获取当前index
-         *
          * @return
          */
         public final int getCurrentIndex() {
@@ -597,13 +558,10 @@ public class ActivityMain extends FragmentActivity {
         } else {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
-        //drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
-
 
     /**
      * 实时天气广播
-     *
      * @author JiangZY
      */
     private class WeatherReceiver extends PcsDataBrocastReceiver {
@@ -639,22 +597,6 @@ public class ActivityMain extends FragmentActivity {
         mFragmentLeft.refresh(param);
         // 推送
         ZtqPushTool.getInstance().refreshPush();
-        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-        if (cityMain == null) {
-            if (isShowProgress) {
-                //showProgressDialog();
-            }
-            return;
-        }
-        mPackSstqUp.area = cityMain.ID;
-        PackSstqDown down = (PackSstqDown) PcsDataManager.getInstance().getNetPack(mPackSstqUp.getName());
-        if (down == null) {
-            if (isShowProgress) {
-                //showProgressDialog();
-            }
-            return;
-        }
-        // 取消等待对话框
         dismissProgressDialog();
     }
 
@@ -689,7 +631,7 @@ public class ActivityMain extends FragmentActivity {
     /**
      * 等待框OnCancel
      */
-    private DialogInterface.OnCancelListener mProgressOnCancel = new DialogInterface.OnCancelListener() {
+    private final DialogInterface.OnCancelListener mProgressOnCancel = new DialogInterface.OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialog) {
             if (mRadioListener.getCurrentIndex() == 2) {
@@ -698,21 +640,15 @@ public class ActivityMain extends FragmentActivity {
                 new AlertDialog.Builder(ActivityMain.this)
                         .setTitle(R.string.tip)
                         .setMessage(R.string.exit_confirm)
-                        .setPositiveButton(
-                                R.string.exit,
-                                new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.exit, new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
+                                    public void onClick(DialogInterface dialog, int which) {
                                         exit();
                                     }
                                 })
-                        .setNegativeButton(
-                                R.string.cancel,
-                                new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
+                                    public void onClick(DialogInterface dialog, int which) {
                                         //showProgressDialog();
                                         dialog.dismiss();
                                     }
@@ -729,7 +665,6 @@ public class ActivityMain extends FragmentActivity {
         if (packImage == null) {
             return;
         }
-
         packImage.beginDownload(getString(R.string.file_download_url), mImageFetcher);
     }
 
@@ -739,14 +674,9 @@ public class ActivityMain extends FragmentActivity {
     private void checkCity() {
         //首页城市
         PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-        //定位城市
-        PackLocalCityLocation cityLocation = ZtqLocationTool.getInstance().getLocationCity();
         if (cityMain == null) {
             // 选择城市
             toCityListActivity();
-//        } else if (cityLocation != null && !cityLocation.isFjCity) {
-//            // 亲情城市
-//            toFamilyCityActivity(cityLocation);
         } else {
             // 检查版本
             checkVerSion();
@@ -771,7 +701,6 @@ public class ActivityMain extends FragmentActivity {
             return;
         }
         if (packcheckversion.nv == null || "".equals(packcheckversion.nv)) {
-            // Toast.makeText(getApplication(), "版本号为空", 0).show();
             return;
         }
 
@@ -780,18 +709,14 @@ public class ActivityMain extends FragmentActivity {
         PackageInfo packInfo;
         int version = 0;
         try {
-            packInfo = packageManager.getPackageInfo(
-                    ActivityMain.this.getPackageName(), 0);
+            packInfo = packageManager.getPackageInfo(ActivityMain.this.getPackageName(), 0);
             version = packInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         if (Integer.parseInt(packcheckversion.nv) > version) {
-            View view = LayoutInflater.from(ActivityMain.this).inflate(
-                    R.layout.dialog_message, null);
-            ((TextView) view.findViewById(R.id.dialogmessage))
-                    .setText(packcheckversion.des);
-
+            View view = LayoutInflater.from(ActivityMain.this).inflate(R.layout.dialog_message, null);
+            ((TextView) view.findViewById(R.id.dialogmessage)).setText(packcheckversion.des);
             if(packcheckversion.leve.equals("4")) {
                 checkDialogdescribe = new DialogTwoButton(ActivityMain.this,
                         view, "立即升级", "退出客户端", new DialogFactory.DialogListener() {
@@ -838,11 +763,7 @@ public class ActivityMain extends FragmentActivity {
     protected boolean isWiFiNewWord() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-            return true;
-        } else {
-            return false;
-        }
+        return activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     private DialogTwoButton dialogRemain;
@@ -876,16 +797,12 @@ public class ActivityMain extends FragmentActivity {
      */
     PcsFileDownloadListener downloadlistener = new PcsFileDownloadListener() {
         @Override
-        public void progress(String url, String fileName, long netSize,
-                             long downSize) {
+        public void progress(String url, String fileName, long netSize, long downSize) {
             if (checkDialogdownload.isShowing()) {
                 progerssBar.setMax((int) netSize);
                 progerssBar.setProgress((int) downSize);
-//               float press = ((downSize / (1024f * 1024f)) / (netSize / (1024f * 1024f))) * 100f;
                 float press = ((float) downSize / (float) netSize) * 100f;
                 desc_download.setText(String.format("%.2f", press) + "%");
-
-//              desc_download.setText(String.format("%.1f", downSize/ (1024f * 1024f))+ "M/" + String.format("%.1f", netSize / (1024f * 1024f))+ "M");
             }
         }
 
@@ -912,11 +829,10 @@ public class ActivityMain extends FragmentActivity {
         }
     };
 
-
     /**
      * 定位改变监听
      */
-    private ZtqLocationTool.PcsLocationListener mLocationListener = new ZtqLocationTool.PcsLocationListener() {
+    private final ZtqLocationTool.PcsLocationListener mLocationListener = new ZtqLocationTool.PcsLocationListener() {
 
         @Override
         public void onLocationChanged() {
@@ -930,7 +846,7 @@ public class ActivityMain extends FragmentActivity {
         }
     };
 
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void dispatchMessage(Message msg) {
             super.dispatchMessage(msg);
@@ -941,7 +857,7 @@ public class ActivityMain extends FragmentActivity {
     /**
      * 刷新视图
      */
-    private InterfaceRefresh mRefreshView = new InterfaceRefresh() {
+    private final InterfaceRefresh mRefreshView = new InterfaceRefresh() {
         @Override
         public void refresh(RefreshParam param) {
             refreshData(param, false);
@@ -952,9 +868,8 @@ public class ActivityMain extends FragmentActivity {
      * 检查底部菜单选中
      */
     private void checkBottomMenu() {
-        mIntBackTarget = getIntent().getIntExtra("BackTarget",
-                FragmentActivityZtqBase.BackTarget.NORMAL.ordinal());
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+        mIntBackTarget = getIntent().getIntExtra("BackTarget", FragmentActivityZtqBase.BackTarget.NORMAL.ordinal());
+        RadioGroup radioGroup = findViewById(R.id.radio_group);
         if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.PRODUCT.ordinal()) {
             // 气象产品
             mRadioListener.changeFragment(1);
@@ -987,8 +902,7 @@ public class ActivityMain extends FragmentActivity {
     @Override
     public void onBackPressed() {
         if ((System.currentTimeMillis() - mBackTime) > 2000) {
-            Toast.makeText(this, getString(R.string.once_again_exit),
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.once_again_exit), Toast.LENGTH_SHORT).show();
             mBackTime = System.currentTimeMillis();
         } else {
             exit();
@@ -1011,7 +925,7 @@ public class ActivityMain extends FragmentActivity {
             }
             SharedPreferences.Editor editor = shared.edit();
             editor.putBoolean("first", false);
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -1116,8 +1030,6 @@ public class ActivityMain extends FragmentActivity {
                                                 myUserInfo.sys_nick_name = MyApplication.NAME;
                                                 myUserInfo.sys_head_url = MyApplication.PORTRAIT;
                                                 myUserInfo.mobile = MyApplication.MOBILE;
-//                                                myUserInfo.type = packDown.platform_type;
-//                                                myUserInfo.is_jc = packDown.is_jc;
                                                 PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
                                                 packLocalUserInfo.currUserInfo = myUserInfo;
                                                 ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);

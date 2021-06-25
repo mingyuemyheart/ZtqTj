@@ -24,33 +24,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/8/2 0002.
- * chen_jx
+ * 首页-预警中心-灾害直报
  */
-
 public class FragmentDisasterReporting extends Fragment {
 
     private RadioGroup radioGroup = null;
     private List<Fragment> mListFragment = new ArrayList<Fragment>();
-    private int mCurrIndex = -1;
     private FragmentDisasterUp fragmentDisasterUp = new FragmentDisasterUp();
     private FragmentDisasterMyreport fragmentDisasterMyreport = new FragmentDisasterMyreport();
     private FragmentDisasterInfo fragmentDisasterInfo = new FragmentDisasterInfo();
     private ArrayList<YjColumnGradeDown> list_column;
     private RadioButton rb01,rb02,rb03;
-//    private static FragmentDisasterReporting instance;
-
-//    public static FragmentDisasterReporting getInstance() {
-//        if(instance == null) {
-//            instance = new FragmentDisasterReporting();
-//        }
-//        return instance;
-//    }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_disaster_reporting, null);
     }
 
@@ -136,20 +124,11 @@ public class FragmentDisasterReporting extends Fragment {
     private Fragment fragment, fragment1, fragment2, fragment3;
 
     public void changeFragment(int index) {
-
         fragment = mListFragment.get(index);
         fragment1 = mListFragment.get(0);
         fragment2 = mListFragment.get(1);
         fragment3 = mListFragment.get(2);
-        //FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-//        if (mCurrIndex == -1) {
-//        } else if (index > mCurrIndex) {
-//            transaction.setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out);
-//        } else {
-//            transaction.setCustomAnimations(R.anim.slide_left_in, R.anim.slide_right_out);
-//        }
-
         if (!fragment.isAdded()) {
             if (fragment2.isAdded()) {
                 transaction.hide(fragment2);
@@ -178,7 +157,6 @@ public class FragmentDisasterReporting extends Fragment {
             transaction.hide(fragment2);
             transaction.show(fragment).commit();
         }
-        mCurrIndex = index;
     }
 
     public void updateFragment(int position, String str) {

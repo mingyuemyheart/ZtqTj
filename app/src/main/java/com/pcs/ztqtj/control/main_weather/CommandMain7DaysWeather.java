@@ -41,8 +41,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by tyaathome on 2019/03/22.
- * 逐日预报
+ * 首页-逐日预报
  */
 public class CommandMain7DaysWeather extends CommandMainBase {
 
@@ -52,13 +51,8 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     private ImageFetcher imageFetcher;
     private Adapter7DaysGridView adapter;
     private List<WeekWeatherInfo> weekList = new ArrayList<>();
-    //一周高温列表
-    private List<Float> mHighList = new ArrayList<Float>();
-    //一周低温列表
-    private List<Float> mLowList = new ArrayList<Float>();
     //改变城市
     private boolean mChangeCity = true;
-    // 天气内容
     private GridView gridViewWeek;
     private TemperatureView tempertureview;
     private InterfaceShowBg mShowBg;
@@ -76,33 +70,27 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     protected void init() {
         rowView = LayoutInflater.from(activity).inflate(R.layout.layout_main_7days_weather, rootLayout, false);
         rootLayout.addView(rowView);
-        tempertureview = (TemperatureView) rowView.findViewById(R.id.tempertureview);
-        gridViewWeek = (GridView) rowView.findViewById(R.id.maingridview);
+        tempertureview = rowView.findViewById(R.id.tempertureview);
+        gridViewWeek = rowView.findViewById(R.id.maingridview);
         adapter = new Adapter7DaysGridView(activity,imageFetcher, weekList, mShowBg);
         gridViewWeek.setAdapter(adapter);
+
+        okHttpWeekData();
     }
 
     public void setChangeCity() {
         mChangeCity = true;
     }
 
-
     @Override
     protected void refresh() {
-        okHttpWeek();
-
-        if (mChangeCity) {
-            if (adapter != null) {
-                adapter.setClickPositon(0);
-            }
-            mChangeCity = false;
-        }
+//        okHttpWeekData();
     }
 
     /**
      * 获取一周天气
      */
-    private void okHttpWeek() {
+    private void okHttpWeekData() {
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if(city == null) return;
         new Thread(new Runnable() {
@@ -115,8 +103,9 @@ public class CommandMain7DaysWeather extends CommandMainBase {
                     info.put("stationId", city.ID);
                     param.put("paramInfo", info);
                     String json = param.toString();
-                    final String url = CONST.BASE_URL+"pnweek";
-                    Log.e("pnweek", url);
+                    Log.e("week_data", json);
+                    final String url = CONST.BASE_URL+"week_data";
+                    Log.e("week_data", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                         @Override
@@ -131,8 +120,8 @@ public class CommandMain7DaysWeather extends CommandMainBase {
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+//                                    Log.e("week_data", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("pnweek", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -153,29 +142,29 @@ public class CommandMain7DaysWeather extends CommandMainBase {
                                                             gridViewWeek.setLayoutParams(params);
                                                             gridViewWeek.setColumnWidth(getWeekItemWidth());
                                                             adapter.setUpdate(weekList);
-                                                            mHighList.clear();
-                                                            mLowList.clear();
+
+                                                            List<Float> mHighList = new ArrayList<>();
+                                                            List<Float> mLowList = new ArrayList<>();
                                                             for (int i = 0; i < weekList.size(); i++) {
                                                                 WeekWeatherInfo info = weekList.get(i);
-                                                                //最后一个高温或低温为空这可以单一添加，否者直接丢弃整个高低温数据
-                                                                if (i == weekList.size() - 1) {
-                                                                    if (!TextUtils.isEmpty(info.higt)) {
-                                                                        mHighList.add(Float.parseFloat(info.higt));
-                                                                    }
-                                                                    if (!TextUtils.isEmpty(info.lowt)) {
-                                                                        mLowList.add(Float.parseFloat(info.lowt));
-                                                                    }
-                                                                } else {
-                                                                    if (!TextUtils.isEmpty(info.higt) && !TextUtils.isEmpty(info.lowt)) {
-                                                                        mHighList.add(Float.parseFloat(info.higt));
-                                                                        mLowList.add(Float.parseFloat(info.lowt));
-                                                                    }
+                                                                if (!TextUtils.isEmpty(info.higt) && !TextUtils.equals("�", info.higt)) {
+                                                                    mHighList.add(Float.parseFloat(info.higt));
+                                                                }
+                                                                if (!TextUtils.isEmpty(info.lowt) && !TextUtils.equals("�", info.lowt)) {
+                                                                    mLowList.add(Float.parseFloat(info.lowt));
                                                                 }
                                                             }
                                                             tempertureview.setTemperture(mHighList, mLowList, size);
                                                             params = tempertureview.getLayoutParams();
                                                             params.width = width;
                                                             tempertureview.setLayoutParams(params);
+
+                                                            if (mChangeCity) {
+                                                                if (adapter != null) {
+                                                                    adapter.setClickPositon(0);
+                                                                }
+                                                                mChangeCity = false;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -196,7 +185,7 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     }
 
     private int getWeekItemWidth() {
-        int width = (int) (Util.getScreenWidth(activity)/7.0f);
-        return width;
+        return (int) (Util.getScreenWidth(activity)/7.0f);
     }
+
 }

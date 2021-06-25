@@ -12,13 +12,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.DesServer;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwMyproMoreDown;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -51,18 +48,16 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 专项服务-决策服务-我的服务-跟多
+ * 专项服务-决策服务-我的服务-更多
  */
 public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
+
     private ListView listview;
-    private MyReceiver receiver = new MyReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myserver_more);
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
-        localUserinfo = ZtqCityDB.getInstance().getMyInfo();
         initView();
         initEvent();
         initData();
@@ -89,13 +84,12 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
     }
 
     private TextView null_data;
-    private PackLocalUser localUserinfo;
     private AdapterMyserverMore adapter;
     private List<DesServer> pro_list;
 
     private void initView() {
-        listview = (ListView) findViewById(R.id.listview);
-        null_data = (TextView) findViewById(R.id.null_data);
+        listview = findViewById(R.id.listview);
+        null_data = findViewById(R.id.null_data);
     }
 
     private String url = "";
@@ -157,7 +151,6 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
     }
 
     private PackQxfwAuthenticationProductDown checkDown;
-    private PackQxfwAuthenticationProductUp cup;
 
     private void checkPass(String type) {
         if (type.equals("1")) {
@@ -167,23 +160,6 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
         }
     }
 
-//    private void checkPass(String proId) {
-//        if (TextUtils.isEmpty(localUserinfo.user_id)) {
-//
-//        } else {
-//            checkDown = new PackQxfwAuthenticationProductDown();
-//            cup = new PackQxfwAuthenticationProductUp();
-//            cup.product_id = proId;
-//            cup.user_id = localUserinfo.user_id;
-//            if (!isOpenNet()) {
-//                showToast(getString(R.string.net_err));
-//                return;
-//            }
-//            showProgressDialog();
-//            PcsDataDownload.addDownload(cup);
-//        }
-//    }
-
     /**
      * 登出当前账号
      */
@@ -191,30 +167,6 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
         PackLocalUserInfo info = new PackLocalUserInfo();
         ZtqCityDB.getInstance().setMyInfo(info);
     }
-
-    /**
-     * 数据更新广播接收
-     */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String error) {
-            if (checkDown != null && name.equals(cup.getName())) {
-                dismissProgressDialog();
-                checkDown = (PackQxfwAuthenticationProductDown) PcsDataManager.getInstance().getNetPack(name);
-                if (checkDown != null) {
-                    if (checkDown.auth_pass) {
-                        IntentNextActivity();
-                    } else {
-                        showCheckTipsDialog(getResources().getString(R.string.empty_promess_service));
-                    }
-                    checkDown = null;
-                }
-            } else {
-                ServiceLoginTool.getInstance().callback(name, listenerCheck);
-            }
-        }
-    }
-
 
     private ServiceLoginTool.CheckListener listenerCheck = new ServiceLoginTool.CheckListener() {
         @Override
@@ -244,12 +196,6 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
         } else {
             null_data.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.unregisterReceiver(receiver);
     }
 
     private DialogTwoButton myDialog;
@@ -312,8 +258,8 @@ public class ActivityMyServerMore extends FragmentActivityZtqWithHelp {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("qxfw_mypro_more", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("qxfw_mypro_more", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

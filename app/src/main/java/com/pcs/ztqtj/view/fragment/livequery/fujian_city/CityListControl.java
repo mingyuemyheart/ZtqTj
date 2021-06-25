@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * Created by Z on 2017/5/26.
  */
-
 public class CityListControl {
 
     private List<PackLocalCity> listParentCityInfo;
@@ -65,15 +64,6 @@ public class CityListControl {
                 cutChild.copyCity(mainCity);
             }
         }
-//        if(cutChild != null && cutChild.PARENT_ID.equals("25182")) {
-//            cutParent = ZtqCityDB.getInstance().getProvinceById("25148");
-//            cutParent.ID = "25182";
-//        } else {
-//            PackLocalCity city = ZtqCityDB.getInstance().getProvinceById(cutChild.PARENT_ID);
-//            if(city != null) {
-//                cutParent.copyCity(city);
-//            }
-//        }
 
         if(cutChild != null) {
             for(PackLocalCity bean : listParentCityInfo) {
@@ -83,7 +73,6 @@ public class CityListControl {
                 }
             }
         }
-
 
         for (int i = 0; i < listParentCityInfo.size(); i++) {
             listParentCityInfoShowName.add(listParentCityInfo.get(i).NAME);

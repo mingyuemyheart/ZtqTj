@@ -24,13 +24,11 @@ import java.io.InputStream;
 import java.util.Map;
 
 /**
- * Created by tyaathome on 2018/1/2.
+ * 消息推送
  */
-
 public class ZtqNotification {
 
     private Context context;
-
     private Map<String, String> dataMap;
     private int mId = 0;
     private static final String CHANNEL_ID = "ZTQ_NOTIFICATION_CHANNEL_ID";
@@ -83,8 +81,7 @@ public class ZtqNotification {
         Bitmap icon = null;
         try {
             InputStream is = null;
-            is = context.getResources().getAssets()
-                    .open("img_holiday/" + str + ico + ".png");
+            is = context.getResources().getAssets().open("img_holiday/" + str + ico + ".png");
             icon = BitmapFactory.decodeStream(is);
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,10 +110,8 @@ public class ZtqNotification {
         Bitmap icon = null;
         try {
             InputStream is = null;
-            is = context.getResources().getAssets()
-                    .open("img_warn/" + ico + ".png");
+            is = context.getResources().getAssets().open("img_warn/" + ico + ".png");
             icon = BitmapFactory.decodeStream(is);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,7 +149,6 @@ public class ZtqNotification {
         bundle.putString("id",id);
         Notification notification = getNotification(TITLE, CONTENT, null, ActivityPushServiceNotificationDetails.class, bundle);
         doNotify(notification);
-
     }
 
     /**
@@ -175,8 +169,7 @@ public class ZtqNotification {
     }
 
     private void doNotify(Notification notification) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context
-                .NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if(manager != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 int importance = NotificationManager.IMPORTANCE_HIGH;

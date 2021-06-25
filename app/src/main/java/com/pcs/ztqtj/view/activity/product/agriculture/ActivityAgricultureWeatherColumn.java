@@ -38,7 +38,6 @@ import okhttp3.Response;
  */
 public class ActivityAgricultureWeatherColumn extends FragmentActivityZtqBase {
 
-    private GridView gridView;
     private AdapterColumn adapter;
     private List<AgricultureInfo> columnInfoList = new ArrayList<>();
 
@@ -51,11 +50,7 @@ public class ActivityAgricultureWeatherColumn extends FragmentActivityZtqBase {
     }
 
     private void initView() {
-//        AgricultureInfo agricultureInfo = new AgricultureInfo();
-//        agricultureInfo.title = "农业灾情直报";
-//        columnInfoList.add(agricultureInfo);
-
-        gridView = (GridView) findViewById(R.id.gridview);
+        GridView gridView = findViewById(R.id.gridview);
         adapter = new AdapterColumn(this, columnInfoList, getImageFetcher());
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -124,8 +119,8 @@ public class ActivityAgricultureWeatherColumn extends FragmentActivityZtqBase {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("nyqx_fw", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("nyqx_fw", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

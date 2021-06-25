@@ -8,10 +8,7 @@ import com.pcs.ztqtj.control.command.AbstractCommand;
 import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
 
 /**
- * 请求一些首页数据
- *
- * @author JiangZY
- * 广告，和  公共分享部分获取
+ * 闪屏页面，请求一些首页数据
  */
 public class CommandLoadingMainData extends AbstractCommand {
     @Override
@@ -71,11 +68,11 @@ public class CommandLoadingMainData extends AbstractCommand {
         AutoDownloadWeather.getInstance().setMainDataPause(false);
         AutoDownloadWeather.getInstance().beginMainData();
 
-
         // share 公共
         PackShareAboutUp share = new PackShareAboutUp();
         share.keyword="ABOUT_JC_DOWN";
         PcsDataDownload.addDownload(share);
+
         //获取节假日，
         PackHolidayInfoUp holiday = new PackHolidayInfoUp();
         PcsDataDownload.addDownload(holiday);

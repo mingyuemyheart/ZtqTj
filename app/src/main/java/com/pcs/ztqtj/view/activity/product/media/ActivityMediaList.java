@@ -49,11 +49,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 气象影视
- *
- * @author chenjh
+ * 生活气象-气象影视
  */
 public class ActivityMediaList extends FragmentActivityZtqBase {
+
     private PackMediaListUp upPack = new PackMediaListUp();
     private MyReceiver receiver = new MyReceiver();
     private MyGridView myGridView;
@@ -85,8 +84,7 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
     private ViewPager vp = null;
     private int pagerCurrentPosition = 0;
     private LeadPoint pointlayout;
-    private List<String> listBanner = new ArrayList<String>();
-
+    private List<String> listBanner = new ArrayList<>();
     private ListView lv_media;
     private AdapterMediaList adapterMediaList;
 
@@ -110,12 +108,9 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
         radioGroup = (RadioGroup) findViewById(R.id.tab_content);
         item_top_layout = (RelativeLayout) findViewById(R.id.item_top_layout);
         banner_layout = (RelativeLayout) findViewById(R.id.banner_layout);
-
         vp = (ViewPager) findViewById(R.id.viewpager);
         pointlayout = (LeadPoint) findViewById(R.id.pointlayout);
-
         lv_media = (ListView) findViewById(R.id.lv_media);
-
     }
 
     private void initEvent() {
@@ -144,8 +139,7 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
             public void onPageSelected(int arg0) {
                 pagerCurrentPosition = arg0;
                 if (listBanner.size() > 1) {
-                    pointlayout.setPointSelect(pagerCurrentPosition
-                            % listBanner.size());
+                    pointlayout.setPointSelect(pagerCurrentPosition % listBanner.size());
                 }
             }
 
@@ -214,8 +208,7 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
         if (mPackBannerDown != null) {
             // 当数据不为空时
             for (int i = 0; i < mPackBannerDown.arrBannerInfo.size(); i++) {
-                listBanner.add(getString(R.string.file_download_url)
-                        + mPackBannerDown.arrBannerInfo.get(i).img_path);
+                listBanner.add(getString(R.string.file_download_url)+ mPackBannerDown.arrBannerInfo.get(i).img_path);
             }
         }
         // 注册广播接收
@@ -309,7 +302,6 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
             reflushColumn();
         } else {
             myGridViewAdapter.notifyDataSetChanged();
-
         }
     }
 
@@ -358,7 +350,6 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
     /*选中的栏目是否为品牌栏目 是为true*/
     private void isBrandMovice(boolean isBrand, ParentMedia parent, int item) {
         if (isBrand) {
-
             //第一行大图显示的为广告栏目，
             if (parent.video_list.size() > 0) {
                 isDataNull(false);
@@ -415,8 +406,6 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
                     isDataNull(true);
                 }
             }
-
-
         }
     }
 
@@ -457,25 +446,18 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
 
     };
 
-
-
     private void toMedioDetail(MediaInfo mediaInfo) {
         this.mediaInfo = mediaInfo;
         toDetail();
     }
 
-
     private MediaInfo mediaInfo;
 
     private void toDetail() {
-        Intent intent = new Intent(ActivityMediaList.this,
-                ActivityMediaPlay.class);
+        Intent intent = new Intent(ActivityMediaList.this, ActivityMediaPlay.class);
         intent.putExtra("mediaInfo", mediaInfo);
         startActivity(intent);
     }
-
-    private DialogTwoButton dialogRemain;
-
 
     @Override
     public void onDestroy() {

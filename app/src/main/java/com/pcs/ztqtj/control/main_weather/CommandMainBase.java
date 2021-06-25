@@ -3,11 +3,11 @@ package com.pcs.ztqtj.control.main_weather;
 import com.pcs.ztqtj.control.command.AbstractCommand;
 
 /**
- * JiangZy on 2016/6/3.
+ * 首页-base
  */
 public abstract class CommandMainBase extends AbstractCommand {
-    private boolean isFirstRun = true;
 
+    private boolean isFirstRun = true;
 
     @Override
     public void execute() {
@@ -15,8 +15,7 @@ public abstract class CommandMainBase extends AbstractCommand {
         if (isFirstRun) {
             init();
             isFirstRun = false;
-        }
-        else {
+        } else {
             refresh();
         }
         setStatus(Status.SUCC);

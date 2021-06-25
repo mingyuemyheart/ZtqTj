@@ -24,13 +24,10 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.services.geocoder.RegeocodeAddress;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackForecastWeatherTipDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackForecastWeatherTipUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -42,6 +39,7 @@ import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.product.ActivityMapForecast;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
 
@@ -62,42 +60,32 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * JiangZy on 2016/6/3.
+ * 首页-指点天气
  */
 public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnItemClickListener, AMap.OnMarkerClickListener {
+
     // 地图默认每像素密度
     private final float DEFAULKT_SCALE_PER_PIXEL = -0.002145532131195068f;
 
-    private Activity mActivity;
+    private ActivityMain mActivity;
     private ViewGroup mRootLayout;
     private ImageFetcher imageFetcher;
     private View mRowView;
-
     private TextureMapView mMapView;
     // 定位标记
     private Marker mMarker = null;
-
     private AMap mAMap = null;
-
-    private boolean isChangeCamera = false;
-
     private GridView gridView = null;
-
     private AdapterWarningCenterGrid adapter = null;
-
-    private List<WarnCenterYJXXGridBean> dataList = new ArrayList<WarnCenterYJXXGridBean>();
+    private List<WarnCenterYJXXGridBean> dataList = new ArrayList<>();
     //格点预警
     private PackWarningCenterYJXXGridIndexDown packDown = null;
-    //温馨提示
-    private PackForecastWeatherTipUp mPackForecastWeatherTipUp = new PackForecastWeatherTipUp();
-
     // Bundle
     private Bundle mSavedInstanceState;
-
     private TextView tvTip;
 
     public CommandMainRow3(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher, Bundle savedInstanceState) {
-        mActivity = activity;
+        mActivity = (ActivityMain) activity;
         mRootLayout = rootLayout;
         this.imageFetcher = imageFetcher;
         mSavedInstanceState = savedInstanceState;
@@ -105,21 +93,17 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
 
     @Override
     protected void init() {
-        mRowView = LayoutInflater.from(mActivity).inflate(
-                R.layout.item_home_weather_3_new, null);
-
+        mRowView = LayoutInflater.from(mActivity).inflate(R.layout.item_home_weather_3_new, null);
         mRootLayout.addView(mRowView);
-
         initView(mRootLayout);
         initMap(mRootLayout);
-        initData();
         setStatus(Status.SUCC);
     }
 
     @Override
     protected void refresh() {
         refreshLocation();
-        updateWarningGrid();
+        okHttpGridWarning();
     }
 
     private void initView(View view) {
@@ -162,15 +146,8 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
         gridView.setOnItemClickListener(this);
     }
 
-    private void initData() {
-
-    }
-
     private void gotoMap() {
-        // 跳转
-        Intent it = new Intent();
-        it.setClass(mActivity, ActivityMapForecast.class);
-        mActivity.startActivity(it);
+        mActivity.startActivity(new Intent(mActivity, ActivityMapForecast.class));
     }
 
     /**
@@ -203,69 +180,66 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
     private void showPosition(LatLng latLng) {
         // 定位标识
         MarkerOptions options = new MarkerOptions();
-        BitmapDescriptor descriptor = BitmapDescriptorFactory
-                .fromResource(R.drawable.icon_location);
-        Bitmap resizedBitmap = Bitmap.createBitmap(descriptor.getBitmap(),
-                0, 0, descriptor.getWidth(), descriptor.getHeight(),
-                getMatrix(mActivity), true);
+        BitmapDescriptor descriptor = BitmapDescriptorFactory.fromResource(R.drawable.icon_location);
         // 拷贝图标，防止高德地图回收异常
         Bitmap copyBitmap = descriptor.getBitmap().copy(Bitmap.Config.ARGB_8888, true);
-        //Bitmap copyBitmap = resizedBitmap.copy(resizedBitmap.getConfig(), true);
         descriptor = BitmapDescriptorFactory.fromBitmap(copyBitmap);
         options.icon(descriptor);
         mMarker = mAMap.addMarker(options);
-//        LatLng cameraLatLng = new LatLng(latLng.latitude - getLatitudeAdd(),
-//                latLng.longitude);
-        LatLng cameraLatLng = new LatLng(latLng.latitude - DEFAULKT_SCALE_PER_PIXEL,
-                latLng.longitude);
-
+        LatLng cameraLatLng = new LatLng(latLng.latitude - DEFAULKT_SCALE_PER_PIXEL, latLng.longitude);
         mMarker.setPosition(latLng);
         mAMap.moveCamera(CameraUpdateFactory.changeLatLng(cameraLatLng));
     }
 
     /**
-     * 获取缩放用的Matrix
-     *
-     * @param activity 设计屏幕宽度
-     * @return
+     * 地图点击事件
      */
-    private Matrix getMatrix(Activity activity) {
-        final int designWidth = 1280;
-        DisplayMetrics dm = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        float scale = ((float) dm.widthPixels) / ((float) designWidth);
-        Matrix matrix = new Matrix();
-        matrix.postScale(scale, scale);
-
-        return matrix;
-    }
-
-    /**
-     * 获取纬度显示偏移
-     *
-     * @return
-     */
-    private double getLatitudeAdd() {
-        double latitudeAdd = DEFAULKT_SCALE_PER_PIXEL;
-        if (mAMap.getScalePerPixel() > 0) {
-            latitudeAdd = (double) mAMap.getScalePerPixel();
+    private final AMap.OnMapClickListener mOnMapClick = new AMap.OnMapClickListener() {
+        @Override
+        public void onMapClick(LatLng arg0) {
+            gotoMap();
         }
+    };
 
-        latitudeAdd = -latitudeAdd / 1000.0d;
-        return latitudeAdd;
+    View.OnClickListener mOnBtnMapClick = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            gotoMap();
+        }
+    };
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (packDown != null) {
+            WarnCenterYJXXGridBean bean = packDown.dataList.get(position);
+            Intent intent = new Intent(mActivity, ActivityWarnDetails.class);
+            Bundle bundle=new Bundle();
+            bundle.putString("t", "气象预警");
+            bundle.putString("i", bean.ico);
+            bundle.putString("id", bean.id);
+            intent.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
+            SharedPreferencesUtil.putData(bean.id,bean.id);
+            mActivity.startActivity(intent);
+        }
     }
 
-
-    private void updateWarningGrid() {
-        okHttpGridWarning();
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        gotoMap();
+        return false;
     }
 
     /**
      * 获取网格预警
      */
     private void okHttpGridWarning() {
+        mActivity.showProgressDialog();
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
-        if (city == null) return;
+        if (city == null) {
+            mActivity.dismissProgressDialog();
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -276,6 +250,7 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                     info.put("stationId", city.ID);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("yjxx_grad_index_fb", json);
                     final String url = CONST.BASE_URL+"yjxx_grad_index_fb";
                     Log.e("yjxx_grad_index_fb", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -292,8 +267,9 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    mActivity.dismissProgressDialog();
+                                    Log.e("yjxx_grad_index_fb", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("yjxx_grad_index_fb", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -385,47 +361,4 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
         }).start();
     }
 
-    /**
-     * 地图点击事件
-     */
-    private final AMap.OnMapClickListener mOnMapClick = new AMap.OnMapClickListener() {
-        @Override
-        public void onMapClick(LatLng arg0) {
-            // 跳转
-            gotoMap();
-        }
-    };
-
-    View.OnClickListener mOnBtnMapClick = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            gotoMap();
-        }
-    };
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (packDown != null) {
-            WarnCenterYJXXGridBean bean = packDown.dataList.get(position);
-            Intent intent = new Intent(mActivity, ActivityWarnDetails.class);
-            Bundle bundle=new Bundle();
-            bundle.putString("t", "气象预警");
-            bundle.putString("i", bean.ico);
-            bundle.putString("id", bean.id);
-            intent.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
-//            intent.putExtra("t", "气象预警");
-//            intent.putExtra("i", bean.ico);
-//            intent.putExtra("id", bean.id);
-
-            SharedPreferencesUtil.putData(bean.id,bean.id);
-            mActivity.startActivity(intent);
-        }
-    }
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        gotoMap();
-        return false;
-    }
 }

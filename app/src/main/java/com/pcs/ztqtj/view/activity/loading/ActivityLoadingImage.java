@@ -19,8 +19,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
 
 /**
- * 主题插图
- *
+ * 闪屏页-主题插图
  * @author Administrator
  */
 public class ActivityLoadingImage extends FragmentActivityBase {

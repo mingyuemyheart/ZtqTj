@@ -35,10 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/8/2 0002.
- * chen_jx
+ * 首页-预警中心-灾害直报-灾情信息，审核后的
  */
-
 public class FragmentDisasterInfo extends FragmentReportBase implements View.OnClickListener {
 
     private ListView lv_disaster_info;
@@ -74,7 +72,6 @@ public class FragmentDisasterInfo extends FragmentReportBase implements View.OnC
         initData();
         showProgressDialog();
     }
-
 
     private void initData() {
         PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);

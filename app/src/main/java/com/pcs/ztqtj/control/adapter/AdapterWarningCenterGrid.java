@@ -15,8 +15,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
 import java.util.List;
 
 /**
- * 首页预警格点信息适配器
- * Created by tyaathome on 2016/6/7.
+ * 首页-指点天气-预警
  */
 public class AdapterWarningCenterGrid extends BaseAdapter {
 
@@ -47,11 +46,11 @@ public class AdapterWarningCenterGrid extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
+        ViewHolder holder;
         if(convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.item_main_warning_center_grid, null);
-            holder.iv = (ImageView) convertView.findViewById(R.id.iv);
+            holder.iv = convertView.findViewById(R.id.iv);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

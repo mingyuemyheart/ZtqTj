@@ -19,9 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 台风列表数据适配器
- * @author E.Sun
- * 2015年9月8日
+ * 监测预报-台风路径
  */
 @SuppressLint("InflateParams")
 public class AdapterTyphoonList extends BaseAdapter {

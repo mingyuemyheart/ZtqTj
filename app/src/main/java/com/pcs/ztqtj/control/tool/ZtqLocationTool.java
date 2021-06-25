@@ -34,8 +34,6 @@ import java.util.Map;
 
 /**
  * 定位工具类
- *
- * @author JiangZy
  */
 public class ZtqLocationTool {
     private static ZtqLocationTool instance = null;
@@ -170,24 +168,20 @@ public class ZtqLocationTool {
 
     /**
      * 设置是否自动定位
-     *
      * @param b
      */
     public void setIsAutoLocation(boolean b) {
         PackLocalLocationSet packSet = new PackLocalLocationSet();
         packSet.isAutoLocation = b;
-
         PcsDataManager.getInstance().saveLocalData(PackLocalLocationSet.KEY, packSet);
     }
 
     /**
      * 获取是否自动定位
-     *
      * @return
      */
     public boolean getIsAutoLocation() {
-        PackLocalLocationSet packSet = (PackLocalLocationSet) PcsDataManager.getInstance().getLocalPack
-                (PackLocalLocationSet.KEY);
+        PackLocalLocationSet packSet = (PackLocalLocationSet) PcsDataManager.getInstance().getLocalPack(PackLocalLocationSet.KEY);
         if (packSet == null) {
             packSet = new PackLocalLocationSet();
             PcsDataManager.getInstance().saveLocalData(PackLocalLocationSet.KEY, packSet);
@@ -253,12 +247,9 @@ public class ZtqLocationTool {
 
     /**
      * 刷新定位城市信息
-     *
      * @param refreshMain 强制刷新首页？
      */
     public void refreshLocationCity(boolean refreshMain) {
-
-        Log.e("jzy", "refreshLocationCity");
         String province = "";
         String city = "";
         String district = "";

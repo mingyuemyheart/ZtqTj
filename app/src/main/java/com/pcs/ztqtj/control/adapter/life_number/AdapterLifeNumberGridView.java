@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 生活指数GridView
- * @author JiangZy
+ * 首页-生活指数
  */
 public class AdapterLifeNumberGridView extends BaseAdapter {
+
     private Activity activity;
     private ImageFetcher mImageFetcher;
-    private List<LifeNumber> localNum = new ArrayList<>();
+    private List<LifeNumber> localNum;
 
     public AdapterLifeNumberGridView(Activity activity, ImageFetcher mImageFetcher, List<LifeNumber> localNum) {
         this.localNum = localNum;

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 首页天气第2行（一周天气） -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@drawable/bg_home_week"
-              android:descendantFocusability="blocksDescendants"
-              android:orientation="vertical"
-              android:paddingBottom="@dimen/activity_marginleft_right"
-              android:paddingTop="@dimen/dimen5">
-
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_home_week"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dimen5"
+    android:paddingBottom="@dimen/activity_marginleft_right">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,8 +18,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/text_title"
@@ -28,27 +26,26 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:textColor="@color/text_main_blue"
-                android:textSize="@dimen/text_content"/>
+                android:textSize="@dimen/text_content" />
 
             <TextView
                 android:id="@+id/text_Calander"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="3dp"
                 android:layout_marginLeft="@dimen/dimen5"
+                android:layout_marginBottom="3dp"
                 android:background="@drawable/ico_calender_image"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content"/>
+                android:textSize="@dimen/text_content" />
             <!--android:text="@string/calander_click"-->
         </RelativeLayout>
-
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/dimen5"
-            android:background="@drawable/white_background"/>
+            android:background="@drawable/white_background" />
 
         <!--<TextView-->
         <!--android:layout_width="wrap_content"-->
@@ -74,11 +71,9 @@
             android:lineSpacingMultiplier="1.2"
             android:singleLine="false"
             android:textColor="@color/text_white"
-            android:textSize="@dimen/text_content"
-            />
+            android:textSize="@dimen/text_content" />
 
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -103,7 +98,7 @@
                 android:gravity="center"
                 android:text="逐日预报"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content"/>
+                android:textSize="@dimen/text_content" />
             <!--       android:drawableLeft="@drawable/radio_24_hours"-->
             <RadioButton
                 android:id="@+id/main_24hour"
@@ -115,9 +110,8 @@
                 android:gravity="center"
                 android:text="逐时预报"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content"/>
+                android:textSize="@dimen/text_content" />
         </RadioGroup>
-
 
         <LinearLayout
             android:id="@+id/lay_week_title"
@@ -129,13 +123,13 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/white_alpha20"/>
+                android:background="@color/white_alpha20" />
 
             <LinearLayout
-                android:layout_marginBottom="@dimen/activity_margintop"
-                android:layout_marginTop="@dimen/activity_margintop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_margintop"
+                android:layout_marginBottom="@dimen/activity_margintop"
                 android:orientation="vertical">
                 <!-- 标题 -->
 
@@ -145,14 +139,14 @@
                     android:layout_marginLeft="@dimen/activity_marginleft_right"
                     android:text="逐日预报"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_content"/>
+                    android:textSize="@dimen/text_content" />
 
             </LinearLayout>
             <!-- 分割线 -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/white_alpha20"/>
+                android:background="@color/white_alpha20" />
 
         </LinearLayout>
 
@@ -173,7 +167,7 @@
                 android:id="@+id/tempertureview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/weekviewhight"
-                android:layout_marginTop="@dimen/weektophight"/>
+                android:layout_marginTop="@dimen/weektophight" />
 
             <com.pcs.ztqtj.view.myview.MyGridView
                 android:id="@+id/maingridview"
@@ -182,7 +176,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:listSelector="@android:color/transparent"
-                android:numColumns="7"/>
+                android:numColumns="7" />
         </RelativeLayout>
     </com.pcs.ztqtj.view.myview.MyHScrollView>
 
@@ -202,13 +196,13 @@
                 android:id="@+id/gridview24hour"
                 android:layout_width="1200dp"
                 android:layout_height="wrap_content"
-                android:listSelector="@android:color/transparent"/>
+                android:listSelector="@android:color/transparent" />
 
             <com.pcs.ztqtj.view.myview.Hour24View
                 android:id="@+id/main24hour"
                 android:layout_width="1200dp"
                 android:layout_height="@dimen/hight24hour"
-                android:layout_marginTop="@dimen/hight24tophight"/>
+                android:layout_marginTop="@dimen/hight24tophight" />
 
             <TextView
                 android:id="@+id/not_time_data"
@@ -219,9 +213,8 @@
                 android:text="暂无数据"
                 android:textColor="@color/text_white"
                 android:textSize="@dimen/text_content"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </RelativeLayout>
     </com.pcs.ztqtj.view.myview.MyHScrollView>
-
 
 </LinearLayout>

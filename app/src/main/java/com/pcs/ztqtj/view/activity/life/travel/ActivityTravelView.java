@@ -20,13 +20,9 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalTravelViewInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelWeatherColumnDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackTravelWeatherColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.TravelWeatherColumn;
 import com.pcs.lib_ztqfj_v2.model.pack.net.TravelWeatherSubject;
 import com.pcs.lib_ztqfj_v2.model.pack.net.hot_tourist_spot.HotTouristSpot;
@@ -70,22 +66,18 @@ import okhttp3.Response;
 public class ActivityTravelView extends FragmentActivitySZYBBase implements OnClickListener {
 
     private ListView listview;
-    private List<PackTravelWeekDown> listCityInfo = new ArrayList<PackTravelWeekDown>();
-    private ArrayList<HotTouristSpot> touristSoptList = new ArrayList<HotTouristSpot>();
+    private List<PackTravelWeekDown> listCityInfo = new ArrayList<>();
+    private ArrayList<HotTouristSpot> touristSoptList = new ArrayList<>();
     private int defaultCityItem = 0;
-    private MyReceiver receiver = new MyReceiver();
     private AdapterTravelCity adapter;
     private GridView travel_gridview;
     private PackTouristSpotDown touristSpotDown = new PackTouristSpotDown();
     private AdapterTravelFragement travelAdapter;
     private LeadPoint pointlayout;
     private AdapterTravelViewPager adapterPager = null;
-    private List<TravelWeatherColumn> columnList = new ArrayList<TravelWeatherColumn>();
-    private PackTravelWeatherColumnDown packColumnDown = new PackTravelWeatherColumnDown();
-    private PackTravelWeatherColumnUp packColumnUp = new PackTravelWeatherColumnUp();
+    private List<TravelWeatherColumn> columnList = new ArrayList<>();
     private LinearLayout llSubject = null;
     private TextView tvBookmark = null;
-    private boolean flag = false;
     private EditText ss_alertedittext;
     /**
      * 顶部图片导航
@@ -103,16 +95,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
         initView();
         initEvent();
         initData();
-
-//        setBtnRight(R.drawable.btn_search_nor, new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(ActivityTravelView.this,
-//                        ActivitySelectTravelViewList.class);
-//                startActivityForResult(intent,
-//                        MyConfigure.RESULT_GOTO_TRAVEDETAIL);
-//            }
-//        });
     }
 
     @Override
@@ -132,20 +114,15 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
 
     private void initEvent() {
         listview.setOnItemClickListener(new OnItemClickListener() {
-
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                intentNextActivity(listCityInfo.get(position).cityId,
-                        listCityInfo.get(position).cityName);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                intentNextActivity(listCityInfo.get(position).cityId, listCityInfo.get(position).cityName);
             }
         });
         travel_gridview.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                intentNextActivity(touristSoptList.get(position).getId(),
-                        touristSoptList.get(position).getName());
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                intentNextActivity(touristSoptList.get(position).getId(), touristSoptList.get(position).getName());
             }
         });
         tvBookmark.setOnClickListener(this);
@@ -167,11 +144,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
     }
 
     private void initData() {
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         getDefluatData();
 
         adapter = new AdapterTravelCity(this, listCityInfo, defaultCityItem, btnClickListener, getImageFetcher());
@@ -279,7 +251,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
                 case MyConfigure.RESULT_GOTO_TRAVEDETAIL: {
                     PackLocalCity cityinfo = (PackLocalCity) data.getSerializableExtra("cityinfo");
                     addcityinfo(cityinfo);
-                    flag = true;
                     break;
                 }
             }
@@ -295,7 +266,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
 
     /**
      * 向列表中添加城市并刷新
-     *
      * @param cityInfo
      */
     private void addcityinfo(PackLocalCity cityInfo) {
@@ -329,8 +299,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
         @Override
         public void itemOnclick(int item) {
             listCityInfo.remove(item);
-            PackLocalTravelViewInfo localcitylist = ZtqCityDB.getInstance()
-                    .getCurrentTravelViewInfo();
+            PackLocalTravelViewInfo localcitylist = ZtqCityDB.getInstance().getCurrentTravelViewInfo();
             localcitylist.localViewList.remove(item);
             localcitylist.defaultPosition = defaultCityItem;
             ZtqCityDB.getInstance().setCurrentTravelViewInfo(localcitylist);
@@ -340,7 +309,6 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
 
     /**
      * 添加城市信息
-     *
      * @param pack
      */
     private void addCityInfoToListView(PackTravelWeekDown pack) {
@@ -356,12 +324,10 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
 
     /**
      * 保存城市
-     *
      * @param cityinfo
      */
     private void saveLocalTravelViewInfo(PackLocalCity cityinfo) {
-        PackLocalTravelViewInfo localcitylist = ZtqCityDB.getInstance()
-                .getCurrentTravelViewInfo();
+        PackLocalTravelViewInfo localcitylist = ZtqCityDB.getInstance().getCurrentTravelViewInfo();
         for (int i = 0; i < localcitylist.localViewList.size(); i++) {
             if (localcitylist.localViewList.get(i).ID.equals(cityinfo.ID)) {
                 return;
@@ -377,68 +343,80 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
         ZtqCityDB.getInstance().setCurrentTravelViewInfo(localcitylist);
     }
 
-    private void okHttpBanner() {
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
-        packColumnUp = new PackTravelWeatherColumnUp();
-        packColumnUp.type = "1";
-        PcsDataDownload.addDownload(packColumnUp);
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_bookmark:
-                Intent intent = new Intent(this, ActivityTravelBookmark.class);
-                startActivity(intent);
+                startActivity(new Intent(this, ActivityTravelBookmark.class));
                 break;
         }
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            dismissProgressDialog();
-            if (name.indexOf("weeklytq") != -1) {
-                if (flag) {
-                    PackTravelWeekDown down = (PackTravelWeekDown) PcsDataManager.getInstance().getNetPack(name);
-                    if (down == null) {
-                        return;
-                    }
-                    down.cityId = name.substring(name.indexOf("#") + 1,
-                            name.indexOf("_"));
-                    down.cityName = name.substring(name.indexOf("_") + 1);
-
-                    intentNextActivity(down.cityId, down.cityName);
-                    flag = false;
+    private void okHttpBanner() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"tour_wt_column";
+                    Log.e("tour_wt_column", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    Log.e("tour_wt_column", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("tour_wt_column")) {
+                                                    JSONObject listobj = bobj.getJSONObject("tour_wt_column");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        PackTravelWeatherColumnDown packColumnDown = new PackTravelWeatherColumnDown();
+                                                        packColumnDown.fillData(listobj.toString());
+                                                        columnList = packColumnDown.column_list;
+                                                        if (columnList != null && columnList.size() > 0) {
+                                                            addSubjectToLayout(columnList.get(0).subject_list);
+                                                        }
+                                                        initBanner();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-            if (name.equals(packColumnUp.getName())) {
-                packColumnDown = (PackTravelWeatherColumnDown) PcsDataManager.getInstance().getNetPack(name);
-                if (packColumnDown == null) {
-                    return;
-                }
-                columnList = packColumnDown.column_list;
-                if (columnList != null && columnList.size() > 0) {
-                    addSubjectToLayout(columnList.get(0).subject_list);
-                }
-                initBanner();
-            }
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.unregisterReceiver(receiver);
+        }).start();
     }
 
     /**
      * 获取旅游城市列表
      */
     private void okHttpLyCityList() {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -462,8 +440,9 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
+                                    Log.e("ly_city_list", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("ly_city_list", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -501,6 +480,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
      * 获取默认景点信息
      */
     private void okHttpLyHjjc(final String stationId) {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -527,6 +507,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     Log.e("ly_hjjc", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
@@ -588,6 +569,7 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     Log.e("weeklytq", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {

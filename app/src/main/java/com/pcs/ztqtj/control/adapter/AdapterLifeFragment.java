@@ -19,11 +19,9 @@ import com.pcs.ztqtj.view.activity.product.media.ActivityMediaList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
- * Created by tyaathome on 2017/9/21.
+ * 生活气象
  */
-
 public class AdapterLifeFragment extends RecyclerView.Adapter<AdapterLifeFragment.ViewHolder> {
 
     private Context context;
@@ -36,8 +34,7 @@ public class AdapterLifeFragment extends RecyclerView.Adapter<AdapterLifeFragmen
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.live_gridview_item, parent,
-                false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.live_gridview_item, parent,false));
     }
 
     @Override
@@ -49,52 +46,45 @@ public class AdapterLifeFragment extends RecyclerView.Adapter<AdapterLifeFragmen
             public void onClick(View view) {
                 Intent intent = new Intent();
                 switch (position) {
-                    // <!-- 气象生活 栏目顺序 0、旅游气象；1、气象影视;2、天气新闻；3、专家解读 ;4、灾害防御;5、气象科普.
-                    // -->
-                    case 3:
-                        //气象生活
-                        intent.setClass(context, ActivityExpertList.class);
-                        context.startActivity(intent);
-                        break;
                     case 0:
                         // 旅游气象
                         intent.setClass(context, ActivityTravelView.class);
                         context.startActivity(intent);
-
                         break;
                     case 1:
                         // 气象影视
-//					intent.setClass(context, ActivityFamilyCity.class);
                         intent.setClass(context, ActivityMediaList.class);
                         context.startActivity(intent);
-
                         break;
                     case 2:
+                        //天气新闻
                         intent.setClass(context, ActivityChannelList.class);
                         intent.putExtra("title", "天气新闻");
                         intent.putExtra("channel_id", "100005");
                         context.startActivity(intent);
-//                        intent.setClass(context, ActivityExpertList.class);
-//                        context.startActivity(intent);
+                        break;
+                    case 3:
+                        //专家解读
+                        intent.setClass(context, ActivityExpertList.class);
+                        context.startActivity(intent);
                         break;
                     case 4:
-//					灾害防御
+					    //灾害防御
                         intent.setClass(context, ActivityChannelList.class);
                         intent.putExtra("title", "灾害防御");
                         intent.putExtra("channel_id", "100007");
+                        intent.putExtra("interfaceUrl", "zhfy");
                         context.startActivity(intent);
                         break;
                     case 5:
                         // 气象科普
                         intent.setClass(context, ActivityMeteorologicalScience.class);
                         context.startActivity(intent);
-
                         break;
                 }
             }
         });
     }
-
 
     @Override
     public int getItemCount() {

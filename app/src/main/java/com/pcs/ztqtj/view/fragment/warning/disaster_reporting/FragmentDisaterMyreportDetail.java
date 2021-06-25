@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +28,37 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjMyReportDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoFullDetail;
 
-/**
- * Created by Administrator on 2017/8/2 0002.
- * chen_jx
- */
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+/**
+ * 首页-预警中心-灾害直报-我的预报-详情
+ */
 public class FragmentDisaterMyreportDetail extends Fragment implements View.OnClickListener {
 
     private TextView tv_close, tv_share;
@@ -47,14 +66,13 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
     private TextView tv_detail_voice, tv_detail_pic, tv_detail_video;
     private TextView tv_detail_address, tv_detail_time, tv_detail_title, tv_detail_type, tv_detail_content;
     private ProgressDialog mProgress;
-    private String id = "", type = "";
+    private String id = "", user_id, type = "";
     private String pic_url, voi_url, vid_url, tub_url;
     private View view;
     private ScrollView scroll;
     private LinearLayout lay_main_detail;
     private static FragmentDisaterMyreportDetail instance;
     private LinearLayout lay_fujian01,lay_fujian02,lay_fujian03,lay_fujian,lay_fujian_content;
-
 
     public static FragmentDisaterMyreportDetail getInstance() {
         if (instance == null) {
@@ -71,7 +89,8 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 
     public void updateFragment(String id) {
         this.id = id;
-        Check_Info();
+        user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        okHttpReportDetail();
     }
 
     @Nullable
@@ -86,8 +105,7 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initView();
-        //showProgressDialog();
-        Check_Info();
+        okHttpReportDetail();
     }
 
     private void initView() {
@@ -134,8 +152,8 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
                 clickShare();
                 break;
             case R.id.iv_detail_video:
-                if (!TextUtils.isEmpty(vid_url)) {
-                    Uri uri = Uri.parse(vid_url);
+                if (!TextUtils.isEmpty(vid_url) && !TextUtils.equals(vid_url, "null")) {
+                    Uri uri = Uri.parse(getString(R.string.msyb)+"/"+vid_url);
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setDataAndType(uri, "video/mp4");
                     startActivity(intent);
@@ -144,18 +162,18 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
                 }
                 break;
             case R.id.iv_detail_pic:
-                if (!TextUtils.isEmpty(pic_url)) {
+                if (!TextUtils.isEmpty(pic_url) && !TextUtils.equals(pic_url, "null")) {
                     Intent intent = new Intent(getActivity(), ActivityPhotoFullDetail.class);
-                    intent.putExtra("url", pic_url);
+                    intent.putExtra("url", getString(R.string.msyb)+"/"+pic_url);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getActivity(), "暂无现场图片", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.iv_detail_voice:
-                if (!TextUtils.isEmpty(voi_url)) {
+                if (!TextUtils.isEmpty(voi_url) && !TextUtils.equals(voi_url, "null")) {
                     Intent it = new Intent(Intent.ACTION_VIEW);
-                    it.setDataAndType(Uri.parse(voi_url), "audio/MP3");
+                    it.setDataAndType(Uri.parse(getString(R.string.msyb)+"/"+voi_url), "audio/MP3");
                     startActivity(it);
                 } else {
                     Toast.makeText(getActivity(), "暂无现场录音", Toast.LENGTH_SHORT).show();
@@ -167,16 +185,6 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private PackYjZqInfoUp packYjZqInfoUp = new PackYjZqInfoUp();
-
-    public void Check_Info() {
-        packYjZqInfoUp.id = id;
-        PcsDataDownload.addDownload(packYjZqInfoUp);
-        PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
-        //下载
-        PcsDataDownload.addDownload(packYjZqInfoUp);
     }
 
     //点击分享
@@ -220,31 +228,6 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
         });
     }
 
-
-
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (TextUtils.isEmpty(nameStr)) {
-                return;
-            }
-            if (nameStr.equals(packYjZqInfoUp.getName())) {
-                //等待框
-                dismissProgressDialog();
-                PackYjZqInfoDown packDown = (PackYjZqInfoDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDown == null) {
-                    PcsDataDownload.addDownload(packYjZqInfoUp);
-                    return;
-                }
-                PcsDataBrocastReceiver.unregisterReceiver(getActivity(), mReceiver);
-                if (packDown.yjZqInfo != null) {
-                    initView_Refresh(packDown.yjZqInfo);
-                }
-            }
-
-        }
-    };
-
     public void initView_Refresh(YjZqInfo yjZqInfo) {
         SetTop();
         tv_detail_address.setText(yjZqInfo.zq_addr);
@@ -265,16 +248,16 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
             lay_fujian.setVisibility(View.VISIBLE);
         }
 
-        if (!TextUtils.isEmpty(pic_url)) {
+        if (!TextUtils.isEmpty(pic_url) && !TextUtils.equals(pic_url, "null")) {
             lay_fujian01.setVisibility(View.VISIBLE);
-            getImageFetcher().loadImage(pic_url, iv_detail_pic, ImageConstant.ImageShowType.SRC);
+            getImageFetcher().loadImage(getString(R.string.msyb)+"/"+pic_url, iv_detail_pic, ImageConstant.ImageShowType.SRC);
         } else {
             lay_fujian01.setVisibility(View.GONE);
 //            iv_detail_pic.setImageResource(R.drawable
 //                    .btn_disaster_pic);
         }
 
-        if (!TextUtils.isEmpty(voi_url)) {
+        if (!TextUtils.isEmpty(voi_url)  && !TextUtils.equals(voi_url, "null")) {
             lay_fujian02.setVisibility(View.VISIBLE);
             iv_detail_voice.setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable
                     .recordresource));
@@ -284,9 +267,9 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 //                    .btn_disaster_voice));
         }
 
-        if (!TextUtils.isEmpty(vid_url)) {
+        if (!TextUtils.isEmpty(vid_url)  && !TextUtils.equals(vid_url, "null")) {
             lay_fujian03.setVisibility(View.VISIBLE);
-            getImageFetcher().loadImage(tub_url, iv_detail_video, ImageConstant.ImageShowType.SRC);
+            getImageFetcher().loadImage(getString(R.string.msyb)+"/"+tub_url, iv_detail_video, ImageConstant.ImageShowType.SRC);
             iv_paly_video.setVisibility(View.VISIBLE);
         } else {
             lay_fujian03.setVisibility(View.GONE);
@@ -364,7 +347,6 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 
 
     public void changeFragment() {
-
         if (mCurrentFragment != null) {
             getFragmentManager().beginTransaction()
                     .hide(FragmentDisaterMyreportDetail.getInstance())
@@ -376,4 +358,70 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
                     .commit();
         }
     }
+
+    /**
+     * 获取我的报告详情
+     */
+    private void okHttpReportDetail() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("user_id", user_id);
+                    info.put("reportId", id);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("disasterDetailById", json);
+                    final String url = CONST.BASE_URL+"alarm/disasterDetailById";
+                    Log.e("disasterDetailById", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("disasterDetailById", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yj_zq_info")) {
+                                                    JSONObject itemObj = bobj.getJSONObject("yj_zq_info");
+                                                    if (!TextUtil.isEmpty(itemObj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackYjZqInfoDown packDown = new PackYjZqInfoDown();
+                                                        packDown.fillData(itemObj.toString());
+                                                        if (packDown.yjZqInfo != null) {
+                                                            initView_Refresh(packDown.yjZqInfo);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

@@ -29,6 +29,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtLdDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtLdUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxFbtUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.image.ImageLoadFromUrl;
 import com.pcs.ztqtj.control.tool.image.ImageMultipleLoadFromUrl;
@@ -49,7 +50,10 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.pcs.ztqtj.control.livequery.ControlDistribution.ColumnCategory.RAIN;
@@ -63,10 +67,8 @@ import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionSt
 import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionStatus.ZD;
 
 /**
- * 色斑图控制器
- * Created by tyaathome on 2017/6/4.
+ * 监测预报-实况查询-要素分布图-色斑图操作控制器-下一级
  */
-
 public class ControlDistributionDetail {
 
     private FragmentDistributionMap mFragment;
@@ -125,7 +127,7 @@ public class ControlDistributionDetail {
         cbDb = rootLayout.findViewById(R.id.rb_db);
         cbRadar = (CheckBox) rootLayout.findViewById(R.id.rb_radar);
         cbCloud = (CheckBox) rootLayout.findViewById(R.id.rb_cloud);
-        PcsDataBrocastReceiver.registerReceiver(activity, receiver);
+//        PcsDataBrocastReceiver.registerReceiver(activity, receiver);
     }
 
     /**
@@ -148,6 +150,7 @@ public class ControlDistributionDetail {
         }
 
         String url = mContext.getString(R.string.file_download_url)+down.img_url;
+        Log.e("sebantu", url);
         boolean isP = false;
         if(currentSiteInfo.name.equals("全国")) {
             isP = true;
@@ -165,7 +168,7 @@ public class ControlDistributionDetail {
     private void addMultiplePolygonToMap(final ControlDistribution.DistributionStatus status, final PackFycxFbtLdDown down) {
         List<String> urlList = new ArrayList<>();
         for(int i = 0; i < down.info_list.size(); i++) {
-            String url = down.info_list.get(i).img_url;
+            String url = mContext.getString(R.string.file_download_url)+down.info_list.get(i).img_url;
             urlList.add(url);
         }
         boolean isP = false;
@@ -425,8 +428,6 @@ public class ControlDistributionDetail {
     };
 
     ImageMultipleLoadFromUrl.OnMultipleCompleteListener onMultipleCompleteListener = new ImageMultipleLoadFromUrl.OnMultipleCompleteListener() {
-
-
         @Override
         public void onComplete(List<Bitmap> bitmapList, Object... object) {
             if(bitmapList == null || bitmapList.size() == 0 || object.length != 3) {
@@ -628,10 +629,8 @@ public class ControlDistributionDetail {
      * @param column
      * @param status
      */
-    public void reqDistribution(ControlDistribution.ColumnCategory column,
-                                final ControlDistribution.DistributionStatus status,
-                                ColumnInfo siteInfo,
-                                ColumnInfo flagInfo) {
+    public void reqDistribution(ControlDistribution.ColumnCategory column, final ControlDistribution.DistributionStatus status,
+                                ColumnInfo siteInfo, ColumnInfo flagInfo) {
         currentColumn = column;
         currentStatus = status;
         currentSiteInfo = siteInfo;
@@ -668,11 +667,14 @@ public class ControlDistributionDetail {
         if(status == SB || status == ZD || status == DB || status == GJ) {
             switch (status) {
                 case SB: // 色斑
-                    name = "fycx_fbt_img";
                     if (column == WIND) {
+                        name = "fycx_fbt_station";
                         img_type = PackFycxFbtUp.ZD;
+                        img_type = "10103020403";
                     } else {
+                        name = "fycx_fbt_img";
                         img_type = PackFycxFbtUp.SB;
+                        img_type = "10103020401";
                     }
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
@@ -680,18 +682,21 @@ public class ControlDistributionDetail {
                 case ZD: // 自动站
                     name = "fycx_fbt_station";
                     img_type = PackFycxFbtUp.ZD;
+                    img_type = "10103020404";
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case DB: // 代表站
                     name = "fycx_fbt_station";
                     img_type = PackFycxFbtUp.DB;
+                    img_type = "10103020403";
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case GJ: // 国家站
                     name = "fycx_fbt_station";
                     img_type = PackFycxFbtUp.GJ;
+                    img_type = "10103020402";
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
@@ -703,103 +708,35 @@ public class ControlDistributionDetail {
             fycxFbtUp.img_type = img_type;
             fycxFbtUp.falg = flag;
             fycxFbtUp.area_id = area_id;
-            //PcsDataDownload.addDownload(fycxFbtUp);
-            okHttpChart(name, status);
+            okHttpFycxFbt(name,fycxFbtUp, status);
         } else {
             switch (status) {
                 case RADAR: // 雷达
                     img_type = PackFycxFbtUp.RADAR;
+                    img_type = "10103020405";
                     area_id = siteInfo.type;
                     break;
                 case CLOUD: // 云图
                     img_type = PackFycxFbtUp.CLOUD;
+                    img_type = "10103020406";
                     area_id = "25169";
                     break;
                 case NONE:
                     return;
             }
-            fycxFbtLdUp = new PackFycxFbtLdUp();
-            fycxFbtLdUp.area_id = area_id;
-            fycxFbtLdUp.img_type = img_type;
-            fycxFbtLdUp.type = type;
-            PcsDataDownload.addDownload(fycxFbtLdUp);
-        }
-    }
+//            fycxFbtLdUp = new PackFycxFbtLdUp();
+//            fycxFbtLdUp.area_id = area_id;
+//            fycxFbtLdUp.img_type = img_type;
+//            fycxFbtLdUp.type = type;
+//            PcsDataDownload.addDownload(fycxFbtLdUp);
 
-    /**
-     * 获取色斑图数据
-     */
-    private void okHttpChart(final String name, final ControlDistribution.DistributionStatus status) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e(name, url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("fycx_fbt")) {
-                                                JSONObject fycx_fbt = bobj.getJSONObject("fycx_fbt");
-                                                if (!TextUtil.isEmpty(fycx_fbt.toString())) {
-                                                    PackFycxFbtDown fbtDown = new PackFycxFbtDown();
-                                                    fbtDown.fillData(fycx_fbt.toString());
-                                                    switch (status) {
-                                                        case SB: {
-                                                            if (cbSb.isChecked()) {
-                                                                if (currentColumn == WIND) {
-                                                                    addWindMarkersToMap(fbtDown);
-                                                                } else {
-                                                                    addPolygonToMap(SB, fbtDown);
-                                                                }
-                                                            }
-                                                        }
-                                                        break;
-                                                        case ZD: {
-                                                            if(cbZd.isChecked()) {
-                                                                addMarkersToMap(fbtDown);
-                                                            }
-                                                        }
-                                                        break;
-                                                        case DB: {
-                                                            if(cbDb.isChecked()) {
-                                                                addMarkersToMap(fbtDown);
-                                                            }
-                                                        }
-                                                        case GJ: {
-                                                            if(cbGj.isChecked()) {
-                                                                addMarkersToMap(fbtDown);
-                                                            }
-                                                        }
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
+            PackFycxFbtUp fycxFbtUp = new PackFycxFbtUp();
+            fycxFbtUp.type = type;
+            fycxFbtUp.img_type = img_type;
+            fycxFbtUp.falg = flag;
+            fycxFbtUp.area_id = area_id;
+            okHttpFycxFbt(name,fycxFbtUp, status);
+        }
     }
 
     public interface MultiplePictureCallBack {
@@ -810,53 +747,6 @@ public class ControlDistributionDetail {
 
         @Override
         public void onReceive(String nameStr, String errorStr) {
-//            if (nameStr.equals(fycxFbtUp.getName())) {
-//                PackFycxFbtDown down = (PackFycxFbtDown) PcsDataManager.getInstance().getNetPack(nameStr);
-//                if (down == null) {
-//                    mActivity.dismissProgressDialog();
-//                    //mActivity.showToast("无数据！");
-//                    return;
-//                }
-//                ControlDistribution.DistributionStatus status = NONE;
-//                if(cbSb.isChecked()) {
-//                    status = SB;
-//                } else if(cbZd.isChecked()) {
-//                    status = ZD;
-//                }
-//                switch (status) {
-//                    case SB: {// 色斑
-//                        if(currentColumn == WIND) {
-//                            addWindMarkersToMap(down);
-//                        } else {
-//                            addPolygonToMap(SB, down);
-//                        }
-//                        break;
-//                    }
-//                    case ZD: {// 自动站
-//                        addMarkersToMap(down);
-//                        break;
-//                    }
-////                    case RADAR: {
-////                        addPolygonToMap(RADAR, down);
-////                        break;
-////                    }
-////                    case CLOUD: {
-////                        addPolygonToMap(CLOUD, down);
-////                        break;
-////                    }
-//                }
-//                if(cbSb.isChecked()) {
-//                    if (currentColumn == WIND) {
-//                        addWindMarkersToMap(down);
-//                    } else {
-//                        addPolygonToMap(SB, down);
-//                    }
-//                }
-//                if(cbZd.isChecked()) {
-//                    addMarkersToMap(down);
-//                }
-//                mActivity.dismissProgressDialog();
-//            }
             if (nameStr.equals(fycxFbtLdUp.getName())) {
                 PackFycxFbtLdDown down = (PackFycxFbtLdDown) PcsDataManager.getInstance().getNetPack(nameStr);
                 if(down == null) {
@@ -868,4 +758,97 @@ public class ControlDistributionDetail {
             }
         }
     };
+
+    /**
+     * 获取站点数据，包括色斑图和打点
+     */
+    private void okHttpFycxFbt(final String name, final PackFycxFbtUp fycxFbtUp, final ControlDistribution.DistributionStatus status) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", fycxFbtUp.type);//10(雨量),12(风况),11(气温),13(能见度),14(气压),17(相对湿度)
+                    info.put("area", fycxFbtUp.area_id);//例如:china/101030100，右上下拉框
+                    info.put("type", fycxFbtUp.falg);//数据范围
+                    info.put("limit", fycxFbtUp.img_type);//色斑图10103020401，国家站10103020402，代表站10103020403，自动站10103020404，雷达10103020405，台风10103020406
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e(name, json);
+                    final String url = CONST.BASE_URL+name;
+                    Log.e(name, url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e(name, result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("fycx_fbt")) {
+                                                    JSONObject fycx_fbt = bobj.getJSONObject("fycx_fbt");
+                                                    if (!TextUtil.isEmpty(fycx_fbt.toString())) {
+                                                        PackFycxFbtDown fbtDown = new PackFycxFbtDown();
+                                                        fbtDown.fillData(fycx_fbt.toString());
+                                                        switch (status) {
+                                                            case SB: {
+                                                                if (cbSb.isChecked()) {
+                                                                    if (currentColumn == WIND) {
+                                                                        addWindMarkersToMap(fbtDown);
+                                                                    } else {
+                                                                        addPolygonToMap(SB, fbtDown);
+                                                                    }
+                                                                }
+                                                            }
+                                                            break;
+                                                            case ZD: {
+                                                                if(cbZd.isChecked()) {
+                                                                    addMarkersToMap(fbtDown);
+                                                                }
+                                                            }
+                                                            break;
+                                                            case DB: {
+                                                                if(cbDb.isChecked()) {
+                                                                    addMarkersToMap(fbtDown);
+                                                                }
+                                                            }
+                                                            case GJ: {
+                                                                if(cbGj.isChecked()) {
+                                                                    addMarkersToMap(fbtDown);
+                                                                }
+                                                            }
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

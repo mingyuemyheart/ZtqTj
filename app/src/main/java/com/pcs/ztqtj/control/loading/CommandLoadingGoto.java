@@ -20,11 +20,10 @@ import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.loading.ActivityLoadingImage;
 
 /**
- * 跳转
- *
- * @author Administrator
+ * 闪屏页-跳转
  */
 public class CommandLoadingGoto extends AbstractCommand {
+
     private Activity mActivity;
     private ImageFetcher mImageFetcher;
 
@@ -36,7 +35,6 @@ public class CommandLoadingGoto extends AbstractCommand {
     @Override
     public void execute() {
         super.execute();
-        Log.e("jzy", "执行CommandLoadingGoto");
         // 数据包：初始化
         PackLocalInit packInit = (PackLocalInit) PcsDataManager.getInstance().getLocalPack(PackLocalInit.KEY);
         String versionCode = getVersionCode();
@@ -79,9 +77,7 @@ public class CommandLoadingGoto extends AbstractCommand {
         if (packImageDown == null) {
             return null;
         }
-        Bitmap bitmap = packImageDown.getBitmap(mActivity.getString(R.string.file_download_url), mImageFetcher);
-
-        return bitmap;
+        return packImageDown.getBitmap(mActivity.getString(R.string.file_download_url), mImageFetcher);
     }
 
     private String getVersionCode() {
@@ -93,7 +89,7 @@ public class CommandLoadingGoto extends AbstractCommand {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
         return str;
     }
+
 }

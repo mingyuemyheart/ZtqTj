@@ -34,10 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JiangZy on 2016/6/3.
- * 7天天气。逐时预报
+ * 首页-逐时预报，逐日预报，弃用
  */
 public class CommandMainRow2 extends CommandMainBase {
+
     private ActivityMain mActivity;
     private ViewGroup mRootLayout;
     private ImageFetcher mImageFetcher;
@@ -71,33 +71,28 @@ public class CommandMainRow2 extends CommandMainBase {
 
 //    private Button btn36Hours;
 
-
     private TextView not_time_data;
 
-    public CommandMainRow2(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher,
-                           InterfaceShowBg showBg) {
+    // 天气内容
+    private GridView gridViewWeek;
+    private TemperatureView tempertureview;
+
+    public CommandMainRow2(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher, InterfaceShowBg showBg) {
         mActivity = (ActivityMain) activity;
         mRootLayout = rootLayout;
         mImageFetcher = imageFetcher;
         mShowBg = showBg;
     }
 
-    // 天气内容
-    private GridView gridViewWeek;
-    private TemperatureView tempertureview;
-
     @Override
     protected void init() {
         mRowView = LayoutInflater.from(mActivity).inflate(R.layout.item_home_weather_2, null);
-        mRowView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        mRowView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mRootLayout.addView(mRowView);
         radio_group_week_24 = (RadioGroup) mRowView.findViewById(R.id.radio_group_week_24);
         layout_week = (MyHScrollView) mRowView.findViewById(R.id.layout_week);
         main24hour = (Hour24View) mRowView.findViewById(R.id.main24hour);
-
         lay_week_title= (LinearLayout) mRowView.findViewById(R.id.lay_week_title);
-
         gridViewWeek = (GridView) mRowView.findViewById(R.id.maingridview);
 //        btn36Hours = (Button) mRowView.findViewById(R.id.main_36hour);
         layout_24house = (MyHScrollView) mRowView.findViewById(R.id.layout_24house);
@@ -121,8 +116,7 @@ public class CommandMainRow2 extends CommandMainBase {
                 }
             }
         });
-        mWeekAdapter = new AdapterWeekGridView(mActivity,
-                mImageFetcher, mShowBg);
+        mWeekAdapter = new AdapterWeekGridView(mActivity, mImageFetcher, mShowBg);
 
 //        main24hour.setOnTouchListener(touchListener);
 //        layout_24house.setOnTouchListener(touchListener);
@@ -220,16 +214,13 @@ public class CommandMainRow2 extends CommandMainBase {
     }
 
     private void reFreshWeek() {
-        // 温度
-
         PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
         if (packCity == null) {
             return;
         }
         packWeekUp.setCity(packCity);
         PackMainWeekWeatherDown packWeekDown = (PackMainWeekWeatherDown) PcsDataManager.getInstance().getNetPack(packWeekUp.getName());
-        if (packWeekDown == null || packWeekDown.getWeek() == null
-                || packWeekDown.getWeek().size() == 0) {
+        if (packWeekDown == null || packWeekDown.getWeek() == null || packWeekDown.getWeek().size() == 0) {
 //            // 清空显示
 //            gridViewWeek.setAdapter(null);
 //            tempertureview.setTemperture(null, null);
@@ -271,7 +262,6 @@ public class CommandMainRow2 extends CommandMainBase {
     }
 
     private int getWeekItemWidth() {
-        int width = (int) (Util.getScreenWidth(mActivity)/7.0f);
-        return width;
+        return (int) (Util.getScreenWidth(mActivity)/7.0f);
     }
 }

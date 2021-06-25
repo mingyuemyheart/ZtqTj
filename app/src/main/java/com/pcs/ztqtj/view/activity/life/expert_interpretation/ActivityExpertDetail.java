@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkDown;
@@ -39,9 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Z on 2016/11/9.
+ * 生活气象-专家解读-详情
  */
-
 public class ActivityExpertDetail extends FragmentActivitySZYBBase {
     @Override
     protected void onDestroy() {
@@ -55,7 +54,6 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
     private TextView textTitle;
     private TextView textTime;
     private String id = "";
-    private int screenWidth = 0;
     private MyListView user_talk;
     private List<PackExpertDetailTalkDown.ItemTalk> talkListData;
 
@@ -134,13 +132,15 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
     private PackExpertDetailTalkCommitUp commitUp;
 
     private void reqData() {
-        showProgressDialog();
-        expertTalkUp = new PackExpertDetailTalkUp();
-        expertTalkUp.id = id;
-        PcsDataDownload.addDownload(expertTalkUp);
-        expertDetailUp = new PackExpertDetailUp();
-        expertDetailUp.id = id;
-        PcsDataDownload.addDownload(expertDetailUp);
+//        showProgressDialog();
+//        expertTalkUp = new PackExpertDetailTalkUp();
+//        expertTalkUp.id = id;
+//        PcsDataDownload.addDownload(expertTalkUp);
+//        expertDetailUp = new PackExpertDetailUp();
+//        expertDetailUp.id = id;
+//        PcsDataDownload.addDownload(expertDetailUp);
+
+        reflushView();
     }
 
     private void commitInfo() {
@@ -199,34 +199,34 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
                 commitInfo();
             }
         });
-        scrollview.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                View childView = scrollview.getChildAt(0);
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        if (isMoveFirstPoint) {
-                            isMoveFirstPoint = false;
-                            firstPoint = event.getY();
-                        }
-                        if (scrollview.getScrollY() == (childView.getHeight() - scrollview.getHeight())) {
-                            //滑动到底部了
-                            isBottom = true;
-                            if (firstPoint - event.getY() > 10) {
-                                getMoreTalk();
-                            }
-//                            showToast("滑动到底部");
-                        } else {
-                            isBottom = false;
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        isMoveFirstPoint = true;
-                        break;
-                }
-                return false;
-            }
-        });
+//        scrollview.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                View childView = scrollview.getChildAt(0);
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_MOVE:
+//                        if (isMoveFirstPoint) {
+//                            isMoveFirstPoint = false;
+//                            firstPoint = event.getY();
+//                        }
+//                        if (scrollview.getScrollY() == (childView.getHeight() - scrollview.getHeight())) {
+//                            //滑动到底部了
+//                            isBottom = true;
+//                            if (firstPoint - event.getY() > 10) {
+//                                getMoreTalk();
+//                            }
+////                            showToast("滑动到底部");
+//                        } else {
+//                            isBottom = false;
+//                        }
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        isMoveFirstPoint = true;
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     private Boolean inGetData = false;
@@ -257,50 +257,41 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
     }
 
     private void reflushView() {
-        dismissProgressDialog();
-        PackExpertDetailDown sharePackDown = (PackExpertDetailDown) PcsDataManager.getInstance().getNetPack(expertDetailUp.getName());
-        if (sharePackDown == null) {
-            return;
+        String title = getIntent().getStringExtra("title");
+        String big_img = getIntent().getStringExtra("big_img");
+        String desc = getIntent().getStringExtra("desc");
+        String release_time = getIntent().getStringExtra("release_time");
+
+        if (!TextUtils.isEmpty(title)) {
+            textTitle.setText(title);
         }
-        screenWidth =bigImageView.getWidth();
-        if (TextUtils.isEmpty(sharePackDown.big_img) || "null".equals(sharePackDown.big_img)) {
+
+        String txt = "暂无数据";
+        if (!TextUtils.isEmpty(desc)) {
+            txt = desc;
+        }
+        String str = txt.replace("\r", "\n\r");
+        TextView1.setText(str);
+
+        if (!TextUtils.isEmpty(release_time)) {
+            textTime.setText(release_time);
+        }
+
+        if (TextUtils.isEmpty(big_img) || "null".equals(big_img)) {
             Log.d("info.big_ico", "大图为空");
-//            ImageUtils.getInstance().setBgImage(ActivityExpertDetail.this, bigImageView, screenWidth, R.drawable.no_pic, true);
             bigImageView.setImageResource(R.drawable.no_pic);
         } else {
-            String big_ico = getString(R.string.file_download_url) + sharePackDown.big_img;
+            String big_ico = getString(R.string.msyb) + big_img;
             Bitmap bitmap = null;
             bitmap = mImageLoader.getBitmapFromCache(big_ico);
             if (bitmap != null) {
                 bigImageView.setImageBitmap(bitmap);
             } else {
-                mImageLoader.loadImage(big_ico, ActivityExpertDetail.this, bigImageView, R.drawable.no_pic, screenWidth, true);
+                mImageFetcher.loadImage(big_ico, bigImageView, ImageConstant.ImageShowType.SRC);
             }
-//            mImageFetcher.loadImage(big_ico, bigImageView, ImageConstant.ImageShowType.SRC);
         }
 
-
-        String txt = "暂无数据";
-        if (!TextUtils.isEmpty(sharePackDown.desc)) {
-            txt = sharePackDown.desc;
-        }
-        String str = txt.replace("\r", "\n\r");
-        TextView1.setText(str);
-
-        // 标题
-        txt = "";
-        if (!TextUtils.isEmpty(sharePackDown.title)) {
-            txt = sharePackDown.title;
-        }
-        textTitle.setText(txt);
-        // 时间
-        txt = "";
-        if (!TextUtils.isEmpty(sharePackDown.release_time)) {
-            txt = sharePackDown.release_time;
-        }
-        textTime.setText(txt);
     }
-
 
     private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
         @Override

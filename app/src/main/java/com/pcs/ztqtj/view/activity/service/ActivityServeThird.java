@@ -60,7 +60,7 @@ public class ActivityServeThird extends FragmentActivityZtqWithHelp {
     /**
      * 产品列表
      **/
-    private List<ServiceProductInfo> serviceProductList = new ArrayList<ServiceProductInfo>();
+    private List<ServiceProductInfo> serviceProductList = new ArrayList<>();
 
     /**
      * 传入的每页大小
@@ -80,17 +80,9 @@ public class ActivityServeThird extends FragmentActivityZtqWithHelp {
     private int total_count = 0;
 
     private String area_name = "";
-
     private String title = "";
-
-    private DialogTwoButton myDialog;
-    private TextView messageTextView;
     private DialogTwoButton myDialog2;
     private TextView messageTextView2;
-    private PackLocalUser localUserinfo;
-
-    // 是否跳转详情页
-    private boolean isGotoDetail = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +112,6 @@ public class ActivityServeThird extends FragmentActivityZtqWithHelp {
                     showProgressDialog();
                     serviceProductList.clear();
                     page_num = 1;
-                    isGotoDetail = true;
-                    localUserinfo = ZtqCityDB.getInstance().getMyInfo();
                     okHttpInfoList();
                 }
             }
@@ -135,7 +125,6 @@ public class ActivityServeThird extends FragmentActivityZtqWithHelp {
         area_name = getIntent().getStringExtra("area_name");
         show_warn = getIntent().getBooleanExtra("show_warn", true);
         setTitleText(title);
-        localUserinfo = ZtqCityDB.getInstance().getMyInfo();
         okHttpInfoList();
     }
 
@@ -208,11 +197,6 @@ public class ActivityServeThird extends FragmentActivityZtqWithHelp {
         }
     };
 
-    protected void onStart() {
-        super.onStart();
-        localUserinfo = ZtqCityDB.getInstance().getMyInfo();
-    }
-
     /**
      * 登出当前账号
      */
@@ -241,43 +225,6 @@ public class ActivityServeThird extends FragmentActivityZtqWithHelp {
 
         }
     };
-
-    private void showLoginTipsDialog() {
-
-        if (myDialog == null) {
-            View view = LayoutInflater.from(ActivityServeThird.this).inflate(
-                    R.layout.dialog_message, null);
-            messageTextView = (TextView) view.findViewById(R.id.dialogmessage);
-
-            messageTextView.setText(R.string.text_islogin_tips);
-            myDialog = new DialogTwoButton(ActivityServeThird.this, view, "登录",
-                    "帮助", new DialogListener() {
-                @Override
-                public void click(String str) {
-                    myDialog.dismiss();
-                    if (str.equals("登录")) {
-                        Intent intent = null;
-                        intent = new Intent(ActivityServeThird.this,
-                                AcitvityServeLogin.class);
-                        startActivityForResult(intent,
-                                MyConfigure.RESULT_SERVICE_THREE);
-                    } else if (str.equals("帮助")) {
-                        Intent intent = null;
-                        intent = new Intent(ActivityServeThird.this,
-                                ActivityHelp.class);
-                        startActivityForResult(intent,
-                                MyConfigure.RESULT_SERVICE_THREE);
-                    }
-                }
-            });
-            myDialog.setTitle("天津气象提示");
-            messageTextView.setTextColor(getResources().getColor(
-                    R.color.text_color));
-            myDialog.showCloseBtn();
-        }
-
-        myDialog.show();
-    }
 
     private void showCheckTipsDialog() {
         if (myDialog2 == null) {

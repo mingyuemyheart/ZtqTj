@@ -2,9 +2,11 @@ package com.pcs.ztqtj.view.activity.product.numericalforecast;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,28 +22,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackNumericalForecast.NumberBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown.ForList;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.TitleListBean;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
 import com.pcs.ztqtj.control.inter.DrowListClick;
@@ -57,35 +53,29 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 指导预报
+ * 监测预报-指导预报
  */
 public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements OnClickListener {
+
     private TextView subtitle_tv;
     private TextView spinner_text;
     private TextView n_content;
     private ImageTouchView image_show; // 展示图片
-    private RadioGroup number_radio_group;
-    private PackNumericalForecastUp packup;
-
-    private PackNumericalForecastDown packDown;
-    private MyReceiver receiver = new MyReceiver();
+    private LinearLayout number_radio_group;
     private ScrollView content_scrollview;
     private LinearLayout layoutTime;// 选择小时下拉数据布局--是否要隐藏
-    /**
-     * 头部下拉选项源数据
-     */
-    private List<NumberBean> listLeve2;
 
     /**
      * 显示的数据数据
@@ -107,25 +97,20 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
      * 记录下拉时间选择当前选中的位置
      */
     private int tiemposition = 0;
-    private PackNumericalForecastColumnUp packNumericalForecastColumnUp = new PackNumericalForecastColumnUp();
     private PackNumericalForecastColumnDown packNumericalForecastColumnDown;
-    private List<ForList> forList2 = new ArrayList<ForList>();// 二级目录
+    private List<ForList> forList2 = new ArrayList<>();// 二级目录
     final String TIMEUNIT = "小时";
-
-
     private Button image_share;
     private LinearLayout layout_detail_center;
-
     private WebView webview;
 
+    private int screenwidth, screenHight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numerical_center_pro);
         createImageFetcher();
-        PcsDataBrocastReceiver.registerReceiver(ActivityDetailCenterPro.this,
-                receiver);
         setBtnRight(R.drawable.btn_num_more, new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,12 +120,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         initView();
         initEvent();
         initData();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiver);
     }
 
     /**
@@ -158,7 +137,7 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         spinner_text = (TextView) findViewById(R.id.spinner_text);
         n_content = (TextView) findViewById(R.id.n_content);
         image_show = (ImageTouchView) findViewById(R.id.image_show);
-        number_radio_group = (RadioGroup) findViewById(R.id.number_radio_group);
+        number_radio_group = findViewById(R.id.number_radio_group);
         layoutTime = (LinearLayout) findViewById(R.id.spinner_layout);
         left_right_btn_layout = (LinearLayout) findViewById(R.id.left_right_btn_layout);
         image_share = (Button) findViewById(R.id.image_share);
@@ -193,16 +172,13 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         webview.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress) {
-
                 super.onProgressChanged(view, progress);
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
-
                 super.onReceivedTitle(view, title);
             }
-
         });
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -211,7 +187,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         webSettings.setSupportZoom(true);
         webSettings.setBlockNetworkImage(false);
         webSettings.setLoadWithOverviewMode(true);
-
     }
 
     private void initData() {
@@ -222,11 +197,10 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         String code = intent.getStringExtra("c");
         setTitleText(title);
         // 获取一级code对应的二级列表
-        requestForecastColumn(code);
-        showData = new ArrayList<TitleListBean>();
-        dataeaum = new ArrayList<String>();
-        getserverData(0);
+        okHttpList();
 
+        showData = new ArrayList<>();
+        dataeaum = new ArrayList<>();
         getShareContext();
     }
 
@@ -239,220 +213,21 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         PcsDataDownload.addDownload(aboutShare);
     }
 
-    /**
-     * 请求获取对应的二级列表
-     **/
-    private void requestForecastColumn(String code) {
-        if (packNumericalForecastColumnUp == null) {
-            return;
-        }
-        packNumericalForecastColumnDown = (PackNumericalForecastColumnDown) PcsDataManager.getInstance().getNetPack
-                (packNumericalForecastColumnUp.getName());
-        if (packNumericalForecastColumnDown == null) {
-            return;
-        }
-        for (int i = 0; i < packNumericalForecastColumnDown.forlist.size(); i++) {
-            if (packNumericalForecastColumnDown.forlist.get(i).parent_id
-                    .equals(code)) {
-                forList2.add(packNumericalForecastColumnDown.forlist.get(i));
-            }
-        }
-    }
-
     private void initEvent() {
         spinner_text.setOnClickListener(this);
         image_share.setOnClickListener(this);
         findViewById(R.id.image_left).setOnClickListener(this);
         findViewById(R.id.image_right).setOnClickListener(this);
-        number_radio_group
-                .setOnCheckedChangeListener(new OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        switch (checkedId) {
-                            case R.id.raido_six:
-                                // getserverData(0);
-                                radioButtonSelect(0);
-                                break;
-                            case R.id.raido_tf:
-                                // getserverData(1);
-                                radioButtonSelect(1);
-                                break;
-                        }
-                    }
-                });
     }
 
     private String imageKey = "";
 
     /**
-     * 单选按钮点击选中事件
-     *
-     * @param checkedId
-     */
-    private void radioButtonSelect(int checkedId) {
-        tiemposition=0;
-        if (packDown.lmBeanList != null && packDown.lmBeanList.size() >= 2) {
-            raidolmListId = packDown.lmBeanList.get(checkedId).id;
-        } else {
-            raidolmListId = "";
-        }
-        radioSelectChangeSpinner();
-        changeValue(0);
-    }
-
-    /**
-     * 栏目切换、重新取数据
-     *
-     * @param itemPostion
-     */
-    private void getserverData(int itemPostion) {
-        if (forList2.size() == 0) {
-            return;
-        }
-        subtitle_tv.setText(forList2.get(itemPostion).name);
-        request(forList2.get(itemPostion).id);
-    }
-
-    /**
-     * 请求数据
-     *
-     * @param reqCode
-     */
-    private void request(String reqCode) {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        showProgressDialog();
-        packup = new PackNumericalForecastUp();
-        packup.lm = reqCode;
-        PcsDataDownload.addDownload(packup);
-    }
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (packup != null && name.equals(packup.getName())) {
-                okHttpList(name);
-            } else if (aboutShare != null && aboutShare.getName().equals(name)) {
-                shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(name);
-            }
-        }
-    }
-
-    /**
-     * 获取指导预报数据
-     */
-    private void okHttpList(final String name) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("szyb_new", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("szyb_new")) {
-                                                JSONObject listobj = bobj.getJSONObject("szyb_new");
-                                                if (!TextUtil.isEmpty(listobj.toString())) {
-                                                    dismissProgressDialog();
-                                                    packDown = new PackNumericalForecastDown();
-                                                    packDown.fillData(listobj.toString());
-                                                    if (packDown == null) {
-                                                        return;
-                                                    }
-                                                    dealWidth(packDown);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
-            }
-        }).start();
-    }
-
-    /**
-     * 解析完数据处理
-     */
-    private void dealWidth(PackNumericalForecastDown packDown) {
-        if ("雨量预报".endsWith(subtitle_tv.getText().toString().trim())) {
-            layoutTime.setVisibility(View.VISIBLE);
-            left_right_btn_layout.setVisibility(View.VISIBLE);
-            number_radio_group.setVisibility(View.VISIBLE);
-            number_radio_group.check(R.id.raido_six);
-            if (packDown.lmBeanList != null && packDown.lmBeanList.size() >= 2) {
-                RadioButton rl = (RadioButton) findViewById(R.id.raido_six);
-                RadioButton rr = (RadioButton) findViewById(R.id.raido_tf);
-                rl.setText(packDown.lmBeanList.get(0).name);
-                rr.setText(packDown.lmBeanList.get(1).name);
-                raidolmListId = packDown.lmBeanList.get(0).id;
-            } else {
-                raidolmListId = "";
-            }
-        } else {
-            raidolmListId = "";
-            number_radio_group.setVisibility(View.GONE);
-            layoutTime.setVisibility(View.GONE);
-            left_right_btn_layout.setVisibility(View.GONE);
-        }
-        radioSelectChangeSpinner();
-        changeValue(0);
-    }
-
-    /**
-     * 雨量预报---小时筛选
-     */
-    private String raidolmListId = "";
-
-    /**
-     * 下拉框显示数据
-     */
-    private void radioSelectChangeSpinner() {
-        showData.clear();
-        if (!TextUtils.isEmpty(raidolmListId)) {
-            for (int j = 0; j < packDown.TitleBeanList.size(); j++) {
-                if (packDown.TitleBeanList.get(j).lm.equals(raidolmListId)) {
-                    showData.add(packDown.TitleBeanList.get(j));
-                }
-            }
-        } else {
-            for (int j = 0; j < packDown.TitleBeanList.size(); j++) {
-                showData.add(packDown.TitleBeanList.get(j));
-            }
-        }
-    }
-
-    /**
      * 子标题改变
-     *
      * @param position
      */
     private void changeValue(int position) {
         n_content.setText("");
-        if (packDown == null) {
-            return;
-        }
         if (showData.size() > 1) {
             left_right_btn_layout.setVisibility(View.VISIBLE);
             spinner_text.setText(showData.get(position).title + TIMEUNIT);
@@ -475,8 +250,7 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             image_show.setVisibility(View.VISIBLE);
             showProgressDialog();
             if (!TextUtils.isEmpty(showData.get(position).img)) {
-                SimpleDateFormat sf = new SimpleDateFormat("hh:MM:SS");
-                imageKey = showData.get(position).img;
+                imageKey = getString(R.string.file_download_url)+showData.get(position).img;
                 getImageFetcher().addListener(getImageViewlistener);
                 getImageFetcher().loadImage(imageKey, null, ImageConstant.ImageShowType.NONE);
             } else {
@@ -486,7 +260,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             content_scrollview.setVisibility(View.GONE);
             image_show.setVisibility(View.GONE);
             webview.setVisibility(View.VISIBLE);
-
             if (!TextUtils.isEmpty(showData.get(position).html)) {
                 String path = getString(R.string.file_download_url) + showData.get(position).html;
                 webview.loadUrl(path);
@@ -498,8 +271,7 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             image_show.setVisibility(View.GONE);
             n_content.setGravity(Gravity.CENTER);
             n_content.setText("暂无数据");
-            n_content.setTextColor(getResources().getColor(
-                    R.color.bg_black_alpha20));
+            n_content.setTextColor(getResources().getColor(R.color.bg_black_alpha20));
         }
     }
 
@@ -510,29 +282,12 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             if (imageKey.equals(key)) {
                 dismissProgressDialog();
                 if (isSucc && getImageFetcher().getImageCache() != null) {
-                    Bitmap bm = getImageFetcher().getImageCache()
-                            .getBitmapFromAllCache(key).getBitmap();
+                    Bitmap bm = getImageFetcher().getImageCache().getBitmapFromAllCache(key).getBitmap();
                     image_show.setMyImageBitmap(bm);
-                    SimpleDateFormat sf = new SimpleDateFormat("hh:MM:SS");
-                    Log.i("z", "finish-time:" + sf.format(new Date()));
                 } else {
                     image_show.setMyImageBitmap(null);
                     showToast("图片为空");
                 }
-            }
-
-        }
-    };
-
-    private DrowListClick listener = new DrowListClick() {
-        @Override
-        public void itemClick(int floag, int item) {
-            tiemposition=item;
-            if (floag == SPINNERTIME) {
-                changeValue(item);
-            } else if (floag == SUBTITLE) {
-                // 栏目切换
-                getserverData(item);
             }
         }
     };
@@ -603,20 +358,14 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             }
             createPopupWindow(dataeaum, floag).showAsDropDown(drowView);
         }
-
     }
 
-    private int screenwidth;
-    private int screenHight ;
     /**
      * 创建下拉选择列表
      */
-    public PopupWindow createPopupWindow(final List<String> dataeaum,
-                                         final int floag) {
-        AdapterData dataAdapter = new AdapterData(ActivityDetailCenterPro.this,
-                dataeaum);
-        View popcontent = LayoutInflater.from(ActivityDetailCenterPro.this)
-                .inflate(R.layout.pop_list_layout, null);
+    public PopupWindow createPopupWindow(final List<String> dataeaum, final int floag) {
+        AdapterData dataAdapter = new AdapterData(ActivityDetailCenterPro.this,dataeaum);
+        View popcontent = LayoutInflater.from(ActivityDetailCenterPro.this).inflate(R.layout.pop_list_layout, null);
         ListView lv = (ListView) popcontent.findViewById(R.id.mylistviw);
         lv.setAdapter(dataAdapter);
         final PopupWindow pop = new PopupWindow(ActivityDetailCenterPro.this);
@@ -640,4 +389,291 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         });
         return pop;
     }
+
+    private DrowListClick listener = new DrowListClick() {
+        @Override
+        public void itemClick(int floag, int item) {
+            tiemposition = item;
+            if (floag == SPINNERTIME) {
+                changeValue(item);
+            } else if (floag == SUBTITLE) {
+                try {
+                    if (forList2.size() == 0) {
+                        return;
+                    }
+                    subtitle_tv.setText(forList2.get(item).name);
+                    okHttpItemColumn(forList2.get(item).id);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    /**
+     * 获取模式预报数据
+     */
+    private void okHttpList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"zdyb_lm_list";
+                    Log.e("zdyb_lm_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("zdyb_lm_list", result);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("forecast_column_n2")) {
+                                                JSONObject forecast_column_n2 = bobj.getJSONObject("forecast_column_n2");
+                                                if (!TextUtils.isEmpty(forecast_column_n2.toString())) {
+                                                    dismissProgressDialog();
+                                                    packNumericalForecastColumnDown = new PackNumericalForecastColumnDown();
+                                                    packNumericalForecastColumnDown.fillData(forecast_column_n2.toString());
+                                                    for (int i = 0; i < packNumericalForecastColumnDown.forlist.size(); i++) {
+                                                        if (packNumericalForecastColumnDown.forlist.get(i).parent_id.equals("106")) {
+                                                            forList2.add(packNumericalForecastColumnDown.forlist.get(i));
+                                                        }
+                                                    }
+                                                    try {
+                                                        if (forList2.size() == 0) {
+                                                            return;
+                                                        }
+                                                        subtitle_tv.setText(forList2.get(0).name);
+                                                        okHttpItemColumn(forList2.get(0).id);
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 栏目切换、重新取数据
+     * 获取分类数据
+     */
+    private void okHttpItemColumn(final String columnId) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", columnId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("zdyb_init", json);
+                    final String url = CONST.BASE_URL+"zdyb_init";
+                    Log.e("zdyb_init", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("zdyb_init", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("szyb_new")) {
+                                                    JSONObject listobj = bobj.getJSONObject("szyb_new");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackNumericalForecastDown columnData = new PackNumericalForecastDown();
+                                                        columnData.fillData(listobj.toString());
+                                                        number_radio_group.removeAllViews();
+                                                        int size = columnData.lmBeanList.size();
+                                                        if (size > 1) {
+                                                            number_radio_group.setVisibility(View.VISIBLE);
+                                                            layoutTime.setVisibility(View.VISIBLE);
+                                                            left_right_btn_layout.setVisibility(View.VISIBLE);
+                                                        } else {
+                                                            number_radio_group.setVisibility(View.GONE);
+                                                            layoutTime.setVisibility(View.GONE);
+                                                            left_right_btn_layout.setVisibility(View.GONE);
+                                                        }
+                                                        for (int i = 0; i < size; i++) {
+                                                            PackNumericalForecastDown.LmListBean bean = columnData.lmBeanList.get(i);
+                                                            TextView textView = new TextView(ActivityDetailCenterPro.this);
+                                                            textView.setGravity(Gravity.CENTER);
+                                                            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+                                                            textView.setPadding(0, 30, 0, 30);
+                                                            textView.setTextColor(Color.BLACK);
+                                                            textView.setText(bean.name);
+                                                            textView.setTag(bean.id);
+                                                            number_radio_group.addView(textView);
+                                                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                                            params.weight = 1;
+                                                            textView.setLayoutParams(params);
+
+                                                            textView.setOnClickListener(new OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    for (int j = 0; j < number_radio_group.getChildCount(); j++) {
+                                                                        TextView tv = (TextView) number_radio_group.getChildAt(j);
+                                                                        if (TextUtils.equals(v.getTag()+"", tv.getTag()+"")) {
+                                                                            tv.setBackgroundResource(R.drawable.btn_number_check);
+                                                                        } else {
+                                                                            tv.setBackgroundColor(getResources().getColor(R.color.bg_rainfall_subtitle));
+                                                                        }
+                                                                    }
+                                                                    raidolmListId = v.getTag()+"";
+                                                                    okHttpDetail();
+                                                                }
+                                                            });
+
+                                                            if (i == 0) {
+                                                                textView.setBackgroundResource(R.drawable.btn_number_check);
+                                                                raidolmListId = bean.id;
+                                                                okHttpDetail();
+                                                            } else {
+                                                                textView.setBackgroundColor(getResources().getColor(R.color.bg_rainfall_subtitle));
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 栏目切换、重新取数据
+     * 获取分类数据
+     */
+    private void okHttpDetail() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", raidolmListId);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("zdyb_init", json);
+                    final String url = CONST.BASE_URL+"zdyb_init";
+                    Log.e("zdyb_init", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("zdyb_init", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("szyb_new")) {
+                                                    JSONObject listobj = bobj.getJSONObject("szyb_new");
+                                                    if (!TextUtil.isEmpty(listobj.toString())) {
+                                                        dismissProgressDialog();
+                                                        PackNumericalForecastDown packDown = new PackNumericalForecastDown();
+                                                        packDown.fillData(listobj.toString());
+                                                        radioSelectChangeSpinner(packDown);
+                                                        changeValue(0);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private String raidolmListId = "";
+
+    /**
+     * 下拉框显示数据
+     */
+    private void radioSelectChangeSpinner(PackNumericalForecastDown packDown) {
+        showData.clear();
+        if (!TextUtils.isEmpty(raidolmListId)) {
+            for (int j = 0; j < packDown.TitleBeanList.size(); j++) {
+                if (packDown.TitleBeanList.get(j).lm.equals(raidolmListId)) {
+                    showData.add(packDown.TitleBeanList.get(j));
+                }
+            }
+        } else {
+            for (int j = 0; j < packDown.TitleBeanList.size(); j++) {
+                showData.add(packDown.TitleBeanList.get(j));
+            }
+        }
+    }
+
 }

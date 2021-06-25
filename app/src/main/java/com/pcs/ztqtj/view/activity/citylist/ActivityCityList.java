@@ -44,7 +44,6 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
     private boolean isSingleCityList = false;
     private RelativeLayout rel_fragment,rel_et;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +100,6 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
             radioGroup.setVisibility(View.GONE);
             replaceFragment(1);
         }
-
     }
 
     private void replaceFragment(int index) {
@@ -132,7 +130,6 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
 
     /**
      * 选择城市后做处理
-     *
      * @param cityInfo
      */
     protected void onChoiceCity(PackLocalCity cityInfo, PackLocalCity parent) {
@@ -176,12 +173,10 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
                 ZtqCityDB.getInstance().setCityMain(cityInfo, false);
                 AutoDownloadWeather.getInstance().setDefaultCity(cityInfo);
                 AutoDownloadWeather.getInstance().beginMainData();
-                Log.i("z", "in for equals id return;");
                 return;
             }
         }
         packCityInfo.localCityList.add(cityInfo);
-        Log.i("z", "add localCityList  after list size=" + packCityInfo.localCityList.size());
         ZtqCityDB.getInstance().setCurrentCityInfo(packCityInfo);
         // 设置首页城市
         ZtqCityDB.getInstance().setCityMain(cityInfo, false);
@@ -191,14 +186,10 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
     }
 
     private void exitApp() {
-        new AlertDialog.Builder(this)
-                .setTitle("提示:")
-                .setMessage("还没选择城市，是否要退出程序？")
-                .setPositiveButton("确认退出",
-                        new DialogInterface.OnClickListener() {
+        new AlertDialog.Builder(this).setTitle("提示:").setMessage("还没选择城市，是否要退出程序？")
+                .setPositiveButton("确认退出", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                                 Intent it = new Intent();
                                 it.putExtra("finish", true);
@@ -206,11 +197,9 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
                                 finish();
                             }
                         })
-                .setNegativeButton("继续选择",
-                        new DialogInterface.OnClickListener() {
+                .setNegativeButton("继续选择", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
+                            public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         }).create().show();
@@ -262,10 +251,8 @@ public class ActivityCityList extends FragmentActivityZtqBase implements CityCho
     };
 
     private class listChildOnClick implements ExpandableListView.OnChildClickListener {
-
         @Override
-        public boolean onChildClick(ExpandableListView parent, View v,
-                                    int groupPosition, int childPosition, long id) {
+        public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
             PackLocalCity cityinfo = (PackLocalCity) adapterSearch.getChild(groupPosition, childPosition);
             // 城市选择后的事件处理
             choiceCity(cityinfo, cityinfo);

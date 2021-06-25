@@ -22,23 +22,18 @@ import com.pcs.ztqtj.view.myview.ViewPageControl;
 import java.util.ArrayList;
 
 /**
- * 显示引导
- *
- * @author JiangZY
+ * 引导页
  */
 public class CommandLoadingGuide extends AbstractCommand {
 
     private FragmentActivity mActivity;
-
     private ArrayList<View> views;
     private ViewPagerAdapter mAdapter;
     private ImageView l1;
     private ImageView l2;
     private ImageView l3;
     private ImageView l4;
-
     private ViewPageControl pagepoint;
-
     private TextView btn_gotomain;
 
     public CommandLoadingGuide(FragmentActivity activity) {
@@ -48,7 +43,6 @@ public class CommandLoadingGuide extends AbstractCommand {
     @Override
     public void execute() {
         super.execute();
-
         l1 = new ImageView(mActivity);
         l2 = new ImageView(mActivity);
         l3 = new ImageView(mActivity);
@@ -83,7 +77,6 @@ public class CommandLoadingGuide extends AbstractCommand {
         pagepoint.init(views.size());
         pagepoint.generatePageControl(0);
         viewGroup.setOnPageChangeListener(new OnPageChangeListener() {
-
             @Override
             public void onPageSelected(int arg0) {
                 pagepoint.generatePageControl(arg0);
@@ -112,8 +105,6 @@ public class CommandLoadingGuide extends AbstractCommand {
 
     /**
      * 适配器
-     *
-     * @author JiangZy
      */
     public class ViewPagerAdapter extends PagerAdapter {
         @Override

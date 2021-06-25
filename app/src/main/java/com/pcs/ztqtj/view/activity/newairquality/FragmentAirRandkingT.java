@@ -131,10 +131,8 @@ public class FragmentAirRandkingT extends Fragment implements OnClickListener {
 
     /**
      * 处理aqi字段
-     *
-     * @param packKey
      */
-    private void dealWidthKeyData(PackKeyDescDown packKey) {
+    private void dealWidthKeyData() {
         dataeaum.clear();
         for (int i = 0; i < packKey.dicList.size(); i++) {
             dataeaum.add(packKey.dicList.get(i));
@@ -524,11 +522,6 @@ public class FragmentAirRandkingT extends Fragment implements OnClickListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 pop.dismiss();
                 String showKey = dataeaum.get(position).rankType;
-                if (showKey.equals("O3")) {
-                    showKey = "O3_1H";
-                } else if (showKey.equals("PM2_5")) {
-                    showKey = "PM2.5";
-                }
                 dropDownView.setText(showKey);
                 listener.itemClick(floag, position);
             }
@@ -547,6 +540,7 @@ public class FragmentAirRandkingT extends Fragment implements OnClickListener {
                     info.put("airType", airType);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("air_rank_new", json);
                     final String url = CONST.BASE_URL+"air_rank_new";
                     Log.e("air_rank_new", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -649,9 +643,8 @@ public class FragmentAirRandkingT extends Fragment implements OnClickListener {
                                             JSONObject bobj = obj.getJSONObject("b");
                                             if (!bobj.isNull("air_remark")) {
                                                 JSONObject air_remark = bobj.getJSONObject("air_remark");
-                                                PackKeyDescDown packKey = new PackKeyDescDown();
                                                 packKey.fillData(air_remark.toString());
-                                                dealWidthKeyData(packKey);
+                                                dealWidthKeyData();
                                             }
                                         }
                                     } catch (JSONException e) {

@@ -18,15 +18,19 @@ import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.MarkerOptions;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThirdMonitorDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.PackThirdMonitorUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.lightning.ThirdMonitorInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,10 +38,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * 控制器：三维监测
- * @author E.Sun
- * 2015年10月12日
+ * 监测预报-闪电定位-三维监测
  */
 @SuppressLint("SimpleDateFormat")
 public class ControlThirdMonitor implements OnClickListener {
@@ -68,38 +78,11 @@ public class ControlThirdMonitor implements OnClickListener {
 	 * 展开/收起按钮
 	 */
 	private ImageButton btnUp, btnDown;
-	
-	private PackThirdMonitorUp upPack = new PackThirdMonitorUp();
-	
+
 	/**
 	 * 监测数据集合
 	 */
-	private List<MarkerOptions> dataList = new ArrayList<MarkerOptions>();
-	
-	private final String TAG = "ControlThirdMonitor";
-	
-	private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-		
-		@Override
-		public void onReceive(String nameStr, String errorStr) {
-			if(upPack.getName().equals(nameStr)) {
-				// 三维监测
-				mActivity.dismissProgressDialog();
-				
-				if(!TextUtils.isEmpty(errorStr)) {
-					Log.e(TAG, "获取三维监测数据失败");
-					mActivity.showToast(mActivity.getString(R.string.error_net));
-					return;
-				}
-				
-                PackThirdMonitorDown packDown = (PackThirdMonitorDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(packDown == null) {
-                    return ;
-                }
-				receiveData(packDown);
-			}
-		}
-	};
+	private List<MarkerOptions> dataList = new ArrayList<>();
 	
 	public ControlThirdMonitor(ActivityLightningMonitor activity, AMap aMap) {
 		this.mActivity = activity;
@@ -117,27 +100,13 @@ public class ControlThirdMonitor implements OnClickListener {
 	}
 	
 	/**
-	 * 注册广播
-	 */
-	public void registerReceiver() {
-		PcsDataBrocastReceiver.registerReceiver(mActivity, mReceiver);
-	}
-
-	/**
-	 * 注销广播
-	 */
-	public void unregisterReceiver() {
-		PcsDataBrocastReceiver.unregisterReceiver(mActivity, mReceiver);
-	}
-	
-	/**
 	 * 显示
 	 */
 	public void show() {
 		layoutMonitor.setVisibility(View.VISIBLE);
 		reset();
 		if(dataList.size() <= 0) {
-			requestData();
+			okHttpLightData();
 		} else {
 			showData();
 		}
@@ -203,22 +172,12 @@ public class ControlThirdMonitor implements OnClickListener {
 	}
 	
 	/**
-	 * 请求数据
-	 */
-	private void requestData() {
-		mActivity.showProgressDialog();
-		PcsDataDownload.addDownload(upPack);
-	}
-	
-	/**
 	 * 接收数据
 	 * @param packDown
 	 */
 	private void receiveData(PackThirdMonitorDown packDown) {
 		dataList.clear();
-		
 		setLegendIcon(packDown.systemTime);
-
 		if(!TextUtils.isEmpty(packDown.msg) || packDown.list.size() <= 0) {
 			mActivity.showToast(packDown.msg);
 			return;
@@ -449,6 +408,63 @@ public class ControlThirdMonitor implements OnClickListener {
 		layoutLegendDetail.setVisibility(View.GONE);
 		btnUp.setVisibility(View.VISIBLE);
 		btnDown.setVisibility(View.GONE);
+	}
+
+	/**
+	 * 获取闪电数据
+	 */
+	private void okHttpLightData() {
+		mActivity.showProgressDialog();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					JSONObject param = new JSONObject();
+					param.put("token", MyApplication.TOKEN);
+					String json = param.toString();
+					final String url = CONST.BASE_URL + "light_data";
+					Log.e("light_data", url);
+					RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+					OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+						@Override
+						public void onFailure(@NotNull Call call, @NotNull IOException e) {
+						}
+						@Override
+						public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+							if (!response.isSuccessful()) {
+								return;
+							}
+							final String result = response.body().string();
+							Log.e("light_data", result);
+							mActivity.runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									mActivity.dismissProgressDialog();
+									try {
+										JSONObject obj = new JSONObject(result);
+										if (!obj.isNull("b")) {
+											JSONObject bobj = obj.getJSONObject("b");
+											if (!bobj.isNull("thunder_third_monitor")) {
+												JSONObject itemObj = bobj.getJSONObject("thunder_third_monitor");
+												if (!TextUtils.isEmpty(itemObj.toString())) {
+													PackThirdMonitorDown packDown = new PackThirdMonitorDown();
+													packDown.fillData(itemObj.toString());
+													receiveData(packDown);
+												}
+											}
+										}
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								}
+							});
+						}
+					});
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	
 }

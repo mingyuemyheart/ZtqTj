@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-    >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#19FFFFFF"
-        />
+        android:background="#19FFFFFF" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:text="逐时预报"
-        android:textColor="@color/text_white"
-        android:textSize="@dimen/text_content"
         android:layout_marginLeft="5dp"
         android:gravity="center_vertical"
-        />
+        android:text="逐时预报"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content" />
 
     <TextView
         android:id="@+id/text_content_desc"
@@ -26,20 +24,18 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:gravity="center_vertical|start"
         android:lineSpacingExtra="3dp"
         android:lineSpacingMultiplier="1.2"
         android:singleLine="false"
         android:textColor="@color/text_white"
         android:textSize="@dimen/text_content"
-        android:gravity="center_vertical|start"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#19FFFFFF"
-        />
+        android:background="#19FFFFFF" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -65,13 +61,13 @@
                         android:id="@+id/gridview24hour"
                         android:layout_width="1200dp"
                         android:layout_height="wrap_content"
-                        android:listSelector="@android:color/transparent"/>
+                        android:listSelector="@android:color/transparent" />
 
                     <com.pcs.ztqtj.view.myview.Hour24View
                         android:id="@+id/main24hour"
                         android:layout_width="1200dp"
                         android:layout_height="@dimen/hight24hour"
-                        android:layout_marginTop="@dimen/hight24tophight"/>
+                        android:layout_marginTop="@dimen/hight24tophight" />
 
                     <TextView
                         android:id="@+id/not_time_data"
@@ -82,7 +78,7 @@
                         android:text="暂无数据"
                         android:textColor="@color/text_white"
                         android:textSize="@dimen/text_content"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
                 </RelativeLayout>
             </com.pcs.ztqtj.view.myview.MyHScrollView>
 

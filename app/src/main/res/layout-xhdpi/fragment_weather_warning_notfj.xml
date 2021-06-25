@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ll_bottom_button"
@@ -11,8 +11,7 @@
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:visibility="visible"
-        >
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/tv_share"
@@ -33,7 +32,8 @@
             android:gravity="center"
             android:text="@string/push_settings"
             android:textColor="@color/text_white"
-            android:textSize="@dimen/text_content" />
+            android:textSize="@dimen/text_content"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -41,21 +41,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/ll_bottom_button"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView_yc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none">
-        <RadioGroup
-            android:id="@+id/radiogroup"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal" />
         </HorizontalScrollView>
 
         <ListView
@@ -71,9 +72,7 @@
             android:id="@+id/fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-        </LinearLayout>
+            android:orientation="horizontal" />
     </LinearLayout>
 
 </RelativeLayout>

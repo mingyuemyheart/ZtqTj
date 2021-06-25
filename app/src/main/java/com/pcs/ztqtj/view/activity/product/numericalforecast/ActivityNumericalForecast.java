@@ -3,6 +3,7 @@ package com.pcs.ztqtj.view.activity.product.numericalforecast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,23 +22,37 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackAppaisalDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackAppaisalUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown.ForList;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.product_numerical.AdapterColumn;
 import com.pcs.ztqtj.control.adapter.product_numerical.AdapterNumericalForecast;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 监测预报-模式预报
  */
 public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
-    //private ListView listview;
-    //private AdapterNumericalMain listviewAdapter;
+
     private GridView gridView;
     private AdapterColumn gridAdapter;
     private ExpandableListView expandablelistview;
@@ -47,7 +62,6 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
     private List<ForList> forList1 = new ArrayList<>();//一级目录
     private List<ForList> forList2 = new ArrayList<>();//二级目录
     private List<ForList> forList22 = new ArrayList<>();//二级目录
-    private PackNumericalForecastColumnUp packNumericalForecastColumnUp = new PackNumericalForecastColumnUp();
     private PackNumericalForecastColumnDown packNumericalForecastColumnDown;
     private MyReceiver receiver = new MyReceiver();
 
@@ -59,8 +73,7 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
         setTitleText("模式预报");
         initView();
-        request();
-        initData();
+        okHttpModelList();
         initEvent();
     }
 
@@ -81,8 +94,7 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
         });
         expandablelistview.setOnChildClickListener(new OnChildClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long
-                    id) {
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Intent intent = new Intent(ActivityNumericalForecast.this, ActivityDetailNumericalForecast.class);
                 intent.putExtra("type", "1");
                 intent.putExtra("t", listLeve1.get(groupPosition).name);
@@ -119,32 +131,18 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
         startActivity(it);
     }
 
-
     private void initView() {
         gridView = (GridView) findViewById(R.id.gridview);
         expandablelistview = (ExpandableListView) findViewById(R.id.expandablelistview);
         expandablelistview.setVisibility(View.GONE);
-    }
-
-    private void initData() {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.open_netword));
-        } else {
-            if (!isWiFiNewWord()) {
-                showToast(getString(R.string.un_wifi_desc));
-            }
-        }
         adapter = new AdapterNumericalForecast(ActivityNumericalForecast.this, listLeve1, listLeve2);
         expandablelistview.setAdapter(adapter);
-        //listviewAdapter = new AdapterNumericalMain(ActivityNumericalForecast.this, listLeve1);
-        //listview.setAdapter(listviewAdapter);
     }
 
     private DialogTwoButton dialog;
     private TextView tv_pwd;
 
     private void showAppraisalDailog() {
-
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_appraisel, null);
         tv_pwd = (TextView) view.findViewById(R.id.tv_pwd);
         dialog = new DialogTwoButton(ActivityNumericalForecast.this, view, "取消", "提交", new DialogFactory
@@ -159,7 +157,6 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
                         if (TextUtils.isEmpty(strPwd)) {
                             showToast("请输入口令");
                         } else {
-//                        dialog.dismiss();
                             showProgressDialog();
                             commidPwd();
                         }
@@ -185,32 +182,12 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
         appaisalUp = new PackAppaisalUp();
         appaisalUp.pwd = PcsMD5.Md5(str);
         PcsDataDownload.addDownload(appaisalUp);
-
-    }
-
-
-    /**
-     * 请求数据
-     **/
-    private void request() {
-        showProgressDialog();
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        packNumericalForecastColumnUp.type = "1";
-        PcsDataDownload.addDownload(packNumericalForecastColumnUp);
     }
 
     /**
      * 解析数据
      **/
     private void analysis() {
-        packNumericalForecastColumnDown = (PackNumericalForecastColumnDown) PcsDataManager.getInstance().getNetPack
-                (packNumericalForecastColumnUp.getName());
-        if (packNumericalForecastColumnDown == null) {
-            return;
-        }
         if (packNumericalForecastColumnDown != null) {
             for (int i = 0; i < packNumericalForecastColumnDown.forlist.size(); i++) {
                 if (packNumericalForecastColumnDown.forlist.get(i).parent_id.equals("")) {
@@ -229,7 +206,6 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
                 listLeve2.add(forList22);
             }
         }
-
     }
 
     @Override
@@ -243,16 +219,7 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(String nameStr, String errorStr) {
-            if (packNumericalForecastColumnUp.getName().equals(nameStr)) {
-                dismissProgressDialog();
-                listLeve1.clear();
-                listLeve2.clear();
-                analysis();
-                adapter.setData(listLeve1, listLeve2);
-                //listviewAdapter.setData(listLeve1);
-                gridAdapter = new AdapterColumn(ActivityNumericalForecast.this, listLeve1, getImageFetcher());
-                gridView.setAdapter(gridAdapter);
-            } else if (appaisalUp != null && nameStr.equals(appaisalUp.getName())) {
+            if (appaisalUp != null && nameStr.equals(appaisalUp.getName())) {
                 dismissProgressDialog();
                 if (!TextUtils.isEmpty(errorStr)) {
                     showToast("提交失败，请稍后再试");
@@ -266,13 +233,75 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
                         }
                         showToast("提交成功");
                         gridViewClick(cliciPosition);
-
                     } else {
                         showToast("口令错误");
-
                     }
                 }
             }
         }
     }
+
+    /**
+     * 获取模式预报数据
+     */
+    private void okHttpModelList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"modelprediction_list";
+                    Log.e("modelprediction_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            Log.e("modelprediction_list", result);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("b")) {
+                                            JSONObject bobj = obj.getJSONObject("b");
+                                            if (!bobj.isNull("forecast_column_n2")) {
+                                                JSONObject forecast_column_n2 = bobj.getJSONObject("forecast_column_n2");
+                                                if (!TextUtils.isEmpty(forecast_column_n2.toString())) {
+                                                    dismissProgressDialog();
+                                                    listLeve1.clear();
+                                                    listLeve2.clear();
+                                                    packNumericalForecastColumnDown = new PackNumericalForecastColumnDown();
+                                                    packNumericalForecastColumnDown.fillData(forecast_column_n2.toString());
+                                                    analysis();
+                                                    adapter.setData(listLeve1, listLeve2);
+                                                    gridAdapter = new AdapterColumn(ActivityNumericalForecast.this, listLeve1, getImageFetcher());
+                                                    gridView.setAdapter(gridAdapter);
+                                                }
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

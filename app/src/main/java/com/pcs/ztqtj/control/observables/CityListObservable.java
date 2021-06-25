@@ -93,6 +93,7 @@ public class CityListObservable {
      * @return
      */
     private FileEmitterValue getFileFromNet(CityDBInfo cityDBInfo) {
+        Log.e("cityDBInfo", cityDBInfo.channel_id+"");
         if(cityDBInfo == null || cityDBInfo.channel_id == 0) return null;
         FileType type = FileType.getType(cityDBInfo.channel_id);
         // 缓存文件路径：citydb文件路径/channelId_pubTime (example:citydb/1_201804192110)
@@ -246,11 +247,6 @@ public class CityListObservable {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-//            try {
-//                inputStream.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
             if(reader != null) {
                 try {
                     reader.close();
@@ -270,10 +266,13 @@ public class CityListObservable {
      * 文件类型枚举
      */
     public enum FileType {
-        Tj_Qgdisty(4),// 全国城市，全国自动站，风雨查询城市,Tj_Qgdisty
-        Tj_landscapeList(1),// 旅游城市
-        Tj_Province(3),// 省
-        Tj_auto(6);// 省内自动站
+        Tj_landscapeList(1),// 旅游景点，景点名称
+        tj_City(2),//全国地级市，地市名称
+        Tj_Province(3),// 所有省份，省份名称
+        Tj_Qgdisty(4),// 全国城市，到区县级
+        around_area(5),// 天津周边城市及天津内区域
+        Tj_auto(6),// 天津自动站
+        Tj_Qgstations(7);// 全国所有地市、县级市、区域
 
         private int _value;
 
@@ -287,14 +286,20 @@ public class CityListObservable {
 
         public static FileType getType(int value) {
             switch (value) {
-                case 4:
-                    return Tj_Qgdisty;
                 case 1:
                     return Tj_landscapeList;
+                case 2:
+                    return tj_City;
                 case 3:
                     return Tj_Province;
+                case 4:
+                    return Tj_Qgdisty;
+                case 5:
+                    return around_area;
                 case 6:
                     return Tj_auto;
+                case 7:
+                    return Tj_Qgstations;
                 default:
                     return null;
             }
@@ -302,14 +307,20 @@ public class CityListObservable {
 
         public static String getFileName(int value) {
             switch (value) {
-                case 4:
-                    return "Tj_Qgdisty";
                 case 1:
                     return "Tj_landscapeList";
+                case 2:
+                    return "tj_City";
                 case 3:
                     return "Tj_Province";
+                case 4:
+                    return "Tj_Qgdisty";
+                case 5:
+                    return "around_area";
                 case 6:
                     return "Tj_auto";
+                case 7:
+                    return "Tj_Qgstations";
                 default:
                     return null;
             }
@@ -378,8 +389,8 @@ public class CityListObservable {
                                             cityListDown.fillData(fbObj.toString());
                                             List<CityDBInfo> cityDBList = cityListDown.info_list;
                                             List<Observable<FileEmitterValue>> observableList = new ArrayList<>();
-                                            for (CityDBInfo info : cityDBList) {
-                                                observableList.add(getObservable(info));
+                                            for (int i = 0; i < cityDBList.size(); i++) {
+                                                observableList.add(getObservable(cityDBList.get(i)));
                                             }
                                             Observable.zip(observableList, new Function<Object[], List<FileEmitterValue>>() {
                                                 @Override

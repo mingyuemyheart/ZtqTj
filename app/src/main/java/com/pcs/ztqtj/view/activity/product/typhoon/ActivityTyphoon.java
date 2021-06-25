@@ -75,15 +75,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 台风路径
- *
- * @author E.Sun
- * @author JiangZy
+ * 监测预报-台风路径
  */
 @SuppressWarnings("deprecation")
 @SuppressLint({"HandlerLeak", "InflateParams"})
-public class ActivityTyphoon extends FragmentActivityWithShare implements OnClickListener, CompoundButton
-        .OnCheckedChangeListener {
+public class ActivityTyphoon extends FragmentActivityWithShare implements OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     /**
      * 台风控制器
@@ -312,14 +308,14 @@ public class ActivityTyphoon extends FragmentActivityWithShare implements OnClic
                 arrcolumnInfo.clear();
                 arrcolumnInfo.addAll(packDowns.arrcolumnInfo);
                 if (arrcolumnInfo.size() == 0) {
-                    cb_haiwen.setVisibility(View.GONE);
+//                    cb_haiwen.setVisibility(View.GONE);
                     cb_history.setVisibility(View.GONE);
                     cb_typhoon_more.setVisibility(View.GONE);
                     cb_more_road.setVisibility(View.GONE);
                 } else {
                     lay_typhoon_left.setVisibility(View.VISIBLE);
                     if (arrcolumnInfo.size() > 1) {
-                        cb_haiwen.setVisibility(View.VISIBLE);
+//                        cb_haiwen.setVisibility(View.VISIBLE);
                         cb_haiwen.setText(arrcolumnInfo.get(1).name);
                     }
                     if (arrcolumnInfo.size() > 2) {

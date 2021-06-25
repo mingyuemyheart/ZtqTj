@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.AsyncTask;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceTwoChannelDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.ServiceChannelInfo;
@@ -55,12 +54,9 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
     private static String INDESTRY = "hy";// 行业
     private static String NEAR = "lj";// 临近
     private String currTab = DECISION;
-
     private MyGridViewAdapter mGridViewAdapter;
-    private List<ServiceChannelInfo> serviceChannelList = new ArrayList<ServiceChannelInfo>();
-
+    private List<ServiceChannelInfo> serviceChannelList = new ArrayList<>();
     private String area_id = "";// 地区ID 测试
-
     private boolean show_warn = false;
 
     @Override
@@ -92,20 +88,19 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
         // 临近
         radio = (RadioButton) findViewById(R.id.radio_near);
         radio.setOnCheckedChangeListener(mRadioListener);
-
     }
 
     /**
      * 初始化GridView
      */
     private void initGridView() {
-        GridView mGridView = (GridView) findViewById(R.id.gridview);
+        GridView mGridView = findViewById(R.id.gridview);
         mGridViewAdapter = new MyGridViewAdapter(this);
         mGridView.setAdapter(mGridViewAdapter);
     }
 
     private void setDefaultDisplay() {
-        RadioButton radio = (RadioButton) findViewById(R.id.radio_decision);
+        RadioButton radio = findViewById(R.id.radio_decision);
         radio.setChecked(true);
         // 刷新箭头图标
         refreshArrowIcon(DECISION, true);
@@ -130,14 +125,6 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
         } else {
             view.setVisibility(View.INVISIBLE);
         }
-    }
-
-
-    /**
-     * 刷新GridView
-     */
-    private void refreshGridView() {
-        mGridViewAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -203,10 +190,9 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
 
     /**
      * GridView适配器
-     *
-     * @author JiangZy
      */
     private class MyGridViewAdapter extends BaseAdapter {
+
         private Context mContext;
 
         public MyGridViewAdapter(Context context) {
@@ -242,15 +228,10 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
             Holder holder;
             if (view == null) {
                 holder = new Holder();
-                view = LayoutInflater.from(mContext).inflate(
-                        R.layout.item_server_second, null);
-                holder.itemImageView = (ImageView) view
-                        .findViewById(R.id.itemImageView);
-                holder.itemimageview_top = (ImageView) view
-                        .findViewById(R.id.itemimageview_top);
-
+                view = LayoutInflater.from(mContext).inflate(R.layout.item_server_second, null);
+                holder.itemImageView = (ImageView) view.findViewById(R.id.itemImageView);
+                holder.itemimageview_top = (ImageView) view.findViewById(R.id.itemimageview_top);
                 holder.itemName = (TextView) view.findViewById(R.id.itemName);
-
                 view.setTag(holder);
             } else {
                 holder = (Holder) view.getTag();
@@ -258,12 +239,8 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
 
             final ServiceChannelInfo info = serviceChannelList.get(position);
             if (!TextUtils.isEmpty(info.icon)) {
-                String url = ActivityServerSecond.this
-                        .getString(R.string.file_download_url)
-                        + "/"
-                        + info.icon;
-                AsyncTask asyncTask = getImageFetcher().loadImage(url, holder.itemImageView,
-                        ImageConstant.ImageShowType.SRC);
+                String url = mContext.getString(R.string.file_download_url)+ info.icon;
+                getImageFetcher().loadImage(url, holder.itemImageView, ImageConstant.ImageShowType.SRC);
             }
 
             holder.itemimageview_top.setOnClickListener(new OnClickListener() {
@@ -293,7 +270,6 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
                     mContext.startActivity(it);
                 }
             });
-
             holder.itemName.setText(info.ch_name);
 
             return view;
@@ -368,8 +344,8 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("qxfw_two_channel", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("qxfw_two_channel", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -381,7 +357,7 @@ public class ActivityServerSecond extends FragmentActivityZtqWithHelp {
                                                         packServiceTwoChannelDown.fillData(qxfw_two_channel.toString());
                                                         serviceChannelList = packServiceTwoChannelDown.serviceChannelList;
 
-                                                        refreshGridView();
+                                                        mGridViewAdapter.notifyDataSetChanged();
                                                         // 刷新介绍
                                                         refreshIntroduce(currTab, packServiceTwoChannelDown.remark);
                                                     }

@@ -133,7 +133,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         setContentView(R.layout.activity_photo_show);
         setTitleText(R.string.photo_title_show);
         createImageFetcher();
-        String cityId = getIntent().getStringExtra(CITY_ID);
+        String cityId = ZtqCityDB.getInstance().getCityMain().ID;
         // 等待框
         showProgressDialog();
 

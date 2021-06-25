@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by tyaathome on 2016/6/12.
+ * 预警中心-气象预警-气象预警-预警详情
  */
 public class FragmentWarningCenterDetail extends Fragment {
 
@@ -55,8 +55,7 @@ public class FragmentWarningCenterDetail extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return LayoutInflater.from(getActivity()).inflate(R.layout.fragment_warn_details, null);
     }
 

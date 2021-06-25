@@ -6,7 +6,6 @@
     android:background="@color/text_white"
     android:orientation="vertical">
 
-
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
@@ -14,38 +13,14 @@
         android:background="@color/bg_white"
         android:layout_height="match_parent" />
 
-    <RadioGroup
+    <LinearLayout
         android:id="@+id/number_radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/bg_rainfall_subtitle"
         android:orientation="horizontal"
-        android:visibility="gone">
-
-        <RadioButton
-            android:id="@+id/raido_six"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/radio_number"
-            android:button="@null"
-            android:gravity="center"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:textColor="@color/text_black" />
-
-        <RadioButton
-            android:id="@+id/raido_tf"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/radio_number"
-            android:button="@null"
-            android:gravity="center"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:textColor="@color/text_black" />
-    </RadioGroup>
+        android:gravity="center_vertical"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -124,7 +99,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/activity_marginleft_right">
 

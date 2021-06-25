@@ -257,7 +257,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dimen2"
                         android:background="@drawable/btn_livequery_commom"
                         android:padding="@dimen/activity_margintop"
@@ -293,7 +292,6 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:background="@drawable/icon_auto_show" />
-
 
                     </LinearLayout>
                 </RelativeLayout>
