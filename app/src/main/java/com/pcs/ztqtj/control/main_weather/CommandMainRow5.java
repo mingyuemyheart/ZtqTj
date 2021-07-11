@@ -82,42 +82,42 @@ public class CommandMainRow5 extends CommandMainBase {
         pointlayout = mRowView.findViewById(R.id.pointlayout);
 
         setStatus(Status.SUCC);
-        initData();
-        initEvent();
+//        initData();
+//        initEvent();
     }
 
     @Override
     protected void refresh() {
-        mPackBannerDown = (PackBannerDown) PcsDataManager.getInstance().getNetPack(mPackBannerUp.getName());
-        if (mPackBannerDown == null) {
-//            PcsDataBrocastReceiver.registerReceiver(mActivity, mReceiver);
-            return;
-        }
-        list.clear();
-        // 当数据不为空时
-        for (int i = 0; i < mPackBannerDown.arrBannerInfo.size(); i++) {
-            list.add(mActivity.getString(R.string.file_download_url) + mPackBannerDown.arrBannerInfo.get(i).img_path);
-        }
-        adapter.notifyDataSetChanged();
-
-        pointlayout.initPoint(list.size());
-        if (list.size() == 0) {
-            // 如果大小为0的话则不需要计算当前位置
-            pointlayout.setVisibility(View.GONE);
-            vp.setVisibility(View.GONE);
-            mRowView.findViewById(R.id.root_layout).setVisibility(View.GONE);
-        } else {
-            // 不为0则计算当前位置
-            pointlayout.setVisibility(View.VISIBLE);
-            vp.setVisibility(View.VISIBLE);
-            mRowView.findViewById(R.id.root_layout).setVisibility(View.VISIBLE);
-            pagerCurrentPosition = ((adapter.getCount() / list.size()) / 2)* list.size();
-            vp.setCurrentItem(pagerCurrentPosition);
-        }
-        if (list.size() > 1) {
-            // 如果广告小于等于一个的话这不跳转播放
-            moveToNextPager();
-        }
+//        mPackBannerDown = (PackBannerDown) PcsDataManager.getInstance().getNetPack(mPackBannerUp.getName());
+//        if (mPackBannerDown == null) {
+////            PcsDataBrocastReceiver.registerReceiver(mActivity, mReceiver);
+//            return;
+//        }
+//        list.clear();
+//        // 当数据不为空时
+//        for (int i = 0; i < mPackBannerDown.arrBannerInfo.size(); i++) {
+//            list.add(mActivity.getString(R.string.file_download_url) + mPackBannerDown.arrBannerInfo.get(i).img_path);
+//        }
+//        adapter.notifyDataSetChanged();
+//
+//        pointlayout.initPoint(list.size());
+//        if (list.size() == 0) {
+//            // 如果大小为0的话则不需要计算当前位置
+//            pointlayout.setVisibility(View.GONE);
+//            vp.setVisibility(View.GONE);
+//            mRowView.findViewById(R.id.root_layout).setVisibility(View.GONE);
+//        } else {
+//            // 不为0则计算当前位置
+//            pointlayout.setVisibility(View.VISIBLE);
+//            vp.setVisibility(View.VISIBLE);
+//            mRowView.findViewById(R.id.root_layout).setVisibility(View.VISIBLE);
+//            pagerCurrentPosition = ((adapter.getCount() / list.size()) / 2)* list.size();
+//            vp.setCurrentItem(pagerCurrentPosition);
+//        }
+//        if (list.size() > 1) {
+//            // 如果广告小于等于一个的话这不跳转播放
+//            moveToNextPager();
+//        }
     }
 
     private void initEvent() {

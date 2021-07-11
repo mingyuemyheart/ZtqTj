@@ -11,14 +11,12 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.MyConfigure;
@@ -36,7 +34,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,11 +43,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-
 /**
- * @author Z 预警详情
+ * 预警详情
  */
 public class ActivityWarnDetails extends FragmentActivityZtqBase {
+
     private ImageView contentInfo;
     private ImageButton shareButton;
     private TextView content;
@@ -59,10 +56,8 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
     private TextView defense_guidelines;
     private String titlecontent;
     private String titledata = "";
-
     private String id = "";
     private String type="";
-
     private String contentText;
     private String shareContent;
     private String defend;
@@ -76,10 +71,8 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
         setContentView(R.layout.activity_warn_details);
         showProgressDialog();
         setTitleText("预警详情");
-        Intent intent = getIntent();
         Bundle bundle = getIntent().getBundleExtra(MyConfigure.EXTRA_BUNDLE);
         if(bundle != null) {
-//            setTitleText(bundle.getString("t"));
             icon = bundle.getString("i");
             id = bundle.getString("id", "");
             type=bundle.getString("type", "");
@@ -87,12 +80,6 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
         SharedPreferencesUtil.putData(id,id);
 
         initView();
-
-        PackWarnPubDetailUp packDetailUp = new PackWarnPubDetailUp();
-        packDetailUp.id = id;
-        if (type.equals("1") || type.equals("2")){
-            packDetailUp.type = type;
-        }
         okHttpWarningDetail(id);
     }
 
@@ -208,8 +195,6 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
 
             } else {
                 defense_guidelines.setText(defend);
-//				String warn = getResources().getString(getDefenseMsg(icon));
-//				defense_guidelines.setText(warn);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,22 +203,6 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
 
     final String[] level = {"bb_O", "bb_R", "by_B", "by_O", "by_R", "by_Y", "df_O", "df_R", "df_Y", "dljb_O", "dljb_R", "dljb_Y", "dw_O", "dw_R", "dw_Y", "gh_O", "gh_R", "gw_O",
             "gw_R", "jw_B", "jw_O", "jw_R", "jw_Y", "ld_O", "ld_R", "ld_Y", "m_O", "m_Y", "sd_B", "sd_O", "sd_Y", "tf_B", "tf_O", "tf_R", "tf_Y", "xz_O", "xz_R", "xz_Y"};
-
-    private int getDefenseMsg(String icon) {
-
-        HashMap<String, Integer> map = new HashMap<String, Integer>();
-        for (int i = 0; i < level.length; i++) {
-            map.put(level[i], i);
-        }
-        if (map.get(icon) == null) {
-            return R.string.defense_38;
-        }
-        try {
-            return R.string.defense_00 + map.get(icon);
-        } catch (Exception e) {
-            return 0;
-        }
-    }
 
     public void initView() {
         contentInfo = (ImageView) findViewById(R.id.image_info);
@@ -261,17 +230,9 @@ public class ActivityWarnDetails extends FragmentActivityZtqBase {
                 View layout = findViewById(R.id.layout);
                 Bitmap bitmap = ZtqImageTool.getInstance().getScreenBitmap(layout);
                 bitmap = ZtqImageTool.getInstance().stitchQR(ActivityWarnDetails.this, bitmap);
-                //ShareUtil.share(ActivityWarnDetails.this, shareContent, bitmap);
                 ShareTools.getInstance(ActivityWarnDetails.this).setShareContent(getTitleText(),shareContent, bitmap, "1").showWindow(layout);
             }
         });
-    }
-
-    /**
-     * 获取详情失败
-     */
-    private void showDetilError() {
-        Toast.makeText(this, R.string.get_detail_error, Toast.LENGTH_SHORT).show();
     }
 
 }

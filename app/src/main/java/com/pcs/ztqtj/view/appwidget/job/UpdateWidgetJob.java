@@ -27,10 +27,6 @@ public class UpdateWidgetJob extends Job {
     @Override
     protected Result onRunJob(@NonNull Params params) {
         ZtqAppWidget.getInstance().request(context);
-//        SimpleDateFormat format = new SimpleDateFormat("HH-mm-ss", Locale.getDefault());
-//        Date date = Calendar.getInstance().getTime();
-//        String time = format.format(date);
-//        Log.e(TAG, "onRunJob: " + time);
         return Result.SUCCESS;
     }
 

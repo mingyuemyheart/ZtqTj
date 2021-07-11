@@ -109,6 +109,14 @@ public class CommandMainRow1 extends CommandMainBase {
         text_wind = mRootLayout.findViewById(R.id.text_wind);
         text_visibility = mRootLayout.findViewById(R.id.text_visibility);
         text_station = mRootLayout.findViewById(R.id.text_station_name);
+
+//        // 当前城市
+//        final PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
+//        if (packCity == null || TextUtils.isEmpty(packCity.ID)) {
+//            return;
+//        }
+//        okHttpSstq(packCity.ID, packCity.NAME);
+//        okHttpWarningList(packCity.ID);
     }
 
     @Override
@@ -269,7 +277,7 @@ public class CommandMainRow1 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("sstq", result);
+//                                    Log.e("sstq", result);
                                     mActivity.dismissProgressDialog();
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
@@ -391,7 +399,7 @@ public class CommandMainRow1 extends CommandMainBase {
                                 @Override
                                 public void run() {
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("warningcenterqx_fb", result);
+//                                        Log.e("warningcenterqx_fb", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

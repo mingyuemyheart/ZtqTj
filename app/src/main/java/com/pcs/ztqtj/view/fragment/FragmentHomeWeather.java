@@ -469,9 +469,9 @@ public class FragmentHomeWeather extends SupportMapFragment {
             AutoDownloadWeather.getInstance().beginMainData();
 
             // 刷新世界气象日活动广告
-            weatherDayUp = new PackBannerUp();
-            weatherDayUp.position_id = "27";
-            PcsDataDownload.addDownload(weatherDayUp);
+//            weatherDayUp = new PackBannerUp();
+//            weatherDayUp.position_id = "27";
+//            PcsDataDownload.addDownload(weatherDayUp);
         }
     };
 

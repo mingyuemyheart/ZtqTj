@@ -47,6 +47,7 @@ import java.util.Map;
  * @author Z 空气质量
  */
 public class ActivityAirQuality extends FragmentActivityZtqBase implements OnClickListener {
+
     private ListView cityList;
     private View tv_ph_down;
     private View tv_ph_up;

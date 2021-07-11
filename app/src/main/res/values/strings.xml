@@ -2,7 +2,6 @@
 <resources>
 
     <string name="url">http://www.weather-jy.cn:8096/ztq_tj_jc/service.do</string>
-    <string name="url_debug">http://www.weather-jy.cn:8096/ztq30_fj_jc/service.do</string>
     <string name="file_download_url">http://220.243.129.159:8081/web/</string>//base
     <string name="shzs">http://220.243.129.159:8081/web/tjfile/ico/</string>//生活指数
     <string name="air_pollution">http://220.243.129.159:8081/web/tjfile/picture/1806/</string>//空气污染
@@ -235,7 +234,6 @@
     <string name="password_register_hint">请输入6&#8211;16位数字或字母</string>
     <string name="repassword_hint">请再次输入密码</string>
     <string name="register_hint">点击“提交”按钮，即表示您已阅读并同意</string>
-    <string name="ztp_protocol">《天津惠民软件许可及服务协议》</string>
     <string name="error_name_length">昵称不能为空</string>
     <string name="error_phone_input">请输入手机号</string>
     <string name="error_phone_length">手机号错误，请重新输入</string>

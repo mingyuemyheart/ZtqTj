@@ -22,9 +22,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
@@ -36,12 +34,11 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
- * @author Z
- *         webview展示数据
+ * 普通网页
  */
 public class ActivityWebView extends FragmentActivityZtqBase {
+
     public WebView webview;
     private ControlWebView control;
 
@@ -62,7 +59,6 @@ public class ActivityWebView extends FragmentActivityZtqBase {
         control.destory();
     }
 
-
     @Override
     protected void onActivityResult(int arg0, int arg1, Intent arg2) {
         super.onActivityResult(arg0, arg1, arg2);
@@ -70,12 +66,10 @@ public class ActivityWebView extends FragmentActivityZtqBase {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == MyConfigure.REQUEST_CAMERA) {
             PermissionsTools.onRequestPermissionsResult(this, permissions, grantResults, new PermissionsTools.RequestPermissionResultCallback() {
-
                 @Override
                 public void onSuccess() {
                     control.clickCamera();
@@ -121,10 +115,8 @@ public class ActivityWebView extends FragmentActivityZtqBase {
     }
 
     public void toLoginActivity() {
-        Intent intent = new Intent(this, ActivityPhotoLogin.class);
-        startActivityForResult(intent, control.resultCode);
+        startActivityForResult(new Intent(this, ActivityPhotoLogin.class), control.resultCode);
     }
-
 
     public void commitShareResult(SHARE_MEDIA share_media) {
         control.commitShareResult(share_media);
@@ -160,7 +152,6 @@ public class ActivityWebView extends FragmentActivityZtqBase {
                     view.loadUrl(url);
                     return false;
                 }
-
                 return true;
             }
 
@@ -178,16 +169,13 @@ public class ActivityWebView extends FragmentActivityZtqBase {
         webview.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress) {
-
                 super.onProgressChanged(view, progress);
             }
 
             @Override
             public void onReceivedTitle(WebView view, String title) {
-
                 super.onReceivedTitle(view, title);
             }
-
         });
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);//允许js
@@ -199,7 +187,6 @@ public class ActivityWebView extends FragmentActivityZtqBase {
 
     /**
      * 获取app信息
-     *
      * @return
      */
     public String getDatasFromApp() {
@@ -228,8 +215,7 @@ public class ActivityWebView extends FragmentActivityZtqBase {
         String lat = String.valueOf(latlng.latitude);
         String lon = String.valueOf(latlng.longitude);
         String address = "";
-        RegeocodeAddress regeocodeAddress = ZtqLocationTool.getInstance()
-                .getSearchAddress();
+        RegeocodeAddress regeocodeAddress = ZtqLocationTool.getInstance().getSearchAddress();
         if (regeocodeAddress != null) {
             address = regeocodeAddress.getFormatAddress();
         }
@@ -259,6 +245,5 @@ public class ActivityWebView extends FragmentActivityZtqBase {
         }
         return obj.toString();
     }
-
 
 }

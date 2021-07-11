@@ -16,8 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#30000000"
-            android:gravity="center"
-            android:padding="3dp"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="8dp"
             android:textColor="#7BBAFF"
             android:textSize="@dimen/dimen12"
             android:visibility="gone" />
@@ -41,7 +44,7 @@
                 android:paddingBottom="8dp"
                 android:textColor="#7BBAFF"
                 android:textSize="@dimen/dimen12"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <TextSwitcher
                 android:id="@+id/tvNews"

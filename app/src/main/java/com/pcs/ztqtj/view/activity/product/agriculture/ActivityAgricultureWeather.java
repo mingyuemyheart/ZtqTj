@@ -110,8 +110,8 @@ public class ActivityAgricultureWeather extends FragmentActivityZtqBase {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("info_list", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("info_list", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

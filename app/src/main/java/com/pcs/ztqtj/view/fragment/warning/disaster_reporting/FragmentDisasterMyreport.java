@@ -49,7 +49,7 @@ import com.pcs.ztqtj.control.tool.youmeng.ToolQQPlatform;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoRegister;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityRegister;
 import com.pcs.ztqtj.view.fragment.warning.FragmentDisasterReporting;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
@@ -313,7 +313,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
      * 点击注册按钮
      */
     private void clickRegister() {
-        Intent intent = new Intent(getActivity(), ActivityPhotoRegister.class);
+        Intent intent = new Intent(getActivity(), ActivityRegister.class);
         Bundle bundle = new Bundle();
         bundle.putString("register_type", "0");
         bundle.putString("title", "注册");

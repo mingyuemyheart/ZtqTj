@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class CityDBParseTool {
 
-    private static String getStringFromAssets(Context context, String fileName) {
+    public static String getStringFromAssets(Context context, String fileName) {
         if(TextUtils.isEmpty(fileName)) return null;
         String path = "city_info/" + fileName;
         try {

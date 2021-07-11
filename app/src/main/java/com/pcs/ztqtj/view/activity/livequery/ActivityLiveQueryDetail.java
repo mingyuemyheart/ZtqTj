@@ -371,8 +371,6 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
             rb = (RadioButton) findViewById(R.id.live_humidity);
             rb.setChecked(true);
         }
-
-        //updateSelectorCity(currentSelectedCityPosition);
     }
 
     private void searchStation(String str) {

@@ -73,6 +73,7 @@ public class CommandMainRow4 extends CommandMainBase {
         //初始化适配器
         initAdapterEtc();
         setStatus(Status.SUCC);
+//        okHttpAqi();
     }
 
     @Override
@@ -212,7 +213,7 @@ public class CommandMainRow4 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("shzs", result);
+//                                    Log.e("shzs", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);

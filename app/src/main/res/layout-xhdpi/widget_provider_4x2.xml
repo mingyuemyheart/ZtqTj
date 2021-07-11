@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/layout_widget_4x2"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:clickable="true"
-              android:background="@drawable/bg_widget_5x3"
-              android:focusable="true"
-              android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_widget_4x2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_widget_5x3"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3" >
+        android:layout_weight="3">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/widget_provider_4x2_cityname"
@@ -33,24 +33,23 @@
         </LinearLayout>
 
         <ImageView
-            android:visibility="gone"
             android:layout_width="140dp"
             android:layout_height="50dp"
-            android:background="@drawable/logo_widget4x2" />
+            android:background="@drawable/logo_widget4x2"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
-
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:paddingBottom="@dimen/activity_margintop" >
+            android:paddingBottom="@dimen/activity_margintop">
 
             <ImageView
                 android:id="@+id/widget_4x2_current_temp"
@@ -65,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true" />
-
         </RelativeLayout>
 
         <LinearLayout
@@ -73,7 +71,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/widget_4x2_current_icon"
@@ -89,7 +87,7 @@
             android:layout_weight="1"
             android:gravity="left|bottom"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/activity_margintop" >
+            android:paddingBottom="@dimen/activity_margintop">
 
             <TextView
                 android:id="@+id/widget_weather"
@@ -102,8 +100,8 @@
                 android:id="@+id/widget_wind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_margintop"
                 android:layout_marginTop="@dimen/activity_margintop"
+                android:layout_marginBottom="@dimen/activity_margintop"
                 android:textColor="@color/text_white"
                 android:textSize="16dp" />
 
@@ -115,7 +113,7 @@
                 android:format24Hour="yyyy/MM/dd"
                 android:textColor="@color/text_white"
                 android:textSize="16dp"
-                tools:targetApi="jelly_bean_mr1"/>
+                tools:targetApi="jelly_bean_mr1" />
         </LinearLayout>
     </LinearLayout>
 
@@ -124,8 +122,7 @@
         android:layout_height="0dp"
         android:layout_weight="2"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/widger_4x2_warn"
@@ -137,17 +134,15 @@
             android:singleLine="true"
             android:textColor="@color/text_white"
             android:textSize="@dimen/text_content"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/layout_warn_grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:layout_centerInParent="true"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_unit"
@@ -155,57 +150,52 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dimen10"
                 android:layout_marginRight="@dimen/dimen10"
-                android:gravity="center"
-                />
+                android:gravity="center" />
 
-            <ImageView android:id="@+id/iv1"
-                       android:layout_width="35dp"
-                       android:layout_height="30dp"
-                       android:layout_centerInParent="true"
-                       android:scaleType="fitCenter"
-                       android:layout_marginRight="@dimen/dimen4"
-                />
+            <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dimen4"
+                android:scaleType="fitCenter" />
 
-            <ImageView android:id="@+id/iv2"
-                       android:layout_width="35dp"
-                       android:layout_height="30dp"
-                       android:layout_centerInParent="true"
-                       android:scaleType="fitCenter"
-                       android:layout_marginRight="@dimen/dimen4"
-                />
+            <ImageView
+                android:id="@+id/iv2"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dimen4"
+                android:scaleType="fitCenter" />
 
-            <ImageView android:id="@+id/iv3"
-                       android:layout_width="35dp"
-                       android:layout_height="30dp"
-                       android:layout_centerInParent="true"
-                       android:scaleType="fitCenter"
-                       android:layout_marginRight="@dimen/dimen4"
-                />
+            <ImageView
+                android:id="@+id/iv3"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dimen4"
+                android:scaleType="fitCenter" />
 
-            <ImageView android:id="@+id/iv4"
-                       android:layout_width="35dp"
-                       android:layout_height="30dp"
-                       android:layout_centerInParent="true"
-                       android:scaleType="fitCenter"
-                       android:layout_marginRight="@dimen/dimen4"
-                />
-
+            <ImageView
+                android:id="@+id/iv4"
+                android:layout_width="35dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="@dimen/dimen4"
+                android:scaleType="fitCenter" />
 
             <GridView
                 android:id="@+id/list_warn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:columnWidth="30dp"
                 android:horizontalSpacing="2dp"
                 android:listSelector="@android:color/transparent"
                 android:numColumns="auto_fit"
-                android:columnWidth="30dp"
-                android:stretchMode="columnWidth"
                 android:scrollbars="none"
-                android:visibility="gone"
-                />
-
+                android:stretchMode="columnWidth"
+                android:visibility="gone" />
         </LinearLayout>
-        <!-- android:textColor="@color/widget_text" -->
     </RelativeLayout>
 
 </LinearLayout>

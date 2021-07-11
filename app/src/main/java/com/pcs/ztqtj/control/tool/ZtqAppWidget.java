@@ -22,11 +22,9 @@ import java.util.List;
 
 /**
  * 小部件工具类
- * 
- * @author tya
- *
  */
 public class ZtqAppWidget {
+
 	private static ZtqAppWidget instance = null;
 
 	public static ZtqAppWidget getInstance() {
@@ -72,10 +70,8 @@ public class ZtqAppWidget {
      * @return
      */
     public boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) context
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager
-                .getRunningServices(Integer.MAX_VALUE)) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
             }

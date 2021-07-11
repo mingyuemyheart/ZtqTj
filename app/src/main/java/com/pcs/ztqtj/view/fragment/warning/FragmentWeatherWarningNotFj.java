@@ -329,7 +329,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("warningcenterqx_fb", result);
+//                                    Log.e("warningcenterqx_fb", result);
                                     ((ActivityWarningCenterNotFjCity) getActivity()).dismissProgressDialog();
                                     if (!TextUtil.isEmpty(result)) {
                                         try {

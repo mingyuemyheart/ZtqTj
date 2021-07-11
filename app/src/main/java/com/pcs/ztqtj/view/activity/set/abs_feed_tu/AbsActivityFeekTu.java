@@ -12,16 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.SuggestListInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdatperFeedBackList;
 import com.pcs.ztqtj.control.tool.AppTool;
@@ -29,8 +25,10 @@ import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.youmeng.LoginAnther;
 import com.pcs.ztqtj.control.tool.youmeng.ToolQQPlatform;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoRegister;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityRegister;
 import com.pcs.ztqtj.view.myview.MyDialog;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
@@ -40,20 +38,28 @@ import com.umeng.socialize.bean.SHARE_MEDIA;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
- * Created by Z on 2016/8/1.
- * <p/>
- * 吐槽---意见反馈------父类
+ * 吐槽-意见反馈-父类
  */
 public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implements View.OnClickListener {
+
     private ListView lv_feedback_list;
     private AdatperFeedBackList adatperFeedBackList;
-    private List<SuggestListInfo> arrsuggestListInfo = new ArrayList<SuggestListInfo>();
+    private List<SuggestListInfo> arrsuggestListInfo = new ArrayList<>();
     private EditText feedback_information;
     private EditText connection_way;
 
@@ -64,10 +70,9 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
     private TextView edit_pwd_text;
 
     private Button commit_content;
-
-    public String phoneNum="";
-
+    public String phoneNum = "";
     private PackLocalUser localUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,23 +92,20 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
     }
 
     private void initView() {
-
         lv_feedback_list = (ListView) findViewById(R.id.lv_feedback_list);
-
         feedback_information = (EditText) findViewById(R.id.feedback_information);
-
         no_login_layout = (LinearLayout) findViewById(R.id.no_login_layout);
         has_login_layout = (LinearLayout) findViewById(R.id.has_login_layout);
-
         connection_way = (EditText) findViewById(R.id.connection_way);//连接方式
         name_desc = (TextView) findViewById(R.id.name_desc);//连接方式
         edit_phone_text = (TextView) findViewById(R.id.edit_phone_text);
         edit_pwd_text = (TextView) findViewById(R.id.edit_pwd_text);
-
         commit_content = (Button) findViewById(R.id.commit_content);
     }
+
     private ToolQQPlatform toolQQLogin;
     private LoginAnther login;
+
     private void initData() {
         toolQQLogin = new ToolQQPlatform(this, qqLoginListener);
         login = new LoginAnther(this);
@@ -113,7 +115,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         reqComment();
         judgeHasLogin();
     }
-
 
     public abstract void proInitData();
 
@@ -131,7 +132,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
             feedback_information.setVisibility(View.VISIBLE);
             hasLogin();
         }
-
     }
 
     private void hasLogin() {
@@ -144,7 +144,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         }
         initTextInfo();
     }
-
 
     /**
      * 设置内容提示信息
@@ -169,7 +168,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         findViewById(R.id.btn_login).setOnClickListener(this);
         commit_content.setOnClickListener(this);
 
-
         feedback_information.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -187,7 +185,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
             }
         });
     }
-
 
     /**
      * 刷新列表
@@ -211,42 +208,7 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
     private PcsDataBrocastReceiver myReceiver = new PcsDataBrocastReceiver() {
         @Override
         public void onReceive(String nameStr, String errorStr) {
-            if(mLoginUp!=null&&nameStr.equals(mLoginUp.getName())){
-                dismissProgressDialog();
-                if (!TextUtils.isEmpty(errorStr)) {
-                    showToast(getString(R.string.error_net));
-                    return;
-                }
-                PackPhotoLoginDown packDown = (PackPhotoLoginDown) PcsDataManager.getInstance().getNetPack(PackPhotoLoginUp.NAME);
-                if (packDown == null) {
-                    showToast( "登录失败！");
-
-                    return;
-                }
-                if (!"1".equals(packDown.result)) {
-                    showToast( packDown.result_msg);
-
-                    return;
-                } else if ("1".equals(packDown.result)) {
-                    showToast(getString(R.string.login_succ));
-//                    LoginInformation.getInstance().reSetValue(packDown);
-                    PackLocalUser myUserInfo = new PackLocalUser();
-                    myUserInfo.user_id = packDown.fw_user_id;
-                    myUserInfo.sys_user_id=packDown.user_id;
-                    myUserInfo.sys_nick_name=packDown.nick_name;
-                    myUserInfo.sys_head_url=packDown.head_url;
-                    myUserInfo.mobile=packDown.mobile;
-                    myUserInfo.is_jc = packDown.is_jc;
-                    localUser=myUserInfo;
-                    PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                    packLocalUserInfo.currUserInfo = myUserInfo;
-                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
-
-                    judgeHasLogin();
-                }
-            }else{
-                receiverBack(nameStr, errorStr);
-            }
+            receiverBack(nameStr, errorStr);
         }
     };
 
@@ -260,14 +222,11 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
             case R.id.btn_qq:
                 // 点击QQ登陆
                 clickLoginOtherWay(SHARE_MEDIA.QQ);
-
                 break;
             case R.id.btn_sina:
                 // 点击新浪微博登陆
                 showToast("登录失败，请使用手机号码登录！");
-
 //              clickLoginOtherWay(SHARE_MEDIA.SINA);
-
                 break;
             case R.id.btn_regeist:
 //                注册
@@ -282,13 +241,12 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
                 if (TextUtils.isEmpty(phoneNumber)) {
                     phoneNumber = connection_way.getText().toString().trim();
                 }
-
                 reqNet(feedback_information.getText().toString().trim(), phoneNumber);//提交反馈数据
                 break;
         }
     }
 
-    public void cleanUpInfo(){
+    public void cleanUpInfo() {
         feedback_information.setText("");
     }
 
@@ -314,13 +272,11 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         }
     }
 
-
-
     /**
      * 点击注册按钮
      */
     private void clickRegister() {
-        Intent intent = new Intent(this, ActivityPhotoRegister.class);
+        Intent intent = new Intent(this, ActivityRegister.class);
         Bundle bundle = new Bundle();
         bundle.putString("register_type", "0");
         bundle.putString("title", "注册");
@@ -328,56 +284,39 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         startActivity(intent);
     }
 
-  private   PackPhotoLoginUp mLoginUp;
     /**
      * 使用知天气账号登录
      */
     private void loginZTQ() {
         CommUtils.closeKeyboard(this);
-        String phone=edit_phone_text.getText().toString().trim();
-        String pwd=edit_pwd_text.getText().toString().trim();
-        phoneNum=phone;
-        if(TextUtils.isEmpty(phone)){
+        String phone = edit_phone_text.getText().toString().trim();
+        String pwd = edit_pwd_text.getText().toString().trim();
+        phoneNum = phone;
+        if (TextUtils.isEmpty(phone)) {
             showToast(getString(R.string.error_password_length));
             return;
         }
-        if(TextUtils.isEmpty(pwd)){
+        if (TextUtils.isEmpty(pwd)) {
             showToast("请输入密码");
             return;
         }
-        if(!isOpenNet()){
+        if (!isOpenNet()) {
             showToast(getString(R.string.net_err));
-            return ;
+            return;
         }
-
-
-        showProgressDialog();
-        mLoginUp = new PackPhotoLoginUp();
-        mLoginUp.platform_user_id =phone;
-        mLoginUp.pwd = PcsMD5.Md5(pwd);
-        mLoginUp.platform_type = PackPhotoLoginUp.PLAFORM_TYPE_ZTQ;
-        PcsDataDownload.addDownload(mLoginUp);
+        okHttpLogin(phone, pwd);
     }
-
 
     /**
      * 向我们的服务器提交数据 platForm: 1为新浪，2为qq，3为微信
      */
-    private void loginWeServer(String userId, String userName, String headUrl,
-                               String platForm) {
-        if(!isOpenNet()){
+    private void loginWeServer(String userId, String userName, String headUrl, String platForm) {
+        if (!isOpenNet()) {
             showToast(getString(R.string.net_err));
-            return ;
+            return;
         }
-        showProgressDialog();
-        mLoginUp = new PackPhotoLoginUp();
-        mLoginUp.head_url = headUrl;
-        mLoginUp.nick_name = userName;
-        mLoginUp.platform_user_id = userId;
-        mLoginUp.platform_type = platForm;
-        PcsDataDownload.addDownload(mLoginUp);
+        okHttpLogin(userId, userName);
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -392,6 +331,7 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
             showToast("获取信息失败");
             dismissProgressDialog();
         }
+
         @Override
         public void onComplete(final Object response) {
             dismissProgressDialog();
@@ -421,7 +361,7 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
 
         @Override
         public void onError(SHARE_MEDIA share_media, int i, Throwable throwable) {
-            showToast( "授权错误");
+            showToast("授权错误");
         }
 
         @Override
@@ -463,7 +403,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
 
         /**
          * 打印返回值
-         *
          * @param info
          */
         private void logInfo(Map<String, String> info) {
@@ -500,29 +439,24 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
      */
     private void getQQInfoSuccess(Map<String, String> info) {
         // qq平台获取到的数据：
-
-        try{
+        try {
             loginWeServer(info.get("openid"), info.get("screen_name"), info.get("profile_image_url"), "2");
-        }catch (Exception e){
+        } catch (Exception e) {
             showToast("数据错误，请用手机号登录");
         }
-
     }
 
     /**
      * 获取微信信息成功
      */
     private void getWeiXinInfoSuccess(Map<String, String> info) {
-        try{
+        try {
             loginWeServer(info.get("unionid"), info.get("name"), info.get("iconurl"), "3");
 //            loginWeServer(info.get("unionid"), info.get("nickname"), info.get("headimgurl"), "3");
-        }catch (Exception e){
+        } catch (Exception e) {
             showToast("数据错误，请用手机号登录");
         }
     }
-
-
-
 
     /**
      * 提交评论信息
@@ -535,10 +469,9 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
             showToast("还没填写内容，请填写内容。");
             return;
         }
-        phoneNum=phoneNumber;
-        commitInformation( upContent,phoneNumber);
+        phoneNum = phoneNumber;
+        commitInformation(upContent, phoneNumber);
     }
-
 
     private MyDialog dialogDesc;
 
@@ -567,4 +500,102 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         dialogDesc.setCanceledOnTouchOutside(false);
         dialogDesc.show();
     }
+
+    /**
+     * 用户登录
+     */
+    private void okHttpLogin(final String uName, final String pwd) {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String url = CONST.BASE_URL+"user/login";
+                Log.e("login", url);
+                JSONObject param = new JSONObject();
+                try {
+                    param.put("loginName", uName);
+                    param.put("pwd", pwd);
+                    String json = param.toString();
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    Log.e("login", result);
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                showToast(errorMessage);
+                                            }
+                                            if (!obj.isNull("token")) {
+                                                MyApplication.TOKEN = obj.getString("token");
+                                                Log.e("token", MyApplication.TOKEN);
+                                            }
+                                            if (!obj.isNull("limitInfo")) {
+                                                MyApplication.LIMITINFO = obj.getString("limitInfo");
+                                            }
+                                            if (!obj.isNull("userInfo")) {
+                                                JSONObject userInfo = obj.getJSONObject("userInfo");
+                                                if (!userInfo.isNull("userId")) {
+                                                    MyApplication.UID = userInfo.getString("userId");
+                                                }
+                                                if (!userInfo.isNull("loginName")) {
+                                                    MyApplication.USERNAME = userInfo.getString("loginName");
+                                                }
+                                                if (!userInfo.isNull("password")) {
+                                                    MyApplication.PASSWORD = userInfo.getString("password");
+                                                }
+                                                if (!userInfo.isNull("userName")) {
+                                                    MyApplication.NAME= userInfo.getString("userName");
+                                                }
+                                                if (!userInfo.isNull("phonenumber")) {
+                                                    MyApplication.MOBILE= userInfo.getString("phonenumber");
+                                                }
+                                                if (!userInfo.isNull("avatar")) {
+                                                    MyApplication.PORTRAIT= userInfo.getString("avatar");
+                                                }
+                                                MyApplication.saveUserInfo(AbsActivityFeekTu.this);
+
+                                                showToast(getString(R.string.login_succ));
+                                                //存储用户数据
+                                                PackLocalUser myUserInfo = new PackLocalUser();
+                                                myUserInfo.user_id = MyApplication.UID;
+                                                myUserInfo.sys_user_id = MyApplication.UID;
+                                                myUserInfo.sys_nick_name = MyApplication.NAME;
+                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
+                                                myUserInfo.mobile = MyApplication.MOBILE;
+                                                localUser = myUserInfo;
+                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
+                                                packLocalUserInfo.currUserInfo = myUserInfo;
+                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+
+                                                judgeHasLogin();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

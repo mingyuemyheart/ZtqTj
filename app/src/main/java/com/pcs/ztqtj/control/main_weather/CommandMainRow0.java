@@ -135,8 +135,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
     @Override
     protected void refresh() {
-        //刷新天气
-//        refreshWeather();
+        refreshWeather();
         okHttpWarningImages();
     }
 
@@ -300,7 +299,7 @@ public class CommandMainRow0 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("festival_list", result);
+//                                    Log.e("festival_list", result);
                                     if (!TextUtils.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -350,7 +349,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                                     }
                                                     tvNews.setVisibility(View.GONE);
                                                     tvNews1.setText(data.content);
-                                                    tvNews1.setVisibility(View.VISIBLE);
+                                                    tvNews1.setVisibility(View.GONE);
 
                                                     if (!TextUtils.isEmpty(data.icon)) {
                                                         try {
@@ -486,7 +485,7 @@ public class CommandMainRow0 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("activity_list", result);
+//                                    Log.e("activity_list", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         initViewPager(result);
                                     } else {
@@ -615,7 +614,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
     //点击广告
     private void clickAD(ImageView imageView) {
-        if (TextUtils.isEmpty(imageView.getTag().toString())) {
+        if (imageView.getTag() != null && TextUtils.isEmpty(imageView.getTag().toString())) {
             return;
         }
         String[] tag = imageView.getTag().toString().split(",");
@@ -1046,7 +1045,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                 @Override
                                 public void run() {
                                     mActivity.dismissProgressDialog();
-                                    Log.e("yjxx_index_fb_list", result);
+//                                    Log.e("yjxx_index_fb_list", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);

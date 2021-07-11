@@ -192,7 +192,7 @@ public class ControlDistributionDetail {
             return;
         }
         List<FycxFbtBean> listdata = down.list;
-        LatLngBounds.Builder builder = LatLngBounds.builder();
+//        LatLngBounds.Builder builder = LatLngBounds.builder();
         for (FycxFbtBean bean : listdata) {
             if (TextUtils.isEmpty(bean.lat) || TextUtils.isEmpty(bean.lon) || TextUtils.isEmpty(bean.val)) {
                 continue;
@@ -208,16 +208,15 @@ public class ControlDistributionDetail {
             //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
             marker.setObject(bean);
             markerOptionsList.add(marker);
-            builder.include(latLng);
+//            builder.include(latLng);
         }
 
         if(!cbRadar.isChecked() && !cbCloud.isChecked()) {
             if (markerOptionsList.size() != 0) {
                 if (markerOptionsList.size() == 1) {
                     aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptionsList.get(0).getPosition(), MAP_ZOOM));
-
                 } else {
-                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
+//                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
                 }
             }
         }
@@ -235,7 +234,7 @@ public class ControlDistributionDetail {
             return;
         }
         List<FycxFbtBean> listdata = down.list;
-        LatLngBounds.Builder builder = LatLngBounds.builder();
+//        LatLngBounds.Builder builder = LatLngBounds.builder();
         for (FycxFbtBean bean : listdata) {
             if (TextUtils.isEmpty(bean.lat) || TextUtils.isEmpty(bean.lon) ||
                     TextUtils.isEmpty(bean.val) || TextUtils.isEmpty(bean.fx)) {
@@ -253,14 +252,14 @@ public class ControlDistributionDetail {
             //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
             marker.setObject(bean);
             windMarkerOptionsList.add(marker);
-            builder.include(latLng);
+//            builder.include(latLng);
         }
 
         if(windMarkerOptionsList.size() != 0) {
             if(windMarkerOptionsList.size() == 1) {
                 aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(windMarkerOptionsList.get(0).getPosition(), MAP_ZOOM));
             } else {
-                aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
+//                aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
             }
         }
         mActivity.dismissProgressDialog();

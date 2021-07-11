@@ -95,8 +95,8 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
     protected void init() {
         mRowView = LayoutInflater.from(mActivity).inflate(R.layout.item_home_weather_3_new, null);
         mRootLayout.addView(mRowView);
-        initView(mRootLayout);
         initMap(mRootLayout);
+        initView(mRootLayout);
         setStatus(Status.SUCC);
     }
 
@@ -113,6 +113,9 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
 
         String strTip = mActivity.getResources().getString(R.string.map_forecast_tip_init);
         tvTip.setText(mActivity.getResources().getString(R.string.map_forecast_tip) + strTip);
+
+//        refreshLocation();
+//        okHttpGridWarning();
     }
 
     /**
@@ -268,7 +271,7 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                                 @Override
                                 public void run() {
                                     mActivity.dismissProgressDialog();
-                                    Log.e("yjxx_grad_index_fb", result);
+//                                    Log.e("yjxx_grad_index_fb", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);

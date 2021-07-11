@@ -16,7 +16,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
 import java.util.List;
 
 /**
- * 监测预报-模式预报
+ * 监测预报-模式预报、农业气象
  */
 public class AdapterColumn extends BaseAdapter{
 
@@ -59,7 +59,13 @@ public class AdapterColumn extends BaseAdapter{
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String path = context.getResources().getString(R.string.msyb) + dataList.get(position).getIconPath();
+        String imgUrl = dataList.get(position).getIconPath();
+        String path = "";
+        if (imgUrl.contains("tjfile/")) {
+            path = context.getResources().getString(R.string.file_download_url) + imgUrl;
+        } else {
+            path = context.getResources().getString(R.string.msyb) + imgUrl;
+        }
         imageFetcher.loadImage(path, holder.itemImage, ImageConstant.ImageShowType.SRC);
         holder.itemText.setText(dataList.get(position).getTitle());
 

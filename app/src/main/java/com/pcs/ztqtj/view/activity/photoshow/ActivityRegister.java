@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.view.activity.photoshow;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -13,7 +12,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,69 +19,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.util.CONST;
-import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.pub.ActivityProtocol;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.regex.Pattern;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 /**
- * 实景注册
- *
- * @author JiangZy
+ * 注册
  */
-public class ActivityPhotoRegister extends FragmentActivityZtqBase implements OnClickListener {
-    /**
-     * 输入法驱动
-     */
-    private InputMethodManager mIMM;
+public class ActivityRegister extends FragmentActivityZtqBase implements OnClickListener {
 
-    /**
-     * 编辑框
-     */
     private EditText etName, etPhone, etPassword, etRepassword;
-
-    /**
-     * 输入文本
-     */
-    private String nickname, mobile, password, repassword;
-
-    private String type;
-
-    private TextView tvExplain;
-
-    private TextView tvProtocol;
-    private Bundle bundle;
+    private String nickname, mobile, password, repassword,type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_photo_register);
-        bundle = getIntent().getExtras();
-        setTitleText(bundle.getString("title"));
-        type = bundle.getString("register_type");//获取新老用户标识
-        instantiateObject();
+        setContentView(R.layout.activity_register);
+        setTitleText(getIntent().getExtras().getString("title"));
+        type = getIntent().getExtras().getString("register_type");//获取新老用户标识
         // 初始化按钮
         initView();
     }
@@ -132,13 +90,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
     }
 
     /**
-     * 实例化对象
-     */
-    private void instantiateObject() {
-        mIMM = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-    }
-
-    /**
      * 初始化页面
      */
     private void initView() {
@@ -161,8 +112,8 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
         btn.setOnClickListener(this);
         Button button = (Button) findViewById(R.id.btn_login);
         button.setOnClickListener(this);
-        tvExplain = (TextView) findViewById(R.id.tv_explain);
-        tvProtocol = (TextView) findViewById(R.id.tv_protocol);
+        TextView tvExplain = (TextView) findViewById(R.id.tv_explain);
+        TextView tvProtocol = (TextView) findViewById(R.id.tv_protocol);
         if (type.equals("1")) {
             tvExplain.setVisibility(View.GONE);
             tvProtocol.setVisibility(View.GONE);
@@ -201,15 +152,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
      */
     private void clearPasswordAgain() {
         etRepassword.setText("");
-    }
-
-    /**
-     * 跳转问题页面
-     */
-    private void gotoNext() {
-        Intent intent = new Intent(this, ActivityPhotoRegisterQuestion.class);
-        startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
-        //startActivity(intent);
     }
 
     /**
@@ -266,7 +208,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 校验昵称长度
-     *
      * @param name
      * @return
      */
@@ -279,7 +220,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 校验昵称有效性
-     *
      * @param name
      * @return
      */
@@ -290,7 +230,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 验证是否输入手机号
-     *
      * @param phone
      * @return
      */
@@ -303,7 +242,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 验证手机号长度
-     *
      * @param phone
      * @return
      */
@@ -316,13 +254,11 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 校验密码长度
-     *
      * @param password
      * @return
      */
     private boolean checkPasswordLength(String password) {
-        if (TextUtils.isEmpty(password) || password.length() < 6 ||
-                password.length() > 16) {
+        if (TextUtils.isEmpty(password) || password.length() < 6 || password.length() > 16) {
             return false;
         }
         return true;
@@ -330,7 +266,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 校验密码有效性
-     *
      * @param password
      * @return
      */
@@ -341,7 +276,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 校验重复密码长度
-     *
      * @param repassword
      * @return
      */
@@ -354,7 +288,6 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
 
     /**
      * 校验重复密码有效性
-     *
      * @param password
      * @param repassword
      * @return
@@ -371,40 +304,35 @@ public class ActivityPhotoRegister extends FragmentActivityZtqBase implements On
      */
     private void submit() {
         CommUtils.closeKeyboard(this);
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-
         MyApplication.USERNAME = mobile;
         MyApplication.PASSWORD = password;
         MyApplication.NAME= nickname;
         MyApplication.MOBILE= mobile;
-        MyApplication.saveUserInfo(ActivityPhotoRegister.this);
+        MyApplication.saveUserInfo(ActivityRegister.this);
 
-        Intent intent = new Intent(ActivityPhotoRegister.this, ActivityPhotoRegisterQuestion.class);
+        Intent intent = new Intent(ActivityRegister.this, ActivityPhotoRegisterQuestion.class);
         startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
     }
 
-    /**
-     * 获取超链接文本
-     *
-     * @return
-     */
     private SpannableString getClickableSpan() {
-        String str = getString(R.string.ztp_protocol);
+        String str = "《天津惠民软件用户服务协议》";
         SpannableString spanStr = new SpannableString(str);
-        //设置下划线文字
+        // 设置下划线文字
         spanStr.setSpan(new UnderlineSpan(), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        //设置文字的单击事件
+        // 设置文字的单击事件
         spanStr.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                startActivity(new Intent(ActivityPhotoRegister.this, ActivityProtocol.class));
+                Intent intent = new Intent(ActivityRegister.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件用户服务协议");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
+                intent.putExtra("shareContent", "用户服务协议");
+                startActivity(intent);
             }
         }, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        //设置文字的前景色
-        spanStr.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.text_orange)), 0, str.length(),
+        // 设置文字的前景色
+        spanStr.setSpan(
+                new ForegroundColorSpan(getResources().getColor(R.color.text_orange)), 0, str.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spanStr;
     }

@@ -32,7 +32,7 @@ import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.pub.ActivityProtocol;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 import com.umeng.socialize.UMAuthListener;
@@ -165,46 +165,46 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
      * @return
      */
     private SpannableString getClickableSpan() {
-        String str = getString(R.string.ztp_protocol);
+        String str = "《天津惠民软件许可及服务协议》";
         SpannableString spanStr = new SpannableString(str);
         // 设置下划线文字
-        spanStr.setSpan(new UnderlineSpan(), 0, str.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spanStr.setSpan(new UnderlineSpan(), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 设置文字的单击事件
         spanStr.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                startActivity(new Intent(ActivityPhotoLogin.this,
-                        ActivityProtocol.class));
-            }
-        }, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        // 设置文字的前景色
-        spanStr.setSpan(
-                new ForegroundColorSpan(getResources().getColor(
-                        R.color.text_orange)), 0, str.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spanStr;
-    }
-
-    private SpannableString getClickableSpan2() {
-        String str = "《天津气象软件用户隐私协议》";
-        SpannableString spanStr = new SpannableString(str);
-        // 设置下划线文字
-        spanStr.setSpan(new UnderlineSpan(), 0, str.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        // 设置文字的单击事件
-        spanStr.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Intent intent = new Intent(ActivityPhotoLogin.this, ActivityProtocol.class);
-                intent.putExtra("url", "http://60.29.105.41:8099/ftp/wap/protocol2.html");
+                Intent intent = new Intent(ActivityPhotoLogin.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件许可及服务协议");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
+                intent.putExtra("shareContent", "天津惠民软件许可及服务协议");
                 startActivity(intent);
             }
         }, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         // 设置文字的前景色
         spanStr.setSpan(
-                new ForegroundColorSpan(getResources().getColor(
-                        R.color.text_orange)), 0, str.length(),
+                new ForegroundColorSpan(getResources().getColor(R.color.text_orange)), 0, str.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spanStr;
+    }
+
+    private SpannableString getClickableSpan2() {
+        String str = "《天津惠民软件用户隐私政策》";
+        SpannableString spanStr = new SpannableString(str);
+        // 设置下划线文字
+        spanStr.setSpan(new UnderlineSpan(), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 设置文字的单击事件
+        spanStr.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Intent intent = new Intent(ActivityPhotoLogin.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件用户隐私政策");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yszc.html");
+                intent.putExtra("shareContent", "天津惠民软件用户隐私政策");
+                startActivity(intent);
+            }
+        }, 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        // 设置文字的前景色
+        spanStr.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.text_orange)), 0, str.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spanStr;
     }
@@ -321,7 +321,7 @@ public class ActivityPhotoLogin extends FragmentActivityZtqBase implements OnCli
      * 点击注册按钮
      */
     private void clickRegister() {
-        Intent intent = new Intent(this, ActivityPhotoRegister.class);
+        Intent intent = new Intent(this, ActivityRegister.class);
         Bundle bundle = new Bundle();
         bundle.putString("register_type", "0");
         bundle.putString("title", "注册");

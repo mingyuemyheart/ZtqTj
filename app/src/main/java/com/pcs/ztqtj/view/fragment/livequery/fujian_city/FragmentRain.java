@@ -207,8 +207,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         PcsDataBrocastReceiver.registerReceiver(this.getActivity(), receiver);
-        View view = inflater.inflate(R.layout.fragement_livequery_rain, null);
-        return view;
+        return inflater.inflate(R.layout.fragement_livequery_rain, null);
     }
 
     private final MyReceiver receiver = new MyReceiver();
@@ -282,18 +281,18 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
      */
     private void initData() {
         halfayear_data_introduction.setText("数据说明：");
-        startDate = new ArrayList<Long>();
-        endDate = new ArrayList<Long>();
-        start_date_data = new ArrayList<String>();
-        start_time_data = new ArrayList<String>();
-        todata_data = new ArrayList<String>();
-        totime_data = new ArrayList<String>();
+        startDate = new ArrayList<>();
+        endDate = new ArrayList<>();
+        start_date_data = new ArrayList<>();
+        start_time_data = new ArrayList<>();
+        todata_data = new ArrayList<>();
+        totime_data = new ArrayList<>();
 
         cityControl = new CityListControl(activity.cityinfo);
         setTime();
-        autoRainFall = new ArrayList<RainFall>();
+        autoRainFall = new ArrayList<>();
         baseRainFall = new ArrayList<>();
-        rankRainFall = new ArrayList<RainFallRank>();
+        rankRainFall = new ArrayList<>();
 
         titleauto = new PackYltjHourDown().new RainFall();
         titleauto.county = "站点";
@@ -321,7 +320,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
 
         livequery_max_rainfall.setAdapter(rainfallMaxadatper);
 
-        rainfallcomp = new ArrayList<YltjYear>();
+        rainfallcomp = new ArrayList<>();
 
         adaptercomp = new AdapterCompImage(getActivity(), rainfallcomp);
         livequery_rainfall_complete.setAdapter(adaptercomp);
@@ -340,7 +339,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
      */
     private void reflushListTitle() {
         description_title_search.setText(seachCityInfo.NAME + "  本站雨量区间查询");
-        PackLocalCity city = cityControl.getCutParentCity();
     }
 
     private void setTime() {

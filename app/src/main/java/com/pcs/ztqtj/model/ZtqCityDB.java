@@ -87,11 +87,13 @@ public class ZtqCityDB {
      * @param context
      */
     public void init(Context context) {
+        mContext = context;
     }
 
     long start;
 
     public void initnew(final Context context, final Callback callback) {
+        mContext = context;
         start = System.currentTimeMillis();
         CityListObservable observable = new CityListObservable(context);
         observable.setCityListCallback(new CityListCallback() {
@@ -119,29 +121,77 @@ public class ZtqCityDB {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(jsonObject == null) return;
         switch (type) {
             case Tj_landscapeList:// 旅游景点，景点名称
+                if (jsonObject == null) {
+                    try {
+                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "Tj_landscapeList.json"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Tj_landscapeList = CityDBParseTool.parseCityList(jsonObject);
                 break;
             case tj_City://全国地级市，地市名称
+//                if (jsonObject == null) {
+//                    try {
+//                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "tj_City.json"));
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
 
                 break;
             case Tj_Province:// 所有省份，省份名称
+                if (jsonObject == null) {
+                    try {
+                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "Tj_Province.json"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Tj_Province = CityDBParseTool.getProvinceList(jsonObject);
                 break;
             case Tj_Qgdisty:// 全国城市，到区县级
+                if (jsonObject == null) {
+                    try {
+                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "Tj_Qgdisty.json"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Tj_Qgdisty = CityDBParseTool.parseCityList(jsonObject);
                 Tj_citys = CityDBParseTool.parseTJCity(Tj_Qgdisty);
                 break;
             case around_area:// 天津周边城市及天津内区域
+                if (jsonObject == null) {
+                    try {
+                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "around_area.json"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 around_area = CityDBParseTool.parseAroundCity(jsonObject);
                 break;
             case Tj_auto:// 天津自动站
+                if (jsonObject == null) {
+                    try {
+                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "Tj_auto.json"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Tj_auto = CityDBParseTool.parseStationList(jsonObject);
                 baseTj_auto = CityDBParseTool.parseBaseStationList(Tj_auto);
                 break;
             case Tj_Qgstations:// 全国所有地市、县级市、区域
+                if (jsonObject == null) {
+                    try {
+                        jsonObject = new JSONObject(CityDBParseTool.getStringFromAssets(mContext, "Tj_Qgstations.json"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Tj_Qgstations = CityDBParseTool.parseStationList(jsonObject);
                 break;
             default:

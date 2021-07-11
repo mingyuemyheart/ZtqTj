@@ -310,8 +310,7 @@ public class FragmentActivityZtqBase extends FragmentActivityBase {
 
     public void showToast(String str) {
         if (toast == null) {
-            toast = Toast.makeText(getApplicationContext(), str,
-                    Toast.LENGTH_SHORT);
+            toast = Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT);
         } else {
             toast.setText(str);
         }

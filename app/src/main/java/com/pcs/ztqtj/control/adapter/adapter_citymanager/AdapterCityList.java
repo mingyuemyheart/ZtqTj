@@ -197,7 +197,7 @@ public class AdapterCityList extends BaseAdapter {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("week_data", result);
+//                                    Log.e("week_data", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -208,6 +208,9 @@ public class AdapterCityList extends BaseAdapter {
                                                     if (!TextUtil.isEmpty(p_new_weekobj.toString())) {
                                                         PackMainWeekWeatherDown pcsDownPack = new PackMainWeekWeatherDown();
                                                         pcsDownPack.fillData(p_new_weekobj.toString());
+                                                        if (pcsDownPack == null) {
+                                                            return;
+                                                        }
                                                         WeekWeatherInfo info = pcsDownPack.getToday();
                                                         if (info != null) {
                                                             String lowt_hight = "";
@@ -220,8 +223,15 @@ public class AdapterCityList extends BaseAdapter {
                                                                 weatherTemperature.setVisibility(View.VISIBLE);
                                                                 weatherTemperature.setText(lowt_hight);
                                                             }
-                                                            BitmapDrawable bitmap = mImageFetcher.getImageCache().getBitmapFromAssets(pcsDownPack.getIconPath(pcsDownPack.getTodayIndex()));
-                                                            weatherCityIcon.setImageDrawable(bitmap);
+                                                            String imgUrl = pcsDownPack.getIconPath(pcsDownPack.getTodayIndex());
+                                                            if (!TextUtil.isEmpty(imgUrl) && mImageFetcher != null) {
+                                                                try {
+                                                                    BitmapDrawable bitmap = mImageFetcher.getImageCache().getBitmapFromAssets(imgUrl);
+                                                                    weatherCityIcon.setImageDrawable(bitmap);
+                                                                } catch (NullPointerException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
                                                         } else {
                                                             weatherTemperature.setText("");
                                                             weatherCityIcon.setVisibility(View.GONE);

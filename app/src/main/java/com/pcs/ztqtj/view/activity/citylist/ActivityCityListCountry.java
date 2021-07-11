@@ -16,6 +16,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterFamilySelectCityExpandableListView;
 import com.pcs.ztqtj.control.tool.AutoDownloadWeather;

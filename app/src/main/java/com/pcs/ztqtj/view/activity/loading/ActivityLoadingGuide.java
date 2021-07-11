@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.loading.CommandLoadingGuide;
 import com.pcs.ztqtj.view.activity.FragmentActivityBase;
-import com.pcs.lib.lib_pcs_v3.control.log.Log;
 
 /**
  * 引导页

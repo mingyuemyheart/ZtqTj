@@ -63,6 +63,7 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
@@ -250,23 +251,25 @@ public class ActivityMain extends FragmentActivity {
         dialog.show();
         tvMessage.setText("隐私服务协议");
         tvContent.setText("感谢您使用“天津惠民”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津惠民隐私政策》和《天津惠民用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津惠民”。我公司将尽全力保护您的个人信息安全。");
-        tvPrivacy.setText("《天津惠民隐私政策》");
+        tvPrivacy.setText("《天津惠民软件用户隐私政策》");
         tvPrivacy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ActivityMain.this, HtmlActivity.class);
-                intent.putExtra(CONST.ACTIVITY_NAME, "隐私政策");
-                intent.putExtra(CONST.WEB_URL, "http://220.243.129.159:8081/web/smart/yszc.html");
+                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件用户隐私政策");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yszc.html");
+                intent.putExtra("shareContent", "天津惠民软件用户隐私政策");
                 startActivity(intent);
             }
         });
-        tvProtocal.setText("《天津惠民用户服务协议》");
+        tvProtocal.setText("《天津惠民软件许可及服务协议》");
         tvProtocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ActivityMain.this, HtmlActivity.class);
-                intent.putExtra(CONST.ACTIVITY_NAME, "用户服务协议");
-                intent.putExtra(CONST.WEB_URL, "http://220.243.129.159:8081/web/smart/yhxy.html");
+                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件许可及服务协议");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
+                intent.putExtra("shareContent", "天津惠民软件许可及服务协议");
                 startActivity(intent);
             }
         });

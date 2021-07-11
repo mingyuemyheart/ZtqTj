@@ -416,29 +416,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         return info;
     }
 
-    private void addCity() {
-        if(isProvince) {
-            PackLocalCityMain localCityMain =  ZtqCityDB.getInstance().getCityMain();
-            if(localCityMain != null) {
-                String parentId = localCityMain.PARENT_ID;
-                PackLocalCity provinceCity = ZtqCityDB.getInstance().getProvinceById(parentId);
-                if(provinceCity != null) {
-                    String name = provinceCity.NAME;
-                    ColumnInfo info = new ColumnInfo(name, parentId);
-                    siteColumnList.add(0, info);
-                }
-            }
-            setSitePopupWindow(siteColumnList);
-        }
-    }
-
-    private void deleteCity() {
-        if(isProvince && siteColumnList.size() > 0) {
-            siteColumnList.remove(0);
-            setSitePopupWindow(siteColumnList);
-        }
-    }
-
     /**
      * 隐藏图例
      */
@@ -514,12 +491,10 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                     cbGj.setChecked(false);
                 }
                 currentStatus = ZD;
-                addCity();
                 reqDistribution();
                 showLegend();
             } else {
                 controlDistribution.clear(ZD);
-                deleteCity();
                 hideLegend();
             }
             setDropdownState();
@@ -537,12 +512,10 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                     cbGj.setChecked(false);
                 }
                 currentStatus = DB;
-                addCity();
                 reqDistribution();
                 showLegend();
             } else {
                 controlDistribution.clear(DB);
-                deleteCity();
                 hideLegend();
             }
             setDropdownState();
@@ -560,12 +533,10 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                     cbDb.setChecked(false);
                 }
                 currentStatus = GJ;
-                addCity();
                 reqDistribution();
                 showLegend();
             } else {
                 controlDistribution.clear(GJ);
-                deleteCity();
                 hideLegend();
             }
             setDropdownState();

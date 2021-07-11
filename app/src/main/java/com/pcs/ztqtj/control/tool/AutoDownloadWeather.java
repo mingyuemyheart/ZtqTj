@@ -22,7 +22,6 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherUp;
 
 /**
  * 自动下载天气
- *
  * @author JiangZy
  */
 public class AutoDownloadWeather {
@@ -90,7 +89,6 @@ public class AutoDownloadWeather {
         }
         mDefaultCity = cityInfo;
         // 首页预警
-        //PackYjxxIndexUp packYjxxIndex = new PackYjxxIndexUp();
         PackYjxxIndexFbUp packYjxxIndex=new PackYjxxIndexFbUp();
         packYjxxIndex.setCity(cityInfo);
         PcsDataDownload.addDownload(packYjxxIndex);
@@ -120,13 +118,7 @@ public class AutoDownloadWeather {
         PcsDataDownload.removeDownload(packAirInfoSimple);
         //未读预警
         PackWarnWeatherUp packWarnWeatherUp = new PackWarnWeatherUp();
-//        if (mMainCity != null) {
-//            if (mMainCity.isFjCity){
-//                packWarnWeatherUp.areaid = mMainCity.PARENT_ID;
-//            }else{
-                packWarnWeatherUp.areaid = mMainCity.ID;
-//            }
-//        }
+        packWarnWeatherUp.areaid = mMainCity.ID;
         PcsDataDownload.removeDownload(packWarnWeatherUp);
         // 生活指数
         PackLifeNumberUp packLifeNumber = new PackLifeNumberUp();
@@ -142,7 +134,6 @@ public class AutoDownloadWeather {
 
     /**
      * 设置首页数据暂停
-     *
      * @param isPause
      */
     public void setMainDataPause(boolean isPause) {
@@ -160,9 +151,6 @@ public class AutoDownloadWeather {
         if (cityMain == null||TextUtils.isEmpty(cityMain.ID)) {
             return;
         }
-//        if (cityMain.ID.equals(mMainCity.ID)) {
-//            //return;
-//        }
         stopMainData();
         mMainCity.copyCity(cityMain);
         // 一周天气
@@ -178,13 +166,7 @@ public class AutoDownloadWeather {
         PcsDataDownload.addDownload(packAirInfoSimple);
         //未读预警
         PackWarnWeatherUp packWarnWeatherUp = new PackWarnWeatherUp();
-//        if (mMainCity != null) {
-//            if (mMainCity.isFjCity){
-//                packWarnWeatherUp.areaid = mMainCity.PARENT_ID;
-//            }else{
-                packWarnWeatherUp.areaid = mMainCity.ID;
-//            }
-//        }
+        packWarnWeatherUp.areaid = mMainCity.ID;
         PcsDataDownload.addDownload(packWarnWeatherUp);
         // 生活指数
         PackLifeNumberUp packLifeNumber = new PackLifeNumberUp();

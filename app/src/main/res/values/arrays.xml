@@ -1,19 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- 云图类型列表 -->
+    <!-- 综合观测 -->
     <string-array name="product_list">
         <item>雷达回波,101030201</item>
         <item>卫星云图,101030202</item>
         <item>台风路径,101030203</item>
         <item>实况查询,101030204</item>
         <item>整点天气,101030205</item>
-        <!--<item>下垫面观测</item>-->
         <item>闪电定位,101030206</item>
-<!--        <item>水利汛情</item>-->
         <item>空气质量,101030207</item>
         <item>天气形势,101030208</item>
-        <!--<item>资料查询</item>-->
+        <item>城市积水,101030213</item>
     </string-array>
+    <string-array name="product_icon_list">
+        <item>@drawable/icon_product_radar</item>
+        <item>@drawable/icon_product_satellite</item>
+        <item>@drawable/icon_product_typhoon</item>
+        <item>@drawable/icon_product_pointof</item>
+        <item>@drawable/icon_product_rainserach</item>
+        <item>@drawable/icon_product_lightning</item>
+        <item>@drawable/icon_product_airquality</item>
+        <item>@drawable/icon_product_sutiation</item>
+        <item>@drawable/icon_product_fujian</item>
+    </string-array>
+    <string-array name="product_icon_list_gray">
+        <item>@drawable/icon_product_radar_gray</item>
+        <item>@drawable/icon_product_satellite_gray</item>
+        <item>@drawable/icon_product_typhoon_gray</item>
+        <item>@drawable/icon_product_pointof_gray</item>
+        <item>@drawable/icon_product_rainserach_gray</item>
+        <item>@drawable/icon_product_lightning_gray</item>
+        <item>@drawable/icon_product_airquality_gray</item>
+        <item>@drawable/icon_product_sutiation_gray</item>
+        <item>@drawable/icon_product_fujian</item>
+    </string-array>
+
+    <!-- 预报分析 -->
     <string-array name="product_analysis">
         <item>气象报告,101030209</item>
         <!--<item>重要天气</item>-->
@@ -23,22 +45,6 @@
         <!--<item>交通气象</item>-->
         <item>海洋气象,101030212</item>
         <!--<item>定点服务</item>-->
-    </string-array>
-
-    <!-- 气象服务产品名称列表 -->
-    <!-- 气象服务产品图片资源列表 -->
-    <string-array name="product_icon_list">
-        <item>@drawable/icon_product_radar</item>
-        <item>@drawable/icon_product_satellite</item>
-        <item>@drawable/icon_product_typhoon</item>
-        <item>@drawable/icon_product_pointof</item>
-        <item>@drawable/icon_product_rainserach</item>
-        <!--<item>@drawable/icon_product_observation</item>-->
-        <item>@drawable/icon_product_lightning</item>
-<!--        <item>@drawable/icon_product_fujian</item>-->
-        <item>@drawable/icon_product_airquality</item>
-        <item>@drawable/icon_product_sutiation</item>
-        <!--<item>@drawable/icon_product_data_query</item>-->
     </string-array>
     <string-array name="product_icon_list_analysis">
         <item>@drawable/icon_product_overview</item>
@@ -50,7 +56,43 @@
         <item>@drawable/icon_product_ocean</item>
         <!--<item>@drawable/icon_product_location_warning</item>-->
     </string-array>
-    <!-- 气象服务列表 -->
+    <string-array name="product_icon_list_analysis_gray">
+        <item>@drawable/icon_product_overview_gray</item>
+        <!--<item>@drawable/icon_product_importweather_gray</item>-->
+        <item>@drawable/icon_product_guideforecast_gray</item>
+        <item>@drawable/icon_product_number_gray</item>
+        <!--<item>@drawable/icon_product_agriculture_gray</item>-->
+        <!--<item>@drawable/icon_product_car_gray</item>-->
+        <item>@drawable/icon_product_ocean_gray</item>
+        <!--<item>@drawable/icon_product_location_warning</item>-->
+    </string-array>
+
+    <!-- 生活气象 -->
+    <string-array name="life_list">
+        <item>旅游气象,101030401</item>
+        <item>气象影视,101030402</item><!-- <item>亲情城市</item>-->
+        <item>天气新闻,101030403</item>
+        <item>专家解读,101030404</item>
+        <item>灾害防御,101030405</item>
+        <item>气象科普,101030406</item>
+    </string-array>
+    <string-array name="life_icon_list">
+        <item>@drawable/life_travel</item>
+        <item>@drawable/life_video</item>
+        <item>@drawable/life_news</item>
+        <item>@drawable/life_expert</item>
+        <item>@drawable/life_dis</item>
+        <item>@drawable/life_weather</item>
+    </string-array>
+    <string-array name="life_icon_list_gray">
+        <item>@drawable/life_travel_gray</item>
+        <item>@drawable/life_video_gray</item>
+        <item>@drawable/life_news_gray</item>
+        <item>@drawable/life_expert_gray</item>
+        <item>@drawable/life_dis_gray</item>
+        <item>@drawable/life_weather_gray</item>
+    </string-array>
+
     <string-array name="city_list">
         <item>&#160;&#160;天津中心气象台</item>
         <item>宝山</item>
@@ -102,24 +144,6 @@
         <item>21</item>
         <item>22</item>
         <item>23</item>
-    </string-array>
-    <!-- 气象生活 栏目顺序 1、旅游气象；2、气象影视;3、天气新闻；4、专家解读 ;5、灾害防御;6、气象科普. -->
-    <string-array name="life_list">
-        <item>旅游气象,101030401</item>
-        <item>气象影视,101030402</item><!-- <item>亲情城市</item>-->
-        <item>天气新闻,101030403</item>
-        <item>专家解读,101030404</item>
-        <item>灾害防御,101030405</item>
-        <item>气象科普,101030406</item>
-    </string-array>
-    <!-- 气象生活 栏目顺序 图片资源列表 -->
-    <string-array name="life_icon_list">
-        <item>@drawable/life_travel</item>
-        <item>@drawable/life_video</item>
-        <item>@drawable/life_news</item>
-        <item>@drawable/life_expert</item>
-        <item>@drawable/life_dis</item>
-        <item>@drawable/life_weather</item>
     </string-array>
 
     <!-- 福建防汛 栏目顺序 "全省汛情摘要", "雨情信息", "水位站信息","水库站信息", "风情信息" -->

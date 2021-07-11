@@ -13,12 +13,9 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.AirRankNew;
 import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.airinfopack.PackAirRankNewUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.air_quality.AdapterAirChoiceCity;
@@ -49,8 +46,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.pcs.ztqtj.view.activity.air_quality.ActivityAirQualityProvince.keyPosition;
-
 /**
  * 空气质量-排行榜
  */
@@ -65,7 +60,6 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
     private List<AirRankNew> airListDataParent = new ArrayList<>();
     private List<AirRankNew> listCityPop = new ArrayList<>();
     private List<AirRankNew> listProvincePop = new ArrayList<>();
-    private PackAirRankNewUp packDetialup ;
     private CheckBox cbRank;
 
     @Override
@@ -139,16 +133,8 @@ public class ActivityAirRankLevel extends FragmentActivityZtqBase {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
                     pop.dismiss();
-//                    Intent intent = new Intent(ActivityAirRankLevel.this, ActivityAirQualityProvince.class);
-//                    ActivityAirQualityProvince.province = listProvincePop.get(position).province;
-//                    ActivityAirQualityProvince.reqCode = packDetialup.rank_type;
-//                    keyPosition = keyPosition;
-
                     Intent intent = new Intent(ActivityAirRankLevel.this, ActivityAirQualityProvinceRranking.class);
                     ActivityAirQualityProvinceRranking.province = listProvincePop.get(position).province;
-                    ActivityAirQualityProvinceRranking.reqCode = packDetialup.rank_type;
-                    ActivityAirQualityProvinceRranking.keyPosition = keyPosition;
-
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();

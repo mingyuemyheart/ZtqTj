@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/corner_top_white"
+        android:gravity="center"
+        android:padding="20dp"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tvContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:lineSpacingExtra="5dp"
+            android:text="针对不同领域的行业用户、团体和个人，提供最权威的专业专项和公共气象服务，服务领域涵盖海洋、保险、旅游、供暖、电力、交通、建筑等诸多方面。依托强大的专业技术团队和雄厚的综合观测实力，负责提供实况监测、预报预警、气象资料、气候可行性论证等多种类别的专业气象服务产品，以需求为导向，提供定制化、分众化和智能化的专业气象服务。遵循“监测精密、预报精准、服务精细”的理念，辅助受众趋利避害、防灾减灾，科学合理地安排生产、经营等活动，获取更大的社会和经济效益。"
+            android:textColor="@color/black"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvContent"
+            android:text="联系方式："
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/tv1"
+            app:layout_constraintTop_toTopOf="@+id/tv1"
+            app:layout_constraintBottom_toBottomOf="@+id/tv1"
+            android:text="天津市气象服务中心"
+            android:textColor="@color/bg_title"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvNumber1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toEndOf="@+id/tv1"
+            app:layout_constraintTop_toBottomOf="@+id/tv2"
+            android:text="022-23333578"
+            android:textColor="@color/bg_title"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvNumber2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toEndOf="@+id/tv1"
+            app:layout_constraintTop_toBottomOf="@+id/tvNumber1"
+            android:text="022-23348205"
+            android:textColor="@color/bg_title"
+            android:textSize="14sp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvClose"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="关 闭"
+        android:gravity="center"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/clTop"
+        android:background="@drawable/corner_bottom_blue"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</android.support.constraint.ConstraintLayout>

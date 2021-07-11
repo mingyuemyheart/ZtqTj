@@ -1,5 +1,6 @@
 package com.pcs.ztqtj.view.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -10,11 +11,15 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +30,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,11 +39,9 @@ import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalSetUpdate;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.net.HotAppInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackgetrecommendfriendsmsgDown;
@@ -55,14 +57,14 @@ import com.pcs.ztqtj.control.tool.image.GetImageView;
 import com.pcs.ztqtj.model.SetsBean;
 import com.pcs.ztqtj.model.SettingDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.AuthorityUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoUserCenter;
+import com.pcs.ztqtj.view.activity.prove.WeatherProveActivity;
 import com.pcs.ztqtj.view.activity.set.AcitvityAboutZTQ;
 import com.pcs.ztqtj.view.activity.set.AcitvityFeedBack;
 import com.pcs.ztqtj.view.activity.set.ActivityDisclaimer;
-import com.pcs.ztqtj.view.activity.set.ActivityHelpQuestion;
-import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
@@ -84,10 +86,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     private ActivityMain activity;
     private MyReceiver mReceiver = null;
-    private Button btnUserLogin = null;
     private Button btnLogin;
     private TextView tvUserName;
-    private ImageView ivHead;
+    private ImageView ivHome,ivHead;
     private DialogTwoButton dialogClearCache;
     private GetImageView imageTool = new GetImageView();
     private MyListView listView;
@@ -99,7 +100,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
      */
     private static final int GOTOLOGIN = 1001;
 
-    private RelativeLayout rlUser = null;
     private MyGridView gridSets;
     private List<SetsBean> setsBeanList = new ArrayList<>();
     private AdapterRightSets setsAdapter;
@@ -125,10 +125,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        btnUserLogin = (Button) getView().findViewById(R.id.btn_login);
-        rlUser = (RelativeLayout) getView().findViewById(R.id.rl_user);
         btnLogin = (Button) getView().findViewById(R.id.btn_login2);
         tvUserName = (TextView) getView().findViewById(R.id.tv_username);
+        ivHome = (ImageView) getView().findViewById(R.id.ivHome);
         ivHead = (ImageView) getView().findViewById(R.id.iv_head);
         listView = (MyListView) getView().findViewById(R.id.lv_list);
         gridSets = (MyGridView) getView().findViewById(R.id.grid_set);
@@ -185,32 +184,32 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 
     private void initData() {
         listData = new ArrayList<>();
-        Map<String, String> itemBootStart = new HashMap<String, String>();
+        Map<String, String> itemBootStart = new HashMap<>();
         itemBootStart.put("t", "清除缓存");
         itemBootStart.put("i", R.drawable.icon_column_manager_autostart + "");
         listData.add(itemBootStart);
 
-        Map<String, String> version = new HashMap<String, String>();
+        Map<String, String> version = new HashMap<>();
         version.put("t", "您的建议");
         version.put("i", R.drawable.icon_column_manager_advice + "");
         listData.add(version);
 
-        Map<String, String> itemUpdate = new HashMap<String, String>();
+        Map<String, String> itemUpdate = new HashMap<>();
         itemUpdate.put("t", "免责申明");
         itemUpdate.put("i", "" + R.drawable.icon_column_manager_update);
         listData.add(itemUpdate);
 
-        Map<String, String> itemAutoShare = new HashMap<String, String>();
+        Map<String, String> itemAutoShare = new HashMap<>();
         itemAutoShare.put("t", "版本检测");
         itemAutoShare.put("i", R.drawable.icon_column_manager_version + "");
         listData.add(itemAutoShare);
 
-        Map<String, String> advice = new HashMap<String, String>();
+        Map<String, String> advice = new HashMap<>();
         advice.put("t", "更新频率");
         advice.put("i", R.drawable.icon_set_item_autoshare + "");
         listData.add(advice);
 
-        Map<String, String> recommend = new HashMap<String, String>();
+        Map<String, String> recommend = new HashMap<>();
         recommend.put("t", "推荐好友");
         recommend.put("i", R.drawable.icon_column_manager_recommend + "");
         listData.add(recommend);
@@ -249,8 +248,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     }
 
     private void gotoLogin() {
-        Intent intent = new Intent(getActivity(), ActivityPhotoLogin.class);
-        startActivityForResult(intent, GOTOLOGIN);
+        startActivityForResult(new Intent(activity, ActivityPhotoLogin.class), GOTOLOGIN);
     }
 
     /**
@@ -267,10 +265,10 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     public void initdata() {
         mReceiver = new MyReceiver();
         PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
-        SetsBean bean1 = new SetsBean(R.drawable.icon_set_item_ztq, "我的");
+        SetsBean bean1 = new SetsBean(R.drawable.icon_set_item_ztq, "气象证明");
         SetsBean bean2 = new SetsBean(R.drawable.icon_set_about, "二维码");
         SetsBean bean3 = new SetsBean(R.drawable.icon_set_item_push, "推送设置");
-        SetsBean bean4 = new SetsBean(R.drawable.icon_set_item_useguide, "功能导航");
+        SetsBean bean4 = new SetsBean(R.drawable.icon_set_item_useguide, "产品定制");
         setsBeanList.add(bean1);
         setsBeanList.add(bean2);
 //        setsBeanList.add(bean3);
@@ -283,11 +281,11 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        // 个人中心
+                        // 气象证明
                         if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
                             gotoLogin();
                         } else {
-                            gotoAcitvity(ActivityPhotoUserCenter.class, "我");
+                            gotoAcitvity(WeatherProveActivity.class, "气象灾害证明");
                         }
                         break;
                     case 1:
@@ -299,8 +297,8 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 //                        gotoAcitvity(ActivityPushMain.class, "推送设置");
 //                        break;
                     case 2:
-                        // 功能导航
-                        gotoAcitvity(ActivityHelpQuestion.class, "功能导航");
+                        // 产品定制
+                        dialogProductReserve();
                         break;
                     default:
                         break;
@@ -344,10 +342,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             }
         });
 
-        btnUserLogin.setOnClickListener(this);
-        rlUser.setOnClickListener(this);
-        getView().findViewById(R.id.closefragement).setOnClickListener(this);
-        getView().findViewById(R.id.btn_closefragement).setOnClickListener(this);
+        ivHome.setOnClickListener(this);
         btnLogin.setOnClickListener(this);
         tvUserName.setOnClickListener(this);
         ivHead.setOnClickListener(this);
@@ -388,7 +383,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         bundle.putSerializable("city", cityMain);
         bundle.putString("title", titletext);
         intent.putExtras(bundle);
-        intent.setClass(getActivity(), intentactivity);
+        intent.setClass(activity, intentactivity);
         startActivity(intent);
         rightInAnimation();
     }
@@ -418,17 +413,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_login:
-                if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
-                    // 已登录
-                    ZtqCityDB.getInstance().removeMyInfo();
-//                    LoginInformation.getInstance().clearLoginInfo();
-                    initUser();
-                } else {
-                    gotoLogin();
-                }
-                break;
-            case R.id.rl_user:
             case R.id.tv_username:
             case R.id.iv_head:
                 if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
@@ -436,8 +420,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                     startActivityForResult(intent, MyConfigure.RESULT_SET_TO_USER);
                 }
                 break;
-            case R.id.closefragement:
-            case R.id.btn_closefragement:
+            case R.id.ivHome:
                 activity.showSetting(false);
                 break;
             case R.id.btn_login2:
@@ -619,6 +602,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private ProgressBar progerssBar;
     private Dialog checkDialogdownload;
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -696,24 +680,24 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         // Map<String, Object> dialogmapa = new HashMap<String, Object>();
         // dialogmapa.put("c", "启动时更新");
         // dialogmapa.put("r", true);
-        Map<String, Object> dialogNow = new HashMap<String, Object>();
+        Map<String, Object> dialogNow = new HashMap<>();
         dialogNow.put("c", "实时更新");
         dialogNow.put("r", true);
-        Map<String, Object> dialogPart = new HashMap<String, Object>();
+        Map<String, Object> dialogPart = new HashMap<>();
         dialogPart.put("c", "半小时更新");
         dialogPart.put("r", false);
 
-        Map<String, Object> dialoTwoHours = new HashMap<String, Object>();
+        Map<String, Object> dialoTwoHours = new HashMap<>();
         dialoTwoHours.put("c", "2小时更新");
         dialoTwoHours.put("r", false);
 
-        Map<String, Object> dialogSixHours = new HashMap<String, Object>();
+        Map<String, Object> dialogSixHours = new HashMap<>();
         dialogSixHours.put("c", "6小时更新");
         dialogSixHours.put("r", false);
-        Map<String, Object> dialogTwelveHours = new HashMap<String, Object>();
+        Map<String, Object> dialogTwelveHours = new HashMap<>();
         dialogTwelveHours.put("c", "12小时更新");
         dialogTwelveHours.put("r", false);
-        Map<String, Object> dialogTwentyFourHours = new HashMap<String, Object>();
+        Map<String, Object> dialogTwentyFourHours = new HashMap<>();
         dialogTwentyFourHours.put("c", "24小时更新");
         dialogTwentyFourHours.put("r", false);
 
@@ -746,8 +730,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             dialogListview = (MyListView) view.findViewById(R.id.listview);
             dialogadapter = new AdapterSetDialogList(getActivity(), dialoglistData, radioClick);
             dialogListview.setAdapter(dialogadapter);
-            updateDialog = new DialogOneButton(getActivity(), view, "确定",
-                    new DialogFactory.DialogListener() {
+            updateDialog = new DialogOneButton(getActivity(), view, "确定", new DialogFactory.DialogListener() {
                         @Override
                         public void click(String str) {
                             updateDialog.dismiss();
@@ -793,6 +776,81 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             return true;
         } else {
             return false;
+        }
+    }
+
+    private String dialNumber = "022-23333578";
+    /**
+     * 产品定制
+     */
+    private void dialogProductReserve() {
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.dialog_product_reserve, null);
+        TextView tvClose = view.findViewById(R.id.tvClose);
+        final TextView tvNumber1 = view.findViewById(R.id.tvNumber1);
+        final TextView tvNumber2 = view.findViewById(R.id.tvNumber2);
+
+        final Dialog dialog = new Dialog(activity, R.style.CustomProgressDialog);
+        dialog.setContentView(view);
+        dialog.show();
+        tvNumber1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialNumber = tvNumber1.getText().toString();
+                checkPhoneAuthority(dialNumber);
+            }
+        });
+        tvNumber2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialNumber = tvNumber2.getText().toString();
+                checkPhoneAuthority(dialNumber);
+            }
+        });
+        tvClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    /**
+     * 申请电话权限
+     */
+    private void checkPhoneAuthority(String dialNumber) {
+        if (Build.VERSION.SDK_INT < 23) {
+            try {
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+dialNumber)));
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }else {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, AuthorityUtil.AUTHOR_PHONE);
+            }else {
+                startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+dialNumber)));
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case AuthorityUtil.AUTHOR_PHONE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+dialNumber)));
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }else {
+//                    if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+//                        AuthorityUtil.intentAuthorSetting(mContext, "\""+getString(R.string.app_name)+"\""+"需要使用电话权限，是否前往设置？");
+//                    }
+                }
+                break;
         }
     }
 

@@ -2,6 +2,7 @@ package com.pcs.ztqtj.view.activity.livequery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -134,8 +137,6 @@ public class ActivityTimeSearch extends FragmentActivityZtqBase implements View.
         setListViewTitle(cityControl.getCutChildCity().NAME, cityControl.getCutParentCity().NAME);
 
         PcsDataDownload.addDownload(packRainstatHourTimeUp);
-
-        okHttpRainWill();
     }
 
     private void initEvent() {
@@ -356,6 +357,8 @@ public class ActivityTimeSearch extends FragmentActivityZtqBase implements View.
                 endTime = time;
             }
         }, startTime, endTime);
+
+        okHttpRainWill();
     }
 
     public int timeCompare(String startTime, String endTime) {
@@ -424,6 +427,8 @@ public class ActivityTimeSearch extends FragmentActivityZtqBase implements View.
                                 @Override
                                 public void run() {
                                     dismissProgressDialog();
+                                    baseAutoList.clear();
+                                    adatperTown.notifyDataSetChanged();
                                     Log.e("datastatis_rainwill", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
@@ -447,7 +452,7 @@ public class ActivityTimeSearch extends FragmentActivityZtqBase implements View.
                                                         } else {
                                                             baseAutoList.addAll(down.dataList);
                                                         }
-                                                        adatperTown.notifyDataSetChanged();
+                                                        reRank(baseAutoList, adatperTown);
                                                     }
                                                 }
                                             }
@@ -464,6 +469,37 @@ public class ActivityTimeSearch extends FragmentActivityZtqBase implements View.
                 }
             }
         }).start();
+    }
+
+    private void reRank(List<ItemRainNow> list, AdatperRainNowFall adapter) {
+        if (list.size() <= 1) {
+            return;
+        }
+        Collections.sort(list, new Comparator<ItemRainNow>() {
+            @Override
+            public int compare(ItemRainNow arg0, ItemRainNow arg1) {
+                String value0 = arg0.rainfall,value1 = arg1.rainfall;
+                if (TextUtils.isEmpty(value0) || TextUtils.isEmpty(value1)) {
+                    return -1;
+                }
+                if (value0.contains("雨量")) {
+                    return -1;
+                }
+                if (value1.contains("雨量")) {
+                    return 1;
+                }
+                float a = Float.parseFloat(value0);
+                float b = Float.parseFloat(value1);
+                if (a > b) {
+                    return -1;
+                }
+                if (a < b) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
+        adapter.notifyDataSetChanged();
     }
 
 }

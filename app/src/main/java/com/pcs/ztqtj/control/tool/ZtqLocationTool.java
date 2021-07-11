@@ -18,16 +18,13 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.geocoder.StreetNumber;
-import com.pcs.ztqtj.MyApplication;
-import com.pcs.ztqtj.control.listener.PcsOnGeocodeSearchListener;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.lib.lib_pcs_v3.control.log.Log;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalLocationSet;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalTestLocation;
+import com.pcs.ztqtj.control.listener.PcsOnGeocodeSearchListener;
+import com.pcs.ztqtj.model.ZtqCityDB;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +45,7 @@ public class ZtqLocationTool {
     // 定位客户端
     private AMapLocationClient mAMapLocationClient = null;
     // 监听列表
-    private Map<Integer, PcsLocationListener> mListenerMap = new HashMap<Integer, PcsLocationListener>();
+    private Map<Integer, PcsLocationListener> mListenerMap = new HashMap<>();
     // 地理编码搜索
     private GeocodeSearch mGeocodeSearch;
     // 地理编码搜索地址
@@ -65,7 +62,6 @@ public class ZtqLocationTool {
         if (instance == null) {
             instance = new ZtqLocationTool();
         }
-
         return instance;
     }
 
@@ -75,7 +71,6 @@ public class ZtqLocationTool {
 
     /**
      * 设置暂停
-     *
      * @param isPaused
      */
     public void setPause(boolean isPaused) {
@@ -134,7 +129,6 @@ public class ZtqLocationTool {
 
     /**
      * 获取搜索的坐标
-     *
      * @return
      */
     public LatLng getLatLng() {
@@ -143,7 +137,6 @@ public class ZtqLocationTool {
 
     /**
      * 获取搜索地址
-     *
      * @return
      */
     public RegeocodeAddress getSearchAddress() {
@@ -152,7 +145,6 @@ public class ZtqLocationTool {
 
     /**
      * 获取定位到的城市
-     *
      * @return
      */
     public PackLocalCityLocation getLocationCity() {
@@ -186,53 +178,16 @@ public class ZtqLocationTool {
             packSet = new PackLocalLocationSet();
             PcsDataManager.getInstance().saveLocalData(PackLocalLocationSet.KEY, packSet);
         }
-
         return packSet.isAutoLocation;
-    }
-
-    /**
-     * 虚拟定位（测试用）
-     */
-    private void virtualLocation() {
-        PackLocalTestLocation pack = (PackLocalTestLocation) PcsDataManager.getInstance().getLocalPack
-                (PackLocalTestLocation.KEY);
-        if (pack == null) {
-            return;
-        }
-
-        mAMapLocation = new AMapLocation("test");
-        mAMapLocation.setLatitude(pack.latitude);
-        mAMapLocation.setLongitude(pack.longitude);
-        mAMapLocation.setProvince(pack.province);
-        mAMapLocation.setCity(pack.city);
-        mAMapLocation.setDistrict(pack.district);
-
-
-
-    }
-
-    private AMapLocation getTestLocation() {
-        AMapLocation aMapLocation = new AMapLocation("test");
-        aMapLocation.setLatitude(39.085100);
-        aMapLocation.setLongitude(117.199370);
-        aMapLocation.setProvince("天津市");
-        aMapLocation.setCity("天津市");
-        aMapLocation.setDistrict("天津市");
-        return aMapLocation;
     }
 
     /**
      * 刷新定位搜索
      */
     public void refreshSearch() {
-        //虚拟定位（测试用）
-        //virtualLocation();
         if (mAMapLocation == null) {
             return;
         }
-
-        //mAMapLocation = getTestLocation();
-
         mSearchLatLng = new LatLng(mAMapLocation.getLatitude(), mAMapLocation.getLongitude());
         if (mResultLatLng == null) {
             mResultLatLng = mSearchLatLng;
@@ -272,12 +227,10 @@ public class ZtqLocationTool {
             if (!TextUtils.isEmpty(packLocation.ID))
                 //使用之前保存的定位城市
                 saveCity(packLocation);
-            AutoDownloadWeather.getInstance().addWeekCity(packLocation);
             return;
         } else if (!getIsAutoLocation()) {
             //使用之前保存的城市
             saveCity(packMain);
-            AutoDownloadWeather.getInstance().addWeekCity(packMain);
         }
 
         PackLocalCity packCity;
@@ -287,7 +240,6 @@ public class ZtqLocationTool {
             packCity = getCityFamily(province, city, district);
         }
         if (packCity != null) {
-            AutoDownloadWeather.getInstance().addWeekCity(packCity);
             //保存定位城市
             packLocation.copyCity(packCity);
             PcsDataManager.getInstance().saveLocalData(PackLocalCityLocation.KEY, packLocation);
@@ -296,21 +248,16 @@ public class ZtqLocationTool {
                 // 首页城市
                 ZtqCityDB.getInstance().setCityMain(packCity, true);
             }
-            // 下载数据
-            AutoDownloadWeather.getInstance().setDefaultCity(packCity);
-            AutoDownloadWeather.getInstance().beginMainData();
         }
     }
 
     /**
      * 取亲情城市
-     *
      * @return
      */
     private PackLocalCity getCityFamily(String province, String city, String district) {
         // 区县
-        PackLocalCity packCity = ZtqCityDB.getInstance().getAllCityByName(province,
-                district);
+        PackLocalCity packCity = ZtqCityDB.getInstance().getAllCityByName(province, district);
         if (packCity == null) {
             // 城市
             packCity = ZtqCityDB.getInstance().getAllCityByName(province, city);
@@ -329,15 +276,11 @@ public class ZtqLocationTool {
 
     /**
      * 保存城市
-     *
      * @param packCity
      */
     private void saveCity(PackLocalCity packCity) {
         // 首页城市
         ZtqCityDB.getInstance().setCityMain(packCity, true);
-        // 下载数据
-        AutoDownloadWeather.getInstance().setDefaultCity(packCity);
-        AutoDownloadWeather.getInstance().beginMainData();
     }
 
     private AMapLocationListener mListener = new AMapLocationListener() {
@@ -347,18 +290,11 @@ public class ZtqLocationTool {
                 return;
             }
             mAMapLocation = location;
-            //mAMapLocation = getTestLocation();
             if (mIsPaused) {
                 return;
             }
             //刷新搜索
             refreshSearch();
-//            if (mAMapLocation == null) {
-//                //刷新城市
-//                refreshLocationCity(true);
-//            } else {
-//                refreshLocationCity(false);
-//            }
             // 监听
             for (Integer key : mListenerMap.keySet()) {
                 PcsLocationListener listener = mListenerMap.get(key);
@@ -371,7 +307,6 @@ public class ZtqLocationTool {
 
     /**
      * 添加监听
-     *
      * @param listener
      */
     public void addListener(PcsLocationListener listener) {
@@ -380,7 +315,6 @@ public class ZtqLocationTool {
 
     /**
      * 删除监听
-     *
      * @param listener
      */
     public void removeListener(PcsLocationListener listener) {
@@ -400,7 +334,6 @@ public class ZtqLocationTool {
      * 地理编码搜索监听
      */
     private final PcsOnGeocodeSearchListener mGeocodeSearchListener = new PcsOnGeocodeSearchListener() {
-
         @Override
         public void onGeocodeSearched(GeocodeResult result, int rCode) {
             super.onGeocodeSearched(result, rCode);
@@ -422,11 +355,9 @@ public class ZtqLocationTool {
             String district = mRegeocodeAddress.getDistrict();
             String city = mRegeocodeAddress.getCity();
             if (!TextUtils.isEmpty(district) && tempAddr.indexOf(district) > -1) {
-                tempAddr = tempAddr.substring(tempAddr.indexOf(district)
-                        + district.length());
+                tempAddr = tempAddr.substring(tempAddr.indexOf(district) + district.length());
             } else if (!TextUtils.isEmpty(city) && tempAddr.indexOf(city) > -1) {
-                tempAddr = tempAddr.substring(tempAddr.indexOf(city)
-                        + district.length());
+                tempAddr = tempAddr.substring(tempAddr.indexOf(city) + district.length());
             }
             mRegeocodeAddress.setFormatAddress(tempAddr);
             // 刷新定位到的城市
@@ -441,7 +372,6 @@ public class ZtqLocationTool {
         }
     };
 
-
     public String getLocationName() {
         String locationName = "";
         if (mAMapLocation != null && !TextUtils.isEmpty(mAMapLocation.getProvince())) {
@@ -454,9 +384,7 @@ public class ZtqLocationTool {
         }
         if (mRegeocodeAddress != null) {
             locationName += "mRegeocodeAddress-->";
-
             locationName += "province =" + mRegeocodeAddress.getProvince();
-
             locationName += "  city = " + mRegeocodeAddress.getCity();
             locationName += "  district =" + mRegeocodeAddress.getDistrict();
             StreetNumber streetNumber = mRegeocodeAddress.getStreetNumber();

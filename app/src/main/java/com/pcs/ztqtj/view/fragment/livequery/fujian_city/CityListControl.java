@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Z on 2017/5/26.
+ * 城市列表控制器
  */
 public class CityListControl {
 
@@ -28,41 +28,23 @@ public class CityListControl {
         listChilCityInfoShowName = new ArrayList<>();
         listParentCityInfo = new ArrayList<>();
         listParentCityInfo.addAll(ZtqCityDB.getInstance().getProvincesLiveQueryList());
+
+        List<PackLocalCity> tempList = null;
         if(mainCity.isFjCity) {
-            List<PackLocalCity> tempList = ZtqCityDB.getInstance().getCityLv1();
-            PackLocalCity city = ZtqCityDB.getInstance().getCityInfo1_ID(mainCity.ID);
-            if(ZtqCityDB.getInstance().isServiceAccessible()) {
-                if (city == null) {
-                    if (tempList == null || tempList.size() == 0) {
-                        city = mainCity;
-                    } else {
-                        city = tempList.get(0);
-                    }
-                }
-                if (city.ID.equals("1279") && tempList != null && tempList.size() > 0) {
-                    city.copyCity(tempList.get(0));
-                }
-            } else {
-                if (tempList == null || tempList.size() == 0) {
-                    city = mainCity;
-                } else {
-                    city = tempList.get(0);
-                }
-            }
-            cutChild.copyCity(city);
+            tempList = ZtqCityDB.getInstance().getCityLv1();
         } else {
-            List<PackLocalCity> tempList = ZtqCityDB.getInstance().getCountryCityList(mainCity.PARENT_ID);
-            if(tempList != null && tempList.size() > 0) {
-                cutChild.copyCity(tempList.get(0));
-                for(PackLocalCity city : tempList) {
-                    if(city.NAME.equals(mainCity.NAME)) {
-                        cutChild.copyCity(city);
-                        break;
-                    }
+            tempList = ZtqCityDB.getInstance().getCountryCityList(mainCity.PARENT_ID);
+        }
+        if(tempList != null && tempList.size() > 0) {
+            cutChild.copyCity(tempList.get(0));
+            for(PackLocalCity city : tempList) {
+                if(city.NAME.equals(mainCity.NAME)) {
+                    cutChild.copyCity(city);
+                    break;
                 }
-            } else {
-                cutChild.copyCity(mainCity);
             }
+        } else {
+            cutChild.copyCity(mainCity);
         }
 
         if(cutChild != null) {
@@ -80,7 +62,6 @@ public class CityListControl {
         listChilCityInfo = new ArrayList<>();
         reflushChildList();
     }
-
 
     private void reflushChildList() {
         listChilCityInfoShowName.clear();

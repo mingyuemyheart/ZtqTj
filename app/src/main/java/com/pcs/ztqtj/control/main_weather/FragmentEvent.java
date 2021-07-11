@@ -13,6 +13,9 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 
+/**
+ * 首页预警中心上方广告
+ */
 public class FragmentEvent extends Fragment {
 
     private ImageFetcher mImageFetcher;

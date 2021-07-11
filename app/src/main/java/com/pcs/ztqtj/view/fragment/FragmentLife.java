@@ -64,22 +64,26 @@ public class FragmentLife extends Fragment {
         RecyclerView recycleview = getView().findViewById(R.id.recycleview);
         String[] life_list = getResources().getStringArray(R.array.life_list);
         TypedArray ar = getResources().obtainTypedArray(R.array.life_icon_list);
-        int len = ar.length();
-        int[] life_icon_list = new int[len];
-        for (int i = 0; i < len; i++) {
+        TypedArray arGray = getResources().obtainTypedArray(R.array.life_icon_list_gray);
+        int[] life_icon_list = new int[ar.length()];
+        int[] life_icon_list_gray = new int[arGray.length()];
+        for (int i = 0; i < ar.length(); i++) {
             life_icon_list[i] = ar.getResourceId(i, 0);
+            life_icon_list_gray[i] = arGray.getResourceId(i, 0);
         }
         ar.recycle();
 
         List<Map<String, Object>> data = new ArrayList<>();
         for (int i = 0; i < life_list.length; i++) {
             String[] item = life_list[i].split(",");
+            Map<String, Object> map = new HashMap<>();
+            map.put("t", item[0]);
             if (MyApplication.LIMITINFO.contains(item[1])) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("t", item[0]);
                 map.put("i", life_icon_list[i]);
-                data.add(map);
+            } else {
+                map.put("i", life_icon_list_gray[i]);
             }
+            data.add(map);
         }
         recycleview.addItemDecoration(new SpaceItemDecoration(CommUtils.Dip2Px(getActivity(), 25), CommUtils.Dip2Px(getActivity(), 25), 3));
         recycleview.setAdapter(new AdapterLifeFragment(getActivity(), data));

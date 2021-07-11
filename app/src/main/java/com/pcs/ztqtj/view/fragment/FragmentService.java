@@ -21,6 +21,7 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ServiceLoginTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
@@ -62,11 +63,6 @@ public class FragmentService extends Fragment implements OnClickListener {
         initView();
         initData();
         initListener();
-//        if (!TextUtils.isEmpty(localUserinfo.user_id)) {
-//            if (TextUtils.isEmpty(area_id)) {
-//                gotoService();
-//            }
-//        }
     }
 
     @Override
@@ -125,6 +121,67 @@ public class FragmentService extends Fragment implements OnClickListener {
         ImageView iv_service_ad = getView().findViewById(R.id.iv_service_ad);
         iv_service_ad.setOnClickListener(this);
         refreshAD("35", iv_service_ad);
+
+        if (MyApplication.LIMITINFO.contains(tv_service_tj.getTag().toString())) {
+            tv_service_tj.setBackgroundResource(R.drawable.icon_service_label01);
+        } else {
+            tv_service_tj.setBackgroundResource(R.drawable.icon_service_label01_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_service_person_office.getTag().toString())) {
+            tv_service_person_office.setBackgroundResource(R.drawable.icon_service_person_office);
+        } else {
+            tv_service_person_office.setBackgroundResource(R.drawable.icon_service_person_office_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_bhxq.getTag().toString())) {
+            tv_bhxq.setBackgroundResource(R.drawable.icon_service_label02);
+        } else {
+            tv_bhxq.setBackgroundResource(R.drawable.icon_service_label02_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_dlq.getTag().toString())) {
+            tv_dlq.setBackgroundResource(R.drawable.icon_service_label03_l);
+        } else {
+            tv_dlq.setBackgroundResource(R.drawable.icon_service_label03_l_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_xqq.getTag().toString())) {
+            tv_xqq.setBackgroundResource(R.drawable.icon_service_label03);
+        } else {
+            tv_xqq.setBackgroundResource(R.drawable.icon_service_label03_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_jnq.getTag().toString())) {
+            tv_jnq.setBackgroundResource(R.drawable.icon_service_label03_r);
+        } else {
+            tv_jnq.setBackgroundResource(R.drawable.icon_service_label03_r_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_bcq.getTag().toString())) {
+            tv_bcq.setBackgroundResource(R.drawable.icon_service_label04_l);
+        } else {
+            tv_bcq.setBackgroundResource(R.drawable.icon_service_label04_l_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_wqq.getTag().toString())) {
+            tv_wqq.setBackgroundResource(R.drawable.icon_service_label04);
+        } else {
+            tv_wqq.setBackgroundResource(R.drawable.icon_service_label04_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_bdq.getTag().toString())) {
+            tv_bdq.setBackgroundResource(R.drawable.icon_service_label04_r);
+        } else {
+            tv_bdq.setBackgroundResource(R.drawable.icon_service_label04_r_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_jhq.getTag().toString())) {
+            tv_jhq.setBackgroundResource(R.drawable.icon_service_label05);
+        } else {
+            tv_jhq.setBackgroundResource(R.drawable.icon_service_label05_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_nhq.getTag().toString())) {
+            tv_nhq.setBackgroundResource(R.drawable.icon_service_label02_r);
+        } else {
+            tv_nhq.setBackgroundResource(R.drawable.icon_service_label02_r_gray);
+        }
+        if (MyApplication.LIMITINFO.contains(tv_jzq.getTag().toString())) {
+            tv_jzq.setBackgroundResource(R.drawable.icon_service_label05_r);
+        } else {
+            tv_jzq.setBackgroundResource(R.drawable.icon_service_label05_r_gray);
+        }
     }
 
     @Override
@@ -146,7 +203,7 @@ public class FragmentService extends Fragment implements OnClickListener {
 
         if (!TextUtils.isEmpty(localUserinfo.user_id)) {
             logoutBtn.setText("退出");
-        }else{
+        } else {
             logoutBtn.setText("登录");
         }
     }
@@ -200,8 +257,7 @@ public class FragmentService extends Fragment implements OnClickListener {
     }
 
     private void gotoHelp() {
-        Intent intent = new Intent(getActivity(), ActivityHelp.class);
-        startActivity(intent);
+        startActivity(new Intent(getActivity(), ActivityHelp.class));
     }
 
     private void reflashUserData() {
@@ -288,7 +344,6 @@ public class FragmentService extends Fragment implements OnClickListener {
             String url = getResources().getString(R.string.file_download_url) + packDown.arrBannerInfo.get(0).img_path;
             mImageFetcher.loadImage(url, imageView, ImageConstant.ImageShowType.SRC);
         }
-
     }
 
     //点击广告
@@ -343,9 +398,7 @@ public class FragmentService extends Fragment implements OnClickListener {
                     }
                 }
             });
-
         }
-
     }
 
     private void gotoService() {
@@ -400,4 +453,5 @@ public class FragmentService extends Fragment implements OnClickListener {
             throw new RuntimeException(e);
         }
     }
+
 }

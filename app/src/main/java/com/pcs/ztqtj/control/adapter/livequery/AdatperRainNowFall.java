@@ -13,9 +13,10 @@ import com.pcs.ztqtj.R;
 import java.util.List;
 
 /**
- * @author Z 本次自动降雨量统计
+ * 监测预报-实况查询-数据与统计-雨量查询-任意时段查询
  */
 public class AdatperRainNowFall extends BaseAdapter {
+
     private List<ItemRainNow> rainfalllist;
 
     public AdatperRainNowFall(List<ItemRainNow> rainfalllist) {
@@ -72,7 +73,6 @@ public class AdatperRainNowFall extends BaseAdapter {
         public TextView rain_station;
         public TextView rain_value;
 //        public TextView tvTime;
-
     }
 
 }

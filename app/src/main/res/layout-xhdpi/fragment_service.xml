@@ -1,28 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/text_white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/bg_page_title">
 
-        <ImageView
-            android:layout_width="85dp"
-            android:layout_height="30dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/icon_logo"
-            android:visibility="gone" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/dimen16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
             android:text="@string/weather_service"
             android:textColor="@android:color/white"
@@ -32,17 +27,17 @@
             android:id="@+id/imageghelp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="15dp"
             android:background="@drawable/serve_help" />
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/text_content"
-        android:layout_marginBottom="@dimen/dimen8"
+        android:layout_marginTop="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_vertical"
@@ -52,8 +47,8 @@
             android:id="@+id/bt_service_jc"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="2"
             android:background="@drawable/corner_server_blue"
             android:gravity="center"
@@ -68,8 +63,8 @@
             android:id="@+id/bt_service_hy"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="2"
             android:background="@drawable/corner_server_blue"
             android:gravity="center"
@@ -84,8 +79,8 @@
             android:id="@+id/bt_service_login"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="1"
             android:background="@drawable/corner_server_blue"
             android:gravity="center"
@@ -96,355 +91,246 @@
             android:textColor="@color/text_black_common"
             android:textSize="@dimen/textsize16" />
 
-        <LinearLayout
-            android:id="@+id/lay_login_cancel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="@dimen/dimen4"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/logoutbutton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen4"
-                android:background="@drawable/btn_myser_exit"
-                android:gravity="center"
-                android:padding="0dp"
-                android:paddingTop="@dimen/dimen8"
-                android:paddingBottom="@dimen/dimen8"
-                android:text="@string/exit"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize16" />
-
-        </LinearLayout>
-
     </LinearLayout>
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp">
 
-        <ScrollView
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/ivTj"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/icon_service" />
+
+            <ImageView
+                android:id="@+id/iv_service_ad"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintEnd_toEndOf="@+id/ivTj"
+                app:layout_constraintBottom_toBottomOf="@+id/ivTj"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tv_service_tj"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/ivTj"
+                android:background="@drawable/icon_service_label01"
+                android:gravity="center"
+                android:tag="101030303"
+                android:text="天津市气象台"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_service_person_office"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_service_tj"
+                android:background="@drawable/icon_service_person_office"
+                android:gravity="center"
+                android:tag="101030304"
+                android:text="天津市人工影响天气办公室"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_service" />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_service_weather_office"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_service_person_office"
+                android:background="@drawable/icon_service_weather_office"
+                android:gravity="center"
+                android:text="气象灾害应急指挥部办公室"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
+            <TextView
+                android:id="@+id/tv_bhxq"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_service_weather_office"
+                android:background="@drawable/icon_service_label02"
+                android:gravity="center"
+                android:tag="101030305"
+                android:text="滨海新区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                    <ImageView
-                        android:id="@+id/iv_service_ad"
-                        android:layout_width="100dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="right|bottom"
-                        android:layout_marginRight="20dp"
-                        android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_dlq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_xqq"
+                app:layout_constraintTop_toTopOf="@+id/tv_xqq"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_xqq"
+                android:background="@drawable/icon_service_label03_l"
+                android:gravity="center"
+                android:tag="101030306"
+                android:text="东丽区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                </FrameLayout>
+            <TextView
+                android:id="@+id/tv_xqq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_bhxq"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_dlq"
+                app:layout_constraintEnd_toStartOf="@+id/tv_jnq"
+                android:background="@drawable/icon_service_label03"
+                android:gravity="center"
+                android:tag="101030307"
+                android:text="西青区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp">
+            <TextView
+                android:id="@+id/tv_jnq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintTop_toTopOf="@+id/tv_xqq"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_xqq"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_xqq"
+                android:background="@drawable/icon_service_label03_r"
+                android:gravity="center"
+                android:tag="101030308"
+                android:text="津南区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                    <TextView
-                        android:id="@+id/tv_service_tj"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/icon_service_label01"
-                        android:gravity="center"
-                        android:text="天津市气象台"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content" />
+            <TextView
+                android:id="@+id/tv_bcq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintTop_toTopOf="@+id/tv_wqq"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_wqq"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_wqq"
+                android:background="@drawable/icon_service_label04_l"
+                android:gravity="center"
+                android:tag="101030309"
+                android:text="北辰区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                </LinearLayout>
+            <TextView
+                android:id="@+id/tv_wqq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/tv_bcq"
+                app:layout_constraintEnd_toStartOf="@+id/tv_bdq"
+                app:layout_constraintTop_toBottomOf="@+id/tv_xqq"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/icon_service_label04"
+                android:gravity="center"
+                android:tag="101030310"
+                android:text="武清区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp">
+            <TextView
+                android:id="@+id/tv_bdq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_wqq"
+                app:layout_constraintTop_toTopOf="@+id/tv_wqq"
+                app:layout_constraintStart_toEndOf="@+id/tv_wqq"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/icon_service_label04_r"
+                android:gravity="center"
+                android:tag="101030311"
+                android:text="宝坻区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                    <TextView
-                        android:id="@+id/tv_service_person_office"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/icon_service_person_office"
-                        android:gravity="center"
-                        android:text="天津市人工影响天气办公室"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content" />
+            <TextView
+                android:id="@+id/tv_jhq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_nhq"
+                app:layout_constraintTop_toTopOf="@+id/tv_nhq"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_nhq"
+                android:background="@drawable/icon_service_label05"
+                android:gravity="center"
+                android:tag="101030312"
+                android:text="静海区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                </LinearLayout>
+            <TextView
+                android:id="@+id/tv_nhq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/tv_wqq"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@+id/tv_jhq"
+                app:layout_constraintEnd_toStartOf="@+id/tv_jzq"
+                android:background="@drawable/icon_service_label02_r"
+                android:gravity="center"
+                android:tag="101030313"
+                android:text="宁河区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
+            <TextView
+                android:id="@+id/tv_jzq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/tv_nhq"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_nhq"
+                app:layout_constraintStart_toEndOf="@+id/tv_nhq"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/icon_service_label05_r"
+                android:gravity="center"
+                android:tag="101030314"
+                android:text="蓟州区"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:visibility="gone">
+        </android.support.constraint.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/tv_service_weather_office"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/icon_service_weather_office"
-                        android:gravity="center"
-                        android:text="气象灾害应急指挥部办公室"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.5">
-
-                        <TextView
-                            android:id="@+id/tv_bhxq"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/icon_service_label02"
-                            android:gravity="center"
-                            android:text="滨海新区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tv_dlq"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/icon_service_label03_l"
-                            android:gravity="center"
-                            android:text="东丽区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="2">
-
-                        <TextView
-                            android:id="@+id/tv_xqq"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/icon_service_label03"
-                            android:gravity="center"
-                            android:text="西青区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                        <TextView
-                            android:id="@+id/tv_jnq"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/icon_service_label03_r"
-                            android:gravity="center"
-                            android:text="津南区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-
-                    </LinearLayout>
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp">
-
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tv_bcq"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/icon_service_label04_l"
-                            android:gravity="center"
-                            android:text="北辰区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="2">
-
-                        <TextView
-                            android:id="@+id/tv_wqq"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/icon_service_label04"
-                            android:gravity="center"
-                            android:text="武清区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                        <TextView
-                            android:id="@+id/tv_bdq"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/icon_service_label04_r"
-                            android:gravity="center"
-                            android:text="宝坻区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/tv_jhq"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/icon_service_label05"
-                            android:gravity="center"
-                            android:text="静海区"
-                            android:textColor="@color/text_white"
-                            android:textSize="@dimen/text_content" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="2">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_nhq"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/icon_service_label02_r"
-                                android:gravity="center"
-                                android:text="宁河区"
-                                android:textColor="@color/text_white"
-                                android:textSize="@dimen/text_content" />
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_jzq"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:background="@drawable/icon_service_label05_r"
-                                android:gravity="center"
-                                android:text="蓟州区"
-                                android:textColor="@color/text_white"
-                                android:textSize="@dimen/text_content" />
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </ScrollView>
-
-    </RelativeLayout>
+    </ScrollView>
 
 </LinearLayout>

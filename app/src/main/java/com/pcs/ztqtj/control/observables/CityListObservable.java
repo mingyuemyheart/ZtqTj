@@ -93,7 +93,6 @@ public class CityListObservable {
      * @return
      */
     private FileEmitterValue getFileFromNet(CityDBInfo cityDBInfo) {
-        Log.e("cityDBInfo", cityDBInfo.channel_id+"");
         if(cityDBInfo == null || cityDBInfo.channel_id == 0) return null;
         FileType type = FileType.getType(cityDBInfo.channel_id);
         // 缓存文件路径：citydb文件路径/channelId_pubTime (example:citydb/1_201804192110)
@@ -379,7 +378,7 @@ public class CityListObservable {
                             }
                             final String result = response.body().string();
                             if (!TextUtil.isEmpty(result)) {
-                                Log.e("area_info_list", result);
+//                                Log.e("area_info_list", result);
                                 try {
                                     JSONObject obj = new JSONObject(result);
                                     if (!obj.isNull("area_info_list")) {

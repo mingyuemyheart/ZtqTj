@@ -1,134 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/layout_widget_5x1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_widget_5x3"
-                android:orientation="vertical">
-    
-	<LinearLayout
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_marginTop="@dimen/dimen10"
-		android:layout_marginBottom="@dimen/dimen10"
-	    android:orientation="horizontal" >
-	    
-	    <RelativeLayout
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1"
-	        android:gravity="center"
-	        android:orientation="vertical" >
-	        
-	        <ImageView
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_widget_5x1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_widget_5x3"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dimen10"
+        android:layout_marginBottom="@dimen/dimen10"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
                 android:id="@+id/widget_5x1_current_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:singleLine="true"
                 android:textColor="@color/text_white"
                 android:textSize="30dp"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <TextClock
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:targetApi="jelly_bean_mr1"
+                android:layout_centerHorizontal="true"
                 android:format12Hour="HH:mm"
                 android:format24Hour="HH:mm"
-                android:layout_centerHorizontal="true"
-                android:textSize="30sp"
                 android:textColor="@color/text_white"
-                />
+                android:textSize="30sp"
+                tools:targetApi="jelly_bean_mr1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
-                >
+                android:orientation="horizontal">
 
                 <TextClock
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:targetApi="jelly_bean_mr1"
                     android:format12Hour="M月d日EEEE"
                     android:format24Hour="M月d日EEEE"
-                    android:textSize="13sp"
                     android:textColor="@color/text_white"
-                    />
+                    android:textSize="13sp"
+                    tools:targetApi="jelly_bean_mr1" />
 
                 <TextView
                     android:id="@+id/widget_5x1_time_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_white"
                     android:layout_marginLeft="4dp"
                     android:maxLines="1"
-                    />
+                    android:textColor="@color/text_white"
+                    android:textSize="13sp" />
             </LinearLayout>
 
-	        
-	    </RelativeLayout>
-	    
-	    <ImageView 
-	        android:layout_width="wrap_content"
-	        android:layout_height="match_parent"
-	        android:src="@drawable/line_appwidget"
-	        android:scaleType="fitXY"/>
-	    
-	    <RelativeLayout
-	        android:layout_width="0dp"
-	        android:layout_height="match_parent"
-	        android:layout_weight="1"
-	        android:gravity="center"
-	        android:orientation="vertical" >
-	        
-	        <LinearLayout
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_centerHorizontal="true"
-	            android:layout_alignParentTop="true"
-	            android:orientation="horizontal" >
-	            
-	            <ImageView
-	                android:id="@+id/widget_5x1_current_icon"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content" />
-	            
-	            <TextView
-	                android:id="@+id/widget_weather"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_marginLeft="5dp"
-	                android:layout_gravity="center"
-	                android:textColor="@color/text_white"
-	                android:textSize="@dimen/text_content" />
-	            
-	        </LinearLayout>
-	        
-	        <ImageView
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/line_appwidget" />
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/widget_5x1_current_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/widget_weather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/text_white"
+                    android:textSize="@dimen/text_content" />
+
+            </LinearLayout>
+
+            <ImageView
                 android:id="@+id/widget_5x1_current_h_l_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-	            android:layout_alignParentBottom="true" />
-	        
-	    </RelativeLayout>
-	    
-	</LinearLayout>
-	
-	<ImageView
-	    android:layout_width="30dp"
-	    android:layout_height="30dp"
-		android:layout_alignParentRight="true"
-	    android:layout_alignParentBottom="true"
-	    android:src="@drawable/ic_launcher" />
-    
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_launcher" />
+
 </RelativeLayout>

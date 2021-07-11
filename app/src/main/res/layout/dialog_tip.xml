@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minWidth="250dp"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tipTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/corner_top_blue"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="提示"
+        android:textColor="@color/white"
+        android:textSize="@dimen/dimen16" />
+
+    <TextView
+        android:id="@+id/tipContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:lineSpacingExtra="3dp"
+        android:padding="10dp"
+        android:textColor="@color/text_color3"
+        android:textSize="@dimen/dimen16" />
+
+    <TextView
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/light_gray" />
+
+    <TextView
+        android:id="@+id/tipSure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/corner_bottom_white"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="确定"
+        android:textColor="@color/text_color3"
+        android:textSize="@dimen/dimen16" />
+
+</LinearLayout>
+

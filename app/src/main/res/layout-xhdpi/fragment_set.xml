@@ -1,193 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F6F7"
-    android:orientation="vertical">
+    android:background="@color/light_gray">
 
-    <ScrollView
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clTop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_city_manager_title"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/ivHome"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/btn_city_home"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_head"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/icon_head_default"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivHome" />
+
+        <Button
+            android:id="@+id/btn_login2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="10dp"
+            android:background="@drawable/btn_set_user_login"
+            android:text="@string/login"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_head"
+            app:layout_constraintStart_toEndOf="@+id/iv_head"
+            app:layout_constraintTop_toTopOf="@+id/iv_head" />
 
-            <RelativeLayout
-                android:id="@+id/rl_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dimen8"
-                android:paddingBottom="@dimen/dimen8"
-                android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/text_white"
+            android:textSize="@dimen/text_content"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_head"
+            app:layout_constraintStart_toEndOf="@+id/iv_head"
+            app:layout_constraintTop_toTopOf="@+id/iv_head" />
 
-                <ImageView
-                    android:id="@+id/setimage_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/icon_set_user" />
+    </android.support.constraint.ConstraintLayout>
 
-                <Button
-                    android:id="@+id/btn_login"
-                    android:layout_width="45dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/btn_set_user_login"
-                    android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_content" />
+    <com.pcs.ztqtj.view.myview.MyGridView
+        android:id="@+id/grid_set"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:horizontalSpacing="15dp"
+        android:background="@color/white"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="4"
+        android:scrollbars="none"
+        android:verticalSpacing="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/clTop" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@id/btn_login"
-                    android:layout_toRightOf="@id/setimage_icon">
+    <com.pcs.ztqtj.view.myview.MyListView
+        android:id="@+id/lv_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="5dp"
+        android:background="@color/white"
+        android:cacheColorHint="@color/alpha100"
+        android:divider="@color/light_gray"
+        android:dividerHeight="0.5dp"
+        android:listSelector="@color/alpha100"
+        app:layout_constraintTop_toBottomOf="@+id/grid_set" />
 
-                    <TextView
-                        android:id="@+id/tv_user"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:layout_marginLeft="@dimen/activity_margintop"
-                        android:textColor="@color/item_textcolor"
-                        android:textSize="@dimen/text_content" />
-                </LinearLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_city_manager_title"
-                android:orientation="horizontal"
-                android:padding="15dp">
-
-                <LinearLayout
-                    android:id="@+id/closefragement"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:orientation="horizontal">
-
-                    <!--<ImageButton-->
-                    <!--android:id="@+id/btn_closefragement"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:background="@drawable/btn_back"/>-->
-
-                    <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="@string/main"-->
-                    <!--android:textColor="@color/text_white"-->
-                    <!--android:textSize="@dimen/text_content"-->
-                    <!--/>-->
-
-                    <Button
-                        android:id="@+id/btn_closefragement"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:background="@drawable/btn_city_home"
-                        android:gravity="center"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/iv_head"
-                    android:layout_width="wrap_content"
-                    android:layout_height="45dp"
-                    android:layout_below="@+id/closefragement"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/icon_head_default" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/closefragement"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="@dimen/dimen10"
-                    android:layout_toRightOf="@+id/iv_head">
-
-                    <Button
-                        android:id="@+id/btn_login2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:background="@drawable/btn_set_user_login"
-                        android:text="@string/login"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content" />
-
-                    <TextView
-                        android:id="@+id/tv_username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content" />
-
-                </RelativeLayout>
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@color/text_white">
-
-                    <com.pcs.ztqtj.view.myview.MyGridView
-                        android:id="@+id/grid_set"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="15dp"
-                        android:layout_marginBottom="10dp"
-                        android:horizontalSpacing="15dp"
-                        android:listSelector="@android:color/transparent"
-                        android:numColumns="4"
-                        android:scrollbars="none"
-                        android:verticalSpacing="20dp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:background="@color/text_white">
-
-                    <com.pcs.ztqtj.view.myview.MyListView
-                        android:id="@+id/lv_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:cacheColorHint="@color/alpha100"
-                        android:divider="@drawable/line_set"
-                        android:listSelector="@color/alpha100" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -15,9 +15,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageButton;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -40,6 +38,7 @@ import com.pcs.ztqtj.view.activity.product.numericalforecast.ActivityNumericalFo
 import com.pcs.ztqtj.view.activity.product.situation.ActivitySituation;
 import com.pcs.ztqtj.view.activity.product.typhoon.ActivityTyphoon;
 import com.pcs.ztqtj.view.activity.set.ActivityProgramerManager;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 
 import org.jetbrains.annotations.NotNull;
@@ -71,8 +70,8 @@ public class FragmentProduct extends Fragment {
     private List<Map<String, Object>> dataList, dataList_analysis;
     private String[] product_list;
     private String[] product_list_analysis;
-    private int[] product_icon_list;
-    private int[] product_icon_analysis;
+    private int[] product_icon_list,product_icon_list_gray;
+    private int[] product_icon_analysis,product_icon_analysis_gray;
     private final List<Intent> intents = new ArrayList<>();
     private final List<Intent> intents_analysis = new ArrayList<>();
 
@@ -111,20 +110,32 @@ public class FragmentProduct extends Fragment {
 
         product_list = getResources().getStringArray(R.array.product_list);
         product_list_analysis = getResources().getStringArray(R.array.product_analysis);
-        TypedArray ar = getResources().obtainTypedArray(R.array.product_icon_list);
-        TypedArray ar_analysis = getResources().obtainTypedArray(R.array.product_icon_list_analysis);
-        int len = ar.length();
-        product_icon_list = new int[len];
-        for (int i = 0; i < len; i++) {
-            product_icon_list[i] = ar.getResourceId(i, 0);
+        TypedArray arZH = getResources().obtainTypedArray(R.array.product_icon_list);
+        product_icon_list = new int[arZH.length()];
+        for (int i = 0; i < arZH.length(); i++) {
+            product_icon_list[i] = arZH.getResourceId(i, 0);
         }
-        int lens = ar_analysis.length();
-        product_icon_analysis = new int[lens];
-        for (int j = 0; j < lens; j++) {
-            product_icon_analysis[j] = ar_analysis.getResourceId(j, 0);
+        arZH.recycle();
+        TypedArray arZHGray = getResources().obtainTypedArray(R.array.product_icon_list_gray);
+        product_icon_list_gray = new int[arZHGray.length()];
+        for (int i = 0; i < arZHGray.length(); i++) {
+            product_icon_list_gray[i] = arZHGray.getResourceId(i, 0);
         }
-        ar.recycle();
-        ar_analysis.recycle();
+        arZHGray.recycle();
+
+        TypedArray arFX = getResources().obtainTypedArray(R.array.product_icon_list_analysis);
+        product_icon_analysis = new int[arFX.length()];
+        for (int j = 0; j < arFX.length(); j++) {
+            product_icon_analysis[j] = arFX.getResourceId(j, 0);
+        }
+        arFX.recycle();
+        TypedArray arFXGray = getResources().obtainTypedArray(R.array.product_icon_list_analysis_gray);
+        product_icon_analysis_gray = new int[arFXGray.length()];
+        for (int j = 0; j < arFXGray.length(); j++) {
+            product_icon_analysis_gray[j] = arFXGray.getResourceId(j, 0);
+        }
+        arFXGray.recycle();
+
         dataList = new ArrayList<>();
         dataList_analysis = new ArrayList<>();
         // 气象雷达、卫星云图、台风路径、天气综述、数值预报、整点实况、指点天气（叠加各项可定位置的预报功能）、交通气象、海洋天气、气象影视、福建汛情
@@ -139,6 +150,7 @@ public class FragmentProduct extends Fragment {
 //        intents.add(new Intent(getActivity(), ActivityWaterFlood.class));//水利汛情
         intents.add(new Intent(getActivity(), ActivityAirQualityQuery.class));//空气质量
         intents.add(new Intent(getActivity(), ActivitySituation.class));//天气形势
+        intents.add(new Intent(getActivity(), ActivityWebView.class));//城市积水
 //        intents.add(new Intent(getActivity(),ActivityDataQuery.class));//资料查询
 
         intents_analysis.add(new Intent(getActivity(), ActivityWeatherSummary.class));//气象报告
@@ -153,11 +165,11 @@ public class FragmentProduct extends Fragment {
 
         getSelectItem();
         AdapterProductGridView adapter = new AdapterProductGridView(getActivity(), dataList);
-        AdapterProductGridView adapter_analysis = new AdapterProductGridView(getActivity(), dataList_analysis);
         productView.setAdapter(adapter);
+        productView.setOnItemClickListener(myOnItemClickListener);
+        AdapterProductGridView adapter_analysis = new AdapterProductGridView(getActivity(), dataList_analysis);
         product_analysis.setAdapter(adapter_analysis);
         product_analysis.setOnItemClickListener(myOnItemClickListener2);
-        productView.setOnItemClickListener(myOnItemClickListener);
 
         ShareTools.getInstance(getActivity()).reqShare();
     }
@@ -169,24 +181,28 @@ public class FragmentProduct extends Fragment {
         dataList.clear();
         for (int i = 0; i < product_list.length; i++) {
             String[] item = product_list[i].split(",");
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", i);
             if (MyApplication.LIMITINFO.contains(item[1])) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", i);
                 map.put("rid", product_icon_list[i]);
-                map.put("title", item[0]);
-                dataList.add(map);
+            } else {
+                map.put("rid", product_icon_list_gray[i]);
             }
+            map.put("title", item[0]);
+            dataList.add(map);
         }
         dataList_analysis.clear();
         for (int j = 0; j < product_list_analysis.length; j++) {
             String[] item = product_list_analysis[j].split(",");
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", j);
             if (MyApplication.LIMITINFO.contains(item[1])) {
-                Map<String, Object> map = new HashMap<>();
-                map.put("id", j);
                 map.put("rid", product_icon_analysis[j]);
-                map.put("title", item[0]);
-                dataList_analysis.add(map);
+            } else {
+                map.put("rid", product_icon_analysis_gray[j]);
             }
+            map.put("title", item[0]);
+            dataList_analysis.add(map);
         }
     }
 
@@ -198,9 +214,6 @@ public class FragmentProduct extends Fragment {
             String title = (String) map.get("title");
             if (title.equals("指导预报")) {
                 Intent intent = new Intent(getActivity(), ActivityDetailCenterPro.class);
-                PackNumericalForecastColumnUp packNumericalForecastColumnUp = new PackNumericalForecastColumnUp();
-                packNumericalForecastColumnUp.type = "2";
-                PcsDataDownload.addDownload(packNumericalForecastColumnUp);
                 intent.putExtra("t", title);
                 intent.putExtra("c", "106");
                 startActivity(intent);
@@ -241,6 +254,12 @@ public class FragmentProduct extends Fragment {
                 }
                 intent.putExtra("id", packCity.ID);
                 intent.putExtra("name", packCity.NAME);
+                startActivity(intent);
+            } else if (title.equals("城市积水")) {
+                Intent intent = new Intent(getActivity(), ActivityWebView.class);
+                intent.putExtra("title", title);
+                intent.putExtra("url", "http://www.baidu.com");
+                intent.putExtra("shareContent", title);
                 startActivity(intent);
             } else {
                 int id = (Integer) map.get("id");
@@ -310,7 +329,6 @@ public class FragmentProduct extends Fragment {
         }
     }
 
-
     private String stationName = "";
     /**
      * 获取实况信息
@@ -344,10 +362,13 @@ public class FragmentProduct extends Fragment {
                                 return;
                             }
                             final String result = response.body().string();
+                            if (!isAdded()) {
+                                return;
+                            }
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("sstq", result);
+//                                    Log.e("sstq", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
