@@ -12,10 +12,15 @@ import com.pcs.ztqtj.R;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 
 import java.util.List;
 
+/**
+ * 实景开拍
+ */
 public class AdapterPhotoShow extends BaseAdapter {
+
 	private Context mContext;
 	private ImageFetcher mImageFetcher;
 	private List<PackPhotoSingle> photoList;
@@ -30,7 +35,7 @@ public class AdapterPhotoShow extends BaseAdapter {
 		mImageFetcher = imageFetcher;
 		this.photoList = photoList;
 		// 图片下载URL前缀
-		mUrlPre = context.getString(R.string.file_download_url);
+		mUrlPre = context.getString(R.string.sjkp);
 	}
 
 	@Override
@@ -50,7 +55,6 @@ public class AdapterPhotoShow extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-
 		Hodler holder;
 		if (convertView == null) {
 			holder = new Hodler();
@@ -65,7 +69,11 @@ public class AdapterPhotoShow extends BaseAdapter {
 		// 数据
 		PackPhotoSingle pack = photoList.get(position);
 		// 图片
-		mImageFetcher.loadImage(mUrlPre + pack.thumbnailUrl, holder.imagePhoto, ImageConstant.ImageShowType.SRC);
+		if (!TextUtil.isEmpty(pack.thumbnailUrl)) {
+			mImageFetcher.loadImage(mUrlPre + pack.thumbnailUrl, holder.imagePhoto, ImageConstant.ImageShowType.SRC);
+		} else {
+			holder.imagePhoto.setImageResource(R.drawable.no_pic);
+		}
 		// 浏览数
 		holder.textNum.setText(pack.browsenum);
 		// 地址

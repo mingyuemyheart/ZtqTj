@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center"
-    android:orientation="vertical" >
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="250dp">
 
     <LinearLayout
-        android:layout_width="250dp"
+        android:id="@+id/clTop"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/corner_top_white"
         android:gravity="center"
+        android:minWidth="250dp"
+        android:orientation="vertical"
         android:padding="10dp"
-        android:orientation="vertical" >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/tvMessage"
@@ -24,16 +29,16 @@
             android:id="@+id/tvContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="10dp"
             android:textColor="@color/text_color4"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvPrivacy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:layout_marginTop="10dp"
+            android:padding="10dp"
             android:textColor="@color/red"
             android:textSize="14sp" />
 
@@ -41,62 +46,55 @@
             android:id="@+id/tvProtocal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:padding="10dp"
             android:textColor="@color/red"
-            android:layout_marginBottom="10dp"
             android:textSize="14sp" />
     </LinearLayout>
 
     <TextView
-        android:layout_width="250dip"
-        android:layout_height="0.5dip"
-        android:background="@color/light_gray" />
+        android:id="@+id/divider1"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="@color/gray"
+        android:minWidth="250dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clTop" />
 
-    <LinearLayout
-        android:layout_width="250dip"
-        android:layout_height="45dip"
-        android:gravity="center" >
+    <TextView
+        android:id="@+id/tvNegtive"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dimen40"
+        android:background="@drawable/dialog_left_btn"
+        android:gravity="center"
+        android:text="暂不同意"
+        android:textColor="@color/text_color4"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/divider2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
-        <LinearLayout
-            android:id="@+id/llNegative"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/dialog_left_btn"
-            android:gravity="center"
-            android:orientation="vertical" >
+    <TextView
+        android:id="@+id/divider2"
+        android:layout_width="0.5dp"
+        android:layout_height="@dimen/dimen40"
+        android:background="@color/gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
-            <TextView
-                android:id="@+id/tvNegtive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="暂不同意"
-                android:textColor="@color/text_color4"
-                android:textSize="16sp" />
-        </LinearLayout>
+    <TextView
+        android:id="@+id/tvPositive"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dimen40"
+        android:background="@drawable/dialog_right_btn"
+        android:gravity="center"
+        android:text="同意"
+        android:textColor="#1e90ff"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/divider2"
+        app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
-        <TextView
-            android:layout_width="0.5dip"
-            android:layout_height="match_parent"
-            android:background="@color/light_gray" />
-
-        <LinearLayout
-            android:id="@+id/llPositive"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/dialog_right_btn"
-            android:gravity="center"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/tvPositive"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="同意"
-                android:textColor="#1e90ff"
-                android:textSize="16sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

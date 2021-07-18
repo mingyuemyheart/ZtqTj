@@ -11,7 +11,6 @@ import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
-import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.ShareContent;
 import com.umeng.socialize.UMShareAPI;
@@ -140,13 +139,6 @@ public class ShareUtil {
         sendIntent.putExtra("sms_body", content);
         sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         conetxt.startActivity(sendIntent);
-    }
-
-    public static void initShare() {
-        PlatformConfig.setQQZone("1111680665", "AWvIDxEHLwH5M3xG");// QQ和Qzone appid appkey
-        PlatformConfig.setWeixin("wxa3d2ebc5508eb19f", "c84c96f71d36bd19fc7d5d5bbe30e48c");    //微信 appid appsecret
-        PlatformConfig.setSinaWeibo("838194335", "a3cec82194cbc4df3c81f852bd0e5a0d","http://sns.whalecloud.com/sina/");//新浪微博 appkey appsecret
-//        Config.DEBUG = true;
     }
 
     private static UMShareListener umShareListenr = new UMShareListener() {

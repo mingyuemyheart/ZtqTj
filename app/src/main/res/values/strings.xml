@@ -6,6 +6,7 @@
     <string name="shzs">http://220.243.129.159:8081/web/tjfile/ico/</string>//生活指数
     <string name="air_pollution">http://220.243.129.159:8081/web/tjfile/picture/1806/</string>//空气污染
     <string name="msyb">http://220.243.129.159:8081/web/tjfile</string>//模式预报
+    <string name="sjkp">http://220.243.129.159:8081/web/tjfile/livePhoto/</string>//实景开拍
     <string name="use_asset_db">0</string>
     <!-- 文件下载测试地址：http://112.5.138.42:9091/zsfj -->
     <!-- 文件下载正式地址：http://218.85.78.125:8099/ftp -->

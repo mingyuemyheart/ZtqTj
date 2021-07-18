@@ -155,11 +155,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
         // 请求数据
         mPhotoShowDB.reqNextPage(getDataType);
-        // 打开动画
-        if (getIntent().getBooleanExtra("back", false)) {
-            overridePendingTransition(R.anim.slide_left_in,
-                    R.anim.slide_right_out);
-        }
         if (!isOpenNet()) {
             showToast(getString(R.string.open_netword));
         } else {
@@ -949,32 +944,37 @@ private RelativeLayout layout_banner;
     private PhotoShowDBListener mDBListener = new PhotoShowDBListener() {
         @Override
         public void done() {
-            photoList.clear();
-            photoList.addAll(mPhotoShowDB.getPhotoList(getDataType));
-            // 取消等待
-            dismissProgressDialog();
-            // 刷新列表
-            mAdapter.notifyDataSetChanged();
-            if (isLeftIn != SlideDirection.STOPSLIDE) {
-                GridView gridView = (GridView) findViewById(R.id.gridView);
-                gridView.startAnimation(getAnmation());
-                isLeftIn = SlideDirection.STOPSLIDE;
-            }
-            // 底部加载View
-            setBottomView(false);
-            mIsLoading = false;
-            // 暂无图片？
-            View view_nopicture = findViewById(R.id.text_nopicture);
-            if (mPhotoShowDB.hasPhotoList(getDataType)) {
-                view_nopicture.setVisibility(View.GONE);
-            } else {
-                view_nopicture.setVisibility(View.VISIBLE);
-            }
-            // 默认显示拍照菜单
-            if (isFirstPopup) {
-                clickPhotoGraph();
-                isFirstPopup = false;
-            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    photoList.clear();
+                    photoList.addAll(mPhotoShowDB.getPhotoList(getDataType));
+                    // 取消等待
+                    dismissProgressDialog();
+                    // 刷新列表
+                    mAdapter.notifyDataSetChanged();
+                    if (isLeftIn != SlideDirection.STOPSLIDE) {
+                        GridView gridView = (GridView) findViewById(R.id.gridView);
+                        gridView.startAnimation(getAnmation());
+                        isLeftIn = SlideDirection.STOPSLIDE;
+                    }
+                    // 底部加载View
+                    setBottomView(false);
+                    mIsLoading = false;
+                    // 暂无图片？
+                    View view_nopicture = findViewById(R.id.text_nopicture);
+                    if (mPhotoShowDB.hasPhotoList(getDataType)) {
+                        view_nopicture.setVisibility(View.GONE);
+                    } else {
+                        view_nopicture.setVisibility(View.VISIBLE);
+                    }
+                    // 默认显示拍照菜单
+                    if (isFirstPopup) {
+                        clickPhotoGraph();
+                        isFirstPopup = false;
+                    }
+                }
+            });
         }
     };
 

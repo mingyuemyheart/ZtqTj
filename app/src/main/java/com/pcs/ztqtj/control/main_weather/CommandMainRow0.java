@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.iflytek.cloud.RecognizerResult;
@@ -42,12 +43,12 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.YjxxInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
@@ -66,7 +67,9 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.ActivityCompetitionEntry;
 import com.pcs.ztqtj.view.activity.ActivityMain;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoShow;
+import com.pcs.ztqtj.view.activity.prove.WeatherProveActivity;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
@@ -98,6 +101,7 @@ import okhttp3.Response;
  */
 public class CommandMainRow0 extends CommandMainBase {
 
+    private PackLocalUser localUserinfo;
     private ActivityMain mActivity;
     private ViewGroup mRootLayout;
     private ImageFetcher mImageFetcher;
@@ -140,6 +144,7 @@ public class CommandMainRow0 extends CommandMainBase {
     }
 
     private void initView() {
+        localUserinfo = ZtqCityDB.getInstance().getMyInfo();
         mRowView = LayoutInflater.from(mActivity).inflate(R.layout.item_home_weather_0, null);
         mRowView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mRootLayout.addView(mRowView);
@@ -680,7 +685,11 @@ public class CommandMainRow0 extends CommandMainBase {
                     break;
                 //实景
                 case R.id.lay_bt_recommend:
-                    mActivity.startActivity(new Intent(mActivity, ActivityPhotoShow.class));
+                    if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+                        Toast.makeText(mActivity, "请先登录", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mActivity.startActivity(new Intent(mActivity, ActivityPhotoShow.class));
+                    }
                     break;
                 //日历入口
                 case R.id.calender_enter:
@@ -1164,87 +1173,101 @@ public class CommandMainRow0 extends CommandMainBase {
      */
     private void okHttpSound() {
         mActivity.showProgressDialog();
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if(city == null) {
+            mActivity.dismissProgressDialog();
+            return;
+        }
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final String url = CONST.BASE_URL+PackVoiceUp.NAME;
-                Log.e("sstq_yy", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", city.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("sstq_yy", json);
+                    final String url = CONST.BASE_URL+"sstq_yy";
+                    Log.e("sstq_yy", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
                         }
-                        final String result = response.body().string();
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mActivity.dismissProgressDialog();
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("sstq_yy")) {
-                                                JSONObject sstq_yy = bobj.getJSONObject("sstq_yy");
-                                                if (!TextUtil.isEmpty(sstq_yy.toString())) {
-                                                    PackVoiceDown down = new PackVoiceDown();
-                                                    down.fillData(sstq_yy.toString());
-                                                    if (down == null) {
-                                                        return;
-                                                    }
-                                                    lists.clear();
-                                                    String str = down.desc.replace("-", "零下");
-                                                    //格式化语音报读数字
-                                                    if (str.contains("12") || str.contains("22") || str.contains("32") || str.contains("42") || str
-                                                            .contains("12.2") || str
-                                                            .contains("22.2") || str.contains("32.2") || str.contains("42.2")) {
-
-                                                    } else {
-                                                        if (str.contains("2.2")) {
-                                                            str = str.replace("2.2", "二点二");
-                                                        } else {
-                                                            if (str.contains("2.")) {
-                                                                str = str.replace("2.", "二点");
-                                                            }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mActivity.dismissProgressDialog();
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("sstq_yy")) {
+                                                    JSONObject sstq_yy = bobj.getJSONObject("sstq_yy");
+                                                    if (!TextUtil.isEmpty(sstq_yy.toString())) {
+                                                        PackVoiceDown down = new PackVoiceDown();
+                                                        down.fillData(sstq_yy.toString());
+                                                        if (down == null) {
+                                                            return;
                                                         }
-                                                    }
-                                                    str = str.replace(".2", "点二");
-                                                    str = str.replace(".", "点");
-                                                    View view = null;
-                                                    if (dialogVoiceButton == null) {
-                                                        view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_message, null);
-                                                        ((TextView) view.findViewById(R.id.dialogmessage)).setText(down.desc);
-                                                        dialogVoiceButton = new DialogVoiceButton(mActivity, view, "关闭", new DialogFactory.DialogListener() {
-                                                            @Override
-                                                            public void click(String str) {
-                                                                if (str.equals("关闭")) {
-                                                                    dialogVoiceButton.dismiss();
+                                                        lists.clear();
+                                                        String str = down.desc.replace("-", "零下");
+                                                        //格式化语音报读数字
+                                                        if (str.contains("12") || str.contains("22") || str.contains("32") || str.contains("42") || str
+                                                                .contains("12.2") || str
+                                                                .contains("22.2") || str.contains("32.2") || str.contains("42.2")) {
+
+                                                        } else {
+                                                            if (str.contains("2.2")) {
+                                                                str = str.replace("2.2", "二点二");
+                                                            } else {
+                                                                if (str.contains("2.")) {
+                                                                    str = str.replace("2.", "二点");
                                                                 }
                                                             }
-                                                        });
-                                                    } else {
-                                                        ((TextView) view.findViewById(R.id.dialogmessage)).setText(down.desc);
+                                                        }
+                                                        str = str.replace(".2", "点二");
+                                                        str = str.replace(".", "点");
+                                                        View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_message, null);
+                                                        TextView dialogmessage = view.findViewById(R.id.dialogmessage);
+                                                        dialogmessage.setText(down.desc);
+                                                        if (dialogVoiceButton == null) {
+                                                            dialogVoiceButton = new DialogVoiceButton(mActivity, view, "关闭", new DialogFactory.DialogListener() {
+                                                                @Override
+                                                                public void click(String str) {
+                                                                    if (str.equals("关闭")) {
+                                                                        dialogVoiceButton.dismiss();
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                        if (!dialogVoiceButton.isShowing()) {
+                                                            dialogVoiceButton.show();
+                                                        }
+                                                        voiceTool.readResult(str);
                                                     }
-
-                                                    if (!dialogVoiceButton.isShowing()) {
-                                                        dialogVoiceButton.show();
-                                                    }
-                                                    voiceTool.readResult(str);
                                                 }
                                             }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
                                 }
-                            }
-                        });
-                    }
-                });
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

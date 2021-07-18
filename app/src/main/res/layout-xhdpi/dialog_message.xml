@@ -3,9 +3,8 @@
     android:id="@+id/dialogmessage"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textSize="@dimen/text_content"
-    android:textColor="@color/bg_black_alpha"
+    android:gravity="center_horizontal"
     android:padding="@dimen/activity_marginleft_right"
-          android:gravity="center_horizontal"
-     />
+    android:textColor="@color/bg_black_alpha"
+    android:textSize="@dimen/text_content" />
    

@@ -28,7 +28,6 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
-    <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <!-- 用于进行网络定位 -->
@@ -47,12 +46,26 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
+    <!-- umeng -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.BROADCAST_PACKAGE_ADDED" />
+    <uses-permission android:name="android.permission.BROADCAST_PACKAGE_CHANGED" />
+    <uses-permission android:name="android.permission.BROADCAST_PACKAGE_INSTALL" />
+    <uses-permission android:name="android.permission.BROADCAST_PACKAGE_REPLACED" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <!-- umeng -->
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:resizeableActivity="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
@@ -69,8 +82,6 @@
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <!-- 城市选择列表 -->
-        <!-- 城市选择列表 整点实况等使用 -->
         <activity
             android:name=".view.activity.loading.ActivityLoading"
             android:icon="@drawable/ic_launcher"
@@ -126,7 +137,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
 
-        <!-- android:windowSoftInputMode="adjustUnspecified|stateHidden" -->
         <!-- 引导 -->
         <activity
             android:name=".view.activity.loading.ActivityLoadingGuide"
@@ -152,17 +162,12 @@
         <activity
             android:name=".view.activity.livequery.ActivityDetailWinHightLowTemp"
             android:exported="false"
-            android:screenOrientation="portrait" /> <!-- 实况查询-风速详情 -->
+            android:screenOrientation="portrait" />
+        <!-- 实况查询-风速详情 -->
         <activity
             android:name=".view.activity.web.webview.ActivityWebView"
             android:exported="false"
             android:screenOrientation="portrait" />
-
-        <!-- 风雨查询：分布图 -->
-
-
-        <!-- 风雨查询：省外分布图 -->
-
 
         <!-- 实况查询-雨量统计详情 -->
         <activity
@@ -415,7 +420,6 @@
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 气象产品：我的预警-支付页 -->
 
-
         <!-- 气象服务 -->
         <activity
             android:name=".view.activity.help.ActivityHelp"
@@ -517,9 +521,6 @@
 
         <!-- 气象生活:亲情城市 -->
 
-        <!-- 气象生活:亲情城市一周天气 -->
-
-        <!-- 气象生活:选择全国城市 -->
         <!-- 选择全国城市，侧边栏进入 -->
         <!-- 日历中心 -->
         <activity
@@ -971,12 +972,7 @@
             </intent-filter>
         </activity>
 
-        <!-- 桌面小部件 大 -->
-        <!--
-             4x2小部件
-             android:exported="false"
-            android:label="知天气-福建"
-        -->
+        <!-- 桌面小部件 -->
         <receiver
             android:name=".view.appwidget.WeatherWidget_5x2"
             android:label="(5*2)天津气象">
@@ -999,8 +995,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
         </receiver>
-
-        <!-- 5x1小部件 -->
         <receiver
             android:name=".view.appwidget.WeatherWidget_5x1"
             android:exported="false"
@@ -1013,8 +1007,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/weather_widget_5x1" />
         </receiver>
-
-        <!-- 5x3小部件 -->
         <receiver
             android:name=".view.appwidget.WeatherWidget_5x3"
             android:exported="false"
@@ -1035,80 +1027,6 @@
         <!-- ################################################################################################################################## -->
 
 
-        <!--&lt;!&ndash; 【必须】 (2.30及以上版新增)展示通知的activity &ndash;&gt;-->
-        <!--<activity-->
-        <!--android:name="com.tencent.android.tpush.XGPushActivity"-->
-        <!--android:exported="false"-->
-        <!--android:theme="@android:style/Theme.Translucent">-->
-        <!--<intent-filter>-->
-
-        <!--&lt;!&ndash; 若使用AndroidStudio，请设置android:name="android.intent.action" &ndash;&gt;-->
-        <!--<action android:name="android.intent.action"/>-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
-
-        <!--&lt;!&ndash; 【必须】 信鸽receiver广播接收 &ndash;&gt;-->
-        <!--<receiver-->
-        <!--android:name="com.tencent.android.tpush.XGPushReceiver"-->
-        <!--android:exported="false"-->
-        <!--android:process=":xg_service_v2">-->
-        <!--<intent-filter android:priority="0x7fffffff">-->
-
-        <!--&lt;!&ndash; 【必须】 信鸽SDK的内部广播 &ndash;&gt;-->
-        <!--<action android:name="com.tencent.android.tpush.action.SDK"/>-->
-        <!--<action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE"/>-->
-        <!--&lt;!&ndash; 【必须】 系统广播：开屏和网络切换 &ndash;&gt;-->
-        <!--<action android:name="android.intent.action.USER_PRESENT"/>-->
-        <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>-->
-
-        <!--&lt;!&ndash; 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service &ndash;&gt;-->
-        <!--<action android:name="android.bluetooth.adapter.action.STATE_CHANGED"/>-->
-        <!--<action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>-->
-        <!--<action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>-->
-        <!--</intent-filter>-->
-        <!--&lt;!&ndash; 【可选】 usb相关的系统广播，增强信鸽service的复活机会，请根据需要添加 &ndash;&gt;-->
-        <!--<intent-filter android:priority="0x7fffffff">-->
-        <!--<action android:name="android.intent.action.MEDIA_UNMOUNTED"/>-->
-        <!--<action android:name="android.intent.action.MEDIA_REMOVED"/>-->
-        <!--<action android:name="android.intent.action.MEDIA_CHECKING"/>-->
-        <!--<action android:name="android.intent.action.MEDIA_EJECT"/>-->
-
-        <!--<data android:scheme="file"/>-->
-        <!--</intent-filter>-->
-        <!--</receiver>-->
-        <!--&lt;!&ndash; 【必须】 信鸽service &ndash;&gt;-->
-        <!--<service-->
-        <!--android:name="com.tencent.android.tpush.service.XGPushService"-->
-        <!--android:exported="true"-->
-        <!--android:persistent="true"-->
-        <!--android:process=":xg_service_v2"/>-->
-
-        <!--&lt;!&ndash; 【必须】 通知service，其中android:name部分要改为当前包名 &ndash;&gt;-->
-        <!--<service-->
-        <!--android:name="com.tencent.android.tpush.rpc.XGRemoteService"-->
-        <!--android:exported="true">-->
-        <!--<intent-filter>-->
-
-        <!--&lt;!&ndash; 【必须】 请修改为当前APP名包.PUSH_ACTION，如demo的包名为：com.qq.xgdemo &ndash;&gt;-->
-        <!--<action android:name="com.pcs.knowing_weather.PUSH_ACTION"/>-->
-        <!--</intent-filter>-->
-        <!--</service>-->
-
-        <!-- 已废弃，可删除之；若不删除也不会有任何副作用 -->
-        <!--
-            <service android:exported="false"
-            android:name="com.tencent.android.tpush.service.XGDaemonService"
-            android:process=":qq_push_daemon" />
-        -->
-        <!-- 【可选】信鸽拉起其他APP应用，若应用在本地找不到可以自动下载 -->
-        <!--
-              <service android:exported="false"
-            android:name="com.tencent.android.tpush.XGDownloadService"
-            android:enabled="true"
-            android:exported="false" />
-        -->
-        <!-- 【可选】APP实现的Receiver，用于接收消息透传和操作结果的回调，请根据需要添加 -->
-        <!-- YOUR_PACKAGE_PATH.CustomPushReceiver需要改为自己的Recei90ver： -->
         <receiver
             android:name=".control.receiver.MessageReceiver"
             android:exported="true">
@@ -1120,15 +1038,6 @@
                 <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
             </intent-filter>
         </receiver>
-
-        <!--&lt;!&ndash; 信鸽推送 【必须】 请修改为APP的AccessId，“21”开头的10位数字，中间没空格 &ndash;&gt;-->
-        <!--<meta-data-->
-        <!--android:name="XG_V2_ACCESS_ID"-->
-        <!--android:value="2100281108"/>-->
-        <!--&lt;!&ndash; 信鸽推送 【必须】 请修改为APP的AccessKey，“A”开头的12位字符串，中间没空格 &ndash;&gt;-->
-        <!--<meta-data-->
-        <!--android:name="XG_V2_ACCESS_KEY"-->
-        <!--android:value="A1I7JW857JRS"/>-->
 
         <!-- 【必须】 信鸽service -->
         <service
@@ -1179,68 +1088,6 @@
         </receiver>
 
         <!-- ###################注册SDK使用的Activity###################### -->
-
-
-        <!-- 分享编辑页 -->
-
-        <activity
-            android:name="com.umeng.socialize.editorpage.ShareActivity"
-            android:excludeFromRecents="true"
-            android:theme="@style/Theme.UMDefault" />
-
-        <!-- ############ QQ空间和QQ SSO授权的Activity注册 ############ -->
-
-        <activity
-            android:name="com.tencent.tauth.AuthActivity"
-            android:launchMode="singleTask"
-            android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tencent1111680665" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tencent.connect.common.AssistActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <!-- ###################添加UmengAppkey###################### -->
-        <!-- android:value="55388deb67e58effc70007b0" android:value="55effebae0f55a226c004c6a" -->
-        <!--<meta-data-->
-        <!--android:name="UMENG_APPKEY"-->
-        <!--android:value="5ca458313fc19546520016c3"/>-->
-        <!-- 微信朋友圈回调 -->
-        <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-
-        <!-- 新浪微博 -->
-        <activity
-            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity
-            android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
-            android:launchMode="singleTask"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-            <intent-filter>
-                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
 
         <activity
             android:name=".view.activity.newairquality.ActivityAirRankLevel"
@@ -1295,6 +1142,75 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+
+        <!--umeng-->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1111680665" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.umeng.socialize.media.WBShareCallBackActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.sina.weibo.sdk.web.WeiboSdkWebActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name="com.sina.weibo.sdk.share.WbShareTransActivity"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+            <intent-filter>
+                <action android:name="com.sina.weibo.sdk.action.ACTION_SDK_REQ_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.umeng.socialize.editorpage.ShareActivity"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.NoTitleBar" />
+        <!--umeng-->
+
+        <!--魅族push应用定义消息receiver声明 -->
+        <receiver android:name=".MeizuPushReceiver">
+            <intent-filter>
+                <!-- 接收push消息 -->
+                <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
+                <!-- 接收register消息 -->
+                <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK" />
+                <!-- 接收unregister消息-->
+                <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK" />
+                <!-- 兼容低版本Flyme3推送服务配置 -->
+                <action android:name="com.meizu.c2dm.intent.REGISTRATION" />
+                <action android:name="com.meizu.c2dm.intent.RECEIVE" />
+
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
+        <!--umeng-->
 
     </application>
 

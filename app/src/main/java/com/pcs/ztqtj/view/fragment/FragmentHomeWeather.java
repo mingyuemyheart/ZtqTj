@@ -23,7 +23,6 @@ import com.amap.api.maps.SupportMapFragment;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;

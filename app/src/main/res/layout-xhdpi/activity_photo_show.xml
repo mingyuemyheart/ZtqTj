@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 实景开拍首页 -->
+<?xml version="1.0" encoding="utf-8"?><!-- 实景开拍首页 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_bg" >
+    android:background="@color/grey_bg">
 
     <RelativeLayout
         android:id="@+id/layout_banner"
         android:layout_width="match_parent"
         android:layout_height="@dimen/banner_com_h"
-        android:background="@color/bg_white" >
+        android:background="@color/bg_white">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
@@ -20,154 +19,148 @@
             android:id="@+id/pointlayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true" />
     </RelativeLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layout_banner"
-        >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/bg_white">
-
-            <RadioGroup
-                android:id="@+id/radiogroup_chose"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="@dimen/dimen4"
-                android:layout_marginBottom="@dimen/dimen4"
-                android:padding="@dimen/dimen4"
-                android:orientation="horizontal" >
-
-                <!-- android:background="@drawable/radio_photoshow_right" -->
-
-                <RadioButton
-                    android:id="@+id/ordinary_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:button="@null"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="@string/new_photo_show"
-                    android:textColor="@color/text_black"
-                    android:textSize="@dimen/text_content"
-                    />
-
-                <RadioButton
-                    android:id="@+id/special_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:button="@null"
-                    android:gravity="center"
-                    android:layout_marginLeft="@dimen/dimen4"
-                    android:singleLine="true"
-                    android:text="@string/choice_photo"
-                    android:textColor="@color/text_black"
-                    android:textSize="@dimen/text_content" />
-            </RadioGroup>
-
-            <View
-                android:layout_width="5px"
-                android:layout_height="30dp"
-                android:background="@drawable/line_common_v"
-                android:layout_centerInParent="true"
-                />
-
-            <ImageView
-                android:id="@+id/iv_take_picture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dimen10"
-                android:src="@drawable/icon_take_picture_new"
-                android:visibility="gone"
-                />
-
-        </RelativeLayout>
-
-        <!-- 下拉刷新视图 -->
+        android:layout_below="@id/layout_banner">
 
         <LinearLayout
-            android:id="@+id/layout_pulldown"
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_marginTop="-1px"
-            android:background="@color/bg_black_alpha50"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <!-- 图标 -->
-
-            <ImageView
-                android:id="@+id/image_pulldown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/icon_pullwodn_arrow" />
-            <!-- 文字 -->
-
-            <TextView
-                android:id="@+id/text_pulldown"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/refresh_pulldown"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/text_content" />
-        </LinearLayout>
-
-        <GridView
-            android:id="@+id/gridView"
-            style="@style/PhotoGridLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:horizontalSpacing="1dp"
-            android:numColumns="2"
-            android:paddingLeft="0dp"
-            android:paddingRight="-1dp"
-            android:verticalSpacing="1dp" />
-    </LinearLayout>
-    <!-- 底部：正在加载 -->
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="bottom"
-        android:background="@color/bg_black_alpha70"
-        android:gravity="center"
-        android:text="@string/loading"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/text_content"
-        android:visibility="visible" >
-    </TextView>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_white">
 
-    <TextView
-        android:id="@+id/text_nopicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="200dp"
-        android:gravity="center"
-        android:text="@string/no_picture"
-        android:textColor="@color/text_gray"
-        android:textSize="@dimen/text_subtitle"
-        android:visibility="gone" >
-    </TextView>
+                <RadioGroup
+                    android:id="@+id/radiogroup_chose"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/dimen4"
+                    android:layout_marginBottom="@dimen/dimen4"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimen4">
+
+                    <!-- android:background="@drawable/radio_photoshow_right" -->
+
+                    <RadioButton
+                        android:id="@+id/ordinary_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:checked="true"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/new_photo_show"
+                        android:textColor="@color/text_black"
+                        android:textSize="@dimen/text_content" />
+
+                    <RadioButton
+                        android:id="@+id/special_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen4"
+                        android:layout_weight="1"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/choice_photo"
+                        android:textColor="@color/text_black"
+                        android:textSize="@dimen/text_content" />
+                </RadioGroup>
+
+                <View
+                    android:layout_width="5px"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/line_common_v" />
+
+                <ImageView
+                    android:id="@+id/iv_take_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/dimen10"
+                    android:src="@drawable/icon_take_picture_new"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <!-- 下拉刷新视图 -->
+
+            <LinearLayout
+                android:id="@+id/layout_pulldown"
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_marginTop="-1px"
+                android:background="@color/bg_black_alpha50"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!-- 图标 -->
+
+                <ImageView
+                    android:id="@+id/image_pulldown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/icon_pullwodn_arrow" />
+                <!-- 文字 -->
+
+                <TextView
+                    android:id="@+id/text_pulldown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/refresh_pulldown"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/text_content" />
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/gridView"
+                style="@style/PhotoGridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:horizontalSpacing="1dp"
+                android:numColumns="2"
+                android:paddingLeft="0dp"
+                android:paddingRight="-1dp"
+                android:verticalSpacing="1dp" />
+        </LinearLayout>
+        <!-- 底部：正在加载 -->
+
+        <TextView
+            android:id="@+id/text_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:background="@color/bg_black_alpha70"
+            android:gravity="center"
+            android:text="@string/loading"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_content"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/text_nopicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="200dp"
+            android:gravity="center"
+            android:text="@string/no_picture"
+            android:textColor="@color/text_gray"
+            android:textSize="@dimen/text_subtitle"
+            android:visibility="gone" />
     </FrameLayout>
 
 </RelativeLayout>

@@ -1,11 +1,9 @@
 package com.pcs.ztqtj.view.activity.photoshow;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -23,38 +20,48 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.photo.AdapterPhotoComment;
-import com.pcs.ztqtj.control.tool.CommUtils;
-import com.pcs.ztqtj.control.tool.LoginInformation;
-import com.pcs.ztqtj.control.tool.image.GetImageView;
-import com.pcs.ztqtj.model.PhotoShowDB;
-import com.pcs.ztqtj.model.PhotoShowDB.PhotoShowType;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoBrowseDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoBrowseUp;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentListUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoPraiseDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoPraiseUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.photo.AdapterPhotoComment;
+import com.pcs.ztqtj.control.tool.CommUtils;
+import com.pcs.ztqtj.control.tool.image.GetImageView;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.model.PhotoShowDB;
+import com.pcs.ztqtj.model.PhotoShowDB.PhotoShowType;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
  * 实景详情页面
- *
- * @author JiangZy
  */
 public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     /**
@@ -76,17 +83,6 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     private PackPhotoCommentDown mPackCommentDown = new PackPhotoCommentDown();
 
     /**
-     * 上传包：点赞
-     */
-    private PackPhotoPraiseUp mPackPraiseUp = new PackPhotoPraiseUp();
-    private PackPhotoPraiseDown mPackPraiseDown = new PackPhotoPraiseDown();
-    /**
-     * 上传包：增加浏览
-     */
-    private PackPhotoBrowseUp mPackBrowseUp = new PackPhotoBrowseUp();
-    private PackPhotoBrowseDown mPackBrowseDown = new PackPhotoBrowseDown();
-
-    /**
      * 当前显示的是第几张
      */
     private int positionImage = 0;
@@ -100,6 +96,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
 
     private GetImageView getImageView = new GetImageView();
     private PackLocalUser localUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -197,7 +194,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
         text_praise.setOnClickListener(mOnClick);
         btn_submit.setOnClickListener(mOnClick);
         image_photo.setOnClickListener(mOnClick);
-        image_photo.setOnTouchListener(touchListener);
+//        image_photo.setOnTouchListener(touchListener);
         scroll_view.setOnTouchListener(touchListener);
     }
 
@@ -337,9 +334,9 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
             }
             text_name.setText(mInfo.nickName);
         }
-        String url_prev = getString(R.string.file_download_url);
+        String url_prev = getString(R.string.sjkp);
         getImageFetcher().addListener(mListenerImageLoad);
-        getImageFetcher().loadImage(url_prev + mInfo.imageUrl, image_photo, ImageConstant.ImageShowType.SRC);
+        getImageFetcher().loadImage(url_prev + mInfo.thumbnailUrl, image_photo, ImageConstant.ImageShowType.SRC);
     }
 
     /**
@@ -382,10 +379,8 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
 
         text_browse.setText(mInfo.browsenum);
         // 设置首页刷新
-        PhotoShowDB.getInstance().setRefreshType(
-                PhotoShowDB.PhotoRefreshType.VIEW);
-        mPackBrowseUp.itemId = mInfo.itemId;
-        PcsDataDownload.addDownload(mPackBrowseUp);
+        PhotoShowDB.getInstance().setRefreshType(PhotoShowDB.PhotoRefreshType.VIEW);
+        okHttpScane();
     }
 
     /**
@@ -413,12 +408,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
             return ;
         }
         showProgressDialog();
-        mPackPraiseUp.userId = mInfo.userId;
-        TelephonyManager tm = (TelephonyManager) this
-                .getSystemService(TELEPHONY_SERVICE);
-        mPackPraiseUp.imei = tm.getDeviceId();
-        mPackPraiseUp.itemId = mInfo.itemId;
-        PcsDataDownload.addDownload(mPackPraiseUp);
+        okHttpPraise();
     }
 
     /**
@@ -447,7 +437,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
      * 点击照片
      */
     private void clickPhoto() {
-        String url = getString(R.string.file_download_url) + mInfo.imageUrl;
+        String url = getString(R.string.sjkp) + mInfo.thumbnailUrl;
         Intent intent = new Intent();
         intent.setClass(this, ActivityPhotoFullDetail.class);
         intent.putExtra("url", url);
@@ -464,13 +454,11 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     /**
      * 点赞返回
      */
-    private void receivePraise() {
+    private void receivePraise(boolean isSucc) {
         dismissProgressDialog();
-        mPackPraiseDown = (PackPhotoPraiseDown) PcsDataManager.getInstance().getNetPack(mPackPraiseUp.getName());
-        if (!mPackPraiseDown.isSucc) {
+        if (!isSucc) {
             // 不成功
-            Toast.makeText(this, R.string.praise_err, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.praise_err, Toast.LENGTH_SHORT).show();
             return;
         }
         // 成功
@@ -526,7 +514,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
                     break;
                 case R.id.image_photo:
                     // 点击照片
-                    // clickPhoto();
+                     clickPhoto();
                     break;
             }
         }
@@ -538,18 +526,12 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
         @Override
         public void onReceive(String nameStr, String errorStr) {
-            if (mPackPraiseUp.getName().equals(nameStr)) {
-                // 点赞返回
-                receivePraise();
-            } else if (mPackCommentUp.getName().equals(nameStr)) {
+            if (mPackCommentUp.getName().equals(nameStr)) {
                 // 评论返回
                 receiveComment();
             } else if (mPackCommentListUp.getName().equals(nameStr)) {
                 // 评论列表返回
                 receiveCommentList();
-            } else if (mPackBrowseUp.getName().equals(nameStr)) {
-                // 增加浏览返回
-                receiveBrowseAdd(mPackBrowseUp.itemId);
             }
         }
     };
@@ -582,4 +564,148 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
         }
 
     };
+
+    /**
+     * 点赞
+     * "status": 1,状态，1代表访问量新增+1；2触发点赞，点赞数量将新增+1
+     */
+    private void okHttpPraise() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("userId", MyApplication.UID);
+                    info.put("id", mInfo.itemId);
+                    info.put("status", "2");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("livePhotoView", json);
+                    final String url = CONST.BASE_URL+"live_photo/livePhotoView";
+                    Log.e("livePhotoView", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("status")) {
+                                                String status = obj.getString("status");
+                                                if (TextUtils.equals(status, "success")) {
+                                                    receivePraise(true);
+                                                } else {
+                                                    receivePraise(false);
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 浏览量、点赞
+     * "status": 1,状态，1代表访问量新增+1；2触发点赞，点赞数量将新增+1
+     */
+    private void okHttpScane() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("userId", MyApplication.UID);
+                    info.put("id", mInfo.itemId);
+                    info.put("status", "1");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("livePhotoView", json);
+                    final String url = CONST.BASE_URL+"live_photo/livePhotoView";
+                    Log.e("livePhotoView", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("result")) {
+                                                JSONObject itemObj = obj.getJSONObject("result");
+                                                if (!itemObj.isNull("id")) {
+                                                    mInfo.itemId = itemObj.getString("id");
+                                                }
+                                                if (!itemObj.isNull("imageUrl")) {
+                                                    mInfo.thumbnailUrl = itemObj.getString("imageUrl");
+                                                }
+                                                if (!itemObj.isNull("browseNum")) {
+                                                    mInfo.browsenum = itemObj.getString("browseNum");
+                                                }
+                                                if (!itemObj.isNull("address")) {
+                                                    mInfo.address = itemObj.getString("address");
+                                                }
+                                                if (!itemObj.isNull("nickName")) {
+                                                    mInfo.nickName = itemObj.getString("nickName");
+                                                }
+                                                if (!itemObj.isNull("des")) {
+                                                    mInfo.des = itemObj.getString("des");
+                                                }
+                                                if (!itemObj.isNull("likeNum")) {
+                                                    mInfo.praise = itemObj.getString("likeNum");
+                                                }
+                                                if (!itemObj.isNull("shootTime")) {
+                                                    mInfo.date_time = itemObj.getString("shootTime");
+                                                }
+                                                if (!itemObj.isNull("weather")) {
+                                                    mInfo.weather = itemObj.getString("weather");
+                                                }
+                                            }
+                                            showDetail();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

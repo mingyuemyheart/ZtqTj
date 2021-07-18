@@ -89,9 +89,7 @@
             android:horizontalSpacing="4dp"
             android:verticalSpacing="4dp"
             android:numColumns="6"
-            android:listSelector="@android:color/transparent">
-
-        </GridView>
+            android:listSelector="@android:color/transparent"/>
 
     </RelativeLayout>
 

@@ -1,21 +1,35 @@
 package com.pcs.ztqtj.model;
 
 import android.content.Context;
-import android.telephony.TelephonyManager;
+import android.util.Log;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCenterDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoShowDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoShowUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
-import com.pcs.ztqtj.control.tool.LoginInformation;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 实景开拍数据
@@ -77,14 +91,6 @@ public class PhotoShowDB {
      * 首页精选图片列表
      */
     private List<PackPhotoSingle> mListPhotoSpecial = new ArrayList<PackPhotoSingle>();
-    /**
-     * 首页上传包
-     */
-    private PackPhotoShowUp mPackUp = new PackPhotoShowUp();
-    /**
-     * 首页精品图片上传包
-     */
-    private PackPhotoShowUp mPackUpSpecial = new PackPhotoShowUp();
 
     /**
      * 用户中心下载包
@@ -125,10 +131,6 @@ public class PhotoShowDB {
         clearData();
         mContext = context;
         mCityId = cityId;
-        // 初始化上传包
-        initShowUpPack();
-        // 注册监听
-        PcsDataBrocastReceiver.registerReceiver(mContext, mReceiver);
     }
 
     public void onResume() {
@@ -140,11 +142,6 @@ public class PhotoShowDB {
     }
 
     public void onDestory() {
-        try {
-            PcsDataBrocastReceiver.unregisterReceiver(mContext, mReceiver);
-        } catch (Exception ex) {
-
-        }
         mIsPause = true;
     }
 
@@ -191,29 +188,6 @@ public class PhotoShowDB {
         mPackLocalPhotoUser.userId = localUser.sys_user_id;
         mPackLocalPhotoUser.nickName = localUser.sys_nick_name;
         return mPackLocalPhotoUser;
-    }
-
-    /**
-     * 初始化首页上传包
-     */
-    private void initShowUpPack() {
-        TelephonyManager tm = (TelephonyManager) mContext
-                .getSystemService(Context.TELEPHONY_SERVICE);
-
-        // 城市ID
-        mPackUp.area_id = mCityId;
-        // 用户ID
-        mPackUp.user_id = getUserPack().userId;
-        // IMEI
-        mPackUp.imei = tm.getDeviceId();
-        mPackUpSpecial.keyword = "";
-
-        // 城市ID
-        mPackUpSpecial.area_id = mCityId;
-        // 用户ID
-        mPackUpSpecial.user_id = getUserPack().userId;
-        mPackUpSpecial.imei = tm.getDeviceId();
-        mPackUpSpecial.keyword = "preity_pic";
     }
 
     /**
@@ -293,7 +267,6 @@ public class PhotoShowDB {
 
     /**
      * 请求下一页
-     *
      * @return 允许请求？
      */
     public boolean reqNextPage(PhotoShowType type) {
@@ -303,9 +276,8 @@ public class PhotoShowDB {
                     return false;
                 } else {
                     // 普通
-                    mPackUp.page = String.valueOf(mCurrPage);
-                    PcsDataDownload.addDownload(mPackUp);
                     mIsLoading = true;
+                    okHttpOrigin();
                     return true;
                 }
             } else if (type == PhotoShowType.SPECIAL) {
@@ -313,9 +285,8 @@ public class PhotoShowDB {
                     return false;
                 } else {
                     // 精品
-                    mPackUpSpecial.page = String.valueOf(mCurrPageSpecial);
-                    PcsDataDownload.addDownload(mPackUpSpecial);
                     mIsLoading = true;
+                    okHttpSpecial();
                     return true;
                 }
             } else {
@@ -371,44 +342,205 @@ public class PhotoShowDB {
     }
 
     /**
-     * 广播接收
+     * 获取图片数据
      */
-    private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.equals(mPackUp.getName())) {
-                PackPhotoShowDown pack = (PackPhotoShowDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (pack != null) {
-                    if (pack.photoWallList.size() == 0) {
-                        mNoMoreData = true;
-                    } else {
-                        // 添加数据
-                        mListPhoto.addAll(pack.photoWallList);
-                        mCurrPage++;
-                    }
-                    mIsLoading = false;
-                    // 监听
-                    if (!mIsPause && mListener != null) {
-                        mListener.done();
-                    }
-                }
-            } else if (nameStr.equals(mPackUpSpecial.getName())) {
-                PackPhotoShowDown pack = (PackPhotoShowDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (pack != null) {
-                    if (pack.photoWallList.size() == 0) {
-                        mNoMoreDataSepcial = true;
-                    } else {
-                        // 添加数据
-                        mListPhotoSpecial.addAll(pack.photoWallList);
-                        mCurrPageSpecial++;
-                    }
-                    mIsLoading = false;
-                    // 监听
-                    if (!mIsPause && mListener != null) {
-                        mListener.done();
-                    }
+    private void okHttpOrigin() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+//                    info.put("areaid", mCityId);
+//                    info.put("userId", getUserPack().userId);
+                    info.put("imgType", "1");
+                    info.put("page", mCurrPage+"");
+                    info.put("count", "20");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("livePhotoList", json);
+                    final String url = CONST.BASE_URL+"live_photo/livePhotoList";
+                    Log.e("livePhotoList", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            if (!TextUtil.isEmpty(result)) {
+                                try {
+                                    PackPhotoShowDown pack = new PackPhotoShowDown();
+                                    JSONObject obj = new JSONObject(result);
+//                                    if (!obj.isNull("pages")) {
+//                                        totalPage = obj.getInt("pages");
+//                                    }
+                                    if (!obj.isNull("result")) {
+                                        JSONArray array = obj.getJSONArray("result");
+                                        for (int i = 0; i < array.length(); i++) {
+                                            PackPhotoSingle dto = new PackPhotoSingle();
+                                            JSONObject itemObj = array.getJSONObject(i);
+                                            if (!itemObj.isNull("id")) {
+                                                dto.itemId = itemObj.getString("id");
+                                            }
+                                            if (!itemObj.isNull("imageUrl")) {
+                                                dto.thumbnailUrl = itemObj.getString("imageUrl");
+                                            }
+                                            if (!itemObj.isNull("browseNum")) {
+                                                dto.browsenum = itemObj.getString("browseNum");
+                                            }
+                                            if (!itemObj.isNull("address")) {
+                                                dto.address = itemObj.getString("address");
+                                            }
+                                            if (!itemObj.isNull("nickName")) {
+                                                dto.nickName = itemObj.getString("nickName");
+                                            }
+                                            if (!itemObj.isNull("des")) {
+                                                dto.des = itemObj.getString("des");
+                                            }
+                                            if (!itemObj.isNull("likeNum")) {
+                                                dto.praise = itemObj.getString("likeNum");
+                                            }
+                                            if (!itemObj.isNull("shootTime")) {
+                                                dto.date_time = itemObj.getString("shootTime");
+                                            }
+                                            if (!itemObj.isNull("weather")) {
+                                                dto.weather = itemObj.getString("weather");
+                                            }
+                                            pack.photoWallList.add(dto);
+                                        }
+                                    }
+                                    if (pack != null) {
+                                        if (pack.photoWallList.size() == 0) {
+                                            mNoMoreData = true;
+                                        } else {
+                                            // 添加数据
+                                            mListPhoto.addAll(pack.photoWallList);
+                                            mCurrPage++;
+                                        }
+                                        mIsLoading = false;
+                                        // 监听
+                                        if (!mIsPause && mListener != null) {
+                                            mListener.done();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
-        }
-    };
+        }).start();
+    }
+
+    /**
+     * 获取图片数据
+     */
+    private void okHttpSpecial() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+//                    info.put("areaid", mCityId);
+//                    info.put("userId", getUserPack().userId);
+                    info.put("imgType", "1");
+                    info.put("page", mCurrPageSpecial+"");
+                    info.put("count", "20");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("livePhotoList", json);
+                    final String url = CONST.BASE_URL+"live_photo/livePhotoList";
+                    Log.e("livePhotoList", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            if (!TextUtil.isEmpty(result)) {
+                                try {
+                                    PackPhotoShowDown pack = new PackPhotoShowDown();
+                                    JSONObject obj = new JSONObject(result);
+//                                    if (!obj.isNull("pages")) {
+//                                        totalPage = obj.getInt("pages");
+//                                    }
+                                    if (!obj.isNull("result")) {
+                                        JSONArray array = obj.getJSONArray("result");
+                                        for (int i = 0; i < array.length(); i++) {
+                                            PackPhotoSingle dto = new PackPhotoSingle();
+                                            JSONObject itemObj = array.getJSONObject(i);
+                                            if (!itemObj.isNull("id")) {
+                                                dto.itemId = itemObj.getString("id");
+                                            }
+                                            if (!itemObj.isNull("imageUrl")) {
+                                                dto.thumbnailUrl = itemObj.getString("imageUrl");
+                                            }
+                                            if (!itemObj.isNull("browseNum")) {
+                                                dto.browsenum = itemObj.getString("browseNum");
+                                            }
+                                            if (!itemObj.isNull("address")) {
+                                                dto.address = itemObj.getString("address");
+                                            }
+                                            if (!itemObj.isNull("nickName")) {
+                                                dto.nickName = itemObj.getString("nickName");
+                                            }
+                                            if (!itemObj.isNull("des")) {
+                                                dto.des = itemObj.getString("des");
+                                            }
+                                            if (!itemObj.isNull("likeNum")) {
+                                                dto.praise = itemObj.getString("likeNum");
+                                            }
+                                            if (!itemObj.isNull("shootTime")) {
+                                                dto.date_time = itemObj.getString("shootTime");
+                                            }
+                                            if (!itemObj.isNull("weather")) {
+                                                dto.weather = itemObj.getString("weather");
+                                            }
+                                            pack.photoWallList.add(dto);
+                                        }
+                                    }
+                                    if (pack != null) {
+                                        if (pack.photoWallList.size() == 0) {
+                                            mNoMoreDataSepcial = true;
+                                        } else {
+                                            // 添加数据
+                                            mListPhotoSpecial.addAll(pack.photoWallList);
+                                            mCurrPageSpecial++;
+                                        }
+                                        mIsLoading = false;
+                                        // 监听
+                                        if (!mIsPause && mListener != null) {
+                                            mListener.done();
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

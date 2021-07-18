@@ -258,7 +258,7 @@ public class FragmentProduct extends Fragment {
             } else if (title.equals("城市积水")) {
                 Intent intent = new Intent(getActivity(), ActivityWebView.class);
                 intent.putExtra("title", title);
-                intent.putExtra("url", "http://www.baidu.com");
+                intent.putExtra("url", "https://tianjin.welife100.com/Monitor/monitor");
                 intent.putExtra("shareContent", title);
                 startActivity(intent);
             } else {

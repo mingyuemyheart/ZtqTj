@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,33 +29,43 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.KWHttpRequest;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.model.PhotoShowDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.dialog.DialogFactory.DialogListener;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUrl;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSubmitUp;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 实景提交页面
- *
- * @author JiangZy
  */
 public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
+
     private int REQUEST_CODE_PHOTO = 101;
     /**
      * 图片文件
@@ -64,14 +75,6 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      * 复选框选中事件
      */
     private OnMyCheckedChange mOnChecked;
-    /**
-     * 上传包
-     */
-    private PackPhotoSubmitUp mPackUp = new PackPhotoSubmitUp();
-    /**
-     * 上传数据+文件
-     */
-    private KWHttpRequest mKWHttpRequest;
     /**
      * 对话框：回退
      */
@@ -86,31 +89,84 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
     private Bitmap mBitmapPhoto;
     private ImageResizer mResizer = new ImageResizer();
 
+    private ImageView imagePhoto;
+    private EditText edit_address,edit_desc;
+    private TextView text_time;
+    private Button btn_submit;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_submit);
-        setTitleText(R.string.photo_title_submit);
+        initWidget();
         // 等待框
         showProgressDialog();
         // 初始化位置
         initAddress();
-        // 初始化图片
-        initPicture();
-        // 刷新图片
-        refreshPicture();
         // 初始化单选按钮组
         initRadioGroup();
-        // 初始化按钮
-        initButton();
-        // 初始化描述
-        initDesc();
-        // 初始化HTTP请求
-        initKWHttpRequest();
         // 初始化回退对话框
         initDialogBack();
-        // 初始化时间
-        initTime();
+    }
+
+    private void initWidget() {
+        setTitleText(R.string.photo_title_submit);
+
+        // 图片
+        String photoPath = getIntent().getStringExtra("photo_path");
+        mFilePhoto = new File(photoPath);
+        if (!checkPhotoExists()) {
+            return;
+        }
+
+        imagePhoto = findViewById(R.id.imagePhoto);
+        imagePhoto.setOnClickListener(mOnClick);
+        refreshPicture();
+
+        View btn = null;
+        // 登陆
+        btn = findViewById(R.id.btn_login);
+        btn.setOnClickListener(mOnClick);
+        // 发布
+        btn_submit = findViewById(R.id.btn_submit);
+        btn_submit.setOnClickListener(mOnClick);
+        // 回退
+        btn = findViewById(R.id.btn_back);
+        btn.setOnClickListener(mOnClick);
+        // 左旋转
+        btn = findViewById(R.id.btn_rotate_left);
+        btn.setOnClickListener(mOnClick);
+        // 右旋转
+        btn = findViewById(R.id.btn_rotate_right);
+        btn.setOnClickListener(mOnClick);
+
+        edit_address = findViewById(R.id.edit_address);
+        edit_desc = findViewById(R.id.edit_desc);
+        edit_desc.addTextChangedListener(mTextWatcher);
+
+        Time time = new Time();
+        time.setToNow();
+        // 显示时间
+        text_time = findViewById(R.id.text_time);
+        text_time.setOnClickListener(mOnClick);
+        text_time.setText(time.format("%Y-%m-%d %H:%M:%S"));
+        // 对话框
+        mDialogDate = new DatePickerDialog(this, mOnDate, time.year, time.month, time.monthDay);
+    }
+
+    /**
+     * 刷新图片
+     */
+    private void refreshPicture() {
+        if (mBitmapPhoto != null && !mBitmapPhoto.isRecycled()) {
+            mBitmapPhoto.recycle();
+        }
+
+        Options options = new Options();
+        options.inSampleSize = 6;
+
+        mBitmapPhoto = BitmapFactory.decodeFile(mFilePhoto.getPath(), options);
+        imagePhoto.setImageBitmap(mBitmapPhoto);
     }
 
     @Override
@@ -128,8 +184,7 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -150,58 +205,22 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
             mBitmapPhoto.recycle();
         }
         super.onDestroy();
-        if (mKWHttpRequest != null) {
-            mKWHttpRequest.setListener(0, null);
-        }
     }
 
     /**
      * 初始化位置
      */
     private void initAddress() {
-        EditText editText = (EditText) findViewById(R.id.edit_address);
-        RegeocodeAddress regeocodeAddress = ZtqLocationTool.getInstance()
-                .getSearchAddress();
+        RegeocodeAddress regeocodeAddress = ZtqLocationTool.getInstance().getSearchAddress();
         if (regeocodeAddress == null) {
             // 没有定位信息，显示首页城市
             PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-            editText.setText(cityMain.NAME);
+            edit_address.setText(cityMain.NAME);
             return;
         } else {
             // 显示地名
-            editText.setText(regeocodeAddress.getFormatAddress());
+            edit_address.setText(regeocodeAddress.getFormatAddress());
         }
-    }
-
-    /**
-     * 初始化图片
-     */
-    private void initPicture() {
-        // 图片
-        String photoPath = getIntent().getStringExtra("photo_path");
-        mFilePhoto = new File(photoPath);
-        if (!checkPhotoExists()) {
-            return;
-        }
-
-        ImageView imageView = (ImageView) findViewById(R.id.imagePhoto);
-        imageView.setOnClickListener(mOnClick);
-    }
-
-    /**
-     * 刷新图片
-     */
-    private void refreshPicture() {
-        if (mBitmapPhoto != null && !mBitmapPhoto.isRecycled()) {
-            mBitmapPhoto.recycle();
-        }
-
-        Options options = new Options();
-        options.inSampleSize = 6;
-
-        mBitmapPhoto = BitmapFactory.decodeFile(mFilePhoto.getPath(), options);
-        ImageView imageView = (ImageView) findViewById(R.id.imagePhoto);
-        imageView.setImageBitmap(mBitmapPhoto);
     }
 
     /**
@@ -209,7 +228,6 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      */
     private void initRadioGroup() {
         mOnChecked = new OnMyCheckedChange();
-
         RadioGroup radioGroup = null;
         radioGroup = (RadioGroup) findViewById(R.id.radio_group_1);
         radioGroup.setOnCheckedChangeListener(mOnChecked);
@@ -225,55 +243,6 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
         radioGroup.setOnCheckedChangeListener(mOnChecked);
         radioGroup = (RadioGroup) findViewById(R.id.radio_group_4);
         radioGroup.setOnCheckedChangeListener(mOnChecked);
-
-    }
-
-    /**
-     * 初始化按钮
-     */
-    private void initButton() {
-        View btn = null;
-        // 地址
-//        btn = findViewById(R.id.image_address);
-//        btn.setOnClickListener(mOnClick);
-        // 时间
-//        btn = findViewById(R.id.image_time);
-//        btn.setOnClickListener(mOnClick);
-        // 登陆
-        btn = findViewById(R.id.btn_login);
-        btn.setOnClickListener(mOnClick);
-        // 发布
-        btn = findViewById(R.id.btn_submit);
-        btn.setOnClickListener(mOnClick);
-        // 回退
-        btn = findViewById(R.id.btn_back);
-        btn.setOnClickListener(mOnClick);
-        // 左旋转
-        btn = findViewById(R.id.btn_rotate_left);
-        btn.setOnClickListener(mOnClick);
-        // 右旋转
-        btn = findViewById(R.id.btn_rotate_right);
-        btn.setOnClickListener(mOnClick);
-    }
-
-    /**
-     * 初始化描述
-     */
-    private void initDesc() {
-        EditText editText = (EditText) findViewById(R.id.edit_desc);
-        editText.addTextChangedListener(mTextWatcher);
-    }
-
-    /**
-     * 初始化HTTP请求
-     */
-    private void initKWHttpRequest() {
-        PackLocalUrl packUrl = (PackLocalUrl) PcsDataManager.getInstance().getLocalPack(PackLocalUrl.KEY);
-        PackInitUp initUp = new PackInitUp();
-        PackInitDown packInit = (PackInitDown) PcsDataManager.getInstance().getNetPack(initUp.getName());
-        mKWHttpRequest = new KWHttpRequest(this);
-        mKWHttpRequest.setURL(packUrl.url);
-        mKWHttpRequest.setmP(packInit.pid);
     }
 
     /**
@@ -297,8 +266,7 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      * 初始化回退对话框
      */
     private void initDialogBack() {
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_message,
-                null);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_message, null);
         TextView tv = (TextView) view.findViewById(R.id.dialogmessage);
         tv.setText("是否放弃发布?");
         mDialogBack = new DialogTwoButton(this, view, "确定", "返回",
@@ -311,20 +279,6 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
                         }
                     }
                 });
-    }
-
-    /**
-     * 初始化时间
-     */
-    private void initTime() {
-        Time time = new Time();
-        time.setToNow();
-        // 显示时间
-        TextView textView = (TextView) findViewById(R.id.text_time);
-        textView.setText(time.format("%Y-%m-%d %H:%M:%S"));
-        // 对话框
-        mDialogDate = new DatePickerDialog(this, mOnDate, time.year,
-                time.month, time.monthDay);
     }
 
     /**
@@ -342,12 +296,11 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      * 点击地址
      */
     private void clickBtnAddr() {
-        EditText editText = (EditText) findViewById(R.id.edit_address);
-        editText.selectAll();
+        edit_address.selectAll();
 
         // 显示键盘
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.showSoftInput(editText, 0);
+        imm.showSoftInput(edit_address, 0);
     }
 
     /**
@@ -367,74 +320,14 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
     }
 
     /**
-     * 点击发布
-     */
-    private void clickBtnSubmit() {
-        if (!checkPhotoExists()) {
-            return;
-        }
-        Button btn = (Button) findViewById(R.id.btn_submit);
-        btn.setClickable(false);
-        // // 等待框
-        // showProgressDialog();
-
-        EditText editText;
-        TextView textView;
-
-        // 天气
-        mPackUp.weather = mOnChecked.getCurrValue();
-        // 位置
-        editText = (EditText) findViewById(R.id.edit_address);
-        mPackUp.address = editText.getText().toString();
-        // 时间
-        textView = (TextView) findViewById(R.id.text_time);
-        mPackUp.dateTime = textView.getText().toString();
-        // 用户ID
-        mPackUp.userId = PhotoShowDB.getInstance().getUserPack().userId;
-        // 描述
-        editText = (EditText) findViewById(R.id.edit_desc);
-        mPackUp.des = editText.getText().toString();
-        RegeocodeAddress regeocodeAddress = ZtqLocationTool.getInstance().getSearchAddress();
-        if (regeocodeAddress != null) {
-            String name = regeocodeAddress.getCity();
-            if (!TextUtils.isEmpty(name)) {
-                PackLocalCity currentCityInfo = ZtqCityDB.getInstance().getCityInfoInAllCity(name);
-                if (currentCityInfo != null) {
-                    mPackUp.areaId = currentCityInfo.ID;
-                }
-            }
-        }
-        if (TextUtils.isEmpty(mPackUp.areaId)) {
-            // 地区ID
-            PackLocalCityLocation location = ZtqLocationTool.getInstance().getLocationCity();
-            if(location != null) {
-                mPackUp.areaId = location.ID;
-            }
-            if(TextUtils.isEmpty(mPackUp.areaId)) {
-                mPackUp.areaId = PhotoShowDB.getInstance().getCityId();
-            }
-        }
-
-        // 请求网络
-        mKWHttpRequest.setFilePath(mFilePhoto.getPath(), KWHttpRequest.FILETYPE.IMG);
-        mKWHttpRequest.addDownload(mPackUp);
-        mKWHttpRequest.startAsynchronous();
-        // 提示成功
-        tipRequestSucc();
-    }
-
-    /**
      * 检查有没照片并提示
-     *
      * @return
      */
     private boolean checkPhotoExists() {
         if (mFilePhoto == null || !mFilePhoto.exists()) {
-            Toast.makeText(this, R.string.picture_not_exists,
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.picture_not_exists, Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return true;
     }
 
@@ -444,8 +337,7 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
     private void tipRequestSucc() {
         dismissProgressDialog();
         // 提示
-        Toast.makeText(getApplicationContext(), R.string.photo_up_succ,
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.photo_up_succ, Toast.LENGTH_SHORT).show();
         this.finish();
     }
 
@@ -516,7 +408,6 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
 
         /**
          * 获取当前值
-         *
          * @return
          */
         public String getCurrValue() {
@@ -524,7 +415,6 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
                 RadioGroup radioGroup1 = (RadioGroup) findViewById(R.id.radio_group_1);
                 mCurrValue = getRadioValue(radioGroup1);
             }
-
             return mCurrValue;
         }
     }
@@ -544,18 +434,17 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
 //                    // 地址
 //                    clickBtnAddr();
 //                    break;
-//                case R.id.image_time:
-//                    // 时间
+                case R.id.text_time:
+                    // 时间
 //                    clickBtnTime();
-//                    break;
+                    break;
                 case R.id.btn_login:
                     clickBtnLogin();
                     // 登陆
                     break;
                 case R.id.btn_submit:
                     // 发布
-                    Button btn = (Button) findViewById(R.id.btn_submit);
-                    if (btn.isClickable()) {
+                    if (btn_submit.isClickable()) {
                         clickBtnSubmit();
                     } else {
                         showToast("正在发布");
@@ -580,17 +469,11 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
 
     private TextWatcher mTextWatcher = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
-
         @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
-
         @Override
         public void afterTextChanged(Editable s) {
             // 显示字数
@@ -604,13 +487,9 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      */
     private OnDateSetListener mOnDate = new OnDateSetListener() {
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            String str = String.valueOf(year) + "-"
-                    + String.valueOf(monthOfYear + 1) + "-"
-                    + String.valueOf(dayOfMonth);
-            TextView textView = (TextView) findViewById(R.id.text_time);
-            textView.setText(str);
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            String str = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+            text_time.setText(str);
         }
     };
 
@@ -618,14 +497,154 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      * 图片修改监听
      */
     private ImageResizer.ImageResizerListener mImageListener = new ImageResizer.ImageResizerListener() {
-
         @Override
         public void doneSD(String path, boolean isSucc) {
             if (isSucc) {
                 refreshPicture();
             }
-
             dismissProgressDialog();
         }
     };
+
+    /**
+     * 点击发布
+     */
+    private void clickBtnSubmit() {
+        if (!checkPhotoExists()) {
+            return;
+        }
+        btn_submit.setClickable(false);
+        okHttpPostFiles();
+    }
+
+    /**
+     * 上传图片
+     */
+    private void okHttpPostFiles() {
+        showProgressDialog();
+        final String url = CONST.BASE_URL+"live_photo/upload";
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.addFormDataPart("token", MyApplication.TOKEN);
+        if (mFilePhoto.exists()) {
+            builder.addFormDataPart("files", mFilePhoto.getName(), RequestBody.create(MediaType.parse("image/*"), mFilePhoto));
+        }
+        final RequestBody body = builder.build();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpUtil.enqueue(new Request.Builder().url(url).post(body).build(), new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismissProgressDialog();
+                                Toast.makeText(ActivityPhotoSubmit.this, "上传失败", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        if (!response.isSuccessful()) {
+                            return;
+                        }
+                        final String result = response.body().string();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dismissProgressDialog();
+                                Log.e("submit-file", result);
+                                if (!TextUtils.isEmpty(result)) {
+                                    try {
+                                        JSONObject obj = new JSONObject(result);
+                                        if (!obj.isNull("result")) {
+                                            JSONArray array = obj.getJSONArray("result");
+                                            if (array.length() > 0) {
+                                                String fileUrl = array.get(0).toString();
+                                                okHttpPostContent(fileUrl);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 报送内容
+     */
+    private void okHttpPostContent(final String fileUrl) {
+        showProgressDialog();
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
+        if(city == null) {
+            dismissProgressDialog();
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String url = CONST.BASE_URL+"live_photo/save";
+                    JSONObject param  = new JSONObject();
+                    param.put("token",MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("areaid", city.ID);
+                    info.put("imgType", "1");
+                    info.put("userId", MyApplication.UID);
+                    info.put("nickName", MyApplication.NAME);
+                    info.put("address", edit_address.getText().toString());
+                    info.put("weather", mOnChecked.getCurrValue());
+                    info.put("des", edit_desc.getText().toString());
+                    info.put("imageUrl", fileUrl);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("submit-content", json);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            Toast.makeText(ActivityPhotoSubmit.this, "上传失败", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    Log.e("submit-content", result);
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("status")) {
+                                                String status = obj.getString("status");
+                                                if (TextUtils.equals(status, "success")) {
+                                                    tipRequestSucc();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

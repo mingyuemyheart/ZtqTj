@@ -22,12 +22,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownload;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownloadListener;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
@@ -46,7 +45,6 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
 import com.pcs.ztqtj.MyApplication;
@@ -60,9 +58,9 @@ import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.control.tool.ZtqPushTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.ColumnDto;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
-import com.pcs.ztqtj.view.activity.warn.ActivityWarnDetails;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
@@ -75,6 +73,7 @@ import com.pcs.ztqtj.view.fragment.FragmentService;
 import com.pcs.ztqtj.view.fragment.FragmentSet;
 import com.umeng.analytics.MobclickAgent;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,17 +95,11 @@ import okhttp3.Response;
  */
 public class ActivityMain extends FragmentActivity {
 
-    // 图片获取类
+    private ArrayList<ColumnDto> columnList = new ArrayList<>();
     public ImageFetcher mImageFetcher = null;
-    // ImageFetcher已恢复？
     private boolean mFetcherResumed = false;
-    // 左滑动Fragment
     private FragmentCityManager mFragmentLeft;
-    // 右边滑动Fragment
-    private FragmentSet mFragmentRight;
-    //首页
     private FragmentHomeWeather mFragmentHomeWeather;
-    // 底部菜单监听
     private MyRadioListener mRadioListener = null;
     private DialogTwoButton checkDialogdescribe;
     private PackCheckVersionDown packcheckversion;
@@ -118,7 +111,6 @@ public class ActivityMain extends FragmentActivity {
 
     // 等待对话框
     private ProgressDialog mProgressDialog = null;
-    private WeatherReceiver mWeatherReceiver = null;
 
     //文件下载
     private PcsFileDownload mFileDownload;
@@ -126,248 +118,30 @@ public class ActivityMain extends FragmentActivity {
     private long mBackTime = 0;
     private DrawerLayout drawerLayout;
 
-    /**
-     * 处理升级
-     */
-    @SuppressLint("HandlerLeak")
-    private final Handler handlerVersion = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            try {
-                if (mFileDownload == null) {
-                    mFileDownload = new PcsFileDownload();
-                }
-                View viewdownload = LayoutInflater.from(ActivityMain.this).inflate(R.layout.dialog_download, null);
-                desc_download = viewdownload.findViewById(R.id.desc_download);
-                progerssBar = viewdownload.findViewById(R.id.progressbar);
-                checkDialogdownload = new DialogOneButton(ActivityMain.this,
-                        viewdownload, "取消", new DialogFactory.DialogListener() {
-                    @Override
-                    public void click(String str) {
-                        checkDialogdownload.dismiss();
-                        mFileDownload.cancel();
-                    }
-                });
-                checkDialogdownload.setTitle("正在下载");
-                checkDialogdownload.show();
-                String[] appname = packcheckversion.file.split("/");
-                mFileDownload.downloadFile(downloadlistener, getString(R.string.file_download_url) + packcheckversion.file,
-                        PcsGetPathValue.getInstance().getAppPath() + appname[appname.length - 1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        createImageFetcher(this.getResources()
-                .getDimensionPixelSize(R.dimen.dimen480));
-        createFragment();
+        okHttpColumn();
+    }
+
+    private void init() {
+        createImageFetcher();
+        mFragmentLeft = new FragmentCityManager();
         initDrawerLayout();
         initBottomMenu();
         checkBottomMenu();
-        //刷新小部件
-        reflushWidget();
-        //下载主题插图
-        downloadImage();
-        //检查城市
-        checkCity();
-        // 打开动画
-        if (getIntent().getBooleanExtra("back", false)) {
-            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
-        }
-        Bundle bundle = getIntent().getBundleExtra(MyConfigure.EXTRA_BUNDLE);
-        if(bundle != null) {
-            String type = bundle.getString("type");
-            if(!TextUtils.isEmpty(type)) {
-                if(type.equals("warn")) {
-                    Intent intent = new Intent(this, ActivityWarnDetails.class);
-                    intent.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
-                    startActivity(intent);
-                } else if (type.equals("widget_warn")) {
-//                    WarnBean bean = (WarnBean) bundle.getSerializable("warninfo");
-//                    if(bean.currentCity != null) {
-//                        ZtqCityDB.getInstance().setCityMain(bean.currentCity, false);
-//                    }
-//                    boolean isfj = bundle.getBoolean("isfj");
-//                    String unitType = bundle.getString("yj_type");
-//                    Intent intent = new Intent();
-//                    intent.setClass(this, ActivityWarningCenterNotFjCity.class);
-//                    intent.putExtra("warninfo", bean);
-//                    intent.putExtra("yj_type", unitType);
-//                    startActivity(intent);
-                }
-            }
-            getIntent().removeExtra(MyConfigure.EXTRA_BUNDLE);
-        }
-
-        SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
-        try {
-            String currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            String lastVer = sharedPreferences.getString("ver", "-1");
-            if (!TextUtils.equals(currentVer, lastVer)) {
-                dialogPrivacy(currentVer);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        ZtqAppWidget.getInstance().updateAllWidget(this);//刷新小部件
+        downloadImage();//下载主题插图
+        checkCity();//检查城市
+        initPrivacy();
     }
 
-    protected void createImageFetcher(int imageThumbSize) {
+    protected void createImageFetcher() {
         ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(this);
         cacheParams.setMemCacheSizePercent(0.25f);
         mImageFetcher = new ImageFetcher(this);
         mImageFetcher.addImageCache(this.getSupportFragmentManager(),cacheParams);
-    }
-
-    /**
-     * 创建fragment
-     */
-    private void createFragment() {
-        // 左滑动Fragment
-        mFragmentLeft = new FragmentCityManager();
-        // 右边滑动Fragment
-        mFragmentRight = new FragmentSet();
-    }
-
-    private void dialogPrivacy(final String ver) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.dialog_privacy, null);
-        TextView tvMessage = view.findViewById(R.id.tvMessage);
-        TextView tvContent = view.findViewById(R.id.tvContent);
-        TextView tvPrivacy = view.findViewById(R.id.tvPrivacy);
-        TextView tvProtocal = view.findViewById(R.id.tvProtocal);
-        LinearLayout llNegative = view.findViewById(R.id.llNegative);
-        LinearLayout llPositive = view.findViewById(R.id.llPositive);
-
-        final Dialog dialog = new Dialog(this, R.style.CustomProgressDialog);
-        dialog.setContentView(view);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.show();
-        tvMessage.setText("隐私服务协议");
-        tvContent.setText("感谢您使用“天津惠民”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津惠民隐私政策》和《天津惠民用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津惠民”。我公司将尽全力保护您的个人信息安全。");
-        tvPrivacy.setText("《天津惠民软件用户隐私政策》");
-        tvPrivacy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
-                intent.putExtra("title", "天津惠民软件用户隐私政策");
-                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yszc.html");
-                intent.putExtra("shareContent", "天津惠民软件用户隐私政策");
-                startActivity(intent);
-            }
-        });
-        tvProtocal.setText("《天津惠民软件许可及服务协议》");
-        tvProtocal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
-                intent.putExtra("title", "天津惠民软件许可及服务协议");
-                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
-                intent.putExtra("shareContent", "天津惠民软件许可及服务协议");
-                startActivity(intent);
-            }
-        });
-        llNegative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        llPositive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("ver", ver);
-                editor.apply();
-            }
-        });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mImageFetcher != null && !mFetcherResumed) {
-            mFetcherResumed = true;
-            mImageFetcher.setExitTasksEarly(false);
-        }
-        MobclickAgent.onResume(this);
-        // 天气广播接收
-        if (mWeatherReceiver == null) {
-            mWeatherReceiver = new WeatherReceiver();
-            PcsDataBrocastReceiver.registerReceiver(ActivityMain.this,mWeatherReceiver);
-        }
-
-        // 添加定位监听
-        ZtqLocationTool.getInstance().addListener(mLocationListener);
-        if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
-            // 未选中首页
-            return;
-        }
-        //下载数据
-        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-        if (cityMain != null) {
-            AutoDownloadWeather.getInstance().setMainDataPause(false);
-            AutoDownloadWeather.getInstance().beginMainData();
-            AutoDownloadWeather.getInstance().setDefaultCity(cityMain);
-        }
-        // 刷新数据
-        FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
-        param.isChangedCity = true;
-        refreshData(param, true);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (mImageFetcher != null) {
-            mFetcherResumed = false;
-            mImageFetcher.setPauseWork(false);
-            mImageFetcher.setExitTasksEarly(true);
-            mImageFetcher.flushCache();
-        }
-        // 天气广播
-        if (mWeatherReceiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(ActivityMain.this,mWeatherReceiver);
-            mWeatherReceiver = null;
-        }
-        //定位监听
-        ZtqLocationTool.getInstance().removeListener(mLocationListener);
-        //停止首页数据下载
-        AutoDownloadWeather.getInstance().setMainDataPause(true);
-        AutoDownloadWeather.getInstance().stopMainData();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mImageFetcher != null) {
-            mImageFetcher.closeCache();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (mImageFetcher != null && !mFetcherResumed) {
-            mFetcherResumed = true;
-            mImageFetcher.setExitTasksEarly(false);
-        }
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            if (data.getBooleanExtra("finish", false)) {
-                finish();
-                System.exit(0);
-            }
-            if (data.getBooleanExtra("checkVersion", false)) {
-                checkVerSion();
-            }
-        }
     }
 
     private void initDrawerLayout() {
@@ -394,10 +168,10 @@ public class ActivityMain extends FragmentActivity {
             public void onDrawerOpened(View view) {
                 switch (view.getId()) {
                     case R.id.fragment_citymanager:
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.END);
                         break;
                     case R.id.fragment_setting:
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.LEFT);
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.START);
                         refreshSet();
                         break;
                 }
@@ -407,10 +181,10 @@ public class ActivityMain extends FragmentActivity {
             public void onDrawerClosed(View view) {
                 switch (view.getId()) {
                     case R.id.fragment_citymanager:
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.RIGHT);
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.END);
                         break;
                     case R.id.fragment_setting:
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.LEFT);
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, Gravity.START);
                         break;
                 }
             }
@@ -427,12 +201,12 @@ public class ActivityMain extends FragmentActivity {
      * @param show
      */
     public void showCityManager(boolean show) {
-        if(show) {
-            drawerLayout.openDrawer(Gravity.LEFT);
-            drawerLayout.closeDrawer(Gravity.RIGHT);
+        if (show) {
+            drawerLayout.openDrawer(Gravity.START);
+            drawerLayout.closeDrawer(Gravity.END);
         } else {
-            drawerLayout.closeDrawer(Gravity.LEFT);
-            drawerLayout.closeDrawer(Gravity.RIGHT);
+            drawerLayout.closeDrawer(Gravity.START);
+            drawerLayout.closeDrawer(Gravity.END);
         }
     }
 
@@ -441,12 +215,24 @@ public class ActivityMain extends FragmentActivity {
      * @param show
      */
     public void showSetting(boolean show) {
-        if(show) {
-            drawerLayout.closeDrawer(Gravity.LEFT);
-            drawerLayout.openDrawer(Gravity.RIGHT);
+        if (show) {
+            drawerLayout.closeDrawer(Gravity.START);
+            drawerLayout.openDrawer(Gravity.END);
         } else {
-            drawerLayout.closeDrawer(Gravity.LEFT);
-            drawerLayout.closeDrawer(Gravity.RIGHT);
+            drawerLayout.closeDrawer(Gravity.START);
+            drawerLayout.closeDrawer(Gravity.END);
+        }
+    }
+
+    /**
+     * 是否锁定drawer
+     * @param lock true: 锁定(不可滑出drawer) false: 不锁定(可滑出drawer)
+     */
+    public void lockDrawer(boolean lock) {
+        if (lock) {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }
 
@@ -470,24 +256,28 @@ public class ActivityMain extends FragmentActivity {
         radio.setOnCheckedChangeListener(mRadioListener);
     }
 
-    private void reflushWidget() {
-        ZtqAppWidget.getInstance().updateAllWidget(this);
-    }
-
     private class MyRadioListener implements CompoundButton.OnCheckedChangeListener {
         private int mCurrIndex = -1;
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
         public MyRadioListener() {
-            // 首页
-            mFragmentHomeWeather = new FragmentHomeWeather();
-            mFragmentList.add(mFragmentHomeWeather);
-            // 气象产品
-            mFragmentList.add(new FragmentProduct());
-            // 专项服务
-            mFragmentList.add(new FragmentService());
-            // 气象生活
-            mFragmentList.add(new FragmentLife());
+            for (int i = 0; i < columnList.size(); i++) {
+                ColumnDto dto = columnList.get(i);
+                if (TextUtils.equals(dto.dataId, "1")) {
+                    // 首页
+                    mFragmentHomeWeather = new FragmentHomeWeather();
+                    mFragmentList.add(mFragmentHomeWeather);
+                } else if (TextUtils.equals(dto.dataId, "2")) {
+                    // 气象产品
+                    mFragmentList.add(new FragmentProduct());
+                } else if (TextUtils.equals(dto.dataId, "3")) {
+                    // 专项服务
+                    mFragmentList.add(new FragmentService());
+                } else if (TextUtils.equals(dto.dataId, "4")) {
+                    // 气象生活
+                    mFragmentList.add(new FragmentLife());
+                }
+            }
         }
 
         @Override
@@ -552,40 +342,199 @@ public class ActivityMain extends FragmentActivity {
     }
 
     /**
-     * 是否锁定drawer
-     * @param lock true: 锁定(不可滑出drawer) false: 不锁定(可滑出drawer)
+     * 检查底部菜单选中
      */
-    public void lockDrawer(boolean lock) {
-        if(lock) {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    private void checkBottomMenu() {
+        mIntBackTarget = getIntent().getIntExtra("BackTarget", FragmentActivityZtqBase.BackTarget.NORMAL.ordinal());
+        RadioGroup radioGroup = findViewById(R.id.radio_group);
+        if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.PRODUCT.ordinal()) {
+            // 气象产品
+            mRadioListener.changeFragment(1);
+            radioGroup.check(R.id.radio_product);
+        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.SERVICE.ordinal()) {
+            // 专项服务
+            mRadioListener.changeFragment(2);
+            radioGroup.check(R.id.radio_service);
+        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.LIVE.ordinal()) {
+            // 气象生活
+            mRadioListener.changeFragment(3);
+            radioGroup.check(R.id.radio_live);
         } else {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            // 默认选中首页
+            mRadioListener.changeFragment(0);
+            radioGroup.check(R.id.radio_home);
         }
     }
 
+    private void initPrivacy() {
+        SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
+        try {
+            String currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            String lastVer = sharedPreferences.getString("ver", "-1");
+            if (!TextUtils.equals(currentVer, lastVer)) {
+                dialogPrivacy(currentVer);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dialogPrivacy(final String ver) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.dialog_privacy, null);
+        TextView tvMessage = view.findViewById(R.id.tvMessage);
+        TextView tvContent = view.findViewById(R.id.tvContent);
+        TextView tvPrivacy = view.findViewById(R.id.tvPrivacy);
+        TextView tvProtocal = view.findViewById(R.id.tvProtocal);
+        TextView tvNegtive = view.findViewById(R.id.tvNegtive);
+        TextView tvPositive = view.findViewById(R.id.tvPositive);
+
+        final Dialog dialog = new Dialog(this, R.style.CustomProgressDialog);
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
+        tvMessage.setText("隐私服务协议");
+        tvContent.setText("感谢您使用“天津惠民”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津惠民隐私政策》和《天津惠民用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津惠民”。我公司将尽全力保护您的个人信息安全。");
+        tvPrivacy.setText("《天津惠民软件用户隐私政策》");
+        tvPrivacy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件用户隐私政策");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yszc.html");
+                intent.putExtra("shareContent", "天津惠民软件用户隐私政策");
+                startActivity(intent);
+            }
+        });
+        tvProtocal.setText("《天津惠民软件许可及服务协议》");
+        tvProtocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
+                intent.putExtra("title", "天津惠民软件许可及服务协议");
+                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
+                intent.putExtra("shareContent", "天津惠民软件许可及服务协议");
+                startActivity(intent);
+            }
+        });
+        tvNegtive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        tvPositive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("ver", ver);
+                editor.apply();
+            }
+        });
+    }
+
     /**
-     * 实时天气广播
-     * @author JiangZY
+     * 处理升级
      */
-    private class WeatherReceiver extends PcsDataBrocastReceiver {
+    @SuppressLint("HandlerLeak")
+    private final Handler handlerVersion = new Handler() {
         @Override
-        public void onReceive(String name, String errorStr) {
-            if (TextUtils.isEmpty(name)) {
-                // 名字NULL
-                return;
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            try {
+                if (mFileDownload == null) {
+                    mFileDownload = new PcsFileDownload();
+                }
+                View viewdownload = LayoutInflater.from(ActivityMain.this).inflate(R.layout.dialog_download, null);
+                desc_download = viewdownload.findViewById(R.id.desc_download);
+                progerssBar = viewdownload.findViewById(R.id.progressbar);
+                checkDialogdownload = new DialogOneButton(ActivityMain.this, viewdownload, "取消", new DialogFactory.DialogListener() {
+                    @Override
+                    public void click(String str) {
+                        checkDialogdownload.dismiss();
+                        mFileDownload.cancel();
+                    }
+                });
+                checkDialogdownload.setTitle("正在下载");
+                checkDialogdownload.show();
+                String[] appname = packcheckversion.file.split("/");
+                mFileDownload.downloadFile(downloadlistener, getString(R.string.file_download_url) + packcheckversion.file,
+                        PcsGetPathValue.getInstance().getAppPath() + appname[appname.length - 1]);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (!TextUtils.isEmpty(errorStr)) {
-                // 出错
-                return;
+        }
+    };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mImageFetcher != null && !mFetcherResumed) {
+            mFetcherResumed = true;
+            mImageFetcher.setExitTasksEarly(false);
+        }
+        MobclickAgent.onResume(this);
+
+        // 添加定位监听
+        ZtqLocationTool.getInstance().addListener(mLocationListener);
+        if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
+            // 未选中首页
+            return;
+        }
+        //下载数据
+        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+        if (cityMain != null) {
+            AutoDownloadWeather.getInstance().setMainDataPause(false);
+            AutoDownloadWeather.getInstance().beginMainData();
+            AutoDownloadWeather.getInstance().setDefaultCity(cityMain);
+        }
+        // 刷新数据
+        FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
+        param.isChangedCity = true;
+        refreshData(param, true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mImageFetcher != null) {
+            mFetcherResumed = false;
+            mImageFetcher.setPauseWork(false);
+            mImageFetcher.setExitTasksEarly(true);
+            mImageFetcher.flushCache();
+        }
+
+        //定位监听
+        ZtqLocationTool.getInstance().removeListener(mLocationListener);
+        //停止首页数据下载
+        AutoDownloadWeather.getInstance().setMainDataPause(true);
+        AutoDownloadWeather.getInstance().stopMainData();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mImageFetcher != null) {
+            mImageFetcher.closeCache();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (mImageFetcher != null && !mFetcherResumed) {
+            mFetcherResumed = true;
+            mImageFetcher.setExitTasksEarly(false);
+        }
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            if (data.getBooleanExtra("finish", false)) {
+                finish();
+                System.exit(0);
             }
-            if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
-                // 未选中首页
-                return;
-            }
-            if (name.startsWith(PackSstqUp.NAME)) {
-                //refreshData(null, false);
-                // 更新桌面小部件
-                ZtqAppWidget.getInstance().updateAllWidget(ActivityMain.this);
+            if (data.getBooleanExtra("checkVersion", false)) {
+                checkVerSion();
             }
         }
     }
@@ -618,8 +567,7 @@ public class ActivityMain extends FragmentActivity {
         } else {
             mProgressDialog.show();
         }
-        mProgressDialog.setMessage(getResources().getString(
-                R.string.please_wait));
+        mProgressDialog.setMessage(getResources().getString(R.string.please_wait));
     }
 
     /**
@@ -652,7 +600,6 @@ public class ActivityMain extends FragmentActivity {
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        //showProgressDialog();
                                         dialog.dismiss();
                                     }
                                 }).create().show();
@@ -816,8 +763,7 @@ public class ActivityMain extends FragmentActivity {
                     checkDialogdownload.dismiss();
                 }
                 String[] appname = packcheckversion.file.split("/");
-                File file = new File(PcsGetPathValue.getInstance().getAppPath()
-                        + appname[appname.length - 1]);
+                File file = new File(PcsGetPathValue.getInstance().getAppPath() + appname[appname.length - 1]);
                 CommUtils.openIfAPK(file);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -836,7 +782,6 @@ public class ActivityMain extends FragmentActivity {
      * 定位改变监听
      */
     private final ZtqLocationTool.PcsLocationListener mLocationListener = new ZtqLocationTool.PcsLocationListener() {
-
         @Override
         public void onLocationChanged() {
             if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
@@ -845,7 +790,6 @@ public class ActivityMain extends FragmentActivity {
             }
             // 刷新定位数据
             mHandler.sendEmptyMessage(0);
-            //refreshData(null, false);
         }
     };
 
@@ -866,31 +810,6 @@ public class ActivityMain extends FragmentActivity {
             refreshData(param, false);
         }
     };
-
-    /**
-     * 检查底部菜单选中
-     */
-    private void checkBottomMenu() {
-        mIntBackTarget = getIntent().getIntExtra("BackTarget", FragmentActivityZtqBase.BackTarget.NORMAL.ordinal());
-        RadioGroup radioGroup = findViewById(R.id.radio_group);
-        if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.PRODUCT.ordinal()) {
-            // 气象产品
-            mRadioListener.changeFragment(1);
-            radioGroup.check(R.id.radio_product);
-        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.SERVICE.ordinal()) {
-            // 专项服务
-            mRadioListener.changeFragment(2);
-            radioGroup.check(R.id.radio_service);
-        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.LIVE.ordinal()) {
-            // 气象生活
-            mRadioListener.changeFragment(3);
-            radioGroup.check(R.id.radio_live);
-        } else {
-            // 默认选中首页
-            mRadioListener.changeFragment(0);
-            radioGroup.check(R.id.radio_home);
-        }
-    }
 
     private void refreshSet() {
         FragmentSet fragment = (FragmentSet) getSupportFragmentManager().findFragmentById(R.id.fragment_setting);
@@ -1055,6 +974,114 @@ public class ActivityMain extends FragmentActivity {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 获取栏目信息
+     */
+    private void okHttpColumn() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    String url = CONST.BASE_URL+"tjmoduleList";
+                    Log.e("tjmoduleList", url);
+                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.e("tjmoduleList", result);
+                                    if (!TextUtils.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("result")) {
+                                                columnList.clear();
+                                                JSONArray array = obj.getJSONArray("result");
+                                                for (int i = 0; i < array.length(); i++) {
+                                                    JSONObject itemObj = array.getJSONObject(i);
+                                                    ColumnDto dto = new ColumnDto();
+                                                    parseItemObj(itemObj, dto);
+                                                    if (!itemObj.isNull("childList")) {
+                                                        List<ColumnDto> childList = new ArrayList<>();
+                                                        JSONArray itemArray = itemObj.getJSONArray("childList");
+                                                        for (int j = 0; j < itemArray.length(); j++) {
+                                                            JSONObject itemObj2 = itemArray.getJSONObject(j);
+                                                            ColumnDto dto2 = new ColumnDto();
+                                                            parseItemObj(itemObj2, dto2);
+
+
+
+                                                            childList.add(dto2);
+                                                        }
+                                                        dto.childList.addAll(childList);
+                                                    }
+                                                    columnList.add(dto);
+                                                }
+                                                init();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void parseItemObj(JSONObject itemObj, ColumnDto dto) {
+        try {
+            if (!itemObj.isNull("dataId")) {
+                dto.dataId = itemObj.getString("dataId");
+            }
+            if (!itemObj.isNull("dataCode")) {
+                dto.dataCode = itemObj.getString("dataCode");
+            }
+            if (!itemObj.isNull("dataName")) {
+                dto.dataName = itemObj.getString("dataName");
+            }
+            if (!itemObj.isNull("parentId")) {
+                dto.parentId = itemObj.getString("parentId");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseChildList(JSONObject itemObj, ColumnDto dto) {
+        try {
+            if (!itemObj.isNull("childList")) {
+                List<ColumnDto> childList = new ArrayList<>();
+                JSONArray itemArray = itemObj.getJSONArray("childList");
+                for (int j = 0; j < itemArray.length(); j++) {
+                    JSONObject itemObj2 = itemArray.getJSONObject(j);
+                    ColumnDto dto2 = new ColumnDto();
+                    parseItemObj(itemObj2, dto2);
+                    childList.add(dto2);
+                }
+                dto.childList.addAll(childList);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

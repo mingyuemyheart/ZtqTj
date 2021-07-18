@@ -9,7 +9,6 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         multiDexEnabled true
-//        applicationId "com.pcs.ztqtj"
         applicationId "com.tianyi.shawn.tjdecision"
         minSdkVersion 21
         targetSdkVersion 28
@@ -78,14 +77,6 @@ dependencies {
     implementation 'com.tencent.mid:mid:4.0.6-release'
     // 信鸽华为推送包
     implementation 'com.tencent.xinge:xghw:2.5.2.300-release'
-    //implementation 'com.tencent.xinge:xghw:3.2.4-beta'
-
-    //信鸽普通版本jar，不包含厂商通道
-//    implementation 'com.tencent.xinge:xinge:4.3.2-beta'
-//    implementation  'com.tencent.wup:wup:1.0.0.E-release'
-//    implementation 'com.tencent.jg:jg:1.1'
-//    implementation 'com.tencent.mid:mid:4.0.7-Release'
-//    implementation 'com.tencent.xinge:xghw:4.3.2-huawei-beta'
 
     // 高德
     implementation 'com.amap.api:3dmap:6.7.0'
@@ -99,9 +90,15 @@ dependencies {
     // android-job
     implementation 'com.evernote:android-job:1.2.6'
 
-
     implementation 'com.squareup.okhttp3:okhttp:4.0.1'
     implementation 'com.squareup.okio:okio:2.2.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
+
+//    implementation 'com.umeng.sdk:common:1.5.3'
+//    implementation 'com.umeng.sdk:utdid:1.1.5.3'
+    implementation 'com.umeng.sdk:push:4.2.0'
+    implementation 'com.umeng.sdk:push-huawei:1.0.0'
+    implementation 'com.umeng.sdk:push-xiaomi:1.0.0'
+    implementation 'com.umeng.sdk:push-meizu:1.0.0'
 }

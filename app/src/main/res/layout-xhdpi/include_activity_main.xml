@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 首页框架 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -13,10 +12,10 @@
         <!-- 内容布局 -->
 
         <FrameLayout
-            android:layout_above="@+id/radio_group"
             android:id="@+id/layout_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/radio_group"
             android:orientation="vertical" />
         <!-- Menu按钮组 -->
 
@@ -37,10 +36,10 @@
                 android:layout_weight="1"
                 android:background="@drawable/radio_main_menu"
                 android:button="@null"
-                android:paddingTop="3dp"
                 android:checked="true"
                 android:drawableTop="@drawable/radio_home"
                 android:gravity="center"
+                android:paddingTop="3dp"
                 android:singleLine="true"
                 android:text="@string/main"
                 android:textColor="@drawable/text_main_menu2"
@@ -52,11 +51,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingTop="3dp"
                 android:background="@drawable/radio_main_menu"
                 android:button="@null"
                 android:drawableTop="@drawable/radio_product"
                 android:gravity="center"
+                android:paddingTop="3dp"
                 android:singleLine="true"
                 android:text="@string/weather_product"
                 android:textColor="@drawable/text_main_menu2"
@@ -68,11 +67,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingTop="3dp"
                 android:background="@drawable/radio_main_menu"
                 android:button="@null"
                 android:drawableTop="@drawable/radio_service"
                 android:gravity="center"
+                android:paddingTop="3dp"
                 android:singleLine="true"
                 android:text="@string/weather_service"
                 android:textColor="@drawable/text_main_menu2"
@@ -82,13 +81,13 @@
             <RadioButton
                 android:id="@+id/radio_live"
                 android:layout_width="0dp"
-                android:paddingTop="3dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/radio_main_menu"
                 android:button="@null"
                 android:drawableTop="@drawable/radio_live"
                 android:gravity="center"
+                android:paddingTop="3dp"
                 android:singleLine="true"
                 android:text="@string/weather_live"
                 android:textColor="@drawable/text_main_menu2"
