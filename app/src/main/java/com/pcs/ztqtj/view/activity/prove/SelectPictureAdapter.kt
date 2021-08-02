@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.pcs.ztqtj.R
-import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.CommonUtil
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -20,7 +19,7 @@ import java.io.File
 /**
  * 选择图片
  */
-class SelectPictureAdapter(private val context: Context?, private val mArrayList: ArrayList<ProveDto>?) : BaseAdapter() {
+class SelectPictureAdapter(private val context: Context?, private val mArrayList: ArrayList<ProveDto>?, private val maxCount: Int) : BaseAdapter() {
 
     private var mInflater = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var lastCount = 0 //上一次已经选了几张
@@ -111,9 +110,9 @@ class SelectPictureAdapter(private val context: Context?, private val mArrayList
                         selectCount++
                     }
                 }
-                if (selectCount + lastCount > CONST.MAX_COUNT) {
+                if (selectCount + lastCount > maxCount) {
                     dto.isSelected = false
-                    Toast.makeText(context, "最多只能选择${CONST.MAX_COUNT-lastCount}张图片", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "最多只能选择${maxCount-lastCount}张图片", Toast.LENGTH_SHORT).show()
                     return@OnClickListener
                 }
                 if (selectListener != null) {

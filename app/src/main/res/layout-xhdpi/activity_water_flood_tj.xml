@@ -122,7 +122,7 @@
             android:text="显示"
             android:textColor="@color/text_black_common"
             android:textSize="@dimen/text_footnote"
-            android:background="@drawable/icon_product_sl"
+            android:background="@drawable/corner_blue"
             />
 
     </RelativeLayout>

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +31,7 @@ import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.image.ImageLoader;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.myview.MyListView;
 
 import java.util.ArrayList;
@@ -157,7 +156,7 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
             }
         } else {
 //            跳转到登录界面
-            Intent intent = new Intent(ActivityExpertDetail.this, ActivityPhotoLogin.class);
+            Intent intent = new Intent(ActivityExpertDetail.this, ActivityLogin.class);
             startActivityForResult(intent, GOTOLOGIN);
         }
     }

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/etPhone"
+        android:layout_width="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="16sp"
+        android:textColor="@color/text_color3"
+        android:textColorHint="@color/hint"
+        android:hint="请输入已注册的手机号码或账号"
+        android:singleLine="true"
+        android:background="@drawable/bg_edittext_gray"/>
+
+    <ImageView
+        android:id="@+id/ivClearPhone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toTopOf="@+id/etPhone"
+        app:layout_constraintBottom_toBottomOf="@+id/etPhone"
+        app:layout_constraintEnd_toEndOf="@+id/etPhone"
+        android:src="@drawable/btn_clear_input_sel" />
+
+    <EditText
+        android:id="@+id/etPwd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPhone"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/text_color3"
+        android:textColorHint="@color/hint"
+        android:hint="请输入您的密码"
+        android:password="true"
+        android:maxLength="16"
+        android:singleLine="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_edittext_gray" />
+
+    <ImageView
+        android:id="@+id/ivClearPwd"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
+        app:layout_constraintTop_toTopOf="@+id/etPwd"
+        app:layout_constraintBottom_toBottomOf="@+id/etPwd"
+        app:layout_constraintEnd_toEndOf="@+id/etPwd"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/btn_clear_input_sel" />
+
+    <ImageView
+        android:id="@+id/checkbox"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/bg_checkbox"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPwd"/>
+
+    <TextView
+        android:id="@+id/str1"
+        android:layout_marginStart="5dp"
+        app:layout_constraintTop_toTopOf="@+id/checkbox"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox"
+        app:layout_constraintStart_toEndOf="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color4"
+        android:textSize="14sp"
+        android:text="已阅读并同意"/>
+
+    <TextView
+        android:id="@+id/tvProtocal"
+        app:layout_constraintTop_toTopOf="@+id/str1"
+        app:layout_constraintBottom_toBottomOf="@+id/str1"
+        app:layout_constraintStart_toEndOf="@+id/str1"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户协议"
+        android:textColor="@color/bg_title"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/str2"
+        android:layout_marginStart="5dp"
+        app:layout_constraintTop_toTopOf="@+id/tvProtocal"
+        app:layout_constraintBottom_toBottomOf="@+id/tvProtocal"
+        app:layout_constraintStart_toEndOf="@+id/tvProtocal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color4"
+        android:textSize="14sp"
+        android:text="和"/>
+
+    <TextView
+        android:id="@+id/tvPrivacy"
+        app:layout_constraintTop_toTopOf="@+id/str2"
+        app:layout_constraintBottom_toBottomOf="@+id/str2"
+        app:layout_constraintStart_toEndOf="@+id/str2"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="隐私政策"
+        android:textColor="@color/bg_title"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvLogin"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox"
+        android:background="@drawable/corner_blue"
+        android:gravity="center"
+        android:text="登录"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvModifyPwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/bg_title"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="修改密码"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvFindPwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/bg_title"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="找回密码"
+        android:textSize="14sp" />
+
+</android.support.constraint.ConstraintLayout>

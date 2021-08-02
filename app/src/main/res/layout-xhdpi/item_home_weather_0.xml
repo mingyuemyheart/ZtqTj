@@ -44,7 +44,7 @@
                 android:paddingBottom="8dp"
                 android:textColor="#7BBAFF"
                 android:textSize="@dimen/dimen12"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextSwitcher
                 android:id="@+id/tvNews"
@@ -59,7 +59,8 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="8dp"
                 android:textColor="#7BBAFF"
-                android:textSize="@dimen/dimen12" />
+                android:textSize="@dimen/dimen12"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

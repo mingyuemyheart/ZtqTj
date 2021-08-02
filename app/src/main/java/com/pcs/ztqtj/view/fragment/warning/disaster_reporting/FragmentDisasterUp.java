@@ -70,7 +70,7 @@ import com.pcs.ztqtj.control.tool.videocompressor.VideoFileUtils;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.fragment.warning.FragmentDisasterReporting;
 import com.pcs.ztqtj.view.fragment.warning.picture.ActivityPhotoFull;
 import com.pcs.ztqtj.view.fragment.warning.video.ActivityVideoPlay;
@@ -1183,7 +1183,7 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
     }
 
     public void toLoginActivity() {
-        Intent intent = new Intent(getActivity(), ActivityPhotoLogin.class);
+        Intent intent = new Intent(getActivity(), ActivityLogin.class);
         startActivityForResult(intent, Code.REQUEST_CODE_LOGIN);
     }
 

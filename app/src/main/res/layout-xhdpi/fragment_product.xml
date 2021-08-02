@@ -57,7 +57,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clTitle"
-        android:text="综合观测"
         android:textColor="@color/text_blue" />
 
     <TextView
@@ -72,7 +71,7 @@
         android:background="@color/text_blue" />
 
     <com.pcs.ztqtj.view.myview.MyGridView
-        android:id="@+id/product_gridview"
+        android:id="@+id/gridView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/tvZH"
@@ -80,6 +79,7 @@
         android:gravity="center"
         android:listSelector="@color/alpha100"
         android:numColumns="4"
+        android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp" />
 
     <TextView
@@ -100,8 +100,7 @@
         android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/product_gridview"
-        android:text="预报分析"
+        app:layout_constraintTop_toBottomOf="@+id/gridView1"
         android:textColor="@color/text_blue" />
 
     <TextView
@@ -116,7 +115,7 @@
         android:background="@color/text_blue" />
 
     <com.pcs.ztqtj.view.myview.MyGridView
-        android:id="@+id/product_gridview_2"
+        android:id="@+id/gridView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -124,6 +123,7 @@
         android:gravity="center"
         android:listSelector="@color/alpha100"
         android:numColumns="4"
+        android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp" />
 
 </android.support.constraint.ConstraintLayout>

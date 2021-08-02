@@ -5,14 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
+import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CommonUtil;
 
 import java.util.List;
 
@@ -25,17 +27,10 @@ public class AdapterPhotoShow extends BaseAdapter {
 	private ImageFetcher mImageFetcher;
 	private List<PackPhotoSingle> photoList;
 
-	/**
-	 * 图片下载URL前缀
-	 */
-	private String mUrlPre = "";
-
 	public AdapterPhotoShow(Context context, ImageFetcher imageFetcher, List<PackPhotoSingle> photoList) {
 		mContext = context;
 		mImageFetcher = imageFetcher;
 		this.photoList = photoList;
-		// 图片下载URL前缀
-		mUrlPre = context.getString(R.string.sjkp);
 	}
 
 	@Override
@@ -66,18 +61,23 @@ public class AdapterPhotoShow extends BaseAdapter {
 		} else {
 			holder = (Hodler) convertView.getTag();
 		}
-		// 数据
+
 		PackPhotoSingle pack = photoList.get(position);
 		// 图片
 		if (!TextUtil.isEmpty(pack.thumbnailUrl)) {
-			mImageFetcher.loadImage(mUrlPre + pack.thumbnailUrl, holder.imagePhoto, ImageConstant.ImageShowType.SRC);
+			mImageFetcher.loadImage(mContext.getString(R.string.sjkp) + pack.thumbnailUrl, holder.imagePhoto, ImageConstant.ImageShowType.SRC);
 		} else {
 			holder.imagePhoto.setImageResource(R.drawable.no_pic);
 		}
-		// 浏览数
-		holder.textNum.setText(pack.browsenum);
-		// 地址
-		holder.textAddr.setText(pack.address);
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(CommonUtil.widthPixels(mContext)/2, CommonUtil.widthPixels(mContext)/2);
+		holder.imagePhoto.setLayoutParams(params);
+
+		if (pack.browsenum != null) {
+			holder.textNum.setText(pack.browsenum);
+		}
+		if (pack.address != null) {
+			holder.textAddr.setText(pack.address);
+		}
 		return convertView;
 	}
 

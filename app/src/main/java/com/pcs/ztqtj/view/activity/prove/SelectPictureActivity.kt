@@ -32,6 +32,7 @@ class SelectPictureActivity : FragmentActivityZtqBase(), View.OnClickListener, S
 
     private var mAdapter: SelectPictureAdapter? = null
     private val dataList: ArrayList<ProveDto> = ArrayList()
+    private var maxCount = 0 // 允许上传最大值
     private var lastCount = 0 //上一次已经选了几张
     private var selectCount = 0
 
@@ -52,7 +53,8 @@ class SelectPictureActivity : FragmentActivityZtqBase(), View.OnClickListener, S
         tvControl.visibility = View.VISIBLE
 
         lastCount = intent.getIntExtra("count", 0)
-        tvControl!!.text = "完成($selectCount/${CONST.MAX_COUNT-lastCount})"
+        maxCount = intent.getIntExtra("maxCount", 0)
+        tvControl!!.text = "完成($selectCount/${maxCount-lastCount})"
         loadImages()
     }
 
@@ -72,7 +74,7 @@ class SelectPictureActivity : FragmentActivityZtqBase(), View.OnClickListener, S
     }
 
     private fun initGridView() {
-        mAdapter = SelectPictureAdapter(this, dataList)
+        mAdapter = SelectPictureAdapter(this, dataList, maxCount)
         gridView.adapter = mAdapter
         mAdapter!!.setLastCount(lastCount)
         mAdapter!!.setSelectListener(this)
@@ -92,7 +94,7 @@ class SelectPictureActivity : FragmentActivityZtqBase(), View.OnClickListener, S
 
     override fun setCount(count: Int) {
         selectCount = count
-        tvControl!!.text = "完成($selectCount/${CONST.MAX_COUNT-lastCount})"
+        tvControl!!.text = "完成($selectCount/${maxCount-lastCount})"
     }
 
     override fun onClick(v: View?) {

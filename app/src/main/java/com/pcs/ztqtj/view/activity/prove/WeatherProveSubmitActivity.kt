@@ -91,6 +91,9 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
     private var baodanAdapter: ShowPictureAdapter? = null
     private val baodanList: ArrayList<ProveDto> = ArrayList()
     private var baodanPics = ""
+
+    private val maxCount1 = 3
+    private val maxCount2 = 7
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -449,18 +452,16 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
         }.start()
     }
 
-
-
     /**
      * 添加图片按钮
      */
-    private fun initAddPicButton(list: ArrayList<ProveDto>) {
+    private fun initAddPicButton(list: ArrayList<ProveDto>, maxCount: Int) {
         for (i in 0 until list.size) {
             if (TextUtils.isEmpty(list[i].imgUrl)) {
                 list.removeAt(i)
             }
         }
-        if (list.size < CONST.MAX_COUNT-1) {
+        if (list.size < maxCount-1) {
             val dto = ProveDto()
             dto.drawable = R.drawable.icon_add_pic
             dto.imgUrl = ""
@@ -472,7 +473,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
      * 身份证
      */
     private fun initGridViewCard() {
-        initAddPicButton(cardList)
+        initAddPicButton(cardList, maxCount1)
         cardAdapter = ShowPictureAdapter(this, cardList)
         gridViewCard.adapter = cardAdapter
         gridViewCard.setOnItemClickListener { parent, view, position, id ->
@@ -480,6 +481,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
             if (TextUtils.isEmpty(data.imgUrl)) {//点击了添加按钮
                 val intent = Intent(this, SelectPictureActivity::class.java)
                 intent.putExtra("count", cardList.size)
+                intent.putExtra("maxCount", maxCount1)
                 startActivityForResult(intent, 1001)
             } else {//预览
                 val intent = Intent(this, DisplayPictureActivity::class.java)
@@ -495,7 +497,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
      * 营业执照
      */
     private fun initGridViewZhizhao() {
-        initAddPicButton(zhizhaoList)
+        initAddPicButton(zhizhaoList, maxCount2)
         zhizhaoAdapter = ShowPictureAdapter(this, zhizhaoList)
         gridViewZhizhao.adapter = zhizhaoAdapter
         gridViewZhizhao.setOnItemClickListener { parent, view, position, id ->
@@ -503,6 +505,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
             if (TextUtils.isEmpty(data.imgUrl)) {//点击了添加按钮
                 val intent = Intent(this, SelectPictureActivity::class.java)
                 intent.putExtra("count", zhizhaoList.size)
+                intent.putExtra("maxCount", maxCount2)
                 startActivityForResult(intent, 1002)
             } else {//预览
                 val intent = Intent(this, DisplayPictureActivity::class.java)
@@ -518,7 +521,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
      * 受灾照片
      */
     private fun initGridViewDis() {
-        initAddPicButton(disList)
+        initAddPicButton(disList, maxCount2)
         disAdapter = ShowPictureAdapter(this, disList)
         gridViewDis.adapter = disAdapter
         gridViewDis.setOnItemClickListener { parent, view, position, id ->
@@ -526,6 +529,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
             if (TextUtils.isEmpty(data.imgUrl)) {//点击了添加按钮
                 val intent = Intent(this, SelectPictureActivity::class.java)
                 intent.putExtra("count", disList.size)
+                intent.putExtra("maxCount", maxCount2)
                 startActivityForResult(intent, 1003)
             } else {//预览
                 val intent = Intent(this, DisplayPictureActivity::class.java)
@@ -541,7 +545,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
      * 保单照片
      */
     private fun initGridViewBaodan() {
-        initAddPicButton(baodanList)
+        initAddPicButton(baodanList, maxCount2)
         baodanAdapter = ShowPictureAdapter(this, baodanList)
         gridViewBaodan.adapter = baodanAdapter
         gridViewBaodan.setOnItemClickListener { parent, view, position, id ->
@@ -549,6 +553,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
             if (TextUtils.isEmpty(data.imgUrl)) {//点击了添加按钮
                 val intent = Intent(this, SelectPictureActivity::class.java)
                 intent.putExtra("count", baodanList.size)
+                intent.putExtra("maxCount", maxCount2)
                 startActivityForResult(intent, 1004)
             } else {//预览
                 val intent = Intent(this, DisplayPictureActivity::class.java)
@@ -628,7 +633,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
                             for (i in list.size-1 downTo 0) {
                                 cardList.add(0, list[i])
                             }
-                            initAddPicButton(cardList)
+                            initAddPicButton(cardList, maxCount1)
                             if (cardAdapter != null) {
                                 cardAdapter!!.notifyDataSetChanged()
                             }
@@ -643,7 +648,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
                             for (i in list.size-1 downTo 0) {
                                 zhizhaoList.add(0, list[i])
                             }
-                            initAddPicButton(zhizhaoList)
+                            initAddPicButton(zhizhaoList, maxCount2)
                             if (zhizhaoAdapter != null) {
                                 zhizhaoAdapter!!.notifyDataSetChanged()
                             }
@@ -658,7 +663,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
                             for (i in list.size-1 downTo 0) {
                                 disList.add(0, list[i])
                             }
-                            initAddPicButton(disList)
+                            initAddPicButton(disList, maxCount2)
                             if (disAdapter != null) {
                                 disAdapter!!.notifyDataSetChanged()
                             }
@@ -673,7 +678,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
                             for (i in list.size-1 downTo 0) {
                                 baodanList.add(0, list[i])
                             }
-                            initAddPicButton(baodanList)
+                            initAddPicButton(baodanList, maxCount2)
                             if (baodanAdapter != null) {
                                 baodanAdapter!!.notifyDataSetChanged()
                             }

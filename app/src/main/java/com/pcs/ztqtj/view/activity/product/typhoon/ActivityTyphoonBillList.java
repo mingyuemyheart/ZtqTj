@@ -32,9 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2017/7/27.
+ * 台风路径-警报单
  */
-
 public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
 
     private RadioGroup radioGroup;
@@ -172,7 +171,7 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            gotoWebview(getString(R.string.file_download_url) + datalist.get(position).html_path);
+            gotoWebview("http://www.weather-jy.cn:8099/ftp/" + datalist.get(position).html_path);
         }
     };
 

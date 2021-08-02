@@ -47,12 +47,18 @@ public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
-        setTitleText(getIntent().getStringExtra("title"));
         initView();
     }
 
     private void initView() {
-        webView = (WebView) findViewById(R.id.webview);
+        if (getIntent().hasExtra("title")) {
+            String title = getIntent().getStringExtra("title");
+            if (title != null) {
+                setTitleText(title);
+            }
+        }
+
+        webView = findViewById(R.id.webview);
         webView.getSettings().setTextZoom(100);
         initWebView();
 
@@ -81,31 +87,23 @@ public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
                 view.loadUrl(url);
                 return true;
             }
-
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
             }
-
             @Override
             public void onPageFinished(WebView view, String url) {
-
             }
         });
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int progress) {
-
                 super.onProgressChanged(view, progress);
             }
-
             @Override
             public void onReceivedTitle(WebView view, String title) {
-
                 super.onReceivedTitle(view, title);
             }
-
         });
         WebSettings webSettings = webView.getSettings();
         webSettings.setUseWideViewPort(true);
@@ -152,8 +150,8 @@ public class ActivityAgricultureWeatherDetail extends FragmentActivityZtqBase {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e("info_list", result);
                                     if (!TextUtil.isEmpty(result)) {
-                                        Log.e("info_list", result);
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {

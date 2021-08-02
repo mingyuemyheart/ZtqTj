@@ -93,4 +93,12 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@color/text_white</item>
     </style>
+
+
+    <style name="SplashTheme" parent="@android:style/Theme.Light.NoTitleBar.Fullscreen">
+        <!-- 欢迎页背景引用刚才写好的 -->
+        <item name="android:windowBackground">@drawable/bg_loading</item>
+        <item name="android:windowFullscreen">true</item>
+        <!-- <item name="android:windowIsTranslucent">true</item> --> <!-- 透明背景不要了 -->
+    </style>
 </resources>

@@ -146,7 +146,6 @@ public class ActivityHelp extends FragmentActivityZtqBase {
 	}
 	
 	private void showLoginTipsDialog() {
-
 		if (myDialog == null) {
 			View view = LayoutInflater.from(ActivityHelp.this).inflate(
 					R.layout.dialog_message, null);
@@ -159,8 +158,7 @@ public class ActivityHelp extends FragmentActivityZtqBase {
 						public void click(String str) {
 							myDialog.dismiss();
 							if (str.equals("登录")) {
-								Intent intent = null;
-								intent = new Intent(ActivityHelp.this, AcitvityServeLogin.class);
+								Intent intent = new Intent(ActivityHelp.this, AcitvityServeLogin.class);
 								startActivityForResult(intent, MyConfigure.RESULT_HELP_VIEW);
 							}
 						}

@@ -1,161 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_centerVertical="true"
-              android:orientation="vertical"
-              android:background="@drawable/icon_health_bac"
-              android:paddingBottom="@dimen/activity_margintop"
-              android:paddingLeft="@dimen/activity_marginleft_right"
-              android:paddingRight="@dimen/activity_marginleft_right">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
 
+    <LinearLayout
+        android:id="@+id/llContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_vertical"
+        android:padding="10dp"
+        android:orientation="horizontal"/>
 
-        <LinearLayout
-            android:id="@+id/ll_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+    <com.pcs.ztqtj.view.myview.MainViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llContainer"
+        android:overScrollMode="never"/>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="上海"
-                android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content"/>
-
-            <TextView
-                android:id="@+id/tv_health_time"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:textColor="@color/text_white"
-                android:textSize="@dimen/text_footnote"/>
-
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:id="@+id/ll_grid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp">
-
-                    <com.pcs.ztqtj.view.myview.MyGridView
-                        android:id="@+id/gv_health_life"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:horizontalSpacing="@dimen/dimen15"
-                        android:listSelector="@color/alpha100"
-                        android:numColumns="2"
-                        android:verticalSpacing="@dimen/dimen15">
-
-                    </com.pcs.ztqtj.view.myview.MyGridView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center">
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/corner_view_green"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="低"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"/>
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:background="@drawable/corner_view_blue"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="轻微"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"/>
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:background="@drawable/corner_view_yellow"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="中等"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"/>
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:background="@drawable/corner_view_orange"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="较高"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"/>
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="1dp"
-                        android:background="@drawable/corner_view_red"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:text="高"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/icon_health_bot"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tv_health_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:gravity="center"
-                        android:text="疾病风险预报产品说明"
-                        android:textColor="@color/text_white"
-                        android:textSize="15dp"/>
-
-                    <TextView
-                        android:layout_margin="10dp"
-                        android:id="@+id/tv_health_clara"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_footnote"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </ScrollView>
-
-
-
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

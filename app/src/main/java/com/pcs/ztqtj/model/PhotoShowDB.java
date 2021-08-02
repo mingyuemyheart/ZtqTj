@@ -86,11 +86,11 @@ public class PhotoShowDB {
     /**
      * 首页图片列表
      */
-    private List<PackPhotoSingle> mListPhoto = new ArrayList<PackPhotoSingle>();
+    private List<PackPhotoSingle> mListPhoto = new ArrayList<>();
     /**
      * 首页精选图片列表
      */
-    private List<PackPhotoSingle> mListPhotoSpecial = new ArrayList<PackPhotoSingle>();
+    private List<PackPhotoSingle> mListPhotoSpecial = new ArrayList<>();
 
     /**
      * 用户中心下载包
@@ -104,6 +104,8 @@ public class PhotoShowDB {
      * 城市ID
      */
     private String mCityId = "";
+
+    private String imgType = "1";//imgType:图片类型，1（实景开拍），2（农业开拍分类）必须传，区分哪个业务
 
     /**
      * 数据监听
@@ -127,10 +129,11 @@ public class PhotoShowDB {
         return instance;
     }
 
-    public void onCreate(Context context, String cityId) {
+    public void onCreate(Context context, String cityId, String imgType) {
         clearData();
         mContext = context;
         mCityId = cityId;
+        this.imgType = imgType;
     }
 
     public void onResume() {
@@ -254,15 +257,12 @@ public class PhotoShowDB {
 
     /**
      * 保存照片列表(个人中心)
-     *
-     * @param jsonStr
      */
-    public void setPhotoListCenter(String jsonStr) {
-        mPackCenterDown = (PackPhotoCenterDown) PcsDataManager.getInstance().getNetPack(jsonStr);
+    public void setPhotoListCenter(List<PackPhotoSingle> dataList) {
         if (mPackCenterDown == null) {
             mPackCenterDown = new PackPhotoCenterDown();
         }
-        mPackCenterDown.setUserInfo(mPackLocalPhotoUser.userId, mPackLocalPhotoUser.nickName);
+        mPackCenterDown.mList.addAll(dataList);
     }
 
     /**
@@ -354,7 +354,7 @@ public class PhotoShowDB {
                     JSONObject info = new JSONObject();
 //                    info.put("areaid", mCityId);
 //                    info.put("userId", getUserPack().userId);
-                    info.put("imgType", "1");
+                    info.put("imgType", imgType);
                     info.put("page", mCurrPage+"");
                     info.put("count", "20");
                     param.put("paramInfo", info);
@@ -406,8 +406,8 @@ public class PhotoShowDB {
                                             if (!itemObj.isNull("likeNum")) {
                                                 dto.praise = itemObj.getString("likeNum");
                                             }
-                                            if (!itemObj.isNull("shootTime")) {
-                                                dto.date_time = itemObj.getString("shootTime");
+                                            if (!itemObj.isNull("createTime")) {
+                                                dto.date_time = itemObj.getString("createTime");
                                             }
                                             if (!itemObj.isNull("weather")) {
                                                 dto.weather = itemObj.getString("weather");
@@ -420,6 +420,7 @@ public class PhotoShowDB {
                                             mNoMoreData = true;
                                         } else {
                                             // 添加数据
+                                            mListPhoto.clear();
                                             mListPhoto.addAll(pack.photoWallList);
                                             mCurrPage++;
                                         }
@@ -455,7 +456,7 @@ public class PhotoShowDB {
                     JSONObject info = new JSONObject();
 //                    info.put("areaid", mCityId);
 //                    info.put("userId", getUserPack().userId);
-                    info.put("imgType", "1");
+                    info.put("imgType", imgType);
                     info.put("page", mCurrPageSpecial+"");
                     info.put("count", "20");
                     param.put("paramInfo", info);
@@ -507,8 +508,8 @@ public class PhotoShowDB {
                                             if (!itemObj.isNull("likeNum")) {
                                                 dto.praise = itemObj.getString("likeNum");
                                             }
-                                            if (!itemObj.isNull("shootTime")) {
-                                                dto.date_time = itemObj.getString("shootTime");
+                                            if (!itemObj.isNull("createTime")) {
+                                                dto.date_time = itemObj.getString("createTime");
                                             }
                                             if (!itemObj.isNull("weather")) {
                                                 dto.weather = itemObj.getString("weather");
@@ -521,6 +522,7 @@ public class PhotoShowDB {
                                             mNoMoreDataSepcial = true;
                                         } else {
                                             // 添加数据
+                                            mListPhotoSpecial.clear();
                                             mListPhotoSpecial.addAll(pack.photoWallList);
                                             mCurrPageSpecial++;
                                         }

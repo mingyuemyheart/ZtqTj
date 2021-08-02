@@ -64,8 +64,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 个人中心个人信息页面
- * Created by tyaathome on 2016/9/8.
+ * 设置-我的-个人中心
  */
 public class ActivityUserInformation extends FragmentActivityZtqBase implements View.OnClickListener {
 
@@ -114,8 +113,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -189,10 +187,8 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
      * 初始化弹出框
      */
     private void initPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.pop_photograph,
-                null);
-        mPopupWindow = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        View view = LayoutInflater.from(this).inflate(R.layout.pop_photograph, null);
+        mPopupWindow = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -208,9 +204,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
         mPopupWindow.setTouchable(true);
         // 设置弹窗外可点击
         mPopupWindow.setOutsideTouchable(true);
-
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-
         view.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -302,35 +296,26 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
      */
     private void clickCamera() {
         dismissPopupWindow();
-
         String tempStr = String.valueOf(System.currentTimeMillis());
-        mFilePhoto = new File(PcsGetPathValue.getInstance().getMyPhotoPath()
-                + tempStr + ".jpg");
+        mFilePhoto = new File(PcsGetPathValue.getInstance().getMyPhotoPath() + tempStr + ".jpg");
         mFilePhoto.getParentFile().mkdirs();
         CommUtils.openCamera(this, mFilePhoto, MyConfigure.REQUEST_CAMERA);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MyConfigure.REQUEST_CAMERA) {
-            PermissionsTools.onRequestPermissionsResult(this, permissions, grantResults,
-                    new PermissionsTools.RequestPermissionResultCallback() {
-
+            PermissionsTools.onRequestPermissionsResult(this, permissions, grantResults, new PermissionsTools.RequestPermissionResultCallback() {
                 @Override
                 public void onSuccess() {
                     clickCamera();
                 }
-
                 @Override
                 public void onDeny() {
-
                 }
-
                 @Override
                 public void onDenyNeverAsk() {
-
                 }
             });
         }
@@ -341,8 +326,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
      */
     private void clickAlbum() {
         dismissPopupWindow();
-        Intent it = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent it = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         this.startActivityForResult(it, MyConfigure.REQUEST_ALBUM);
     }
 
@@ -361,8 +345,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
     private void resultAlbum(Intent fromIntent) {
         Uri uri = fromIntent.getData();
         String[] filePathColumns = {MediaStore.Images.Media.DATA};
-        Cursor c = this.getContentResolver().query(uri, filePathColumns, null,
-                null, null);
+        Cursor c = this.getContentResolver().query(uri, filePathColumns, null, null, null);
         if (c == null) {
             return;
         }
@@ -374,15 +357,13 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
         // 旧文件
         File oldFile = new File(picturePath);
         // 新文件
-        mFilePhoto = new File(PcsGetPathValue.getInstance().getMyPhotoPath()
-                + oldFile.getName());
+        mFilePhoto = new File(PcsGetPathValue.getInstance().getMyPhotoPath() + oldFile.getName());
         if (mFilePhoto.exists()) {
             mFilePhoto.delete();
         }
         mFilePhoto.getParentFile().mkdirs();
         if (!copyFile(oldFile, mFilePhoto)) {
-            Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT).show();
             dismissProgressDialog();
             return;
         }
@@ -397,8 +378,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
      */
     private void resultCamera(Intent fromIntent) {
         if (mFilePhoto == null || !mFilePhoto.exists()) {
-            Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT).show();
             return;
         }
         Bitmap bitmap = BitmapFactory.decodeFile(mFilePhoto.getPath());
@@ -414,13 +394,11 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         ivHead.setImageBitmap(result);
     }
 
     /**
      * 拷贝文件
-     *
      * @param oldFile
      * @param newFile
      */
@@ -439,7 +417,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
             while ((byteread = inStream.read(buffer)) != -1) {
                 fs.write(buffer, 0, byteread);
             }
-
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -480,7 +457,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
     }
 
     private void reqInformation() {
-
         if (!isOpenNet()) {
             showToast(getString(R.string.net_err));
             return;
@@ -492,7 +468,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
     }
 
     private void reqChangeInfo() {
-
         if (!isOpenNet()) {
             showToast(getString(R.string.net_err));
             return;
@@ -536,7 +511,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
                 if (check()) {
                     reqChangeInfo();
                 }
-
                 break;
             case R.id.tv_password_manager:
                 Intent intent = new Intent(ActivityUserInformation.this, ActivityPhotoPasswordManager.class);
@@ -559,7 +533,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
 
     /**
      * 监测提交参数正确性
-     *
      * @return
      */
     private boolean check() {
@@ -591,7 +564,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
     }
 
     private class MyReceiver extends PcsDataBrocastReceiver {
-
         @Override
         public void onReceive(String nameStr, String errorStr) {
             if (PackPhotoUserInfoUp.NAME.equals(nameStr)) {
@@ -625,7 +597,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
                 }
                 // 设置地址
                 if (TextUtils.isEmpty(down.address)) {
-
                     PackLocalCityLocation packLocation = ZtqLocationTool.getInstance().getLocationCity();
                     // 先判断定位城市
                     if (!packLocation.NAME.equals(PackLocalCityLocation.LOCATING) && ZtqLocationTool.getInstance().getIsAutoLocation()) {
@@ -647,12 +618,10 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
             // 更新用户信息
             if (PackPhotoChangeUserInfoUp.NAME.equals(nameStr)) {
                 dismissProgressDialog();
-                PackPhotoChangeUserInfoDown down =
-                        (PackPhotoChangeUserInfoDown) PcsDataManager.getInstance().getNetPack(nameStr);
+                PackPhotoChangeUserInfoDown down = (PackPhotoChangeUserInfoDown) PcsDataManager.getInstance().getNetPack(nameStr);
                 if (down == null) {
                     return;
                 }
-
 //                if(down.result.equals("1")) {
 //                    ActivityUserInformation.this.finish();
 //                }
@@ -663,4 +632,5 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
             }
         }
     }
+
 }

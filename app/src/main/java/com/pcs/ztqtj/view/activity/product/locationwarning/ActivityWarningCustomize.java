@@ -26,7 +26,7 @@ import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.image.GetImageView;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
@@ -630,7 +630,7 @@ public class ActivityWarningCustomize extends FragmentActivityZtqBase implements
 	 * 点击登陆
 	 */
 	private void onClickLogin() {
-		Intent intent = new Intent(this, ActivityPhotoLogin.class);
+		Intent intent = new Intent(this, ActivityLogin.class);
 		startActivityForResult(intent, REQUEST_LOGIN);
 	}
 	

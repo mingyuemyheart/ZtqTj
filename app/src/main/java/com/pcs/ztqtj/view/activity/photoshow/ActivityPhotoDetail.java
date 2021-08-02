@@ -61,9 +61,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * 实景详情页面
+ * 实景开拍详情页面
  */
 public class ActivityPhotoDetail extends FragmentActivityZtqBase {
+
     /**
      * 详情信息
      */
@@ -89,7 +90,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     /**
      * 提片列表
      */
-    private List<PackPhotoSingle> imageList = new ArrayList<PackPhotoSingle>();
+    private List<PackPhotoSingle> imageList = new ArrayList<>();
 
     // 个人头像
     private ImageView ivHead;
@@ -285,8 +286,7 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     private void initDataPro() {
         PhotoShowDB db = PhotoShowDB.getInstance();
         positionImage = getIntent().getIntExtra("position", 0);
-        fromCenterList = getIntent().getBooleanExtra(
-                "ActivityPhotoUserCenter", false);
+        fromCenterList = getIntent().getBooleanExtra("ActivityPhotoUserCenter", false);
         isSpecial = getIntent().getBooleanExtra("isSpecial", false);
         if (fromCenterList) {
             imageList = db.getPhotoListCenter();
@@ -366,10 +366,6 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
      * 请求增加浏览数
      */
     private void reqBrowseAdd() {
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
         if (TextUtils.isEmpty(mInfo.browsenum)) {
             mInfo.browsenum = "1";
         } else {
@@ -387,10 +383,6 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
      * 请求评论列表
      */
     private void reqCommentList() {
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
         mPackCommentListUp.page = "1";
         mPackCommentListUp.itemId = mInfo.itemId;
         PcsDataDownload.addDownload(mPackCommentListUp);

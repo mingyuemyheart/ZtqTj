@@ -2,7 +2,6 @@ package com.pcs.ztqtj.control.adapter.photo;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,57 +11,51 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.model.PhotoShowDB;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 
-import java.util.ArrayList;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
- * Created by tyaathome on 2016/10/11.
+ * 设置-我的
  */
 public class AdapterPhotoCenter extends BaseAdapter {
 
     private Context mContext;
     private ImageFetcher imageFetcher;
-    private List<PackPhotoSingle> mList = new ArrayList<>();
-    // URL前缀
-    private String mUrlPrev = "";
+    private List<PackPhotoSingle> photoList;
+    private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
+    private SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy", Locale.CHINA);
+    private SimpleDateFormat sdf3 = new SimpleDateFormat("MM", Locale.CHINA);
+    private SimpleDateFormat sdf4 = new SimpleDateFormat("dd", Locale.CHINA);
+
     private ImageListener mImageListener;
     private RemoveListener mRemoveListener;
 
     // 当前年份
     private int currentYear = -1;
 
-    public AdapterPhotoCenter(Context context, ImageFetcher imageFetcher) {
+    public AdapterPhotoCenter(Context context, ImageFetcher imageFetcher, List<PackPhotoSingle> photoList) {
         mContext = context;
         this.imageFetcher = imageFetcher;
-        mUrlPrev = mContext.getString(R.string.file_download_url);
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        mList = PhotoShowDB.getInstance().getPhotoListCenter();
-
-        super.notifyDataSetChanged();
+        this.photoList = photoList;
     }
 
     @Override
     public int getCount() {
-        if (mList == null) {
-            return 0;
-        }
-
-        return mList.size()+1;
+        return photoList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mList.get(position-1);
+        return photoList.get(position);
     }
 
     @Override
@@ -100,10 +93,10 @@ public class AdapterPhotoCenter extends BaseAdapter {
             }
         });
 
-        Log.e("position", position + "");
+        final PackPhotoSingle info = photoList.get(position);
 
         // 当显示照相机时
-        if(position == 0) {
+        if (TextUtils.isEmpty(info.itemId)) {
             holder.ivImage.setImageResource(R.drawable.icon_camera); // 显示照相机
             holder.tvToday.setVisibility(View.VISIBLE); // 显示今天圆圈
             holder.llDate.setVisibility(View.GONE); // 隐藏之前日期圆圈
@@ -112,7 +105,7 @@ public class AdapterPhotoCenter extends BaseAdapter {
 
             // 今天的年份
             currentYear = Calendar.getInstance().get(Calendar.YEAR);
-            if(mList.size() > 0) {
+            if(photoList.size() > 0) {
                 setYear(0, holder.tvYear);
             }
         } else {
@@ -121,29 +114,13 @@ public class AdapterPhotoCenter extends BaseAdapter {
             holder.layoutContent.setVisibility(View.VISIBLE); // 显示评论
             holder.tvDelete.setVisibility(View.VISIBLE); // 显示删除按钮
 
-            final PackPhotoSingle info = (PackPhotoSingle) getItem(position);
-            String[] times = null;
-
             try {
                 if (!TextUtils.isEmpty(info.date_time)) {
-                    if (info.date_time.indexOf("/") != -1) {
-                        times = info.date_time.split("/");
-                        holder.tvMonth.setText(times[0]);
-                        holder.tvDay.setText(times[1]);
-                    } else {
-                        if (info.date_time.indexOf("-") != -1) {
-                            String[] temptimes = info.date_time.split(" ");
-                            if (temptimes.length > 0) {
-                                times = temptimes[0].split("-");
-                                holder.tvMonth.setText(times[1]);
-                                holder.tvDay.setText(times[2]);
-                            }
-                        }
-                    }
-
+                    holder.tvMonth.setText(sdf3.format(sdf1.parse(info.date_time)));
+                    holder.tvDay.setText(sdf4.format(sdf1.parse(info.date_time)));
                 }
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
             setYear(position, holder.tvYear);
@@ -155,19 +132,23 @@ public class AdapterPhotoCenter extends BaseAdapter {
                 holder.tvContent.setVisibility(View.GONE);
             }
 
-            imageFetcher.loadImage(mUrlPrev + info.imageUrl, holder.ivImage,
-                    ImageConstant.ImageShowType.SRC);
+            if (!TextUtil.isEmpty(info.thumbnailUrl)) {
+                imageFetcher.loadImage(mContext.getString(R.string.sjkp) + info.thumbnailUrl, holder.ivImage, ImageConstant.ImageShowType.SRC);
+            } else {
+                holder.ivImage.setImageResource(R.drawable.no_pic);
+            }
 
-            holder.tvAddress.setText(info.address);
+            if (info.address != null) {
+                holder.tvAddress.setText(info.address);
+            }
 
             holder.tvDelete.setOnClickListener(
-                    new View.OnClickListener() {
-
-                        public void onClick(View v) {
-                            mRemoveListener.removeItem(info, position-1);
-                        }
-
-                    });
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        mRemoveListener.removeItem(info, position);
+                        photoList.remove(position);
+                    }
+                });
         }
 
         return convertView;
@@ -179,25 +160,17 @@ public class AdapterPhotoCenter extends BaseAdapter {
      * @return
      */
     private int getYear(int position) {
-        if(mList != null && mList.size() > position) {
-            PackPhotoSingle info = mList.get(position);
+        if(photoList != null && photoList.size() > position) {
+            PackPhotoSingle info = photoList.get(position);
             if (info != null && !TextUtils.isEmpty(info.date_time)) {
-                if (info.date_time.indexOf("-") != -1) {
-                    String[] temptimes = info.date_time.split(" ");
-                    if (temptimes.length > 0) {
-                        String[] times = temptimes[0].split("-");
-                        if (times.length > 0) {
-                            int year = -1;
-                            try {
-                                year = Integer.parseInt(times[0]);
-                            } catch (NumberFormatException e) {
-
-                            }
-                            return year;
-                        }
-
-                    }
+                int year = currentYear;
+                try {
+                    String y = sdf2.format(sdf1.parse(info.date_time));
+                    year = Integer.parseInt(y);
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+                return year;
             }
         }
         return -1;
@@ -212,7 +185,7 @@ public class AdapterPhotoCenter extends BaseAdapter {
         int year = getYear(position);
         if(year != -1 && currentYear > year) {
             tv.setVisibility(View.VISIBLE);
-            tv.setText(String.valueOf(year) + "年");
+            tv.setText(year + "年");
         } else {
             tv.setVisibility(View.INVISIBLE);
         }
@@ -261,4 +234,5 @@ public class AdapterPhotoCenter extends BaseAdapter {
         public TextView tvContent; // 评论
         public TextView tvAddress; // 地址
     }
+
 }

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.webkit.JavascriptInterface;
 
 import com.pcs.ztqtj.control.tool.MyConfigure;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 
 /**
  * Created by tyaathome on 2017/2/23.
@@ -25,7 +25,7 @@ public class JsWeatherDayCommitInterface implements JSInterface {
 
     @JavascriptInterface
     public void login() {
-        Intent intent = new Intent(activity, ActivityPhotoLogin.class);
+        Intent intent = new Intent(activity, ActivityLogin.class);
         activity.startActivityForResult(intent, MyConfigure.RESULT_LOGIN);
     }
 

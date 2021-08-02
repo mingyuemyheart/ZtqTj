@@ -8,6 +8,7 @@ import android.support.annotation.IdRes;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,9 +38,12 @@ import com.amap.api.maps.model.TextOptions;
 import com.pcs.lib.lib_pcs_v3.control.tool.ScreenUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalStation;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxSstqDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackFycxTrendDown;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterDetailSearchResult;
@@ -48,13 +52,29 @@ import com.pcs.ztqtj.control.inter.ClickPositionListener;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.livequery.ControlDistribution;
 import com.pcs.ztqtj.control.tool.CommUtils;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.model.pack.ItemLiveQuery;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.myview.LiveQueryView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 监测预报-整点天气，实况查询的详情
@@ -103,6 +123,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_livequery_detail);
+        itemType = getIntent().getStringExtra("item");// temp,气温 rain,降雨,wind风况
         stationName = getIntent().getStringExtra("stationName");
         isLocal = ZtqCityDB.getInstance().getStationIsTjByName(stationName);
         if (TextUtils.isEmpty(stationName)) {
@@ -111,16 +132,91 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
             PackLocalStation station = ZtqCityDB.getInstance().getStationById(stationId);
             if (station != null) {
                 stationName = station.STATIONNAME;
+                init();
+            } else {
+                okHttpSstq();
             }
         }
-        itemType = getIntent().getStringExtra("item");// temp,气温 rain,降雨,wind风况
+        initMap(savedInstanceState);
+    }
+
+    private void init() {
         setTitleText(stationName);
         TextView textView = getTitleTextView();
         textView.setTextSize(1, 19);
         initView();
         initEvent();
-        initMap(savedInstanceState);
         initData();
+    }
+
+    /**
+     * 获取实况信息
+     */
+    private void okHttpSstq() {
+        final PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
+        if (packCity == null || packCity.ID == null) {
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", packCity.ID);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("sstq", json);
+                    final String url = CONST.BASE_URL+"sstq";
+                    Log.e("sstq", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+//                                    Log.e("sstq", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("sstq")) {
+                                                    JSONObject sstqobj = bobj.getJSONObject("sstq");
+                                                    if (!TextUtil.isEmpty(sstqobj.toString())) {
+                                                        PackSstqDown packSstq = new PackSstqDown();
+                                                        packSstq.fillData(sstqobj.toString());
+                                                        if (!TextUtils.isEmpty(packSstq.stationname)) {
+                                                            stationName = packSstq.stationname;
+                                                        } else {
+                                                            stationName = packCity.NAME;
+                                                        }
+                                                        init();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private Button btn_to_pro, btn_to_live;

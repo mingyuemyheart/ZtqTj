@@ -23,6 +23,7 @@ import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 
@@ -325,7 +326,7 @@ public class ActivityRegister extends FragmentActivityZtqBase implements OnClick
             public void onClick(View widget) {
                 Intent intent = new Intent(ActivityRegister.this, ActivityWebView.class);
                 intent.putExtra("title", "天津惠民软件用户服务协议");
-                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
+                intent.putExtra("url", CONST.PROTOCAL);
                 intent.putExtra("shareContent", "用户服务协议");
                 startActivity(intent);
             }

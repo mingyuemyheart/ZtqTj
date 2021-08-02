@@ -47,6 +47,7 @@ public class ActivityTraffic extends FragmentActivityWithShare implements View.O
     private LinearLayout lay_traffic_citiao;
     private PackTrafficDown packTrafficDown;
     private TextView tv_traffic_citiao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,11 +56,15 @@ public class ActivityTraffic extends FragmentActivityWithShare implements View.O
         }
         setContentView(R.layout.activity_imweatherdown);
         initView();
-        setTitleText("交通气象");
         initEvent();
     }
 
     private void initView() {
+        String title = getIntent().getStringExtra("title");
+        if (title != null) {
+            setTitleText(title);
+        }
+
         web_weather= (WebView) findViewById(R.id.web_weather);
         lay_traffic_citiao= (LinearLayout) findViewById(R.id.lay_traffic_citiao);
         lay_traffic_citiao.setVisibility(View.VISIBLE);
@@ -142,11 +147,11 @@ public class ActivityTraffic extends FragmentActivityWithShare implements View.O
             @Override
             public void run() {
                 try {
-                    String type = getIntent().getStringExtra("type");
+                    String dataCode = getIntent().getStringExtra("dataCode");
                     JSONObject param  = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", type);
+                    info.put("stationId", dataCode);
                     info.put("extra", "");
                     param.put("paramInfo", info);
                     String json = param.toString();

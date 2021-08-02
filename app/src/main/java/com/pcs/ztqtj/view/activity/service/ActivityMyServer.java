@@ -24,7 +24,6 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfwAuthenticationProductUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterServerMyServer;
-import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.ServiceLoginTool;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
@@ -78,9 +77,7 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         setContentView(R.layout.activity_myserve);
         proDeal();
         initView();
-        initEvent();
         initData();
-        //chackIsJcbg();
     }
 
     @Override
@@ -98,59 +95,9 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         this.unregisterReceiver(receiver);
     }
 
-    private void chackIsJcbg() {
-        if ("1".equals(channel)) {
-            if (!TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().user_id)) {
-                initData();
-            } else {
-                showCheckUserIdDialog(getResources().getString(R.string.text_islogin_tips));
-            }
-        } else {
-            initData();
-        }
-    }
-
-    private DialogTwoButton myDialogLogin;
-    private TextView messageTextViewLogin;
-
-    private void showCheckUserIdDialog(String msg) {
-        View view = LayoutInflater.from(ActivityMyServer.this).inflate(R.layout.dialog_message, null);
-        if (myDialogLogin == null) {
-            messageTextViewLogin = (TextView) view.findViewById(R.id.dialogmessage);
-            messageTextViewLogin.setText(msg);
-            messageTextViewLogin.setTextColor(getResources().getColor(R.color.text_color));
-            myDialogLogin = new DialogTwoButton(ActivityMyServer.this, view, "登录", "帮助", new DialogListener() {
-                @Override
-                public void click(String str) {
-                    myDialogLogin.dismiss();
-                    if (str.equals("登录")) {
-                        Intent intent = null;
-                        intent = new Intent(ActivityMyServer.this, AcitvityServeLogin.class);
-                        startActivityForResult(intent, MyConfigure.RESULT_SERVICE_THREE);
-                    } else if (str.equals("帮助")) {
-                        Intent intentHelp = new Intent(ActivityMyServer.this, ActivityHelp.class);
-                        startActivityForResult(intentHelp, MyConfigure.RESULT_HELP_VIEW);
-                    } else {
-                        finish();
-                    }
-                }
-            });
-            myDialogLogin.setTitle("天津气象提示");
-            myDialogLogin.showCloseBtn();
-        }
-
-        messageTextViewLogin.setText(msg);
-        myDialogLogin.show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (MyConfigure.RESULT_SERVICE_THREE == requestCode && resultCode == Activity.RESULT_OK) {
-            //chackIsJcbg();
-        } else if (MyConfigure.RESULT_HELP_VIEW == requestCode) {
-            //chackIsJcbg();
-        }
         if(resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case ServiceLoginTool.SERVICE_RESULT:
@@ -180,11 +127,8 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     }
 
     private void initView() {
-        explistviw = (ExpandableListView) findViewById(R.id.myexlistviw);
-        null_data = (TextView) findViewById(R.id.null_data);
-    }
-
-    private void initEvent() {
+        null_data = findViewById(R.id.null_data);
+        explistviw = findViewById(R.id.myexlistviw);
         explistviw.setOnGroupClickListener(new OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -258,10 +202,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         });
         explistviw.setAdapter(listAdatper);
 
-        if(!isOpenNet()){
-            showToast(getString(R.string.net_err));
-            return ;
-        }
         okHttpInfoList();
     }
 
@@ -281,7 +221,6 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
         if (currentDes != null && currentSubClass != null) {
             url = currentDes.html_url;
             style = currentDes.style;
-            //checkPass(currentDes.id);
             channel_title = currentSubClass.channel_name;
             article_title = currentSubClass.org_name + "发布了《" + currentDes.title + "》，请查阅。";
             if(currentDes.type.equals("1")) {
@@ -316,6 +255,13 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
     private void logout() {
         PackLocalUserInfo info = new PackLocalUserInfo();
         ZtqCityDB.getInstance().setMyInfo(info);
+
+        MyApplication.clearUserInfo(this);
+
+        //刷新栏目数据
+        Intent bdIntent = new Intent();
+        bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
+        sendBroadcast(bdIntent);
     }
 
     /**
@@ -429,9 +375,7 @@ public class ActivityMyServer extends FragmentActivityZtqWithHelp {
                 public void click(String str) {
                     myDialogCom.dismiss();
                     if (str.equals("帮助")) {
-                        Intent intent = null;
-                        intent = new Intent(ActivityMyServer.this, ActivityHelp.class);
-                        startActivity(intent);
+                        startActivity(new Intent(ActivityMyServer.this, ActivityHelp.class));
                     } else if (str.equals("我的服务")) {
                         channel = "";// 我的服务上传的为空
                         showSubtitle = "1";

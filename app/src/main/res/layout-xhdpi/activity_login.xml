@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvPrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="未注册的手机号验证通过后将自动注册"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textColor="@color/text_color4"/>
+
+    <EditText
+        android:id="@+id/etPhone"
+        android:layout_width="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPrompt"
+        android:textSize="16sp"
+        android:maxLength="11"
+        android:inputType="phone"
+        android:textColor="@color/text_color3"
+        android:textColorHint="@color/hint"
+        android:hint="请输入手机号码"
+        android:singleLine="true"
+        android:background="@drawable/bg_edittext_gray"/>
+
+    <ImageView
+        android:id="@+id/ivClearPhone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toTopOf="@+id/etPhone"
+        app:layout_constraintBottom_toBottomOf="@+id/etPhone"
+        app:layout_constraintEnd_toEndOf="@+id/etPhone"
+        android:src="@drawable/btn_clear_input_sel" />
+
+    <EditText
+        android:id="@+id/etPwd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPhone"
+        app:layout_constraintEnd_toStartOf="@+id/tvSend"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/text_color3"
+        android:textColorHint="@color/hint"
+        android:hint="请输入验证码"
+        android:password="true"
+        android:maxLength="16"
+        android:singleLine="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_edittext_gray" />
+
+    <ImageView
+        android:id="@+id/ivClearPwd"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="5dp"
+        app:layout_constraintTop_toTopOf="@+id/etPwd"
+        app:layout_constraintBottom_toBottomOf="@+id/etPwd"
+        app:layout_constraintEnd_toEndOf="@+id/etPwd"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/btn_clear_input_sel" />
+
+    <TextView
+        android:id="@+id/tvSend"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toTopOf="@+id/etPwd"
+        app:layout_constraintBottom_toBottomOf="@+id/etPwd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etPwd"
+        android:background="@drawable/corner_blue"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="获取验证码"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/checkbox"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/bg_checkbox"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPwd"/>
+
+    <TextView
+        android:id="@+id/str1"
+        android:layout_marginStart="5dp"
+        app:layout_constraintTop_toTopOf="@+id/checkbox"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox"
+        app:layout_constraintStart_toEndOf="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color4"
+        android:textSize="14sp"
+        android:text="已阅读并同意"/>
+
+    <TextView
+        android:id="@+id/tvProtocal"
+        app:layout_constraintTop_toTopOf="@+id/str1"
+        app:layout_constraintBottom_toBottomOf="@+id/str1"
+        app:layout_constraintStart_toEndOf="@+id/str1"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户协议"
+        android:textColor="@color/bg_title"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/str2"
+        android:layout_marginStart="5dp"
+        app:layout_constraintTop_toTopOf="@+id/tvProtocal"
+        app:layout_constraintBottom_toBottomOf="@+id/tvProtocal"
+        app:layout_constraintStart_toEndOf="@+id/tvProtocal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_color4"
+        android:textSize="14sp"
+        android:text="和"/>
+
+    <TextView
+        android:id="@+id/tvPrivacy"
+        app:layout_constraintTop_toTopOf="@+id/str2"
+        app:layout_constraintBottom_toBottomOf="@+id/str2"
+        app:layout_constraintStart_toEndOf="@+id/str2"
+        android:layout_marginStart="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="隐私政策"
+        android:textColor="@color/bg_title"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvLogin"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox"
+        android:background="@drawable/corner_blue"
+        android:gravity="center"
+        android:text="登录"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvUserLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/bg_title"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="账号密码登录"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/ivQQ"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintTop_toTopOf="@+id/tvUserLogin"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUserLogin"
+        app:layout_constraintEnd_toStartOf="@+id/ivWX"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        android:src="@drawable/icon_login_qq" />
+
+    <ImageView
+        android:id="@+id/ivWX"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvUserLogin"
+        app:layout_constraintTop_toTopOf="@+id/tvUserLogin"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/icon_login_weixin" />
+
+</android.support.constraint.ConstraintLayout>

@@ -166,7 +166,7 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare imple
         mBottomBar = (RelativeLayout) findViewById(R.id.bottom_bar);
         mImage = (ImageTouchView) findViewById(R.id.img);
         mImage.setHightFillScale(true);
-        mImage.setImagePositon(ImageTouchView.StartPostion.ImageTJ);
+        mImage.setImagePositon(ImageTouchView.StartPostion.ImageNation);
         tvProgress = (TextView) findViewById(R.id.txt_progress);
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
         mSeekBar.setMax(imgCount - 1);

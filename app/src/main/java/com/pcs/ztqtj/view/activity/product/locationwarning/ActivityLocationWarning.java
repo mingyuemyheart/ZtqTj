@@ -42,7 +42,7 @@ import com.pcs.ztqtj.control.tool.PoiOverlay;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.control.tool.youmeng.ShareUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.myview.WarningView;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
@@ -300,7 +300,7 @@ public class ActivityLocationWarning extends FragmentActivityZtqBase implements
 	 * 点击登陆
 	 */
 	private void onClickLogin() {
-		Intent intent = new Intent(this, ActivityPhotoLogin.class);
+		Intent intent = new Intent(this, ActivityLogin.class);
 		startActivityForResult(intent, REQUEST_LOGIN);
 	}
 

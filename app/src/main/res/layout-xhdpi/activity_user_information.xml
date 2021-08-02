@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/layout"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-    android:padding="@dimen/dimen10"
-    android:background="@color/bg_white">
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen10">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal">
+
         <ImageView
             android:id="@+id/iv_head"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="@dimen/dimen20"
             android:layout_centerInParent="true"
-            android:src="@drawable/icon_head_default"
-            />
+            android:layout_marginTop="@dimen/dimen20"
+            android:src="@drawable/icon_head_default" />
+
         <ImageView
             android:id="@+id/iv_edit_head"
             android:layout_width="wrap_content"
@@ -26,47 +27,49 @@
             android:layout_toRightOf="@id/iv_head"
             android:padding="@dimen/dimen5"
             android:src="@mipmap/icon_user_change_info"
-            android:visibility="visible"/>
+            android:visibility="visible" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <EditText
             android:id="@+id/et_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen10"
             android:layout_centerInParent="true"
+            android:layout_margin="@dimen/dimen10"
             android:background="@null"
+            android:gravity="center"
             android:maxLength="6"
             android:minWidth="50dp"
             android:textColor="@color/text_black_common"
             android:textSize="18dp"
-            android:visibility="visible"
-            android:gravity="center"/>
+            android:visibility="visible" />
+
         <ImageView
             android:id="@+id/iv_edit_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/et_name"
             android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/et_name"
             android:padding="@dimen/dimen5"
             android:src="@mipmap/icon_user_change_info"
-            android:visibility="visible"/>
+            android:visibility="visible" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginTop="@dimen/dimen10"
-        android:background="@drawable/line_common"/>
+        android:background="@drawable/line_common" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen10"
         android:layout_marginLeft="@dimen/dimen10"
+        android:layout_marginTop="@dimen/dimen10"
         android:layout_marginRight="@dimen/dimen10"
         android:padding="@dimen/dimen4">
 
@@ -77,8 +80,7 @@
             android:layout_centerVertical="true"
             android:text="@string/binded_photo_number"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/text_content"
-            />
+            android:textSize="@dimen/text_content" />
 
         <EditText
             android:id="@+id/et_phone"
@@ -86,11 +88,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:background="@null"
             android:gravity="right"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/text_content"
-            android:background="@null"
-            />
+            android:textSize="@dimen/text_content" />
 
     </RelativeLayout>
 
@@ -98,13 +99,13 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginTop="@dimen/dimen10"
-        android:background="@drawable/line_common"/>
+        android:background="@drawable/line_common" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen10"
         android:layout_marginLeft="@dimen/dimen10"
+        android:layout_marginTop="@dimen/dimen10"
         android:layout_marginRight="@dimen/dimen10"
         android:padding="@dimen/dimen4">
 
@@ -115,8 +116,7 @@
             android:layout_centerVertical="true"
             android:text="@string/competition_gender"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/text_content"
-            />
+            android:textSize="@dimen/text_content" />
 
         <RadioGroup
             android:id="@+id/radio_group"
@@ -124,8 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <RadioButton
                 android:id="@+id/rb_male"
@@ -134,8 +133,7 @@
                 android:button="@drawable/icon_gendar"
                 android:text="@string/male"
                 android:textColor="@color/text_black_common"
-                android:textSize="@dimen/text_content"
-                />
+                android:textSize="@dimen/text_content" />
 
             <RadioButton
                 android:id="@+id/rb_female"
@@ -145,8 +143,7 @@
                 android:button="@drawable/icon_gendar"
                 android:text="@string/female"
                 android:textColor="@color/text_black_common"
-                android:textSize="@dimen/text_content"
-                />
+                android:textSize="@dimen/text_content" />
 
         </RadioGroup>
 
@@ -156,13 +153,13 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginTop="@dimen/dimen10"
-        android:background="@drawable/line_common"/>
+        android:background="@drawable/line_common" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen10"
         android:layout_marginLeft="@dimen/dimen10"
+        android:layout_marginTop="@dimen/dimen10"
         android:layout_marginRight="@dimen/dimen10"
         android:padding="@dimen/dimen4">
 
@@ -173,8 +170,7 @@
             android:layout_centerVertical="true"
             android:text="@string/address"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/text_content"
-            />
+            android:textSize="@dimen/text_content" />
 
         <EditText
             android:id="@+id/et_address"
@@ -182,13 +178,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:background="@null"
+            android:gravity="right"
             android:maxLength="20"
             android:minWidth="50dp"
-            android:gravity="right"
             android:textColor="@color/text_black_common"
-            android:textSize="@dimen/text_content"
-            android:background="@null"
-            />
+            android:textSize="@dimen/text_content" />
 
     </RelativeLayout>
 
@@ -196,7 +191,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginTop="@dimen/dimen10"
-        android:background="@drawable/line_common"/>
+        android:background="@drawable/line_common" />
 
     <Button
         android:id="@+id/btn_submit"
@@ -212,12 +207,12 @@
         android:id="@+id/tv_password_manager"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen10"
         android:layout_gravity="right"
-        android:textColor="@color/text_blue_login"
-        android:text="@string/password_manager"
-        android:textSize="@dimen/text_content"
+        android:layout_marginTop="@dimen/dimen10"
         android:drawableRight="@drawable/icon_arrow_blue"
-        android:drawablePadding="@dimen/dimen4" />
+        android:drawablePadding="@dimen/dimen4"
+        android:text="@string/password_manager"
+        android:textColor="@color/text_blue_login"
+        android:textSize="@dimen/text_content" />
 
 </LinearLayout>

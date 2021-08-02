@@ -36,9 +36,6 @@ import com.umeng.message.entity.UMessage;
 import com.umeng.message.tag.TagManager;
 import com.umeng.socialize.PlatformConfig;
 
-import org.android.agoo.huawei.HuaWeiRegister;
-import org.android.agoo.mezu.MeizuRegister;
-import org.android.agoo.xiaomi.MiPushRegistar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -134,7 +131,7 @@ public class MyApplication extends MultiDexApplication {
     //本地保存用户信息参数
     public static String USERNAME = "";
     public static String PASSWORD = "";
-    public static String TOKEN = "";
+    public static String TOKEN = "offline";
     public static String UID = "";
     public static String NAME = "";//用户名字
     public static String PARTMENT = "";//部门
@@ -168,7 +165,7 @@ public class MyApplication extends MultiDexApplication {
         UID = "";
         USERNAME = "";
         PASSWORD = "";
-        TOKEN = "";
+        TOKEN = "offline";
         NAME = "";
         PARTMENT = "";
         DUTY = "";
@@ -204,7 +201,7 @@ public class MyApplication extends MultiDexApplication {
         UID = sharedPreferences.getString(UserInfo.uId, "");
         USERNAME = sharedPreferences.getString(UserInfo.userName, "");
         PASSWORD = sharedPreferences.getString(UserInfo.passWord, "");
-        TOKEN = sharedPreferences.getString(UserInfo.token, "");
+        TOKEN = sharedPreferences.getString(UserInfo.token, "offline");
         NAME = sharedPreferences.getString(UserInfo.name, "");
         PARTMENT = sharedPreferences.getString(UserInfo.partment, "");
         DUTY = sharedPreferences.getString(UserInfo.duty, "");
@@ -225,11 +222,11 @@ public class MyApplication extends MultiDexApplication {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = CONST.BASE_URL+"user/offline";
-                JSONObject param = new JSONObject();
                 try {
+                    JSONObject param = new JSONObject();
                     param.put("token", "offline");
                     String json = param.toString();
+                    String url = CONST.BASE_URL+"user/offline";
                     final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                         @Override
@@ -264,59 +261,6 @@ public class MyApplication extends MultiDexApplication {
             }
         }).start();
     }
-
-//    /**
-//     * 获取站点信息
-//     */
-//    public static void okHttpGeo(final double lat, final double lng) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String url = CONST.GEO_URL;
-//                FormBody.Builder builder = new FormBody.Builder();
-//                builder.add("lat", lat+"");
-//                builder.add("lon", lng+"");
-//                RequestBody body = builder.build();
-//                OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-//                    @Override
-//                    public void onFailure(Call call, IOException e) {
-//                    }
-//                    @Override
-//                    public void onResponse(Call call, Response response) throws IOException {
-//                        if (!response.isSuccessful()) {
-//                            return;
-//                        }
-//                        final String result = response.body().string();
-//                        if (!TextUtils.isEmpty(result)) {
-//                            try {
-//                                JSONObject obj = new JSONObject(result);
-//                                if (!obj.isNull("station")) {
-////                                    MyApplication.STATIONID = obj.getString("station");
-////                                    if (!obj.isNull("city")) {
-////                                        JSONObject city = obj.getJSONObject("city");
-////                                        if (!city.isNull("station")) {
-////                                            MyApplication.STATIONID = city.getString("station");
-////                                            if (!city.isNull("city")) {
-////                                                JSONObject area = city.getJSONObject("city");
-////                                                if (!area.isNull("station")) {
-////                                                    MyApplication.STATIONID = area.getString("station");
-////                                                }
-////                                            }
-////                                        }
-////                                    }
-//
-////                                    MyApplication.STATIONID = "101010100";//测试用
-////                                    MyApplication.STATIONID = "101190101";//测试用
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                });
-//            }
-//        }).start();
-//    }
 
     private void initUmeng() {
         UMConfigure.init(this,appKey,"umeng",UMConfigure.DEVICE_TYPE_PHONE, msgSecret);

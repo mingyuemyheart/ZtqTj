@@ -509,13 +509,13 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = CONST.BASE_URL+"user/login";
-                Log.e("login", url);
-                JSONObject param = new JSONObject();
                 try {
+                    JSONObject param = new JSONObject();
                     param.put("loginName", uName);
                     param.put("pwd", pwd);
                     String json = param.toString();
+                    String url = CONST.BASE_URL+"user/login";
+                    Log.e("login", url);
                     final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                         @Override
@@ -535,10 +535,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
                                     if (!TextUtils.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
-                                            if (!obj.isNull("errorMessage")) {
-                                                String errorMessage = obj.getString("errorMessage");
-                                                showToast(errorMessage);
-                                            }
                                             if (!obj.isNull("token")) {
                                                 MyApplication.TOKEN = obj.getString("token");
                                                 Log.e("token", MyApplication.TOKEN);
@@ -567,6 +563,11 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
                                                     MyApplication.PORTRAIT= userInfo.getString("avatar");
                                                 }
                                                 MyApplication.saveUserInfo(AbsActivityFeekTu.this);
+
+                                                //刷新栏目数据
+                                                Intent bdIntent = new Intent();
+                                                bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
+                                                sendBroadcast(bdIntent);
 
                                                 showToast(getString(R.string.login_succ));
                                                 //存储用户数据

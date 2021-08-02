@@ -2,15 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants">
-
-    <ImageView
-        android:id="@+id/image_blur"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:scaleType="fitXY" />
+    android:layout_height="match_parent">
 
     <!-- 标题栏 -->
 
@@ -18,10 +10,10 @@
         android:id="@+id/layout_top_left"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="5dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -50,22 +42,13 @@
                 android:id="@+id/text_cityname_street"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_white"
-                android:singleLine="true"
                 android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/text_white"
                 android:textSize="13dp" />
         </LinearLayout>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/image_dark"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:visibility="visible"
-        android:alpha="0"
-        android:src="@color/bg_black_alpha20" />
 
     <LinearLayout
         android:id="@+id/lay_bt_setting"
@@ -78,17 +61,8 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@mipmap/bt_setting"/>
+            android:background="@mipmap/bt_setting" />
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="85dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/icon_logo" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -142,12 +116,5 @@
         </com.pcs.ztqtj.view.myview.MyScrollView>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/popbg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_black_alpha50"
-        android:visibility="gone" />
 
 </RelativeLayout>

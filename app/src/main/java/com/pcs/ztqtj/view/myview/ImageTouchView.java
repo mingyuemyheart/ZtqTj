@@ -9,19 +9,18 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 /**
  * 继承ImageView 实现了多点触碰的拖动和缩放
- *
- * @author Administrator
  */
+public class ImageTouchView extends ImageView {
 
-public class ImageTouchView extends View {
     public static enum StartPostion {
-        ImageLeft, ImageCenter, ImageRight, ImageTJ
+        ImageLeft, ImageCenter, ImageRight, ImageTJ, ImageNation, ImageTG
     }
 
-    private StartPostion deFaultSP = StartPostion.ImageCenter;
+    private StartPostion deFaultSP = StartPostion.ImageTJ;
     protected Bitmap mBitmap;
     static final int NONE = 0;
     static final int DRAG = 1; // 拖动中
@@ -96,10 +95,8 @@ public class ImageTouchView extends View {
                 mode = NONE;
                 checkOutScreen();
                 invalidate();
-
                 break;
             case MotionEvent.ACTION_MOVE:
-
                 if (mode == DRAG) {
                     stopX = (int) event.getX();
                     stopY = (int) event.getY();
@@ -122,7 +119,6 @@ public class ImageTouchView extends View {
                         invalidate();
                     }
                 }
-
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mode = NONE;
@@ -154,8 +150,6 @@ public class ImageTouchView extends View {
          */
         public void touchEvent(MotionEvent event);
     }
-
-    ;
 
     /**
      * 设置触摸事件
@@ -228,7 +222,6 @@ public class ImageTouchView extends View {
 
     /**
      * 设置对齐方向
-     *
      * @param sp
      */
     public void setImagePositon(StartPostion sp) {
@@ -240,7 +233,6 @@ public class ImageTouchView extends View {
 
     /**
      * 设置显示图片
-     *
      * @param bm    图片
      */
     public void setMyImageBitmap(Bitmap bm) {
@@ -274,13 +266,16 @@ public class ImageTouchView extends View {
         } else if (deFaultSP == StartPostion.ImageRight) {
             imageStartRight(bm, mScale);
         } else if (deFaultSP == StartPostion.ImageTJ) {
-            imageStartTJ(bm, mScale);
+            imageStartTJ(bm, mScale+1f);
+        } else if (deFaultSP == StartPostion.ImageNation) {
+            imageStartNation(bm, mScale+0.5f);
+        } else if (deFaultSP == StartPostion.ImageTG) {
+            imageStartTG(bm, mScale);
         }
     }
 
     /**
      * 改变图片，按放大后的比例显示图片
-     *
      * @param bm
      */
     public void changeImageBitmap(Bitmap bm) {
@@ -312,7 +307,6 @@ public class ImageTouchView extends View {
 
     /**
      * 左边对齐
-     *
      * @param bm
      * @param mScale
      */
@@ -325,7 +319,6 @@ public class ImageTouchView extends View {
 
     /**
      * 居中 所有的都居中
-     *
      * @param bm
      * @param mScale
      */
@@ -341,7 +334,6 @@ public class ImageTouchView extends View {
 
     /**
      * 右对齐
-     *
      * @param bm
      * @param mScale
      */
@@ -353,10 +345,28 @@ public class ImageTouchView extends View {
     }
 
     private void imageStartTJ(Bitmap bm, float mScale) {
-        mLeft = (getWidth() - bm.getWidth() * mScale) + 200;
+        mLeft = (getWidth() - bm.getWidth() * mScale) + 700;
         mTop = 0;
         mRight = mLeft + bm.getWidth() * mScale;
         mBottom = mTop + bm.getHeight() * mScale;
+    }
+
+
+    private void imageStartNation(Bitmap bm, float mScale) {
+        mLeft = (getWidth() - bm.getWidth() * mScale) + 300;
+        mTop = 0;
+        mRight = mLeft + bm.getWidth() * mScale;
+        mBottom = mTop + bm.getHeight() * mScale;
+    }
+
+    private void imageStartTG(Bitmap bm, float mScale) {
+        float imageWidth = bm.getWidth() * mScale;
+        float imageHight = bm.getHeight() * mScale;
+
+        mLeft = (getWidth() - imageWidth) / 2 + 400;
+        mTop = (getHeight() - imageHight) / 2;
+        mRight = mLeft + imageWidth;
+        mBottom = mTop + imageHight;
     }
 
     public void postScale(float scale) {

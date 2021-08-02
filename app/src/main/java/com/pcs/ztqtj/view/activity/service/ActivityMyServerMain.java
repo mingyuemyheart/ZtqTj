@@ -26,9 +26,11 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackSHTwoChannelDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackSHTwoChannelUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.ServiceChannelInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ServiceLoginTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.web.FragmentActivityZtqWithHelp;
 
 import java.util.ArrayList;
@@ -286,7 +288,6 @@ public class ActivityMyServerMain extends FragmentActivityZtqWithHelp implements
     private class MyReceiver extends PcsDataBrocastReceiver {
         @Override
         public void onReceive(final String name, String error) {
-
             if (name.equals(pack.getName())) {
                 PackSHTwoChannelDown down = (PackSHTwoChannelDown) PcsDataManager.getInstance().getNetPack(name);
                 if (down == null) {
@@ -323,8 +324,6 @@ public class ActivityMyServerMain extends FragmentActivityZtqWithHelp implements
                             startActivity(intent);
                         }
                     }
-
-
                 }
 
                 @Override
@@ -338,13 +337,19 @@ public class ActivityMyServerMain extends FragmentActivityZtqWithHelp implements
         }
     }
 
-
     /**
      * 登出当前账号
      */
     private void logout() {
         PackLocalUserInfo info = new PackLocalUserInfo();
         ZtqCityDB.getInstance().setMyInfo(info);
+
+        MyApplication.clearUserInfo(this);
+
+        //刷新栏目数据
+        Intent bdIntent = new Intent();
+        bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
+        sendBroadcast(bdIntent);
     }
 
 

@@ -51,7 +51,7 @@ import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.myview.MyGridView;
 
 import java.io.ByteArrayOutputStream;
@@ -564,7 +564,7 @@ public class ActivityAgricultureZQZB extends FragmentActivityZtqBase implements 
      * 跳转登录
      */
     private void gotoLogin() {
-        Intent intent = new Intent(this, ActivityPhotoLogin.class);
+        Intent intent = new Intent(this, ActivityLogin.class);
         startActivityForResult(intent, MyConfigure.RESULT_USER_REGISTER);
     }
 

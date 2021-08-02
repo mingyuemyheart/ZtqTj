@@ -30,7 +30,10 @@ public class ActivityMeteorologicalScience extends FragmentActivityZtqBase {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.info_layout);
-		setTitleText("气象科普");
+		String title = getIntent().getStringExtra("title");
+		if (title != null) {
+			setTitleText(title);
+		}
 		initView();
 		initEvent();
 		initData();

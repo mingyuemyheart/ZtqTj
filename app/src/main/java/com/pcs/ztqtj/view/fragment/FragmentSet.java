@@ -59,8 +59,8 @@ import com.pcs.ztqtj.model.SettingDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.AuthorityUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoUserCenter;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityUserCenter;
 import com.pcs.ztqtj.view.activity.prove.WeatherProveActivity;
 import com.pcs.ztqtj.view.activity.set.AcitvityAboutZTQ;
 import com.pcs.ztqtj.view.activity.set.AcitvityFeedBack;
@@ -94,11 +94,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private MyListView listView;
     private AdapterColumnManager adapter;
     private List<Map<String, String>> listData = new ArrayList<>();
-
-    /**
-     * 登录跳转request code
-     */
-    private static final int GOTOLOGIN = 1001;
 
     private MyGridView gridSets;
     private List<SetsBean> setsBeanList = new ArrayList<>();
@@ -248,7 +243,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     }
 
     private void gotoLogin() {
-        startActivityForResult(new Intent(activity, ActivityPhotoLogin.class), GOTOLOGIN);
+        startActivityForResult(new Intent(activity, ActivityLogin.class), 1001);
     }
 
     /**
@@ -416,7 +411,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             case R.id.tv_username:
             case R.id.iv_head:
                 if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
-                    Intent intent = new Intent(getActivity(), ActivityPhotoUserCenter.class);
+                    Intent intent = new Intent(getActivity(), ActivityUserCenter.class);
                     startActivityForResult(intent, MyConfigure.RESULT_SET_TO_USER);
                 }
                 break;
@@ -436,10 +431,10 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case GOTOLOGIN:
+                case 1001:
                     initUser();
                     if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
-                        gotoAcitvity(ActivityPhotoUserCenter.class, "我");
+                        gotoAcitvity(ActivityUserCenter.class, "我");
                     }
                     break;
                 case toanther:

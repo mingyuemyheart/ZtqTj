@@ -34,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.iflytek.cloud.RecognizerResult;
@@ -67,9 +66,8 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.ActivityCompetitionEntry;
 import com.pcs.ztqtj.view.activity.ActivityMain;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoShow;
-import com.pcs.ztqtj.view.activity.prove.WeatherProveActivity;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
@@ -139,7 +137,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
     @Override
     protected void refresh() {
-        refreshWeather();
+//        refreshWeather();
         okHttpWarningImages();
     }
 
@@ -686,9 +684,13 @@ public class CommandMainRow0 extends CommandMainBase {
                 //实景
                 case R.id.lay_bt_recommend:
                     if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
-                        Toast.makeText(mActivity, "请先登录", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(mActivity, ActivityLogin.class);
+                        mActivity.startActivityForResult(intent, CONST.RESULT_LOGIN);
                     } else {
-                        mActivity.startActivity(new Intent(mActivity, ActivityPhotoShow.class));
+                        Intent intent = new Intent(mActivity, ActivityPhotoShow.class);
+                        intent.putExtra("title", "实景开拍");
+                        intent.putExtra("imgType", "1");//imgType:图片类型，1（实景开拍），2（农业开拍分类）必须传，区分哪个业务
+                        mActivity.startActivity(intent);
                     }
                     break;
                 //日历入口
@@ -895,10 +897,8 @@ public class CommandMainRow0 extends CommandMainBase {
      * 获取一周天气
      */
     private void okHttpWeekData() {
-        mActivity.showProgressDialog();
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if(city == null) {
-            mActivity.dismissProgressDialog();
             return;
         }
         new Thread(new Runnable() {
@@ -929,7 +929,6 @@ public class CommandMainRow0 extends CommandMainBase {
                                 @Override
                                 public void run() {
 //                                        Log.e("week_data", result);
-                                    mActivity.dismissProgressDialog();
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -1019,10 +1018,8 @@ public class CommandMainRow0 extends CommandMainBase {
      * 获取预警，首页预警图标
      */
     private void okHttpWarningImages() {
-        mActivity.showProgressDialog();
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if(city == null) {
-            mActivity.dismissProgressDialog();
             lv_warn_content.setVisibility(View.GONE);
             return;
         }
@@ -1053,7 +1050,6 @@ public class CommandMainRow0 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mActivity.dismissProgressDialog();
 //                                    Log.e("yjxx_index_fb_list", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
@@ -1172,10 +1168,8 @@ public class CommandMainRow0 extends CommandMainBase {
      * 获取实况语音
      */
     private void okHttpSound() {
-        mActivity.showProgressDialog();
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if(city == null) {
-            mActivity.dismissProgressDialog();
             return;
         }
         new Thread(new Runnable() {
@@ -1205,7 +1199,6 @@ public class CommandMainRow0 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mActivity.dismissProgressDialog();
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);

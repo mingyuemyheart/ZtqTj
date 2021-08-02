@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -14,24 +14,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
             android:text="@string/weather_service"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/text_the_page_title" />
+            android:textSize="@dimen/text_the_page_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/imageghelp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/serve_help"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/serve_help" />
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
@@ -44,7 +44,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/bt_service_jc"
+            android:id="@+id/btnJuece"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
@@ -60,7 +60,7 @@
             android:textSize="@dimen/textsize16" />
 
         <Button
-            android:id="@+id/bt_service_hy"
+            android:id="@+id/btnHy"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
@@ -76,7 +76,7 @@
             android:textSize="@dimen/textsize16" />
 
         <Button
-            android:id="@+id/bt_service_login"
+            android:id="@+id/btnLogin"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_marginStart="10dp"
@@ -104,230 +104,301 @@
 
             <ImageView
                 android:id="@+id/ivTj"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:src="@drawable/icon_service" />
+                android:src="@drawable/icon_service"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/iv_service_ad"
-                android:layout_width="100dp"
+                android:id="@+id/ivQxt"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_gravity="end|bottom"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintEnd_toEndOf="@+id/ivTj"
-                app:layout_constraintBottom_toBottomOf="@+id/ivTj"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tv_service_tj"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/ivTj"
-                android:background="@drawable/icon_service_label01"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toBottomOf="@+id/ivTj" />
+
+            <TextView
+                android:id="@+id/tvQxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:tag="101030303"
-                android:text="天津市气象台"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivQxt"
+                app:layout_constraintEnd_toEndOf="@+id/ivQxt"
+                app:layout_constraintStart_toStartOf="@+id/ivQxt"
+                app:layout_constraintTop_toTopOf="@+id/ivQxt" />
+
+            <ImageView
+                android:id="@+id/ivBgs"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toBottomOf="@+id/ivQxt" />
 
             <TextView
-                android:id="@+id/tv_service_person_office"
-                android:layout_width="match_parent"
+                android:id="@+id/tvBgs"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_service_tj"
-                android:background="@drawable/icon_service_person_office"
                 android:gravity="center"
-                android:tag="101030304"
-                android:text="天津市人工影响天气办公室"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivBgs"
+                app:layout_constraintEnd_toEndOf="@+id/ivBgs"
+                app:layout_constraintStart_toStartOf="@+id/ivBgs"
+                app:layout_constraintTop_toTopOf="@+id/ivBgs" />
+
+            <ImageView
+                android:id="@+id/ivBhxq"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintTop_toBottomOf="@+id/ivBgs" />
 
             <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_service_weather_office"
-                android:layout_width="match_parent"
+                android:id="@+id/tvBhxq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_service_person_office"
-                android:background="@drawable/icon_service_weather_office"
-                android:gravity="center"
-                android:text="气象灾害应急指挥部办公室"
-                android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
-
-            <TextView
-                android:id="@+id/tv_bhxq"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginTop="5dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_service_weather_office"
-                android:background="@drawable/icon_service_label02"
                 android:gravity="center"
                 android:tag="101030305"
-                android:text="滨海新区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivBhxq"
+                app:layout_constraintEnd_toEndOf="@+id/ivBhxq"
+                app:layout_constraintStart_toStartOf="@+id/ivBhxq"
+                app:layout_constraintTop_toTopOf="@+id/ivBhxq" />
+
+            <ImageView
+                android:id="@+id/ivDlq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="@+id/ivXqq"
+                app:layout_constraintEnd_toStartOf="@+id/ivXqq"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ivXqq" />
 
             <TextView
-                android:id="@+id/tv_dlq"
-                android:layout_width="0dp"
+                android:id="@+id/tvDlq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_xqq"
-                app:layout_constraintTop_toTopOf="@+id/tv_xqq"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_xqq"
-                android:background="@drawable/icon_service_label03_l"
                 android:gravity="center"
                 android:tag="101030306"
-                android:text="东丽区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivDlq"
+                app:layout_constraintEnd_toEndOf="@+id/ivDlq"
+                app:layout_constraintStart_toStartOf="@+id/ivDlq"
+                app:layout_constraintTop_toTopOf="@+id/ivDlq" />
+
+            <ImageView
+                android:id="@+id/ivXqq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toStartOf="@+id/ivJnq"
+                app:layout_constraintStart_toEndOf="@+id/ivDlq"
+                app:layout_constraintTop_toBottomOf="@+id/ivBhxq" />
 
             <TextView
-                android:id="@+id/tv_xqq"
-                android:layout_width="0dp"
+                android:id="@+id/tvXqq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/tv_bhxq"
-                android:layout_marginTop="5dp"
-                app:layout_constraintStart_toEndOf="@+id/tv_dlq"
-                app:layout_constraintEnd_toStartOf="@+id/tv_jnq"
-                android:background="@drawable/icon_service_label03"
                 android:gravity="center"
                 android:tag="101030307"
-                android:text="西青区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivXqq"
+                app:layout_constraintEnd_toEndOf="@+id/ivXqq"
+                app:layout_constraintStart_toStartOf="@+id/ivXqq"
+                app:layout_constraintTop_toTopOf="@+id/ivXqq" />
+
+            <ImageView
+                android:id="@+id/ivJnq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="@+id/ivXqq"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivXqq"
+                app:layout_constraintTop_toTopOf="@+id/ivXqq" />
 
             <TextView
-                android:id="@+id/tv_jnq"
-                android:layout_width="0dp"
+                android:id="@+id/tvJnq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintTop_toTopOf="@+id/tv_xqq"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_xqq"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tv_xqq"
-                android:background="@drawable/icon_service_label03_r"
                 android:gravity="center"
                 android:tag="101030308"
-                android:text="津南区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivJnq"
+                app:layout_constraintEnd_toEndOf="@+id/ivJnq"
+                app:layout_constraintStart_toStartOf="@+id/ivJnq"
+                app:layout_constraintTop_toTopOf="@+id/ivJnq" />
+
+            <ImageView
+                android:id="@+id/ivBcq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="@+id/ivWqq"
+                app:layout_constraintEnd_toStartOf="@+id/ivWqq"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ivWqq" />
 
             <TextView
-                android:id="@+id/tv_bcq"
-                android:layout_width="0dp"
+                android:id="@+id/tvBcq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:layout_constraintTop_toTopOf="@+id/tv_wqq"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_wqq"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_wqq"
-                android:background="@drawable/icon_service_label04_l"
                 android:gravity="center"
                 android:tag="101030309"
-                android:text="北辰区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivBcq"
+                app:layout_constraintEnd_toEndOf="@+id/ivBcq"
+                app:layout_constraintStart_toStartOf="@+id/ivBcq"
+                app:layout_constraintTop_toTopOf="@+id/ivBcq" />
+
+            <ImageView
+                android:id="@+id/ivWqq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toStartOf="@+id/ivBdq"
+                app:layout_constraintStart_toEndOf="@+id/ivBcq"
+                app:layout_constraintTop_toBottomOf="@+id/ivXqq" />
 
             <TextView
-                android:id="@+id/tv_wqq"
-                android:layout_width="0dp"
+                android:id="@+id/tvWqq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@+id/tv_bcq"
-                app:layout_constraintEnd_toStartOf="@+id/tv_bdq"
-                app:layout_constraintTop_toBottomOf="@+id/tv_xqq"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/icon_service_label04"
                 android:gravity="center"
                 android:tag="101030310"
-                android:text="武清区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivWqq"
+                app:layout_constraintEnd_toEndOf="@+id/ivWqq"
+                app:layout_constraintStart_toStartOf="@+id/ivWqq"
+                app:layout_constraintTop_toTopOf="@+id/ivWqq" />
+
+            <ImageView
+                android:id="@+id/ivBdq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="@+id/ivWqq"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivWqq"
+                app:layout_constraintTop_toTopOf="@+id/ivWqq" />
 
             <TextView
-                android:id="@+id/tv_bdq"
-                android:layout_width="0dp"
+                android:id="@+id/tvBdq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_wqq"
-                app:layout_constraintTop_toTopOf="@+id/tv_wqq"
-                app:layout_constraintStart_toEndOf="@+id/tv_wqq"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:background="@drawable/icon_service_label04_r"
                 android:gravity="center"
                 android:tag="101030311"
-                android:text="宝坻区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivBdq"
+                app:layout_constraintEnd_toEndOf="@+id/ivBdq"
+                app:layout_constraintStart_toStartOf="@+id/ivBdq"
+                app:layout_constraintTop_toTopOf="@+id/ivBdq" />
+
+            <ImageView
+                android:id="@+id/ivJhq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="@+id/ivNhq"
+                app:layout_constraintEnd_toStartOf="@+id/ivNhq"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ivNhq" />
 
             <TextView
-                android:id="@+id/tv_jhq"
-                android:layout_width="0dp"
+                android:id="@+id/tvJhq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tv_nhq"
-                app:layout_constraintTop_toTopOf="@+id/tv_nhq"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_nhq"
-                android:background="@drawable/icon_service_label05"
                 android:gravity="center"
                 android:tag="101030312"
-                android:text="静海区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivJhq"
+                app:layout_constraintEnd_toEndOf="@+id/ivJhq"
+                app:layout_constraintStart_toStartOf="@+id/ivJhq"
+                app:layout_constraintTop_toTopOf="@+id/ivJhq" />
+
+            <ImageView
+                android:id="@+id/ivNhq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintEnd_toStartOf="@+id/ivJzq"
+                app:layout_constraintStart_toEndOf="@+id/ivJhq"
+                app:layout_constraintTop_toBottomOf="@+id/ivWqq" />
 
             <TextView
-                android:id="@+id/tv_nhq"
-                android:layout_width="0dp"
+                android:id="@+id/tvNhq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/tv_wqq"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp"
-                app:layout_constraintStart_toEndOf="@+id/tv_jhq"
-                app:layout_constraintEnd_toStartOf="@+id/tv_jzq"
-                android:background="@drawable/icon_service_label02_r"
                 android:gravity="center"
                 android:tag="101030313"
-                android:text="宁河区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivNhq"
+                app:layout_constraintEnd_toEndOf="@+id/ivNhq"
+                app:layout_constraintStart_toStartOf="@+id/ivNhq"
+                app:layout_constraintTop_toTopOf="@+id/ivNhq" />
+
+            <ImageView
+                android:id="@+id/ivJzq"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="10dp"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toBottomOf="@+id/ivNhq"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivNhq"
+                app:layout_constraintTop_toTopOf="@+id/ivNhq" />
 
             <TextView
-                android:id="@+id/tv_jzq"
-                android:layout_width="0dp"
+                android:id="@+id/tvJzq"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@+id/tv_nhq"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_nhq"
-                app:layout_constraintStart_toEndOf="@+id/tv_nhq"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/icon_service_label05_r"
                 android:gravity="center"
                 android:tag="101030314"
-                android:text="蓟州区"
                 android:textColor="@color/text_white"
-                android:textSize="@dimen/text_content" />
+                android:textSize="@dimen/text_content"
+                app:layout_constraintBottom_toBottomOf="@+id/ivJzq"
+                app:layout_constraintEnd_toEndOf="@+id/ivJzq"
+                app:layout_constraintStart_toStartOf="@+id/ivJzq"
+                app:layout_constraintTop_toTopOf="@+id/ivJzq" />
 
         </android.support.constraint.ConstraintLayout>
 

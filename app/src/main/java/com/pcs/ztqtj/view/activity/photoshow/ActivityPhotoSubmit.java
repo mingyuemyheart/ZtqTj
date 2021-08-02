@@ -94,6 +94,8 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
     private TextView text_time;
     private Button btn_submit;
 
+    private String imgType = "1";//imgType:图片类型，1（实景开拍），2（农业开拍分类）必须传，区分哪个业务
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +113,10 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
 
     private void initWidget() {
         setTitleText(R.string.photo_title_submit);
+
+        if (getIntent().hasExtra("imgType")) {
+            imgType = getIntent().getStringExtra("imgType");
+        }
 
         // 图片
         String photoPath = getIntent().getStringExtra("photo_path");
@@ -315,7 +321,7 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
      */
     private void clickBtnLogin() {
         Intent intent = new Intent();
-        intent.setClass(this, ActivityPhotoLogin.class);
+        intent.setClass(this, ActivityLogin.class);
         startActivity(intent);
     }
 
@@ -595,7 +601,7 @@ public class ActivityPhotoSubmit extends FragmentActivityZtqBase {
                     param.put("token",MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
                     info.put("areaid", city.ID);
-                    info.put("imgType", "1");
+                    info.put("imgType", imgType);
                     info.put("userId", MyApplication.UID);
                     info.put("nickName", MyApplication.NAME);
                     info.put("address", edit_address.getText().toString());

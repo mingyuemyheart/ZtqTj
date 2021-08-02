@@ -25,7 +25,6 @@ import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceShowBg;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
-import com.pcs.ztqtj.control.tool.ServiceLoginTool;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
@@ -33,8 +32,9 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
-import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
 import com.pcs.ztqtj.view.activity.newairquality.ActivityAirQualityQuery;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
+import com.pcs.ztqtj.view.activity.service.ActivityMyServer;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 
@@ -64,7 +64,6 @@ public class CommandMainRow1 extends CommandMainBase {
 
     private ActivityMain mActivity;
     private ViewGroup mRootLayout;
-    private Fragment mFragment;
     private boolean is_readed = true;
 
     private TextView text_temperature,text_temperature_decimals,text_humidity,text_rain,text_wind,text_visibility,text_station;
@@ -75,7 +74,6 @@ public class CommandMainRow1 extends CommandMainBase {
     public CommandMainRow1(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher, InterfaceShowBg showBg, Fragment fragment) {
         mActivity = (ActivityMain) activity;
         mRootLayout = rootLayout;
-        mFragment = fragment;
     }
 
     @Override
@@ -109,14 +107,6 @@ public class CommandMainRow1 extends CommandMainBase {
         text_wind = mRootLayout.findViewById(R.id.text_wind);
         text_visibility = mRootLayout.findViewById(R.id.text_visibility);
         text_station = mRootLayout.findViewById(R.id.text_station_name);
-
-//        // 当前城市
-//        final PackLocalCityMain packCity = ZtqCityDB.getInstance().getCityMain();
-//        if (packCity == null || TextUtils.isEmpty(packCity.ID)) {
-//            return;
-//        }
-//        okHttpSstq(packCity.ID, packCity.NAME);
-//        okHttpWarningList(packCity.ID);
     }
 
     @Override
@@ -199,22 +189,21 @@ public class CommandMainRow1 extends CommandMainBase {
                         return;
                     }
                     if (cityMain.isFjCity) {
-                        // 决策气象
-                        PackLocalUser info = ZtqCityDB.getInstance().getMyInfo();
-                        if (TextUtils.isEmpty(info.user_id)) {
-                            ServiceLoginTool.getInstance().createAlreadyLoginedWithFragment(mActivity, mFragment);
+                        PackLocalUser localUserinfo = ZtqCityDB.getInstance().getMyInfo();
+                        if (TextUtils.isEmpty(localUserinfo.user_id)) {
+                            intent = new Intent(mActivity, ActivityLogin.class);
+                            mActivity.startActivityForResult(intent, CONST.RESULT_LOGIN);
                         } else {
-                            ServiceLoginTool.getInstance().reqLoginQuery();
+                            intent = new Intent(mActivity, ActivityMyServer.class);
+                            intent.putExtra("title", "决策报告");
+                            intent.putExtra("channel", "1");
+                            intent.putExtra("show_warn", true);
+                            intent.putExtra("subtitle", "0");
+                            mActivity.startActivity(intent);
                         }
                     } else {
                         Toast.makeText(mActivity, "暂无决策报告", Toast.LENGTH_LONG).show();
                     }
-                    break;
-                case R.id.layout_temperature:
-                    intent = new Intent(mActivity, ActivityLiveQueryDetail.class);
-                    intent.putExtra("stationName", stationName);
-                    intent.putExtra("item", "temp");
-                    mActivity.startActivity(intent);
                     break;
             }
         }

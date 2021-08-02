@@ -83,13 +83,13 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
         gridView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                appaisalDown = (PackAppaisalDown) PcsDataManager.getInstance().getNetPack(PackAppaisalUp.NAME);
+//                appaisalDown = (PackAppaisalDown) PcsDataManager.getInstance().getNetPack(PackAppaisalUp.NAME);
                 cliciPosition = position;
-                if (appaisalDown == null || !appaisalDown.result.equals("1")) {
-                    showAppraisalDailog();
-                } else {
+//                if (appaisalDown == null || !appaisalDown.result.equals("1")) {
+//                    showAppraisalDailog();
+//                } else {
                     gridViewClick(position);
-                }
+//                }
             }
         });
         expandablelistview.setOnChildClickListener(new OnChildClickListener() {

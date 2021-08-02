@@ -28,7 +28,7 @@ import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
 import org.json.JSONException;
@@ -49,6 +49,7 @@ public class ActivityWebView extends FragmentActivityZtqBase {
             WebView.enableSlowWholeDocumentDraw();
         }
         setContentView(R.layout.activity_web);
+        showProgressDialog();
         initView();
         initData();
     }
@@ -115,7 +116,7 @@ public class ActivityWebView extends FragmentActivityZtqBase {
     }
 
     public void toLoginActivity() {
-        startActivityForResult(new Intent(this, ActivityPhotoLogin.class), control.resultCode);
+        startActivityForResult(new Intent(this, ActivityLogin.class), control.resultCode);
     }
 
     public void commitShareResult(SHARE_MEDIA share_media) {
@@ -162,7 +163,7 @@ public class ActivityWebView extends FragmentActivityZtqBase {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-
+                dismissProgressDialog();
             }
         });
 

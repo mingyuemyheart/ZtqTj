@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2016/11/8.
+ * 专项服务-行业气象-农业气象-旬报，月报
  */
 public class AdapterAgricultureWeather extends BaseAdapter {
 

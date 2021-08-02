@@ -167,10 +167,6 @@ public class ActivityDataQuery extends FragmentActivityZtqBase {
     }
 
     public void checkLogin() {
-//        Intent intent = new Intent(this, ActivityDataQueryLogin.class);
-//        startActivityForResult(intent, MyConfigure.REQUEST_DATA_QUERY_LOGIN);
-//        Intent intent = new Intent(this, AcitvityServeLogin.class);
-//        startActivityForResult(intent, MyConfigure.REQUEST_DATA_QUERY_LOGIN);
         PackAppaisalDown down = (PackAppaisalDown) PcsDataManager.getInstance().getNetPack(PackAppaisalUp.NAME);
         if(down != null && down.result.equals("1")) {
             setBoughtState(true);

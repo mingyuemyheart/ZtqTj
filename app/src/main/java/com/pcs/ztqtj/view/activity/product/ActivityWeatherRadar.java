@@ -219,6 +219,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
         mBottomBar = findViewById(R.id.bottom_bar);
         mImage = (ImageTouchView) findViewById(R.id.img);
         mImage.setHightFillScale(true);
+        mImage.setImagePositon(ImageTouchView.StartPostion.ImageTJ);
         tvProgress = (TextView) findViewById(R.id.txt_progress);
         img_time = (TextView) findViewById(R.id.img_time);
         mSeekBar = (SeekBar) findViewById(R.id.seekBar);
@@ -415,6 +416,14 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
      * 切换雷达站点
      **/
     private void switchTab(int position, String station_id) {
+        if (TextUtils.equals(station_id, "1307")) {//华北雷达
+            mImage.setImagePositon(ImageTouchView.StartPostion.ImageTJ);
+        } else if (TextUtils.equals(station_id, "1308")) {//全国雷达
+            mImage.setImagePositon(ImageTouchView.StartPostion.ImageNation);
+        } else if (TextUtils.equals(station_id, "1309")) {//塘沽雷达
+            mImage.setImagePositon(ImageTouchView.StartPostion.ImageTG);
+        }
+
         showLastImage = true;
         showButton();
         mSeekBar.setEnabled(false);
@@ -689,7 +698,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
      * 图片触摸事件，显示底部进度条
      */
     private final ImageTouchView.TouchViewLisetner imageTouchViewListener = new ImageTouchView.TouchViewLisetner() {
-
         @Override
         public void touchEvent(MotionEvent event) {
             switch (event.getAction()) {
@@ -1123,6 +1131,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
                     info.put("stationId", stationId);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("leida_pic", json);
                     final String url = CONST.BASE_URL+"leida_pic";
                     Log.e("leida_pic", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -1139,7 +1148,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.e("leida_pic", result);
+//                                    Log.e("leida_pic", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);

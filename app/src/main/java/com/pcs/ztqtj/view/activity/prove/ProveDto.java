@@ -24,6 +24,9 @@ public class ProveDto implements Parcelable {
     public boolean isSelected;
     public boolean isShowSelected;
 
+    //农情互动
+    public String ask,anwser;
+
     public ProveDto() {
 
     }
@@ -48,6 +51,8 @@ public class ProveDto implements Parcelable {
         drawable = in.readInt();
         isSelected = in.readByte() != 0;
         isShowSelected = in.readByte() != 0;
+        ask = in.readString();
+        anwser = in.readString();
     }
 
     public static final Creator<ProveDto> CREATOR = new Creator<ProveDto>() {
@@ -88,5 +93,7 @@ public class ProveDto implements Parcelable {
         dest.writeInt(drawable);
         dest.writeByte((byte) (isSelected ? 1 : 0));
         dest.writeByte((byte) (isShowSelected ? 1 : 0));
+        dest.writeString(ask);
+        dest.writeString(anwser);
     }
 }

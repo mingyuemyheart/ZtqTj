@@ -78,7 +78,10 @@ public class ActivityExpertList extends FragmentActivityZtqBase {
     }
 
     private void initData() {
-        setTitleText("专家解读");
+        String title = getIntent().getStringExtra("title");
+        if (title != null) {
+            setTitleText(title);
+        }
         listData = new ArrayList<>();
         listDataSource = new ArrayList<>();
         adapterExpertList = new AdapterExpertList(listData, getImageFetcher());

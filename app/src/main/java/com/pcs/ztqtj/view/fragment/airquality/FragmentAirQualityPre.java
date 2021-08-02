@@ -328,7 +328,9 @@ public class FragmentAirQualityPre extends Fragment implements View.OnClickListe
     private int aqi;
 
     public void refreshData(PackAirInfoDown packAirInfoDown, int delay) {
-        tv_aqi.setText(packAirInfoDown.aqi);
+        if (!TextUtils.isEmpty(packAirInfoDown.aqi)) {
+            tv_aqi.setText(packAirInfoDown.aqi);
+        }
         tv_pm2.setText(packAirInfoDown.pm2_5);
         tv_031h.setText(packAirInfoDown.o3);
         tv_038h.setText(packAirInfoDown.o3_8h);

@@ -31,7 +31,7 @@ import com.pcs.ztqtj.control.adapter.AdatperFeedBackList;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.myview.MyDialog;
 
 import java.util.ArrayList;
@@ -278,7 +278,7 @@ public class ActivityMediaTauntedOld extends FragmentActivityZtqBase implements 
      * 跳转到登录界面
      */
     private void gotoLogin() {
-        Intent intent = new Intent(this, ActivityPhotoLogin.class);
+        Intent intent = new Intent(this, ActivityLogin.class);
         startActivityForResult(intent, 1000);
     }
 

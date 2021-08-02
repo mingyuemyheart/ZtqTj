@@ -15,6 +15,7 @@ import java.util.Map;
  * @author Z 友盟第三方登录
  */
 public class LoginAnther {
+
     private UMShareAPI mShareAPI;
     public LoginAnther(Activity activity) {
         mShareAPI = UMShareAPI.get(activity);
@@ -33,7 +34,6 @@ public class LoginAnther {
 
     /**
      * 获取用户信息
-     *
      * @param acitvity
      * @param platform
      * @param umListener
@@ -75,4 +75,5 @@ public class LoginAnther {
             }
         });
     }
+
 }

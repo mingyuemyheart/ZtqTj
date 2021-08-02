@@ -38,25 +38,31 @@ import okhttp3.Response;
  */
 public class ActivityAgricultureWeather extends FragmentActivityZtqBase {
 
-    private ListView listView;
     private List<ItemExpert> listColumn = new ArrayList<>();
     private AdapterAgricultureWeather adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agriculture_weather);
-        setTitleText(getIntent().getStringExtra("title"));
-        initView();
-        initEvent();
-        initData();
+        setContentView(R.layout.activity_agricuture_fact);
+        initWidget();
+        initListView();
     }
 
-    private void initView() {
-        listView = (ListView) findViewById(R.id.listview);
+    private void initWidget() {
+        if (getIntent().hasExtra("title")) {
+            String title = getIntent().getStringExtra("title");
+            if (title != null) {
+                setTitleText(title);
+            }
+        }
+        okHttpInfoList();
     }
 
-    private void initEvent() {
+    private void initListView() {
+        ListView listView = findViewById(R.id.listView);
+        adapter = new AdapterAgricultureWeather(this, listColumn);
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -68,12 +74,6 @@ public class ActivityAgricultureWeather extends FragmentActivityZtqBase {
                 startActivity(intent);
             }
         });
-    }
-
-    private void initData() {
-        adapter = new AdapterAgricultureWeather(this, listColumn);
-        listView.setAdapter(adapter);
-        okHttpInfoList();
     }
 
     /**
@@ -94,6 +94,7 @@ public class ActivityAgricultureWeather extends FragmentActivityZtqBase {
                     info.put("extra", type);
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("info_list", json);
                     final String url = CONST.BASE_URL+"info_list";
                     Log.e("info_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -122,7 +123,6 @@ public class ActivityAgricultureWeather extends FragmentActivityZtqBase {
                                                         dismissProgressDialog();
                                                         PackExpertListDown down = new PackExpertListDown();
                                                         down.fillData(tq_zx.toString());
-
                                                         listColumn.addAll(down.dataList);
                                                         adapter.notifyDataSetChanged();
                                                     }

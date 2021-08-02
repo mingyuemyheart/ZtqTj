@@ -5,32 +5,36 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +63,7 @@ import com.pcs.ztqtj.control.tool.ZtqPushTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.ColumnDto;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
@@ -71,6 +76,8 @@ import com.pcs.ztqtj.view.fragment.FragmentLife;
 import com.pcs.ztqtj.view.fragment.FragmentProduct;
 import com.pcs.ztqtj.view.fragment.FragmentService;
 import com.pcs.ztqtj.view.fragment.FragmentSet;
+import com.pcs.ztqtj.view.myview.MainViewPager;
+import com.pcs.ztqtj.view.myview.MyPagerAdapter;
 import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
@@ -96,18 +103,20 @@ import okhttp3.Response;
 public class ActivityMain extends FragmentActivity {
 
     private ArrayList<ColumnDto> columnList = new ArrayList<>();
+    private MainViewPager viewPager = null;
+    private LinearLayout llContainer;
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private String BROADCAST_ACTION_NAME = "";//四个fragment广播名字
+
     public ImageFetcher mImageFetcher = null;
     private boolean mFetcherResumed = false;
     private FragmentCityManager mFragmentLeft;
     private FragmentHomeWeather mFragmentHomeWeather;
-    private MyRadioListener mRadioListener = null;
     private DialogTwoButton checkDialogdescribe;
     private PackCheckVersionDown packcheckversion;
     private DialogOneButton checkDialogdownload;
     private TextView desc_download;
     private ProgressBar progerssBar;
-    // 回退目标
-    private int mIntBackTarget = -1;
 
     // 等待对话框
     private ProgressDialog mProgressDialog = null;
@@ -118,23 +127,42 @@ public class ActivityMain extends FragmentActivity {
     private long mBackTime = 0;
     private DrawerLayout drawerLayout;
 
+    private MyBroadCastReceiver mReceiver = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        okHttpColumn();
-    }
-
-    private void init() {
+        initBroadCast();
         createImageFetcher();
         mFragmentLeft = new FragmentCityManager();
         initDrawerLayout();
-        initBottomMenu();
-        checkBottomMenu();
-        ZtqAppWidget.getInstance().updateAllWidget(this);//刷新小部件
         downloadImage();//下载主题插图
         checkCity();//检查城市
         initPrivacy();
+        ZtqAppWidget.getInstance().updateAllWidget(this);//刷新小部件
+        okHttpColumn();
+    }
+
+    private void initBroadCast() {
+        mReceiver = new MyBroadCastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(CONST.BROADCAST_REFRESH_COLUMNN);
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    private class MyBroadCastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (TextUtils.equals(intent.getAction(), CONST.BROADCAST_REFRESH_COLUMNN)) {
+                okHttpColumn();
+            }
+        }
+    }
+
+    private void init() {
+        llContainer = findViewById(R.id.llContainer);
+        initViewPager();
     }
 
     protected void createImageFetcher() {
@@ -142,6 +170,12 @@ public class ActivityMain extends FragmentActivity {
         cacheParams.setMemCacheSizePercent(0.25f);
         mImageFetcher = new ImageFetcher(this);
         mImageFetcher.addImageCache(this.getSupportFragmentManager(),cacheParams);
+
+        BitmapDrawable bitmapBg = mImageFetcher.getImageCache().getBitmapFromAssets("weather_bg/01.png");
+        if (bitmapBg != null) {
+            ConstraintLayout clMain = findViewById(R.id.clMain);
+            clMain.setBackgroundDrawable(bitmapBg);
+        }
     }
 
     private void initDrawerLayout() {
@@ -237,132 +271,166 @@ public class ActivityMain extends FragmentActivity {
     }
 
     /**
-     * 初始化底部菜单
+     * 初始化viewpager
      */
-    private void initBottomMenu() {
-        RadioButton radio;
-        mRadioListener = new MyRadioListener();
+    private void initViewPager() {
+        int columnSize = columnList.size();
+        if (columnSize <= 1) {
+            llContainer.setVisibility(View.GONE);
+        }
+        llContainer.removeAllViews();
+        fragments.clear();
+        for (int i = 0; i < columnSize; i++) {
+            Fragment fragment = null;
+            ColumnDto dto = columnList.get(i);
+            LinearLayout ll = new LinearLayout(this);
+            ll.setOrientation(LinearLayout.VERTICAL);
+            ll.setGravity(Gravity.CENTER_HORIZONTAL);
+            ll.setPadding(0, 10, 0, 5);
+            ll.setTag(dto.dataCode);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.weight = 1;
+            ll.setLayoutParams(params);
+            ll.setOnClickListener(new MyOnClickListener(i));
+            ImageView iv = new ImageView(this);
+            iv.setAdjustViewBounds(true);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params1.width = (int)CommonUtil.dip2px(this, 25f);
+            params1.height = (int)CommonUtil.dip2px(this, 25f);
+            iv.setLayoutParams(params1);
+            TextView tvName = new TextView(this);
+            tvName.setGravity(Gravity.CENTER);
+            tvName.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+            tvName.setTextColor(getResources().getColor(R.color.text_black_common));
+            tvName.setText(dto.dataName);
+            if (i == 0) {
+                tvName.setTextColor(getResources().getColor(R.color.text_blue_common));
+                if (TextUtils.equals(dto.dataCode, "1010301")) {
+                    iv.setImageResource(R.drawable.radio_home_sel);
+                    fragment = new FragmentHomeWeather();
+                    mFragmentHomeWeather = new FragmentHomeWeather();
+                } else if (TextUtils.equals(dto.dataCode, "1010302")) {
+                    iv.setImageResource(R.drawable.radio_product_sel);
+                    fragment = new FragmentProduct();
+                } else if (TextUtils.equals(dto.dataCode, "1010303")) {
+                    iv.setImageResource(R.drawable.radio_service_sel);
+                    fragment = new FragmentService();
+                } else if (TextUtils.equals(dto.dataCode, "1010304")) {
+                    iv.setImageResource(R.drawable.radio_live_sel);
+                    fragment = new FragmentLife();
+                }
+            } else {
+                tvName.setTextColor(getResources().getColor(R.color.text_black_common));
+                if (TextUtils.equals(dto.dataCode, "1010301")) {
+                    iv.setImageResource(R.drawable.radio_home_nor);
+                    fragment = new FragmentHomeWeather();
+                    mFragmentHomeWeather = new FragmentHomeWeather();
+                } else if (TextUtils.equals(dto.dataCode, "1010302")) {
+                    iv.setImageResource(R.drawable.radio_product_nor);
+                    fragment = new FragmentProduct();
+                } else if (TextUtils.equals(dto.dataCode, "1010303")) {
+                    iv.setImageResource(R.drawable.radio_service_nor);
+                    fragment = new FragmentService();
+                } else if (TextUtils.equals(dto.dataCode, "1010304")) {
+                    iv.setImageResource(R.drawable.radio_live_nor);
+                    fragment = new FragmentLife();
+                }
+            }
 
-        radio = findViewById(R.id.radio_home);
-        radio.setOnCheckedChangeListener(mRadioListener);
+            ll.addView(iv);
+            ll.addView(tvName);
+            llContainer.addView(ll, i);
 
-        radio = findViewById(R.id.radio_product);
-        radio.setOnCheckedChangeListener(mRadioListener);
+            if (fragment != null) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("data", dto);
+                fragment.setArguments(bundle);
+                fragments.add(fragment);
+            }
+        }
 
-        radio = findViewById(R.id.radio_service);
-        radio.setOnCheckedChangeListener(mRadioListener);
-
-        radio = findViewById(R.id.radio_live);
-        radio.setOnCheckedChangeListener(mRadioListener);
+        viewPager = findViewById(R.id.viewPager);
+        viewPager.setSlipping(false);//设置ViewPager是否可以滑动
+//        viewPager.setOffscreenPageLimit(fragments.size());
+        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+        viewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager(), fragments));
     }
 
-    private class MyRadioListener implements CompoundButton.OnCheckedChangeListener {
-        private int mCurrIndex = -1;
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-
-        public MyRadioListener() {
-            for (int i = 0; i < columnList.size(); i++) {
-                ColumnDto dto = columnList.get(i);
-                if (TextUtils.equals(dto.dataId, "1")) {
-                    // 首页
-                    mFragmentHomeWeather = new FragmentHomeWeather();
-                    mFragmentList.add(mFragmentHomeWeather);
-                } else if (TextUtils.equals(dto.dataId, "2")) {
-                    // 气象产品
-                    mFragmentList.add(new FragmentProduct());
-                } else if (TextUtils.equals(dto.dataId, "3")) {
-                    // 专项服务
-                    mFragmentList.add(new FragmentService());
-                } else if (TextUtils.equals(dto.dataId, "4")) {
-                    // 气象生活
-                    mFragmentList.add(new FragmentLife());
+    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageSelected(int arg0) {
+            if (llContainer != null) {
+                for (int i = 0; i < llContainer.getChildCount(); i++) {
+                    LinearLayout ll = (LinearLayout) llContainer.getChildAt(i);
+                    ImageView iv = (ImageView) ll.getChildAt(0);
+                    TextView tvName = (TextView) ll.getChildAt(1);
+                    if (i == arg0) {
+                        tvName.setTextColor(getResources().getColor(R.color.text_blue_common));
+                        if (TextUtils.equals(ll.getTag()+"", "1010301")) {
+                            iv.setImageResource(R.drawable.radio_home_sel);
+                            FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
+                            param.isChangedCity = true;
+                            refreshData(param, true);
+                            lockDrawer(false);
+                        } else if (TextUtils.equals(ll.getTag()+"", "1010302")) {
+                            iv.setImageResource(R.drawable.radio_product_sel);
+                            lockDrawer(true);
+                        } else if (TextUtils.equals(ll.getTag()+"", "1010303")) {
+                            if (!BROADCAST_ACTION_NAME.contains(FragmentService.class.getName())) {
+                                Intent intent = new Intent();
+                                intent.setAction(FragmentService.class.getName());
+                                sendBroadcast(intent);
+                                BROADCAST_ACTION_NAME += FragmentService.class.getName();
+                            }
+                            iv.setImageResource(R.drawable.radio_service_sel);
+                            lockDrawer(true);
+                        } else if (TextUtils.equals(ll.getTag()+"", "1010304")) {
+                            iv.setImageResource(R.drawable.radio_live_sel);
+                            lockDrawer(true);
+                        }
+                    } else {
+                        tvName.setTextColor(getResources().getColor(R.color.text_black_common));
+                        if (TextUtils.equals(ll.getTag()+"", "1010301")) {
+                            iv.setImageResource(R.drawable.radio_home_nor);
+                            lockDrawer(false);
+                        } else if (TextUtils.equals(ll.getTag()+"", "1010302")) {
+                            iv.setImageResource(R.drawable.radio_product_nor);
+                            lockDrawer(true);
+                        } else if (TextUtils.equals(ll.getTag()+"", "1010303")) {
+                            iv.setImageResource(R.drawable.radio_service_nor);
+                            lockDrawer(true);
+                        } else if (TextUtils.equals(ll.getTag()+"", "1010304")) {
+                            iv.setImageResource(R.drawable.radio_live_nor);
+                            lockDrawer(true);
+                        }
+                    }
                 }
             }
         }
-
         @Override
-        public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-            if (!isChecked) {
-                return;
-            }
-            switch (buttonView.getId()) {
-                case R.id.radio_home:
-                    // 首页
-                    changeFragment(0);
-                    FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
-                    param.isChangedCity = true;
-                    refreshData(param, true);
-                    //侧边栏
-                    lockDrawer(false);
-                    break;
-                case R.id.radio_product:
-                    // 气象产品
-                    changeFragment(1);
-                    lockDrawer(true);
-                    break;
-                case R.id.radio_service:
-                    // 气象服务
-                    changeFragment(2);
-                    lockDrawer(true);
-                    break;
-                case R.id.radio_live:
-                    // 气象生活
-                    changeFragment(3);
-                    lockDrawer(true);
-                    break;
-            }
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
         }
-
-        // 切换Fragment
-        public void changeFragment(int index) {
-            if (index == mCurrIndex) {
-                return;
-            }
-            FragmentTransaction tran = ActivityMain.this.getSupportFragmentManager().beginTransaction();
-            // 切换动画
-            if (mCurrIndex == -1) {
-
-            } else if (index > mCurrIndex) {
-                tran.setCustomAnimations(R.anim.slide_right_in,R.anim.slide_left_out);
-            } else {
-                tran.setCustomAnimations(R.anim.slide_left_in,R.anim.slide_right_out);
-            }
-            tran.replace(R.id.layout_content, mFragmentList.get(index));
-            tran.commitAllowingStateLoss();
-            mCurrIndex = index;
-        }
-
-        /**
-         * 获取当前index
-         * @return
-         */
-        public final int getCurrentIndex() {
-            return mCurrIndex;
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
         }
     }
 
     /**
-     * 检查底部菜单选中
+     * 头标点击监听
+     * @author shawn_sun
      */
-    private void checkBottomMenu() {
-        mIntBackTarget = getIntent().getIntExtra("BackTarget", FragmentActivityZtqBase.BackTarget.NORMAL.ordinal());
-        RadioGroup radioGroup = findViewById(R.id.radio_group);
-        if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.PRODUCT.ordinal()) {
-            // 气象产品
-            mRadioListener.changeFragment(1);
-            radioGroup.check(R.id.radio_product);
-        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.SERVICE.ordinal()) {
-            // 专项服务
-            mRadioListener.changeFragment(2);
-            radioGroup.check(R.id.radio_service);
-        } else if (mIntBackTarget == FragmentActivityZtqBase.BackTarget.LIVE.ordinal()) {
-            // 气象生活
-            mRadioListener.changeFragment(3);
-            radioGroup.check(R.id.radio_live);
-        } else {
-            // 默认选中首页
-            mRadioListener.changeFragment(0);
-            radioGroup.check(R.id.radio_home);
+    private class MyOnClickListener implements View.OnClickListener {
+        private int index;
+
+        private MyOnClickListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (viewPager != null) {
+                viewPager.setCurrentItem(index, true);
+            }
         }
     }
 
@@ -402,7 +470,7 @@ public class ActivityMain extends FragmentActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
                 intent.putExtra("title", "天津惠民软件用户隐私政策");
-                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yszc.html");
+                intent.putExtra("url", CONST.PROTOCAL);
                 intent.putExtra("shareContent", "天津惠民软件用户隐私政策");
                 startActivity(intent);
             }
@@ -413,7 +481,7 @@ public class ActivityMain extends FragmentActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
                 intent.putExtra("title", "天津惠民软件许可及服务协议");
-                intent.putExtra("url", "http://220.243.129.159:8081/web/smart/yhxy.html");
+                intent.putExtra("url", CONST.PRIVACY);
                 intent.putExtra("shareContent", "天津惠民软件许可及服务协议");
                 startActivity(intent);
             }
@@ -479,10 +547,7 @@ public class ActivityMain extends FragmentActivity {
 
         // 添加定位监听
         ZtqLocationTool.getInstance().addListener(mLocationListener);
-        if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
-            // 未选中首页
-            return;
-        }
+
         //下载数据
         PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
         if (cityMain != null) {
@@ -516,6 +581,9 @@ public class ActivityMain extends FragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
         if (mImageFetcher != null) {
             mImageFetcher.closeCache();
         }
@@ -544,12 +612,15 @@ public class ActivityMain extends FragmentActivity {
             return;
         }
         // 刷新首页
-        mFragmentHomeWeather.myRefreshView.refresh(param);
+        if (mFragmentHomeWeather != null) {
+            mFragmentHomeWeather.myRefreshView.refresh(param);
+        }
         // 侧边栏
-        mFragmentLeft.refresh(param);
+        if (mFragmentLeft != null) {
+            mFragmentLeft.refresh(param);
+        }
         // 推送
         ZtqPushTool.getInstance().refreshPush();
-        dismissProgressDialog();
     }
 
     /**
@@ -585,9 +656,9 @@ public class ActivityMain extends FragmentActivity {
     private final DialogInterface.OnCancelListener mProgressOnCancel = new DialogInterface.OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialog) {
-            if (mRadioListener.getCurrentIndex() == 2) {
-                // 气象服务
-            } else {
+//            if (mRadioListener.getCurrentIndex() == 2) {
+//                // 气象服务
+//            } else {
                 new AlertDialog.Builder(ActivityMain.this)
                         .setTitle(R.string.tip)
                         .setMessage(R.string.exit_confirm)
@@ -603,7 +674,7 @@ public class ActivityMain extends FragmentActivity {
                                         dialog.dismiss();
                                     }
                                 }).create().show();
-            }
+//            }
         }
     };
 
@@ -784,10 +855,6 @@ public class ActivityMain extends FragmentActivity {
     private final ZtqLocationTool.PcsLocationListener mLocationListener = new ZtqLocationTool.PcsLocationListener() {
         @Override
         public void onLocationChanged() {
-            if (mRadioListener == null || mRadioListener.getCurrentIndex() != 0) {
-                // 未选中首页
-                return;
-            }
             // 刷新定位数据
             mHandler.sendEmptyMessage(0);
         }
@@ -889,12 +956,12 @@ public class ActivityMain extends FragmentActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = CONST.BASE_URL+"user/login";
-                JSONObject param = new JSONObject();
                 try {
+                    JSONObject param = new JSONObject();
                     param.put("loginName", uName);
                     param.put("pwd", pwd);
                     String json = param.toString();
+                    String url = CONST.BASE_URL+"user/login";
                     final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                         @Override
@@ -913,10 +980,6 @@ public class ActivityMain extends FragmentActivity {
                                     if (!TextUtils.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
-                                            if (!obj.isNull("errorMessage")) {
-                                                String errorMessage = obj.getString("errorMessage");
-                                                Toast.makeText(ActivityMain.this, errorMessage, Toast.LENGTH_SHORT).show();
-                                            }
                                             if (!obj.isNull("token")) {
                                                 MyApplication.TOKEN = obj.getString("token");
                                             }
@@ -980,13 +1043,18 @@ public class ActivityMain extends FragmentActivity {
      * 获取栏目信息
      */
     private void okHttpColumn() {
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("userId", MyApplication.UID);
+                    param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("tjmoduleList", json);
                     String url = CONST.BASE_URL+"tjmoduleList";
                     Log.e("tjmoduleList", url);
                     final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
@@ -1003,6 +1071,7 @@ public class ActivityMain extends FragmentActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
                                     Log.e("tjmoduleList", result);
                                     if (!TextUtils.isEmpty(result)) {
                                         try {
@@ -1021,9 +1090,39 @@ public class ActivityMain extends FragmentActivity {
                                                             JSONObject itemObj2 = itemArray.getJSONObject(j);
                                                             ColumnDto dto2 = new ColumnDto();
                                                             parseItemObj(itemObj2, dto2);
-
-
-
+                                                            if (!itemObj2.isNull("childList")) {
+                                                                List<ColumnDto> childList2 = new ArrayList<>();
+                                                                JSONArray itemArray2 = itemObj2.getJSONArray("childList");
+                                                                for (int m = 0; m < itemArray2.length(); m++) {
+                                                                    JSONObject itemObj3 = itemArray2.getJSONObject(m);
+                                                                    ColumnDto dto3 = new ColumnDto();
+                                                                    parseItemObj(itemObj3, dto3);
+                                                                    if (!itemObj3.isNull("childList")) {
+                                                                        List<ColumnDto> childList3 = new ArrayList<>();
+                                                                        JSONArray itemArray3 = itemObj3.getJSONArray("childList");
+                                                                        for (int n = 0; n < itemArray3.length(); n++) {
+                                                                            JSONObject itemObj4 = itemArray3.getJSONObject(n);
+                                                                            ColumnDto dto4 = new ColumnDto();
+                                                                            parseItemObj(itemObj4, dto4);
+                                                                            if (!itemObj4.isNull("childList")) {
+                                                                                List<ColumnDto> childList4 = new ArrayList<>();
+                                                                                JSONArray itemArray4 = itemObj4.getJSONArray("childList");
+                                                                                for (int a = 0; a < itemArray4.length(); a++) {
+                                                                                    JSONObject itemObj5 = itemArray4.getJSONObject(a);
+                                                                                    ColumnDto dto5 = new ColumnDto();
+                                                                                    parseItemObj(itemObj5, dto5);
+                                                                                    childList4.add(dto5);
+                                                                                }
+                                                                                dto4.childList.addAll(childList4);
+                                                                            }
+                                                                            childList3.add(dto4);
+                                                                        }
+                                                                        dto3.childList.addAll(childList3);
+                                                                    }
+                                                                    childList2.add(dto3);
+                                                                }
+                                                                dto2.childList.addAll(childList2);
+                                                            }
                                                             childList.add(dto2);
                                                         }
                                                         dto.childList.addAll(childList);
@@ -1050,7 +1149,7 @@ public class ActivityMain extends FragmentActivity {
     private void parseItemObj(JSONObject itemObj, ColumnDto dto) {
         try {
             if (!itemObj.isNull("dataId")) {
-                dto.dataId = itemObj.getString("dataId");
+                dto.dataCode = itemObj.getString("dataId");
             }
             if (!itemObj.isNull("dataCode")) {
                 dto.dataCode = itemObj.getString("dataCode");
@@ -1061,23 +1160,14 @@ public class ActivityMain extends FragmentActivity {
             if (!itemObj.isNull("parentId")) {
                 dto.parentId = itemObj.getString("parentId");
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void parseChildList(JSONObject itemObj, ColumnDto dto) {
-        try {
-            if (!itemObj.isNull("childList")) {
-                List<ColumnDto> childList = new ArrayList<>();
-                JSONArray itemArray = itemObj.getJSONArray("childList");
-                for (int j = 0; j < itemArray.length(); j++) {
-                    JSONObject itemObj2 = itemArray.getJSONObject(j);
-                    ColumnDto dto2 = new ColumnDto();
-                    parseItemObj(itemObj2, dto2);
-                    childList.add(dto2);
-                }
-                dto.childList.addAll(childList);
+            if (!itemObj.isNull("icon")) {
+                dto.icon = itemObj.getString("icon");
+            }
+            if (!itemObj.isNull("flag")) {
+                dto.flag = itemObj.getString("flag");
+            }
+            if (!itemObj.isNull("url")) {
+                dto.url = itemObj.getString("url");
             }
         } catch (JSONException e) {
             e.printStackTrace();

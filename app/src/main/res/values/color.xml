@@ -216,6 +216,8 @@
     <color name="text_color2">#A3A7AC</color>
     <color name="text_color3">#f0000000</color>
     <color name="text_color4">#8A8A8A</color>
+    <color name="transparent">#00000000</color>
+    <color name="translucent">#80000000</color>
     <color name="red">#FF0033</color>
 
 </resources>

@@ -11,8 +11,8 @@ import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
 import com.pcs.ztqtj.control.tool.LoginInformation;
-import com.pcs.ztqtj.wxapi.wxtools.DesUtil;
-import com.pcs.ztqtj.wxapi.wxtools.Util;
+import com.tianyi.shawn.tjdecision.wxapi.wxtools.DesUtil;
+import com.tianyi.shawn.tjdecision.wxapi.wxtools.Util;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

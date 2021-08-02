@@ -89,7 +89,11 @@ public class ActivityTravelView extends FragmentActivitySZYBBase implements OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.travel_viewlist_layout);
-        setTitleText("旅游气象");
+
+        String title = getIntent().getStringExtra("title");
+        if (title != null) {
+            setTitleText(title);
+        }
         setBackground(Color.WHITE);
         createImageFetcher();
         initView();

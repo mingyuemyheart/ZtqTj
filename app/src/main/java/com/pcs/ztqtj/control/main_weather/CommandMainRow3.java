@@ -237,10 +237,8 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
      * 获取网格预警
      */
     private void okHttpGridWarning() {
-        mActivity.showProgressDialog();
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if (city == null) {
-            mActivity.dismissProgressDialog();
             return;
         }
         new Thread(new Runnable() {
@@ -270,7 +268,6 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mActivity.dismissProgressDialog();
 //                                    Log.e("yjxx_grad_index_fb", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {

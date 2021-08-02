@@ -92,7 +92,10 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.medialist);
-        setTitleText("气象影视");
+        String title = getIntent().getStringExtra("title");
+        if (title != null) {
+            setTitleText(title);
+        }
         createImageFetcher();
         initView();
         initData();

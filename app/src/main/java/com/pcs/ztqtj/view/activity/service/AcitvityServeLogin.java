@@ -78,16 +78,12 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
         if (TextUtils.isEmpty(mobile)) {
             showToast("请输入手机号码！");
             return;
-        } else if (TextUtils.isEmpty(pwd)) {
+        }
+        if (TextUtils.isEmpty(pwd)) {
             showToast("请输入密码！");
             return;
-        } else {
-            if (!isOpenNet()) {
-                showToast(getString(R.string.net_err));
-                return;
-            }
-            okHttpLogin(mobile, pwd);
         }
+        okHttpLogin(mobile, pwd);
     }
 
     @Override
@@ -126,13 +122,13 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = CONST.BASE_URL+"user/login";
-                Log.e("login", url);
-                JSONObject param = new JSONObject();
                 try {
+                    JSONObject param = new JSONObject();
                     param.put("loginName", uName);
                     param.put("pwd", pwd);
                     String json = param.toString();
+                    String url = CONST.BASE_URL+"user/login";
+                    Log.e("login", url);
                     final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                         @Override
@@ -152,10 +148,6 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
                                     if (!TextUtils.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
-                                            if (!obj.isNull("errorMessage")) {
-                                                String errorMessage = obj.getString("errorMessage");
-                                                showToast(errorMessage);
-                                            }
                                             if (!obj.isNull("token")) {
                                                 MyApplication.TOKEN = obj.getString("token");
                                                 Log.e("token", MyApplication.TOKEN);
@@ -184,6 +176,11 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
                                                     MyApplication.PORTRAIT= userInfo.getString("avatar");
                                                 }
                                                 MyApplication.saveUserInfo(AcitvityServeLogin.this);
+
+                                                //刷新栏目数据
+                                                Intent bdIntent = new Intent();
+                                                bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
+                                                sendBroadcast(bdIntent);
 
                                                 //存储用户数据
                                                 PackLocalUser myUserInfo = new PackLocalUser();

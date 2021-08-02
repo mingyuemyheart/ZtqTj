@@ -80,11 +80,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 照片展示界面
- *
- * @author JiangZy
+ * 实景开拍主页面
  */
 public class ActivityPhotoShow extends FragmentActivityZtqBase {
+
     public static String CITY_ID = "CITY_ID";
     // 图片最大长度
     private final int PHOTO_MAX_PENGTH = 1920;
@@ -92,6 +91,8 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
     private final int REQUEST_ALBUM = 101;
     // 拍照
     private final int REQUEST_CAMERA = 102;
+
+    private String imgType = "1";//imgType:图片类型，1（实景开拍），2（农业开拍分类）必须传，区分哪个业务
 
     // 数据
     private PhotoShowDB mPhotoShowDB;
@@ -127,19 +128,32 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
 
     private List<PackPhotoSingle> photoList;
 
+    private enum SlideDirection {
+        LEFTIN, RIGHTIN, STOPSLIDE
+    }
+
+    /**
+     * 从左边飞入
+     */
+    private SlideDirection isLeftIn = SlideDirection.STOPSLIDE;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_show);
-        setTitleText(R.string.photo_title_show);
+        if (getIntent().hasExtra("title")) {
+            String title = getIntent().getStringExtra("title");
+            if (title != null) {
+                setTitleText(title);
+            }
+        }
         createImageFetcher();
-        String cityId = ZtqCityDB.getInstance().getCityMain().ID;
-        // 等待框
         showProgressDialog();
-
+        String cityId = ZtqCityDB.getInstance().getCityMain().ID;
+        imgType = getIntent().getStringExtra("imgType");
         // 初始化数据
         mPhotoShowDB = PhotoShowDB.getInstance();
-        mPhotoShowDB.onCreate(this, cityId);
+        mPhotoShowDB.onCreate(this, cityId, imgType);
         mPhotoShowDB.setListener(mDBListener);
         // 初始化按钮
         initButton();
@@ -155,29 +169,12 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
         // 请求数据
         mPhotoShowDB.reqNextPage(getDataType);
-        if (!isOpenNet()) {
-            showToast(getString(R.string.open_netword));
-        } else {
-            if (!isWiFiNewWord()) {
-                showToast(getString(R.string.un_wifi_desc));
-            }
-        }
         reqBanner();
     }
 
-    private enum SlideDirection {
-        LEFTIN, RIGHTIN, STOPSLIDE
-    }
-
-    /**
-     * 从左边飞入
-     */
-    private SlideDirection isLeftIn = SlideDirection.STOPSLIDE;
-
     private void initRadioGroup() {
-        RadioGroup radiogroup_chose = (RadioGroup) findViewById(R.id.radiogroup_chose);
-        radiogroup_chose
-                .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        RadioGroup radiogroup_chose = findViewById(R.id.radiogroup_chose);
+        radiogroup_chose.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         if (checkedId == R.id.ordinary_button) {
@@ -206,7 +203,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
                     }
                 });
 
-        TextView firstTv = (TextView) findViewById(R.id.ordinary_button);
+        TextView firstTv = findViewById(R.id.ordinary_button);
         firstTv.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         firstTv.setTextColor(getResources().getColor(R.color.text_blue));
     }
@@ -230,11 +227,9 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
             mPhotoShowDB.setRefreshType(PhotoShowDB.PhotoRefreshType.NO_NEED);
         }
         // banner
-        if (bannerList == null
-                || bannerList.size() == 0) {
+        if (bannerList == null || bannerList.size() == 0) {
         } else if (pagerCurrentPosition == 0) {
-            pagerCurrentPosition = ((adapterAdvertisement.getCount() / bannerList
-                    .size()) / 2) * bannerList.size();
+            pagerCurrentPosition = ((adapterAdvertisement.getCount() / bannerList.size()) / 2) * bannerList.size();
             if (vp != null && adapterAdvertisement != null) {
                 vp.setCurrentItem(pagerCurrentPosition);
                 moveToNextPager();
@@ -264,8 +259,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent intent) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode != Activity.RESULT_OK) {
             return;
@@ -287,7 +281,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
      */
     private void initButton() {
         // 个人中心
-        setBtnRight(R.drawable.icon_photo_show_user_new, mOnClick);
+//        setBtnRight(R.drawable.icon_photo_show_user_new, mOnClick);
         setBtnRight2(R.drawable.icon_take_picture_new_2, mOnClick);
         // 拍照
         //setBtnRight2(R.drawable.btn_camera1, mOnClick);
@@ -298,11 +292,28 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
      * 初始化适配器
      */
     private void initAdapter() {
-        photoList = new ArrayList<PackPhotoSingle>();
+        photoList = new ArrayList<>();
+        GridView gridView = findViewById(R.id.gridView);
         mAdapter = new AdapterPhotoShow(ActivityPhotoShow.this, getImageFetcher(), photoList);
-        GridView gridView = (GridView) findViewById(R.id.gridView);
         gridView.setAdapter(mAdapter);
-        gridView.setOnItemClickListener(mOnItemClick);
+        gridView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mIsLoading) {
+                    return;
+                }
+                Intent intent = new Intent();
+                intent.putExtra("imgType", imgType);
+                intent.putExtra("position", position);
+                if (getDataType == PhotoShowType.ORDINARY) {
+                    intent.putExtra("isSpecial", false);
+                } else if (getDataType == PhotoShowType.SPECIAL) {
+                    intent.putExtra("isSpecial", true);
+                }
+                intent.setClass(ActivityPhotoShow.this, ActivityPhotoDetail.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -311,10 +322,9 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
     private void initPullDownRefresh() {
         // 下拉视图
         View pullLayout = findViewById(R.id.layout_pulldown);
-        ViewPulldownRefresh viewPullDown = new ViewPulldownRefresh(this,
-                pullLayout);
+        ViewPulldownRefresh viewPullDown = new ViewPulldownRefresh(this, pullLayout);
         // 滚动监听
-        GridView gridView = (GridView) findViewById(R.id.gridView);
+        GridView gridView = findViewById(R.id.gridView);
         MyOnScrollListener refreshScroll = new MyOnScrollListener();
         gridView.setOnScrollListener(refreshScroll);
         // 触摸监听
@@ -328,10 +338,8 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
      * 初始化弹出框
      */
     private void initPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.pop_photograph,
-                null);
-        mPopupWindow = new PopupWindow(view, LayoutParams.MATCH_PARENT,
-                LayoutParams.WRAP_CONTENT, true);
+        View view = LayoutInflater.from(this).inflate(R.layout.pop_photograph, null);
+        mPopupWindow = new PopupWindow(view, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         mPopupWindow.setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -347,7 +355,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         mPopupWindow.setTouchable(true);
         // 设置弹窗外可点击
         mPopupWindow.setOutsideTouchable(true);
-
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());
 
         view.setOnKeyListener(new OnKeyListener() {
@@ -383,7 +390,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
 
     /**
      * 设置底部加载View
-     *
      * @param isShow
      */
     private void setBottomView(boolean isShow) {
@@ -394,7 +400,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
             view.setVisibility(View.GONE);
         }
     }
-
     private  String perfixUrl;
 
     /**
@@ -424,7 +429,8 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
             moveToNextPager();
         }
     }
-private RelativeLayout layout_banner;
+
+    private RelativeLayout layout_banner;
     private void initBannerView() {
          layout_banner = (RelativeLayout) findViewById(R.id.layout_banner);
         ViewGroup.LayoutParams rootParams = layout_banner.getLayoutParams();
@@ -474,8 +480,7 @@ private RelativeLayout layout_banner;
      * 展示下一张图片
      */
     private void moveToNextPager() {
-        brannerHandler
-                .sendEmptyMessageDelayed(0, delayMillis);
+        brannerHandler.sendEmptyMessageDelayed(0, delayMillis);
     }
 
     private final Handler brannerHandler = new Handler(new Handler.Callback() {
@@ -508,12 +513,12 @@ private RelativeLayout layout_banner;
         PackLocalUser localUser= ZtqCityDB.getInstance().getMyInfo();
         if (!TextUtils.isEmpty(localUser.user_id)) {
             Intent it = new Intent();
-            it.setClass(this, ActivityPhotoUserCenter.class);
+            it.setClass(this, ActivityUserCenter.class);
             this.startActivity(it);
         } else {
             // 未登录
             Intent it = new Intent();
-            it.setClass(this, ActivityPhotoLogin.class);
+            it.setClass(this, ActivityLogin.class);
             this.startActivity(it);
             return;
         }
@@ -544,12 +549,10 @@ private RelativeLayout layout_banner;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == REQUEST_CAMERA) {
             PermissionsTools.onRequestPermissionsResult(this, permissions, grantResults, new PermissionsTools.RequestPermissionResultCallback() {
-
                 @Override
                 public void onSuccess() {
                     clickCamera();
@@ -589,11 +592,9 @@ private RelativeLayout layout_banner;
      */
     private void resultCamera(Intent fromIntent) {
         if (mFilePhoto == null || !mFilePhoto.exists()) {
-            Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT).show();
             return;
         }
-
         showProgressDialog();
         // 调整图片大小
         resizeImage();
@@ -601,15 +602,13 @@ private RelativeLayout layout_banner;
 
     /**
      * 从相册返回
-     *
      * @param fromIntent
      */
     private void resultAlbum(Intent fromIntent) {
         showProgressDialog();
         Uri uri = fromIntent.getData();
         String[] filePathColumns = {MediaStore.Images.Media.DATA};
-        Cursor c = this.getContentResolver().query(uri, filePathColumns, null,
-                null, null);
+        Cursor c = this.getContentResolver().query(uri, filePathColumns, null, null, null);
         if (c == null) {
             return;
         }
@@ -621,8 +620,7 @@ private RelativeLayout layout_banner;
         // 旧文件
         File oldFile = new File(picturePath);
         // 新文件
-        mFilePhoto = new File(PcsGetPathValue.getInstance().getMyPhotoPath()
-                + oldFile.getName());
+        mFilePhoto = new File(PcsGetPathValue.getInstance().getMyPhotoPath() + oldFile.getName());
         // 当前文件夹不是ztq文件夹
         if (!oldFile.getParent().equals(mFilePhoto.getParent())) {
             if (mFilePhoto.exists()) {
@@ -630,8 +628,7 @@ private RelativeLayout layout_banner;
             }
             mFilePhoto.getParentFile().mkdirs();
             if (!copyFile(oldFile, mFilePhoto)) {
-                Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(this, R.string.photo_error, Toast.LENGTH_SHORT).show();
                 dismissProgressDialog();
                 return;
             }
@@ -661,7 +658,6 @@ private RelativeLayout layout_banner;
 
     /**
      * 拷贝文件
-     *
      * @param oldFile
      * @param newFile
      */
@@ -680,7 +676,6 @@ private RelativeLayout layout_banner;
             while ((byteread = inStream.read(buffer)) != -1) {
                 fs.write(buffer, 0, byteread);
             }
-
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -705,8 +700,7 @@ private RelativeLayout layout_banner;
                                       InterfacePulldownView pulldownView,
                                       InterfaceRefresh refreshView, InterfaceRefresh refreshAnim,
                                       InterfaceScrollView scrollView) {
-            super(windowManager, pulldownView, refreshView, refreshAnim,
-                    scrollView);
+            super(windowManager, pulldownView, refreshView, refreshAnim, scrollView);
         }
 
         @Override
@@ -718,11 +712,8 @@ private RelativeLayout layout_banner;
 
     /**
      * 滚动监听
-     *
-     * @author JiangZy
      */
-    private class MyOnScrollListener implements OnScrollListener,
-            InterfaceScrollView {
+    private class MyOnScrollListener implements OnScrollListener, InterfaceScrollView {
         private int mFirstVisibleItem = 0;
         private int mVisibleItemCount = 0;
         private int mTotalItemCount = 0;
@@ -736,8 +727,7 @@ private RelativeLayout layout_banner;
         }
 
         @Override
-        public void onScroll(AbsListView view, int firstVisibleItem,
-                             int visibleItemCount, int totalItemCount) {
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
             mFirstVisibleItem = firstVisibleItem;
             mVisibleItemCount = visibleItemCount;
             mTotalItemCount = totalItemCount;
@@ -753,7 +743,6 @@ private RelativeLayout layout_banner;
 
         /**
          * 是否已滚动到顶部
-         *
          * @return
          */
         @Override
@@ -761,13 +750,11 @@ private RelativeLayout layout_banner;
             if (mFirstVisibleItem == 0) {
                 return true;
             }
-
             return false;
         }
 
         /**
          * 是否滚动到底部
-         *
          * @return
          */
         public boolean isScrollBottom() {
@@ -837,28 +824,6 @@ private RelativeLayout layout_banner;
         }
     };
 
-    /**
-     * GridView点击事件
-     */
-    private OnItemClickListener mOnItemClick = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            if (mIsLoading) {
-                return;
-            }
-            Intent intent = new Intent();
-            intent.putExtra("position", position);
-            if (getDataType == PhotoShowType.ORDINARY) {
-                intent.putExtra("isSpecial", false);
-            } else if (getDataType == PhotoShowType.SPECIAL) {
-                intent.putExtra("isSpecial", true);
-            }
-            intent.setClass(ActivityPhotoShow.this, ActivityPhotoDetail.class);
-            startActivity(intent);
-        }
-    };
-
     private final ImageClick imageClick = new ImageClick() {
         @Override
         public void itemClick(Object path) {
@@ -893,7 +858,6 @@ private RelativeLayout layout_banner;
 
     /**
      * 顶部图片列表点击进入下一级详情
-     *
      * @param path
      */
     private void toWebView(String path, String title) {
@@ -987,13 +951,13 @@ private RelativeLayout layout_banner;
             Intent intent = new Intent();
             intent.setClass(ActivityPhotoShow.this, ActivityPhotoSubmit.class);
             intent.putExtra("photo_path", mFilePhoto.getPath());
+            intent.putExtra("imgType", imgType);
             startActivity(intent);
             dismissProgressDialog();
         }
     };
 
     private class MyReceiver extends PcsDataBrocastReceiver {
-
         @Override
         public void onReceive(String nameStr, String errorStr) {
             if (nameStr.equals(packBannerUp.getName())) {
@@ -1007,4 +971,5 @@ private RelativeLayout layout_banner;
             }
         }
     }
+
 }

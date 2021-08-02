@@ -14,7 +14,6 @@ import com.pcs.ztqtj.R;
  * Created by Administrator on 2017/11/13 0013.
  * chen_jx
  */
-
 public class CircleProgressView extends View {
 
     private static final String TAG = "CircleProgressView";

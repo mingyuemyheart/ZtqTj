@@ -87,7 +87,8 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -118,6 +119,16 @@
 
         <activity
             android:name=".view.activity.prove.SelectPositionActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+
+        <activity
+            android:name=".view.activity.prove.AgriEachActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
+
+        <activity
+            android:name=".view.activity.prove.AgriEachSubmitActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"/>
         <!--气象证明-->
@@ -533,9 +544,14 @@
             android:screenOrientation="portrait" /> <!-- 实景开拍：详情 -->
 
         <activity
-            android:name=".view.activity.photoshow.ActivityPhotoLogin"
+            android:name=".view.activity.photoshow.ActivityLogin"
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 实景开拍：登陆 -->
+
+        <activity
+            android:name=".view.activity.photoshow.UserLoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".view.activity.photoshow.ActivityRegister"
@@ -567,7 +583,7 @@
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 实景开拍：提交 -->
         <activity
-            android:name=".view.activity.photoshow.ActivityPhotoUserCenter"
+            android:name=".view.activity.photoshow.ActivityUserCenter"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 实景开拍：用户中心 -->
@@ -661,7 +677,7 @@
             android:exported="false"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name=".wxapi.WXPayEntryActivity"
+            android:name="com.tianyi.shawn.tjdecision.wxapi.WXPayEntryActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
 
@@ -784,10 +800,6 @@
             android:screenOrientation="portrait" />
 
         <!-- 农业气象栏目 -->
-        <activity
-            android:name=".view.activity.product.agriculture.ActivityAgricultureWeatherColumn"
-            android:exported="false"
-            android:screenOrientation="portrait" />
 
         <!-- 农灾情直报栏目 -->
         <activity
@@ -912,7 +924,7 @@
             android:windowSoftInputMode="stateHidden" />
         <!--气象生活下级界面-->
         <activity
-            android:name=".view.activity.life.health.ActivityHealthDown"
+            android:name=".view.activity.life.health.ActivityHealthDetail"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
@@ -957,6 +969,16 @@
         <!--英文广告位网页-->
         <activity
             android:name=".view.activity.service.ActivityServerHyqx"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".view.activity.agricuture.ActivityAgricutureFact"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".view.activity.agricuture.ActivityAgricutureView"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
@@ -1102,10 +1124,6 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.product.dataquery.ActivityDataQueryLogin"
-            android:exported="false"
-            android:theme="@style/MyDialog" />
-        <activity
             android:name=".view.activity.product.numericalforecast.ActivityGuideForecast"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -1163,7 +1181,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".wxapi.WXEntryActivity"
+            android:name="com.tianyi.shawn.tjdecision.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />

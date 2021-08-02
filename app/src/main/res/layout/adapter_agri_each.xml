@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="@dimen/dimen14"
+        android:text="2021-07-23 14:36:30"
+        android:textColor="@color/text_color4"/>
+
+    <TextView
+        android:id="@+id/askStr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dimen14"
+        android:layout_marginTop="5dp"
+        android:text="Q："
+        app:layout_constraintTop_toBottomOf="@+id/tvTime"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/bg_title"/>
+
+    <TextView
+        android:id="@+id/tvAsk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/dimen14"
+        android:layout_marginTop="5dp"
+        android:text="苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述"
+        app:layout_constraintTop_toBottomOf="@+id/tvTime"
+        app:layout_constraintStart_toEndOf="@+id/askStr"
+        android:textColor="@color/bg_title"/>
+
+    <LinearLayout
+        android:id="@+id/llContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAsk"/>
+
+    <TextView
+        android:id="@+id/anwserStr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dimen14"
+        android:layout_marginTop="15dp"
+        android:text="A："
+        app:layout_constraintTop_toBottomOf="@+id/llContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/text_color3"/>
+
+    <TextView
+        android:id="@+id/tvAnwser"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="@dimen/dimen14"
+        android:layout_marginTop="15dp"
+        android:text="苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述苗情描述"
+        app:layout_constraintTop_toBottomOf="@+id/llContainer"
+        app:layout_constraintStart_toEndOf="@+id/anwserStr"
+        android:textColor="@color/text_color3"/>
+
+</android.support.constraint.ConstraintLayout>

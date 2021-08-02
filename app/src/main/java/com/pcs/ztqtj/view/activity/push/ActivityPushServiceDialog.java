@@ -101,15 +101,6 @@ public class ActivityPushServiceDialog extends ActivityBasePushDialog {
 				finish();
 				break;
 			case R.id.positivebutton:
-				// 阅读
-//				PackLocalUser localUserinfo = ZtqCityDB.getInstance().getMyInfo();
-//				if (localUserinfo == null || TextUtils.isEmpty(localUserinfo.user_id)) {
-//					Intent intentLogin = new Intent(ActivityPushServiceDialog.this, AcitvityServeLogin.class);
-//
-//					startActivityForResult(intentLogin, 112);
-//				} else {
-//					intentDetail();
-//				}
                 ServiceLoginTool.getInstance().reqLoginQuery();
 				break;
 			}

@@ -18,8 +18,8 @@ import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
  * 图片预览
  */
 public class ActivityPhotoFullDetail extends FragmentActivityBase {
-	private ImageTouchView imageView;
 
+	private ImageTouchView imageView;
 	private Button btn_finish;
 
 	@Override
