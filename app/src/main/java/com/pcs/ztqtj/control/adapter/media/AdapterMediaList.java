@@ -63,7 +63,7 @@ public class AdapterMediaList extends BaseAdapter {
         handler.tv_title.setText(list.get(i).title);
         handler.tv_content.setText(list.get(i).desc);
         handler.tv_time.setText(list.get(i).time);
-        String url = mcontext.getString(R.string.file_download_url) + list.get(i).imageurl;
+        String url = mcontext.getString(R.string.msyb) + list.get(i).imageurl;
         mImageFetcher.loadImage(url, handler.item_image, ImageConstant.ImageShowType.SRC);
         return view;
     }

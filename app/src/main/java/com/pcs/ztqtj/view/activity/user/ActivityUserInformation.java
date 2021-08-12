@@ -36,14 +36,13 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUrl;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoChangeUserInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoChangeUserInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserInfoUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.KWHttpRequest;
@@ -78,7 +77,6 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
     private EditText etAddress;
     private ImageView ivEditHead;
     private ImageView ivEditUserName;
-    private RelativeLayout rlHead;
     // 弹出框
     private PopupWindow mPopupWindow;
     // 图片文件
@@ -146,8 +144,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
         etAddress = (EditText) findViewById(R.id.et_address);
         ivEditHead = (ImageView) findViewById(R.id.iv_edit_head);
         ivEditUserName = (ImageView) findViewById(R.id.iv_edit_username);
-        PackLocalUser localUser = ZtqCityDB.getInstance().getMyInfo();
-        getImageView.setImageView(this, localUser.sys_head_url, ivHead);
+        getImageView.setImageView(this, MyApplication.PORTRAIT, ivHead);
         initPopupWindow();
     }
 
@@ -176,7 +173,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
         initKWHttpRequest();
         //getImageView.setImageView(this, LoginInformation.getInstance().getUserIconUrl(), ivHead);
-        etName.setText(ZtqCityDB.getInstance().getMyInfo().sys_nick_name);
+        etName.setText(MyApplication.NAME);
 
         reqInformation();
         // 刷新界面
@@ -256,19 +253,19 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
 
     private void updateUI() {
         // 本地登录
-        if (ZtqCityDB.getInstance().getMyInfo().type.equals("4")) {
+//        if (ZtqCityDB.getInstance().getMyInfo().type.equals("4")) {
             etName.setEnabled(true);
             ivHead.setEnabled(true);
             findViewById(R.id.iv_edit_head).setVisibility(View.VISIBLE);
             findViewById(R.id.iv_edit_username).setVisibility(View.VISIBLE);
             tvManager.setVisibility(View.VISIBLE);
-        } else { // 第三方登录
-            etName.setEnabled(false);
-            ivHead.setEnabled(false);
-            findViewById(R.id.iv_edit_head).setVisibility(View.GONE);
-            findViewById(R.id.iv_edit_username).setVisibility(View.GONE);
-            tvManager.setVisibility(View.GONE);
-        }
+//        } else { // 第三方登录
+//            etName.setEnabled(false);
+//            ivHead.setEnabled(false);
+//            findViewById(R.id.iv_edit_head).setVisibility(View.GONE);
+//            findViewById(R.id.iv_edit_username).setVisibility(View.GONE);
+//            tvManager.setVisibility(View.GONE);
+//        }
     }
 
     private View.OnClickListener mOnClick = new View.OnClickListener() {
@@ -463,7 +460,7 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
         }
         showProgressDialog();
         PackPhotoUserInfoUp packUp = new PackPhotoUserInfoUp();
-        packUp.user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        packUp.user_id = MyApplication.UID;
         PcsDataDownload.addDownload(packUp);
     }
 
@@ -473,12 +470,12 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
             return;
         }
         showProgressDialog();
-        String type = ZtqCityDB.getInstance().getMyInfo().type;
+//        String type = ZtqCityDB.getInstance().getMyInfo().type;
         PackPhotoChangeUserInfoUp packUp = new PackPhotoChangeUserInfoUp();
-        packUp.user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
-        if (type.equals("4")) {
+        packUp.user_id = MyApplication.UID;
+//        if (type.equals("4")) {
             packUp.nick_name = etName.getText().toString();
-        }
+//        }
         packUp.sex = mGender;
         packUp.address = etAddress.getText().toString();
         packUp.mobile = etPhone.getText().toString();
@@ -573,17 +570,11 @@ public class ActivityUserInformation extends FragmentActivityZtqBase implements 
                     return;
                 }
 
-                PackLocalUser myUserInfo = ZtqCityDB.getInstance().getMyInfo();
-                myUserInfo.user_id = ZtqCityDB.getInstance().getMyInfo().user_id;
-                myUserInfo.sys_user_id = down.user_id;
-                myUserInfo.sys_nick_name = down.nick_name;
-                myUserInfo.sys_head_url = down.head_url;
-                myUserInfo.mobile = down.mobile;
-                myUserInfo.type = down.platform_type;
-
-                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                packLocalUserInfo.currUserInfo = myUserInfo;
-                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+                MyApplication.UID = down.user_id;
+                MyApplication.NAME = down.nick_name;
+                MyApplication.PORTRAIT = down.head_url;
+                MyApplication.MOBILE = down.mobile;
+                MyApplication.saveUserInfo(ActivityUserInformation.this);
 
                 // 设置头像
                 getImageView.setImageView(ActivityUserInformation.this, down.head_url, ivHead);

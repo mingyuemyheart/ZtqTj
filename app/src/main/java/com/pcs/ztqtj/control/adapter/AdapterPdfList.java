@@ -17,21 +17,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class AdapterWeatherServeThrid extends BaseAdapter {
+/**
+ * pdf列表
+ */
+public class AdapterPdfList extends BaseAdapter {
 
 	private Context context;
 	private List<ServiceProductInfo> dataList;
 
-	public AdapterWeatherServeThrid(Context context,
-			List<ServiceProductInfo> dataList) {
+	public AdapterPdfList(Context context, List<ServiceProductInfo> dataList) {
 		this.context = context;
 		this.dataList = dataList;
-
 	}
 
 	public void setData(List<ServiceProductInfo> dataList) {
 		this.dataList = dataList;
-
 	}
 
 	@Override
@@ -54,8 +54,7 @@ public class AdapterWeatherServeThrid extends BaseAdapter {
 		Holder holder;
 		if (view == null) {
 			holder = new Holder();
-			view = LayoutInflater.from(context).inflate(
-					R.layout.serve_second_item, null);
+			view = LayoutInflater.from(context).inflate(R.layout.adapter_pdf_list, null);
 			holder.texttitle = (TextView) view.findViewById(R.id.item_title);
 			holder.textdata = (TextView) view.findViewById(R.id.item_data);
 			holder.tv_warn_info_flag= (TextView) view.findViewById(R.id.tv_warn_info_flag);

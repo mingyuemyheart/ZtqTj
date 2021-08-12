@@ -454,24 +454,19 @@
             android:screenOrientation="portrait" /> <!-- 气象服务:登录 -->
 
         <activity
-            android:name=".view.activity.service.ActivityServerSecond"
+            android:name=".view.activity.service.ActivitySpecialService"
             android:exported="false"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait" /> <!-- 气象服务:第二级 -->
 
         <activity
-            android:name=".view.activity.service.ActivityServeThird"
+            android:name=".view.activity.service.ActivityPdfList"
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 气象服务:第三级 -->
         <activity
-            android:name=".view.activity.service.ActivityMyServer"
+            android:name=".view.activity.service.ActivityDecisionService"
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 气象服务:我的服务 -->
-        <activity
-            android:name=".view.activity.service.ActivityMyServerMore"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" /> <!-- 气象服务:我的服务-更多列表 -->
+        <!-- 气象服务:我的服务-更多列表 -->
 
         <activity
             android:name=".view.activity.service.ActivityServeDetails"
@@ -549,7 +544,12 @@
             android:screenOrientation="portrait" /> <!-- 实景开拍：登陆 -->
 
         <activity
-            android:name=".view.activity.photoshow.UserLoginActivity"
+            android:name=".view.activity.photoshow.ActivityBind"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.photoshow.ActivityUserLogin"
             android:exported="false"
             android:screenOrientation="portrait" />
 
@@ -905,11 +905,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <!--我的服务模块展示-->
-        <activity
-            android:name=".view.activity.service.ActivityMyServerMain"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
 
         <activity
             android:name=".view.activity.ActivitySubscriptionAccount"
@@ -955,11 +950,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <!--英文广告位网页-->
-        <activity
-            android:name=".view.activity.web.ActivityWebSh"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
         <!--英文广告位网页-->
         <activity
             android:name=".view.activity.product.ActivityOceanMap"
@@ -1121,10 +1111,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.product.dataquery.ActivityDataQueryService"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.activity.product.numericalforecast.ActivityGuideForecast"
             android:exported="false"
             android:screenOrientation="portrait" />
         <!-- 支付宝 -->

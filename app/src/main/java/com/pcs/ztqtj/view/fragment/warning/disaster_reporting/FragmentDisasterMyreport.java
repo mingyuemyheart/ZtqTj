@@ -29,8 +29,6 @@ import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoLoginUp;
@@ -46,7 +44,6 @@ import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.control.tool.youmeng.LoginAnther;
 import com.pcs.ztqtj.control.tool.youmeng.ToolQQPlatform;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityRegister;
@@ -136,7 +133,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
             str[1] = "0" + str[1];
         }
         time = str[0] + "-" + str[1];
-        user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        user_id = MyApplication.UID;
         login = new LoginAnther(getActivity());
         toolQQLogin = new ToolQQPlatform(getActivity(), qqLoginListener);
         list = new ArrayList<>();
@@ -162,7 +159,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
     }
 
     public void refreshDate() {
-        user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        user_id = MyApplication.UID;
         if (!TextUtils.isEmpty(user_id)) {
             Calendar c = Calendar.getInstance();
             String t_time = c.get(Calendar.YEAR) + "-" + (c.get(Calendar.MONTH) + 1);
@@ -607,18 +604,12 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
                             getString(R.string.login_succ), Toast.LENGTH_SHORT)
                             .show();
 
-                    PackLocalUser myUserInfo = new PackLocalUser();
-                    myUserInfo.user_id = packDown.fw_user_id;
-                    myUserInfo.sys_user_id=packDown.user_id;
-                    myUserInfo.sys_nick_name=packDown.nick_name;
-                    myUserInfo.sys_head_url=packDown.head_url;
-                    myUserInfo.mobile=packDown.mobile;
-                    myUserInfo.type=packDown.platform_type;
-                    myUserInfo.is_jc = packDown.is_jc;
-
-                    PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                    packLocalUserInfo.currUserInfo = myUserInfo;
-                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+                    MyApplication.UID = packDown.fw_user_id;
+                    MyApplication.UID = packDown.user_id;
+                    MyApplication.NAME = packDown.nick_name;
+                    MyApplication.PORTRAIT = packDown.head_url;
+                    MyApplication.MOBILE = packDown.mobile;
+                    MyApplication.saveUserInfo(getContext());
 
 //                    LoginInformation.getInstance().savePhotoLoginDown(packDown);
                     FragmentDisasterReporting fragmenta = (FragmentDisasterReporting) getParentFragment();
@@ -829,7 +820,7 @@ public class FragmentDisasterMyreport extends FragmentReportBase implements View
 
     public void updateFragment(String id) {
         Log.e(null, "updateFragment: "+id );
-        user_id =ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        user_id = MyApplication.UID;
         if (!TextUtils.isEmpty(user_id)) {
             showProgressDialog();
             status=id;

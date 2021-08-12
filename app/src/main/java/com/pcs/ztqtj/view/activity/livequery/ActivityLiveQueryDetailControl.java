@@ -145,6 +145,7 @@ public class ActivityLiveQueryDetailControl {
      * 获取整点天气实况
      */
     private void okHttpFycxSstq(final String stationId) {
+        activity.showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -172,6 +173,7 @@ public class ActivityLiveQueryDetailControl {
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    activity.dismissProgressDialog();
                                     Log.e("fycx_sstq", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
@@ -207,6 +209,7 @@ public class ActivityLiveQueryDetailControl {
      * 获取趋势数据
      */
     private void okHttpTrend(final String stationId, final String dataType) {
+        activity.showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -235,6 +238,7 @@ public class ActivityLiveQueryDetailControl {
                             activity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    activity.dismissProgressDialog();
                                     Log.e("fycx_trend_sta", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {

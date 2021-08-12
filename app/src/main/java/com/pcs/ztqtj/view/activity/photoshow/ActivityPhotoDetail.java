@@ -26,7 +26,6 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentListUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCommentUp;
@@ -96,13 +95,11 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
     private ImageView ivHead;
 
     private GetImageView getImageView = new GetImageView();
-    private PackLocalUser localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_detail);
-        localUser= ZtqCityDB.getInstance().getMyInfo();
         setTitleText(R.string.photo_title_detail);
         createImageFetcher();
         initDataPro();
@@ -324,8 +321,8 @@ public class ActivityPhotoDetail extends FragmentActivityZtqBase {
 
         //如果是通过个人中心进入该页面的则显示当前登陆用户的头像
         if (fromCenterList) {
-            getImageView.setImageView(this, localUser.sys_head_url, ivHead);
-            text_name.setText(localUser.sys_nick_name);
+            getImageView.setImageView(this, MyApplication.UID, ivHead);
+            text_name.setText(MyApplication.NAME);
         } else { //否则显示默认头像
             if(!TextUtils.isEmpty(mInfo.head_url)) {
                 getImageView.setImageView(this, mInfo.head_url, ivHead);

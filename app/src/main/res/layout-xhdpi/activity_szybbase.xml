@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Activity：基类 -->
-<LinearLayout android:id="@+id/all_view"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<?xml version="1.0" encoding="utf-8"?><!-- Activity：基类 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/all_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/head_layout"
@@ -29,7 +28,7 @@
                 android:contentDescription="@null"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:src="@drawable/btn_back"/>
+                android:src="@drawable/btn_back" />
         </LinearLayout>
 
 
@@ -50,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/btn_camera"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/rightbtn"
@@ -62,7 +61,7 @@
                 android:maxLines="1"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textsize15"
-                android:visibility="gone"/>
+                android:visibility="gone" />
             <!--提交按钮-->
             <Button
                 android:id="@+id/rightbtn_ok"
@@ -73,7 +72,7 @@
                 android:background="@drawable/btn_all_common"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textsize15"
-                android:visibility="gone"/>
+                android:visibility="gone" />
             <!--青运气象逐级返回按钮-->
             <Button
                 android:id="@+id/qingyun_back"
@@ -85,7 +84,7 @@
                 android:text="@string/back_page"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textsize15"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/btn_right"
@@ -94,7 +93,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/btn_refresh"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <ImageButton
                 android:id="@+id/phonelist"
@@ -105,20 +104,18 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/maillist_button"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/text_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/layoutleft"
-            android:layout_toRightOf="@id/btn_back"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/text_the_page_title"/>
+            android:textSize="@dimen/text_the_page_title" />
     </RelativeLayout>
 
     <LinearLayout
@@ -126,7 +123,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/text_white"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
 </LinearLayout>

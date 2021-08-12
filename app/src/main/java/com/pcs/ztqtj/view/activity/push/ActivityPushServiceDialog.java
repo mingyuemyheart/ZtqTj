@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ServiceLoginTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
@@ -115,9 +115,8 @@ public class ActivityPushServiceDialog extends ActivityBasePushDialog {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 112) {
-			PackLocalUser localUserinfo = ZtqCityDB.getInstance().getMyInfo();
 			// 登录界面返回还为空。即没有登录，，则不做处理，若不为空这跳转到详细页面
-			if (localUserinfo == null || TextUtils.isEmpty(localUserinfo.user_id)) {
+			if (!ZtqCityDB.getInstance().isLoginService()) {
 			} else {
 				intentDetail();
 			}

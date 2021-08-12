@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Toast
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo
 import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.control.tool.CommUtils
@@ -39,7 +37,7 @@ import java.util.*
 /**
  * 账号密码登录界面
  */
-class UserLoginActivity : FragmentActivityZtqBase(), OnClickListener {
+class ActivityUserLogin : FragmentActivityZtqBase(), OnClickListener {
 
 	private var isRead = false
 
@@ -188,24 +186,13 @@ class UserLoginActivity : FragmentActivityZtqBase(), OnClickListener {
 										if (!userInfo.isNull("avatar")) {
 											MyApplication.PORTRAIT = userInfo.getString("avatar")
 										}
-										MyApplication.saveUserInfo(this@UserLoginActivity)
-
-										//存储用户数据
-										val myUserInfo = PackLocalUser()
-										myUserInfo.user_id = MyApplication.UID
-										myUserInfo.sys_user_id = MyApplication.UID
-										myUserInfo.sys_nick_name = MyApplication.NAME
-										myUserInfo.sys_head_url = MyApplication.PORTRAIT
-										myUserInfo.mobile = MyApplication.MOBILE
-										val packLocalUserInfo = PackLocalUserInfo()
-										packLocalUserInfo.currUserInfo = myUserInfo
-										ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo)
+										MyApplication.saveUserInfo(this@ActivityUserLogin)
 
 										//刷新栏目数据
 										val bdIntent = Intent()
 										bdIntent.action = CONST.BROADCAST_REFRESH_COLUMNN
 										sendBroadcast(bdIntent)
-										Toast.makeText(this@UserLoginActivity, getString(R.string.login_succ), Toast.LENGTH_SHORT).show()
+										Toast.makeText(this@ActivityUserLogin, getString(R.string.login_succ), Toast.LENGTH_SHORT).show()
 										setResult(RESULT_OK)
 										finish()
 									}

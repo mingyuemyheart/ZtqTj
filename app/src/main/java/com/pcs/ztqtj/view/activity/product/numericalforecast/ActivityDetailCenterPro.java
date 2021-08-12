@@ -137,6 +137,7 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         spinner_text = (TextView) findViewById(R.id.spinner_text);
         n_content = (TextView) findViewById(R.id.n_content);
         image_show = (ImageTouchView) findViewById(R.id.image_show);
+        image_show.setImagePositon(ImageTouchView.StartPostion.ImageCenter);
         number_radio_group = findViewById(R.id.number_radio_group);
         layoutTime = (LinearLayout) findViewById(R.id.spinner_layout);
         left_right_btn_layout = (LinearLayout) findViewById(R.id.left_right_btn_layout);

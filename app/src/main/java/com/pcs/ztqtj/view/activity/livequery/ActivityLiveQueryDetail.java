@@ -142,6 +142,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
 
     private void init() {
         setTitleText(stationName);
+        isLocal = ZtqCityDB.getInstance().getStationIsTjByName(stationName);
         TextView textView = getTitleTextView();
         textView.setTextSize(1, 19);
         initView();
@@ -157,6 +158,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
         if (packCity == null || packCity.ID == null) {
             return;
         }
+        showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -184,6 +186,7 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    dismissProgressDialog();
 //                                    Log.e("sstq", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {

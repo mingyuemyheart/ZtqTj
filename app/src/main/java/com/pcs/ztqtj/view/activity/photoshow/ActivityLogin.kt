@@ -10,15 +10,12 @@ import android.util.Log
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.*
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo
 import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.control.tool.AppTool
 import com.pcs.ztqtj.control.tool.CommUtils
 import com.pcs.ztqtj.control.tool.youmeng.LoginAnther
 import com.pcs.ztqtj.control.tool.youmeng.ToolQQPlatform
-import com.pcs.ztqtj.model.ZtqCityDB
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.OkHttpUtil
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase
@@ -174,6 +171,7 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
      * 登录接口
      */
     private fun okHttpLogin(json: String, dataUrl: String) {
+        Log.e("okHttpLogin", json)
         showProgressDialog()
         Thread {
             val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
@@ -190,12 +188,20 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
                         return
                     }
                     val result = response.body!!.string()
+                    Log.e("okHttpLogin", result)
                     runOnUiThread {
                         dismissProgressDialog()
-                        Log.e("okHttpLogin", result)
                         if (!TextUtils.isEmpty(result)) {
                             try {
                                 val obj = JSONObject(result)
+                                if (!obj.isNull("islogin")) {
+                                    val islogin = obj.getBoolean("islogin")
+                                    if (!islogin) {//第三方登录，需要跳转到绑定手机号界面
+                                        startActivityForResult(Intent(this@ActivityLogin, ActivityBind::class.java), 1002)
+                                        return@runOnUiThread
+                                    }
+                                }
+
                                 if (!obj.isNull("token")) {
                                     MyApplication.TOKEN = obj.getString("token")
                                     Log.e("token", MyApplication.TOKEN)
@@ -225,17 +231,6 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
                                     }
                                     MyApplication.saveUserInfo(this@ActivityLogin)
 
-                                    //存储用户数据
-                                    val myUserInfo = PackLocalUser()
-                                    myUserInfo.user_id = MyApplication.UID
-                                    myUserInfo.sys_user_id = MyApplication.UID
-                                    myUserInfo.sys_nick_name = MyApplication.NAME
-                                    myUserInfo.sys_head_url = MyApplication.PORTRAIT
-                                    myUserInfo.mobile = MyApplication.MOBILE
-                                    val packLocalUserInfo = PackLocalUserInfo()
-                                    packLocalUserInfo.currUserInfo = myUserInfo
-                                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo)
-
                                     //刷新栏目数据
                                     val bdIntent = Intent()
                                     bdIntent.action = CONST.BROADCAST_REFRESH_COLUMNN
@@ -244,6 +239,13 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
                                     resetTimer()
                                     setResult(RESULT_OK)
                                     finish()
+                                } else {
+                                    if (!obj.isNull("errorMessage")) {
+                                        val msg = obj.getString("errorMessage")
+                                        if (msg != null) {
+                                            Toast.makeText(this@ActivityLogin, msg, Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
                                 }
                             } catch (e: JSONException) {
                                 e.printStackTrace()
@@ -270,6 +272,24 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
         resetTimer()
+    }
+
+    /**
+     * 验证码登录
+     */
+    private fun codeLogin(userid: String) {
+        if (checkInfo()) {
+            val param = JSONObject()
+            param.put("phonenumber", etPhone.text.toString())
+            param.put("content", etPwd.text.toString())
+            param.put("userid", userid)
+            param.put("mobileType", "1")//1是android、2是iOS
+            val json = param.toString()
+            Log.e("loginVerify", json)
+            val url = CONST.BASE_URL + "user/loginVerify"
+            Log.e("loginVerify", url)
+            okHttpLogin(json, url)
+        }
     }
 
     override fun onClick(v: View) {
@@ -315,20 +335,9 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
                 }
             }
             R.id.tvLogin -> {
-                if (checkInfo()) {
-                    val param = JSONObject()
-                    param.put("phonenumber", etPhone.text.toString())
-                    param.put("content", etPwd.text.toString())
-                    param.put("userid", "")
-                    param.put("mobileType", "1")//1是android、2是iOS
-                    val json = param.toString()
-                    Log.e("loginVerify", json)
-                    val url = CONST.BASE_URL + "user/loginVerify"
-                    Log.e("loginVerify", url)
-                    okHttpLogin(json, url)
-                }
+                codeLogin("")
             }
-            R.id.tvUserLogin -> startActivityForResult(Intent(this, UserLoginActivity::class.java), 1001)
+            R.id.tvUserLogin -> startActivityForResult(Intent(this, ActivityUserLogin::class.java), 1001)
             R.id.ivWX -> clickLoginOtherWay(SHARE_MEDIA.WEIXIN)
             R.id.ivQQ -> clickLoginOtherWay(SHARE_MEDIA.QQ)
         }
@@ -341,6 +350,18 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
                 1001 -> {
                     setResult(RESULT_OK)
                     finish()
+                }
+                1002 -> {
+                    if (data != null) {
+                        val bundle = data.extras
+                        if (bundle != null) {
+                            etPhone.setText(bundle.getString("phonenumber"))
+                            etPwd.setText(bundle.getString("content"))
+                        }
+                        isRead = true
+                        checkbox.setImageResource(R.drawable.bg_checkbox_selected)
+                        codeLogin(thirdUserId)
+                    }
                 }
             }
         }
@@ -441,8 +462,10 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
     /**
      * 向我们的服务器提交数据 platForm: 1为新浪，2为qq，3为微信
      */
+    private var thirdUserId = ""
     private fun loginWeServer(userId: String?, userName: String?, headUrl: String?, platForm: String) {
         Log.e("loginWeServer", "$userId---$userName---$headUrl---$platForm")
+        thirdUserId = userId!!
         val param = JSONObject()
         param.put("userid", userId)
         param.put("nick", userName)

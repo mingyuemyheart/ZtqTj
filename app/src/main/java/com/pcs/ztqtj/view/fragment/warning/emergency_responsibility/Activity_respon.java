@@ -32,9 +32,9 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqUserUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfoArea;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfoAreaDown;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class Activity_respon extends FragmentActivityZtqWithPhoneListAndHelp imp
         packYjZqUserUp.sub_id = sub_id;
         packYjZqUserUp.town_id=town_id;
         PcsDataBrocastReceiver.registerReceiver(Activity_respon.this, mReceiver);
-        packYjZqUserUp.mobile = ZtqCityDB.getInstance().getMyInfo().mobile;
+        packYjZqUserUp.mobile = MyApplication.MOBILE;
         //下载
         PcsDataDownload.addDownload(packYjZqUserUp);
     }
@@ -113,7 +113,7 @@ public class Activity_respon extends FragmentActivityZtqWithPhoneListAndHelp imp
         packYjZqUserUp.sub_id = sub_id;
         packYjZqUserUp.p_type=p_type;
         packYjZqUserUp.town_id=town_id;
-        packYjZqUserUp.mobile =ZtqCityDB.getInstance().getMyInfo().mobile;
+        packYjZqUserUp.mobile = MyApplication.MOBILE;
         PcsDataBrocastReceiver.registerReceiver(Activity_respon.this, mReceiver);
         //下载
         PcsDataDownload.addDownload(packYjZqInfoAreaUp);
@@ -260,7 +260,7 @@ public class Activity_respon extends FragmentActivityZtqWithPhoneListAndHelp imp
         packYjZqUserUp.sub_id = sub_id;
         packYjZqUserUp.p_type=p_type;
         packYjZqUserUp.town_id=town_id;
-        packYjZqUserUp.mobile =ZtqCityDB.getInstance().getMyInfo().mobile;
+        packYjZqUserUp.mobile = MyApplication.MOBILE;
         PcsDataDownload.addDownload(packYjZqUserUp);
         Log.e("page:" , currentPage + "");
     }

@@ -53,15 +53,10 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 
-
 /**
  * 气象影视 播放
- *
- * @author chenjh
- * @version 2014-10-27 上午10:24:39
  */
-public class ActivityMediaPlay extends FragmentActivityZtqBase implements
-        OnClickListener {
+public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClickListener {
 
     private final static String TAG = "MediaPlayActivity";
 
@@ -121,13 +116,11 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements
         mImageFetcher = ActivityMediaPlay.this.getImageFetcher();
 
         if (!TextUtils.isEmpty(mediaInfo.mediaurl)) {
-            mediaurl = getString(R.string.file_download_url)
-                    + mediaInfo.mediaurl;
+            mediaurl = getString(R.string.msyb) + mediaInfo.mediaurl;
         }
 
         if (!TextUtils.isEmpty(mediaInfo.imageurl)) {
-            imageurl = getString(R.string.file_download_url)
-                    + mediaInfo.imageurl;
+            imageurl = getString(R.string.msyb)  + mediaInfo.imageurl;
         }
 
         shareC = "看气象影视，不用再围着电视！看" + title + "点击：" + mediaInfo.fxurl + "  "+"。来自天津气象客户端。点击即可下载：http://ztq.soweather.com:8096/ztq_sh_download/";

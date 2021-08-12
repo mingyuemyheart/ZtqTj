@@ -173,7 +173,7 @@
                 android:layout_marginStart="15dp"
                 android:textColor="@color/text_color3"
                 android:textSize="@dimen/dimen14"
-                app:layout_constraintBottom_toBottomOf="@+id/divider3"
+                app:layout_constraintTop_toTopOf="@+id/tvTjLevel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvTjLevel" />
 
@@ -181,7 +181,7 @@
                 android:id="@+id/tvAqiTips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="25dp"
                 android:textColor="@color/text_color4"
                 android:textSize="@dimen/dimen14"
                 app:layout_constraintStart_toStartOf="parent"

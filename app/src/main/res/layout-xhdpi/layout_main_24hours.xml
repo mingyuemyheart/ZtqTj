@@ -1,88 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="5dp">
 
     <View
+        android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#19FFFFFF" />
+        android:background="#19FFFFFF"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:layout_marginLeft="5dp"
-        android:gravity="center_vertical"
-        android:text="逐时预报"
-        android:textColor="@color/text_white"
-        android:textSize="@dimen/text_content" />
-
-    <TextView
-        android:id="@+id/text_content_desc"
+        android:id="@+id/strHour"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:gravity="center_vertical|start"
-        android:lineSpacingExtra="3dp"
-        android:lineSpacingMultiplier="1.2"
-        android:singleLine="false"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="逐时预报"
         android:textColor="@color/text_white"
         android:textSize="@dimen/text_content"
-        android:visibility="gone" />
+        app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
     <View
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#19FFFFFF" />
+        android:layout_marginTop="5dp"
+        android:background="#19FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/strHour" />
 
-    <RelativeLayout
+    <com.pcs.ztqtj.view.myview.MyHScrollView
+        android:id="@+id/layout_24house"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@+id/divider2">
 
-        <RelativeLayout
-            android:id="@+id/weather_view"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
 
-            <com.pcs.ztqtj.view.myview.MyHScrollView
-                android:id="@+id/layout_24house"
-                android:layout_width="match_parent"
+            <com.pcs.ztqtj.view.myview.MyGridView
+                android:id="@+id/gridview24hour"
+                android:layout_width="1200dp"
                 android:layout_height="wrap_content"
-                android:scrollbars="none">
+                android:listSelector="@android:color/transparent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen10">
+            <com.pcs.ztqtj.view.myview.Hour24View
+                android:id="@+id/main24hour"
+                android:layout_width="1200dp"
+                android:layout_height="@dimen/hight24hour"
+                android:layout_marginTop="@dimen/hight24tophight"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                    <com.pcs.ztqtj.view.myview.MyGridView
-                        android:id="@+id/gridview24hour"
-                        android:layout_width="1200dp"
-                        android:layout_height="wrap_content"
-                        android:listSelector="@android:color/transparent" />
+            <TextView
+                android:id="@+id/not_time_data"
+                android:layout_width="match_parent"
+                android:layout_height="205dp"
+                android:gravity="center"
+                android:text="暂无数据"
+                android:textColor="@color/text_white"
+                android:textSize="@dimen/text_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </com.pcs.ztqtj.view.myview.MyHScrollView>
 
-                    <com.pcs.ztqtj.view.myview.Hour24View
-                        android:id="@+id/main24hour"
-                        android:layout_width="1200dp"
-                        android:layout_height="@dimen/hight24hour"
-                        android:layout_marginTop="@dimen/hight24tophight" />
-
-                    <TextView
-                        android:id="@+id/not_time_data"
-                        android:layout_width="match_parent"
-                        android:layout_height="205dp"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:text="暂无数据"
-                        android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"
-                        android:visibility="gone" />
-                </RelativeLayout>
-            </com.pcs.ztqtj.view.myview.MyHScrollView>
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser
 import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.model.ZtqCityDB
@@ -23,9 +22,9 @@ import com.pcs.ztqtj.util.CommonUtil
 import com.pcs.ztqtj.view.activity.ActivityMain
 import com.pcs.ztqtj.view.activity.help.ActivityHelp
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin
-import com.pcs.ztqtj.view.activity.service.ActivityMyServer
+import com.pcs.ztqtj.view.activity.service.ActivityDecisionService
 import com.pcs.ztqtj.view.activity.service.ActivityServerHyqx
-import com.pcs.ztqtj.view.activity.service.ActivityServerSecond
+import com.pcs.ztqtj.view.activity.service.ActivitySpecialService
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_service.*
 
@@ -34,9 +33,7 @@ import kotlinx.android.synthetic.main.fragment_service.*
  */
 class FragmentService : BaseFragment(), OnClickListener {
 
-    private var localUserinfo: PackLocalUser? = null
     private var mImageFetcher: ImageFetcher? = null
-    private var areaId: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_service, container, false)
@@ -53,8 +50,7 @@ class FragmentService : BaseFragment(), OnClickListener {
         imageghelp.setOnClickListener(this)
         btnLogin.setOnClickListener(this)
 
-        reflashUserData()
-        if (!TextUtils.isEmpty(localUserinfo!!.user_id)) {
+        if (ZtqCityDB.getInstance().isLoginService) {
             btnLogin!!.text = "退出"
         } else {
             btnLogin!!.text = "登录"
@@ -70,7 +66,7 @@ class FragmentService : BaseFragment(), OnClickListener {
                         if (CommonUtil.isCanAccess(dto.flag)) {
                             btnJuece.setOnClickListener {
                                 if (CommonUtil.isCanAccess(dto.flag)) {
-                                    if (localUserinfo == null || TextUtils.isEmpty(localUserinfo!!.user_id)) {
+                                    if (!ZtqCityDB.getInstance().isLoginService) {
                                         gotoLogin()
                                     } else {
                                         gotoService()
@@ -154,7 +150,7 @@ class FragmentService : BaseFragment(), OnClickListener {
         }
         imageView.setOnClickListener {
             if (CommonUtil.isCanAccess(data.flag)) {
-                toServiceActivity(data.dataCode)
+                toServiceActivity(data)
             }
         }
     }
@@ -165,30 +161,23 @@ class FragmentService : BaseFragment(), OnClickListener {
     }
 
     private fun logout() {
-        ZtqCityDB.getInstance().removeMyInfo()
         MyApplication.clearUserInfo(activity)
         //刷新栏目数据
         val bdIntent = Intent()
         bdIntent.action = CONST.BROADCAST_REFRESH_COLUMNN
         activity!!.sendBroadcast(bdIntent)
-
-        reflashUserData()
-        localUserinfo!!.user_id = ""
-        reflashUserData()
     }
 
-    private fun reflashUserData() {
-        localUserinfo = ZtqCityDB.getInstance().myInfo
-    }
-
-    private fun toServiceActivity(areaid: String?) {
-        val intent = Intent(activity, ActivityServerSecond::class.java)
-        intent.putExtra("area_id", areaid)
+    private fun toServiceActivity(data: ColumnDto?) {
+        val intent = Intent(activity, ActivitySpecialService::class.java)
+        val bundle = Bundle()
+        bundle.putParcelable("data", data)
+        intent.putExtras(bundle)
         startActivity(intent)
     }
 
     private fun gotoService() {
-        val intent = Intent(activity, ActivityMyServer::class.java)
+        val intent = Intent(activity, ActivityDecisionService::class.java)
         intent.putExtra("channel", "")
         intent.putExtra("title", "我的服务")
         intent.putExtra("subtitle", "1")
@@ -214,13 +203,8 @@ class FragmentService : BaseFragment(), OnClickListener {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 CONST.RESULT_LOGIN -> {
-                    localUserinfo = ZtqCityDB.getInstance().myInfo
-                    if (!TextUtils.isEmpty(localUserinfo!!.user_id)) {
-                        if (TextUtils.isEmpty(areaId)) {
-                            gotoService()
-                        } else {
-                            toServiceActivity(areaId)
-                        }
+                    if (ZtqCityDB.getInstance().isLoginService) {
+                        gotoService()
                         btnLogin!!.text = "退出"
                     }
                 }

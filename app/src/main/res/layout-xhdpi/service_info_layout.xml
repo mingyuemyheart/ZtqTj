@@ -1,49 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/web_frame_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/show_warn"
         android:layout_width="match_parent"
-        android:padding="5dp"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
         android:background="#e7e7e7"
-        android:drawableRight="@drawable/icon_report_up"
+        android:drawableEnd="@drawable/icon_report_up"
         android:gravity="center"
+        android:padding="5dp"
         android:text="提示：仅供决策人员参考，请勿对外转发。"
         android:textColor="@color/text_black"
-        android:visibility="gone"
-        android:textSize="@dimen/text_content" />
+        android:textSize="@dimen/text_content"
+        android:visibility="gone" />
+
     <WebView
         android:id="@+id/webview_browser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/show_warn"
+        app:layout_constraintTop_toBottomOf="@+id/show_warn"
         android:scrollbars="none"
         android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/webview_progressbar"
         android:layout_width="match_parent"
-        android:layout_height="3dip"
+        android:layout_height="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@null"
         android:progressDrawable="@drawable/my_seekbar_style2" />
 
-    <TextView
-        android:id="@+id/tv_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dimen5"
-        android:background="@drawable/btn_service_share"
-        android:gravity="center"
-        android:text="分享"
-        android:textColor="@color/text_white"
-        android:textSize="@dimen/text_content"
-        android:visibility="gone" />
-
-
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

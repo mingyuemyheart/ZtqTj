@@ -41,11 +41,11 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalSetUpdate;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackgetrecommendfriendsmsgDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackgetrecommendfriendsmsgUP;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterRightSets;
 import com.pcs.ztqtj.control.adapter.adapter_set.AdapterColumnManager;
@@ -58,6 +58,7 @@ import com.pcs.ztqtj.model.SetsBean;
 import com.pcs.ztqtj.model.SettingDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.AuthorityUtil;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityUserCenter;
@@ -104,7 +105,6 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private PackgetrecommendfriendsmsgUP uppackgetshareinfo;
     private PackgetrecommendfriendsmsgDown Downpackgetshareinfo;
     private DialogWaiting getShareFriendDataDialog;
-    private PackLocalUser localUserinfo;
 
     @Override
     public void onAttach(Activity activity) {
@@ -169,8 +169,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     }
 
     private void initUser() {
-        localUserinfo=ZtqCityDB.getInstance().getMyInfo();
-        if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+        if (ZtqCityDB.getInstance().isLoginService()) {
             logged();
         } else {
             notLogged();
@@ -221,8 +220,8 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
 //        btnUserLogin.setText("退出");
         btnLogin.setVisibility(View.GONE);
         tvUserName.setVisibility(View.VISIBLE);
-        tvUserName.setText(localUserinfo.sys_nick_name);
-        imageTool.setImageView(getActivity(), localUserinfo.sys_head_url, ivHead);
+        tvUserName.setText(MyApplication.NAME);
+        imageTool.setImageView(getActivity(), MyApplication.PORTRAIT, ivHead);
     }
 
     /**
@@ -277,7 +276,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                 switch (position) {
                     case 0:
                         // 气象证明
-                        if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+                        if (!ZtqCityDB.getInstance().isLoginService()) {
                             gotoLogin();
                         } else {
                             gotoAcitvity(WeatherProveActivity.class, "气象灾害证明");
@@ -410,7 +409,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         switch (v.getId()) {
             case R.id.tv_username:
             case R.id.iv_head:
-                if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+                if (ZtqCityDB.getInstance().isLoginService()) {
                     Intent intent = new Intent(getActivity(), ActivityUserCenter.class);
                     startActivityForResult(intent, MyConfigure.RESULT_SET_TO_USER);
                 }
@@ -419,7 +418,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                 activity.showSetting(false);
                 break;
             case R.id.btn_login2:
-                if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+                if (!ZtqCityDB.getInstance().isLoginService()) {
                     gotoLogin();
                 }
                 break;
@@ -433,7 +432,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
             switch (requestCode) {
                 case 1001:
                     initUser();
-                    if (!TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+                    if (ZtqCityDB.getInstance().isLoginService()) {
                         gotoAcitvity(ActivityUserCenter.class, "我");
                     }
                     break;

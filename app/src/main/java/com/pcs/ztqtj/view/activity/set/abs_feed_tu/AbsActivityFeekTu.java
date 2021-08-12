@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.SuggestListInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -71,14 +69,12 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
 
     private Button commit_content;
     public String phoneNum = "";
-    private PackLocalUser localUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abs_feedback);
         PcsDataBrocastReceiver.registerReceiver(AbsActivityFeekTu.this, myReceiver);
-        localUser=ZtqCityDB.getInstance().getMyInfo();
         initView();
         initData();
         initEvent();
@@ -120,7 +116,7 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
 
     /*判断是否有登录*/
     private void judgeHasLogin() {
-        if (TextUtils.isEmpty(localUser.user_id)) {
+        if (!ZtqCityDB.getInstance().isLoginService()) {
             no_login_layout.setVisibility(View.VISIBLE);
             has_login_layout.setVisibility(View.GONE);
             commit_content.setVisibility(View.GONE);
@@ -135,8 +131,8 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
     }
 
     private void hasLogin() {
-        name_desc.setText("尊敬的" + localUser.sys_nick_name + "，欢迎发布建议!");
-        String strPhone = localUser.mobile;
+        name_desc.setText("尊敬的" + MyApplication.NAME + "，欢迎发布建议!");
+        String strPhone = MyApplication.MOBILE;
         if (TextUtils.isEmpty(strPhone)) {
             connection_way.setHint(getString(R.string.feedback_eidtemail));
         } else {
@@ -149,10 +145,10 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
      * 设置内容提示信息
      */
     private void initTextInfo() {
-        if (TextUtils.isEmpty(localUser.user_id)) {
+        if (!ZtqCityDB.getInstance().isLoginService()) {
             feedback_information.setHint(getString(R.string.login_un_login));
         } else {
-            if (TextUtils.isEmpty(localUser.mobile)) {
+            if (TextUtils.isEmpty(MyApplication.MOBILE)) {
                 feedback_information.setHint(getString(R.string.login_not_bind));
             } else {
                 feedback_information.setHint(getString(R.string.login_has_bind));
@@ -172,7 +168,7 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if (TextUtils.isEmpty(localUser.user_id)) {
+                    if (!ZtqCityDB.getInstance().isLoginService()) {
                         //没有登录处理
                         showDescDialog("尊敬的用户，先请登录客户端");
                     } else {
@@ -237,7 +233,7 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
                 loginZTQ();
                 break;
             case R.id.commit_content:
-                String phoneNumber = localUser.mobile;
+                String phoneNumber = MyApplication.MOBILE;
                 if (TextUtils.isEmpty(phoneNumber)) {
                     phoneNumber = connection_way.getText().toString().trim();
                 }
@@ -570,17 +566,6 @@ public abstract class AbsActivityFeekTu extends FragmentActivityZtqBase implemen
                                                 sendBroadcast(bdIntent);
 
                                                 showToast(getString(R.string.login_succ));
-                                                //存储用户数据
-                                                PackLocalUser myUserInfo = new PackLocalUser();
-                                                myUserInfo.user_id = MyApplication.UID;
-                                                myUserInfo.sys_user_id = MyApplication.UID;
-                                                myUserInfo.sys_nick_name = MyApplication.NAME;
-                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
-                                                myUserInfo.mobile = MyApplication.MOBILE;
-                                                localUser = myUserInfo;
-                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                                                packLocalUserInfo.currUserInfo = myUserInfo;
-                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
 
                                                 judgeHasLogin();
                                             }

@@ -63,13 +63,11 @@ public class CommandMain24Hours extends CommandMainBase {
         adapterMain = new AdapterMainHourForecast(activity, down.list);
         gridview24hour.setAdapter(adapterMain);
         main24hour = rowView.findViewById(R.id.main24hour);
-
-        okHttpHourForecast();
     }
 
     @Override
     protected void refresh() {
-//        okHttpHourForecast();
+        okHttpHourForecast();
     }
 
     /**

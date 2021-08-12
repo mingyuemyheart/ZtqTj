@@ -5,16 +5,14 @@ import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedListUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackMediaTauntedUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.SuggestListInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.set.abs_feed_tu.AbsActivityFeekTu;
 
 import java.util.ArrayList;
@@ -76,12 +74,8 @@ public class ActivityMediaTaunted extends AbsActivityFeekTu {
             down = (PackMediaTauntedDown) PcsDataManager.getInstance().getNetPack(nameStr);
             if (down != null && down.result.equals("1")) {
                 Toast.makeText(ActivityMediaTaunted.this, "您反馈的意见已收录！感谢您的建议！", Toast.LENGTH_SHORT).show();
-                PackLocalUser myUserInfo = ZtqCityDB.getInstance().getMyInfo();
-                if (TextUtils.isEmpty(myUserInfo.mobile)) {
-                    myUserInfo.mobile = phoneNum;
-                    PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                    packLocalUserInfo.currUserInfo = myUserInfo;
-                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+                if (TextUtils.isEmpty(MyApplication.MOBILE)) {
+                    MyApplication.MOBILE = phoneNum;
                 }
                 cleanUpInfo();
                 reqComment();
@@ -110,10 +104,10 @@ public class ActivityMediaTaunted extends AbsActivityFeekTu {
         showProgressDialog();
         upPackSuggest = new PackMediaTauntedUp();
         upPackSuggest.call_way = contact;
-        upPackSuggest.user_id =ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        upPackSuggest.user_id = MyApplication.UID;
         upPackSuggest.msg = msg;
-        upPackSuggest.nick_name = ZtqCityDB.getInstance().getMyInfo().sys_nick_name;
-        if (TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().mobile)) {
+        upPackSuggest.nick_name = MyApplication.NAME;
+        if (TextUtils.isEmpty(MyApplication.MOBILE)) {
             upPackSuggest.is_bd = "1";
             upPackSuggest.mobile = contact;
         }

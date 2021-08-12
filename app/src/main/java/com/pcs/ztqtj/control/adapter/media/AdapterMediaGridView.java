@@ -17,15 +17,13 @@ import java.util.List;
 
 /**
  * 气象影视 适配器
- * 
- * @author Z
- * 
  */
 public class AdapterMediaGridView extends BaseAdapter {
 
 	private Context mContext;
 	private List<MediaInfo> dataList;
 	private ImageFetcher mImageFetcher = null;
+
 	public AdapterMediaGridView(Context context, List<MediaInfo> data,ImageFetcher mImageFetcher) {
 		this.mContext = context;
 		this.dataList = data;
@@ -61,7 +59,7 @@ public class AdapterMediaGridView extends BaseAdapter {
 		}
 		MediaInfo info = dataList.get(position);
 		String title = info.title;
-		String url = mContext.getString(R.string.file_download_url) + info.imageurl;
+		String url = mContext.getString(R.string.msyb) + info.imageurl;
 		mImageFetcher.loadImage(url, holder.itemImage, ImageConstant.ImageShowType.SRC);
 		holder.itemName.setText(title);
 		holder.itemName.setVisibility(View.VISIBLE);

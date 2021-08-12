@@ -12,10 +12,8 @@ import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalFamilyCityInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalStation;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalTravelViewInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.citylist.AroundCityBean;
-import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceUserLoginUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.control.ControlAppInit;
 import com.pcs.ztqtj.control.inter.Callback;
 import com.pcs.ztqtj.control.observables.CityListObservable;
@@ -68,8 +66,6 @@ public class ZtqCityDB {
     private PackLocalFamilyCityInfo mFamilyCityInfo = null;
     // 当前旅游景点
     private PackLocalTravelViewInfo mTravelViewInfo = null;
-    // 当前气象服务用户信息
-    private PackLocalUserInfo myUserInfo = null;
 
     private ZtqCityDB() {
 
@@ -301,19 +297,19 @@ public class ZtqCityDB {
         }
         String matchingStr = cityName;
         // 县市区
-        String lastStr = cityName.substring(cityName.length() - 1);
-        if (lastStr.equals("县") || lastStr.equals("市") || lastStr.equals("区")) {
+        if (matchingStr.endsWith("县") || matchingStr.endsWith("市") || matchingStr.endsWith("区")) {
             matchingStr = cityName.substring(0, cityName.length() - 1);
         }
+        PackLocalCity cityInfoTemp = null;
         for (int i = 0; i < Tj_Qgdisty.size(); i++) {
             PackLocalCity cityInfo = Tj_Qgdisty.get(i);
-            if (cityInfo.NAME.equals(matchingStr)) {
-                PackLocalCity cityInfoTemp = new PackLocalCity();
+            if (cityInfo.NAME.startsWith(matchingStr)) {
+                cityInfoTemp = new PackLocalCity();
                 cityInfoTemp.copyCity(cityInfo);
-                return cityInfoTemp;
+                break;
             }
         }
-        return null;
+        return cityInfoTemp;
     }
 
     /**
@@ -581,61 +577,14 @@ public class ZtqCityDB {
     }
 
     /**
-     * 设置当前气象服务用户信息
-     * @param pack
-     */
-    public void setMyInfo(PackLocalUserInfo pack) {
-        myUserInfo = pack;
-        PcsDataManager.getInstance().saveLocalData(PackLocalUserInfo.KEY, pack);
-    }
-
-    /**
-     * 删除当前气象服务用户信息
-     */
-    public void removeMyInfo() {
-        PcsDataManager.getInstance().removeLocalData(PackServiceUserLoginUp.NAME);
-        PcsDataManager.getInstance().removeLocalData(PackLocalUserInfo.KEY);
-        myUserInfo = null;
-    }
-
-    /**
-     * 获取当前气象服务用户信息
-     * @return
-     */
-    public PackLocalUser getMyInfo() {
-        if (myUserInfo == null) {
-            myUserInfo = (PackLocalUserInfo) PcsDataManager.getInstance().getLocalPack(PackLocalUserInfo.KEY);
-//            myUserInfo = (PackLocalUserInfo) PcsDataManager.getInstance().getLocalPack(PackLocalUser.KEY);
-        }
-        if (myUserInfo == null) {
-            myUserInfo = new PackLocalUserInfo();
-        }
-        return myUserInfo.currUserInfo;
-    }
-
-    /**
      * 是否登录气象服务
      * @return
      */
     public boolean isLoginService() {
-        PackLocalUser userinfo = getMyInfo();
-        if(userinfo != null && !TextUtils.isEmpty(userinfo.user_id)) {
+        if (!TextUtils.isEmpty(MyApplication.UID) && !TextUtils.equals(MyApplication.UID, MyApplication.offline)) {
             return true;
-        } else {
-            return false;
         }
-    }
-
-    /**
-     * 决策服务是否有权限
-     * @return
-     */
-    public boolean isServiceAccessible() {
-        PackLocalUser info = ZtqCityDB.getInstance().getMyInfo();
-        if(info == null) {
-            return false;
-        }
-        return info.is_jc;
+        return false;
     }
 
     /**
@@ -846,17 +795,6 @@ public class ZtqCityDB {
     public PackLocalCity getAllCityByID(String cityID) {
         for (PackLocalCity c : Tj_Qgdisty) {
             if (c.ID.equals(cityID)) {
-                PackLocalCity cTemp = new PackLocalCity();
-                cTemp.copyCity(c);
-                return cTemp;
-            }
-        }
-        return null;
-    }
-
-    public PackLocalCity getAllCityByActName(String cityName) {
-        for (PackLocalCity c : Tj_Qgdisty) {
-            if (c.NAME.equals(cityName)) {
                 PackLocalCity cTemp = new PackLocalCity();
                 cTemp.copyCity(c);
                 return cTemp;

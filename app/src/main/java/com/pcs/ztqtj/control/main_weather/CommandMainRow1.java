@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -34,7 +33,7 @@ import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.activity.newairquality.ActivityAirQualityQuery;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
-import com.pcs.ztqtj.view.activity.service.ActivityMyServer;
+import com.pcs.ztqtj.view.activity.service.ActivityDecisionService;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.fragment.airquality.ActivityAirQualitySH;
 
@@ -66,7 +65,7 @@ public class CommandMainRow1 extends CommandMainBase {
     private ViewGroup mRootLayout;
     private boolean is_readed = true;
 
-    private TextView text_temperature,text_temperature_decimals,text_humidity,text_rain,text_wind,text_visibility,text_station;
+    private TextView text_temperature,text_humidity,text_rain,text_wind,text_visibility,text_station;
     private ImageView widget_title_icon;
     private String stationName = "";
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
@@ -85,23 +84,19 @@ public class CommandMainRow1 extends CommandMainBase {
         widget_title_icon = mRootLayout.findViewById(R.id.widget_title_icon);
 
         // 预警中心
-        View btnWarn = mRowView.findViewById(R.id.layout_warn);
-        btnWarn.setOnClickListener(onClickRow1);
+        TextView tvWarning = mRowView.findViewById(R.id.tvWarning);
+        tvWarning.setOnClickListener(onClickRow1);
         // 实况查询
-        View btnWind = mRowView.findViewById(R.id.layout_wind);
-        btnWind.setOnClickListener(onClickRow1);
+        TextView tvFact = mRowView.findViewById(R.id.tvFact);
+        tvFact.setOnClickListener(onClickRow1);
         // 空气质量
-        View layoutAir = mRowView.findViewById(R.id.layout_air);
-        layoutAir.setOnClickListener(onClickRow1);
+        TextView tvAqi = mRowView.findViewById(R.id.tvAqi);
+        tvAqi.setOnClickListener(onClickRow1);
         // 决策气象
-        View layoutServer = mRowView.findViewById(R.id.layout_server);
-        layoutServer.setOnClickListener(onClickRow1);
-        // 整点实况区域
-        View clickinteger = mRowView.findViewById(R.id.layout_temperature);
-        clickinteger.setOnClickListener(onClickRow1);
+        TextView tvDecision = mRowView.findViewById(R.id.tvDecision);
+        tvDecision.setOnClickListener(onClickRow1);
 
         text_temperature = mRootLayout.findViewById(R.id.text_temperature);
-        text_temperature_decimals = mRootLayout.findViewById(R.id.text_temperature_decimals);
         text_humidity = mRootLayout.findViewById(R.id.text_humidity);
         text_rain = mRootLayout.findViewById(R.id.text_rain);
         text_wind = mRootLayout.findViewById(R.id.text_wind);
@@ -113,7 +108,6 @@ public class CommandMainRow1 extends CommandMainBase {
     protected void refresh() {
         stationName = "";
         text_temperature.setText("");
-        text_temperature_decimals.setText("");
         text_humidity.setText("");
         text_rain.setText("");
         text_wind.setText("");
@@ -149,13 +143,13 @@ public class CommandMainRow1 extends CommandMainBase {
             PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
             Intent intent;
             switch (v.getId()) {
-                case R.id.layout_warn:
+                case R.id.tvWarning:
                     // 预警中心
                     intent = new Intent(mActivity, ActivityWarningCenterNotFjCity.class);
                     intent.putExtra("isDisWaring", true);
                     mActivity.startActivity(intent);
                     break;
-                case R.id.layout_wind:
+                case R.id.tvFact:
                     //实况查询
                     if (cityMain == null || cityMain.ID == null) {
                         return;
@@ -166,7 +160,7 @@ public class CommandMainRow1 extends CommandMainBase {
                     intent.putExtras(bundle);
                     mActivity.startActivity(intent);
                     break;
-                case R.id.layout_air:
+                case R.id.tvAqi:
                     // 空气质量
                     if (cityMain == null || cityMain.ID == null) {
                         return;
@@ -184,17 +178,16 @@ public class CommandMainRow1 extends CommandMainBase {
                     }
                     mActivity.startActivity(intent);
                     break;
-                case R.id.layout_server:
+                case R.id.tvDecision:
                     if (cityMain == null || cityMain.ID == null) {
                         return;
                     }
                     if (cityMain.isFjCity) {
-                        PackLocalUser localUserinfo = ZtqCityDB.getInstance().getMyInfo();
-                        if (TextUtils.isEmpty(localUserinfo.user_id)) {
+                        if (!ZtqCityDB.getInstance().isLoginService()) {
                             intent = new Intent(mActivity, ActivityLogin.class);
                             mActivity.startActivityForResult(intent, CONST.RESULT_LOGIN);
                         } else {
-                            intent = new Intent(mActivity, ActivityMyServer.class);
+                            intent = new Intent(mActivity, ActivityDecisionService.class);
                             intent.putExtra("title", "决策报告");
                             intent.putExtra("channel", "1");
                             intent.putExtra("show_warn", true);
@@ -285,12 +278,6 @@ public class CommandMainRow1 extends CommandMainBase {
                                                             tempStr = packSstq.ct.substring(0, packSstq.ct.indexOf(".") + 1);
                                                         }
                                                         text_temperature.setText(tempStr);
-                                                        tempStr = "";
-                                                        //气温小数
-                                                        if (!TextUtils.isEmpty(packSstq.ct) && packSstq.ct.indexOf(".") > -1) {
-                                                            tempStr = packSstq.ct.substring(packSstq.ct.indexOf(".") + 1, packSstq.ct.length());
-                                                        }
-                                                        text_temperature_decimals.setText(tempStr);
 
                                                         // 湿度
                                                         if (!TextUtils.isEmpty(packSstq.humidity)) {

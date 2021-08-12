@@ -74,8 +74,6 @@ public class CommandMain7DaysWeather extends CommandMainBase {
         gridViewWeek = rowView.findViewById(R.id.maingridview);
         adapter = new Adapter7DaysGridView(activity,imageFetcher, weekList, mShowBg);
         gridViewWeek.setAdapter(adapter);
-
-        okHttpWeekData();
     }
 
     public void setChangeCity() {
@@ -84,7 +82,7 @@ public class CommandMain7DaysWeather extends CommandMainBase {
 
     @Override
     protected void refresh() {
-//        okHttpWeekData();
+        okHttpWeekData();
     }
 
     /**

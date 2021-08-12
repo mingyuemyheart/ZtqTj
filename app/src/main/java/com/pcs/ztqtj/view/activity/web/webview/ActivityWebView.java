@@ -19,9 +19,9 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
@@ -111,7 +111,7 @@ public class ActivityWebView extends FragmentActivityZtqBase {
         if (packDown != null) {
             pid += packDown.pid;
         }
-        String userId = "&USER_ID=" + ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        String userId = "&USER_ID=" + MyApplication.UID;
         loadUrl(url + pid + userId);
     }
 
@@ -220,7 +220,6 @@ public class ActivityWebView extends FragmentActivityZtqBase {
         if (regeocodeAddress != null) {
             address = regeocodeAddress.getFormatAddress();
         }
-        PackLocalUser localUser=ZtqCityDB.getInstance().getMyInfo();
         JSONObject obj = new JSONObject();
         try {
             JSONObject locationObj = new JSONObject();
@@ -228,8 +227,8 @@ public class ActivityWebView extends FragmentActivityZtqBase {
             locationObj.put("lon", lon);
             locationObj.put("address", address);
 
-            if (!TextUtils.isEmpty(localUser.sys_user_id)){
-                obj.put("userid", localUser.sys_user_id);
+            if (ZtqCityDB.getInstance().isLoginService()){
+                obj.put("userid", MyApplication.UID);
             }else{
                 obj.put("userid", "");
             }
@@ -237,8 +236,8 @@ public class ActivityWebView extends FragmentActivityZtqBase {
             obj.put("currentCityID", currentCityID);
             obj.put("xianshiid", xianshiid);
             obj.put("appVersion", appVersion);
-            obj.put("img_head",localUser.sys_head_url);
-            obj.put("username",localUser.sys_nick_name);
+            obj.put("img_head",MyApplication.PORTRAIT);
+            obj.put("username",MyApplication.NAME);
             obj.put("locationaddress", locationObj);
 //            obj.put("appType", "知天气决策版");
         } catch (JSONException e) {

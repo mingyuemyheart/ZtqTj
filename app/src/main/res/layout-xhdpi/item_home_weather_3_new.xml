@@ -1,96 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:background="@color/white_alpha5">
 
-    <LinearLayout
-        android:id="@+id/ll_title"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:background="@color/white_alpha5">
+    <TextView
+        android:id="@+id/strZhidian"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:text="@string/map_forecast2"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivLine"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLine"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen4"
-            android:text="@string/map_forecast2"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/text_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:singleLine="false"/>
+    <ImageView
+        android:id="@+id/ivLine"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_marginStart="5dp"
+        android:src="@drawable/line_map_forecast_v"
+        app:layout_constraintStart_toEndOf="@+id/strZhidian"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dimen5"
-            android:src="@drawable/line_map_forecast_v"/>
+    <TextView
+        android:id="@+id/text_im_here"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_footnote"
+        android:lineSpacingExtra="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLine"
+        app:layout_constraintStart_toEndOf="@+id/ivLine"
+        app:layout_constraintTop_toTopOf="@+id/ivLine" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dimen10"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_im_here"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:textColor="@color/text_white"
-                android:textSize="@dimen/text_footnote"
-                android:singleLine="true"
-                android:gravity="center_vertical"/>
-
-            <TextView
-                android:id="@+id/text_tip"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/map_forecast_tip_init"
-                android:textColor="@color/text_white"
-                android:textSize="@dimen/text_footnote"
-                android:singleLine="true"
-                android:gravity="center_vertical"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <RelativeLayout
+    <com.amap.api.maps.TextureMapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@+id/strZhidian" />
 
-        <com.amap.api.maps.TextureMapView
-            android:id="@+id/map"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <Button
+        android:id="@+id/btn_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_map_click"
+        app:layout_constraintBottom_toBottomOf="@+id/mapView"
+        app:layout_constraintEnd_toEndOf="@+id/mapView" />
 
-        <Button
-            android:id="@+id/btn_maps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/dimen8"
-            android:layout_marginRight="@dimen/dimen8"
-            android:background="@drawable/btn_map_click" />
+    <GridView
+        android:id="@+id/gridview_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:horizontalSpacing="0dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="6"
+        android:verticalSpacing="2dp"
+        app:layout_constraintStart_toStartOf="@+id/mapView"
+        app:layout_constraintTop_toTopOf="@+id/mapView" />
 
-        <GridView
-            android:id="@+id/gridview_warning"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_alignParentLeft="true"
-            android:horizontalSpacing="4dp"
-            android:verticalSpacing="4dp"
-            android:numColumns="6"
-            android:listSelector="@android:color/transparent"/>
-
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

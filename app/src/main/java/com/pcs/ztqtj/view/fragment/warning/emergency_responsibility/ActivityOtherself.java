@@ -13,12 +13,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.disaster.AdatperReporting;
-import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
-import com.pcs.ztqtj.control.tool.LoginInformation;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
@@ -26,6 +20,11 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZRPersonInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackZRPersonInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjMyReport;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.disaster.AdatperReporting;
+import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,7 +74,7 @@ public class ActivityOtherself extends FragmentActivityZtqWithPhoneListAndHelp i
     }
 
     public void initData() {
-        user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        user_id = MyApplication.UID;
         adapter = new AdatperReporting(ActivityOtherself.this, lists);
         lv_otherself.setAdapter(adapter);
         Calendar c = Calendar.getInstance();

@@ -8,14 +8,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceChangePwdDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceChangePwdUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
 /**
  * 修改密码
@@ -106,7 +106,7 @@ public class ActivityChangePwd extends FragmentActivityZtqBase implements
 		if (packServiceChangePwdUp == null) {
 			packServiceChangePwdUp = new PackServiceChangePwdUp();
 		}
-		packServiceChangePwdUp.mobile = ZtqCityDB.getInstance().getMyInfo().mobile;
+		packServiceChangePwdUp.mobile = MyApplication.MOBILE;
 		packServiceChangePwdUp.oldpwd = oldpwd;
 		packServiceChangePwdUp.newpwd = newpwd;
 		packServiceChangePwdUp.okpwd = okpwd;

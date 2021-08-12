@@ -45,8 +45,6 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
@@ -1008,21 +1006,12 @@ public class ActivityMain extends FragmentActivity {
                                                 }
                                                 MyApplication.saveUserInfo(ActivityMain.this);
 
-                                                //存储用户数据
-                                                PackLocalUser myUserInfo = new PackLocalUser();
-                                                myUserInfo.user_id = MyApplication.UID;
-                                                myUserInfo.sys_user_id = MyApplication.UID;
-                                                myUserInfo.sys_nick_name = MyApplication.NAME;
-                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
-                                                myUserInfo.mobile = MyApplication.MOBILE;
-                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                                                packLocalUserInfo.currUserInfo = myUserInfo;
-                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
-
                                                 Toast.makeText(ActivityMain.this, getString(R.string.login_succ), Toast.LENGTH_SHORT).show();
                                                 if(loginDialog != null) {
                                                     loginDialog.dismiss();
                                                 }
+
+                                                okHttpColumn();
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -1148,9 +1137,6 @@ public class ActivityMain extends FragmentActivity {
 
     private void parseItemObj(JSONObject itemObj, ColumnDto dto) {
         try {
-            if (!itemObj.isNull("dataId")) {
-                dto.dataCode = itemObj.getString("dataId");
-            }
             if (!itemObj.isNull("dataCode")) {
                 dto.dataCode = itemObj.getString("dataCode");
             }
@@ -1168,6 +1154,9 @@ public class ActivityMain extends FragmentActivity {
             }
             if (!itemObj.isNull("url")) {
                 dto.url = itemObj.getString("url");
+            }
+            if (!itemObj.isNull("desc")) {
+                dto.desc = itemObj.getString("desc");
             }
         } catch (JSONException e) {
             e.printStackTrace();

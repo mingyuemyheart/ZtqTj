@@ -10,12 +10,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
@@ -181,17 +178,6 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
                                                 Intent bdIntent = new Intent();
                                                 bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
                                                 sendBroadcast(bdIntent);
-
-                                                //存储用户数据
-                                                PackLocalUser myUserInfo = new PackLocalUser();
-                                                myUserInfo.user_id = MyApplication.UID;
-                                                myUserInfo.sys_user_id = MyApplication.UID;
-                                                myUserInfo.sys_nick_name = MyApplication.NAME;
-                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
-                                                myUserInfo.mobile = MyApplication.MOBILE;
-                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                                                packLocalUserInfo.currUserInfo = myUserInfo;
-                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
 
                                                 finishView();
                                             }

@@ -16,6 +16,7 @@
         android:visibility="visible" />
 
     <Button
+        android:visibility="gone"
         android:id="@+id/btntaunted"
         android:layout_width="60dp"
         android:layout_height="30dp"

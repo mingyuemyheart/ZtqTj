@@ -41,6 +41,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureSubmitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureSubmitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.agriculture.PackAgricultureUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterDisasterCategory;
 import com.pcs.ztqtj.control.tool.CommUtils;
@@ -49,7 +50,6 @@ import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.myview.MyGridView;
@@ -495,7 +495,7 @@ public class ActivityAgricultureZQZB extends FragmentActivityZtqBase implements 
      */
     private void updateLogin() {
         if(LoginInformation.getInstance().hasLogin()) {
-            String username = ZtqCityDB.getInstance().getMyInfo().sys_nick_name;
+            String username = MyApplication.NAME;
             tvHello.setText("你好，" + username + "，请发布灾情报告。");
             tvHello.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
@@ -623,7 +623,7 @@ public class ActivityAgricultureZQZB extends FragmentActivityZtqBase implements 
         showProgressDialog();
         PackAgricultureSubmitUp packUp = new PackAgricultureSubmitUp();
         packUp.channel_id = channel_id;
-        packUp.user_id =ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        packUp.user_id = MyApplication.UID;
         packUp.area_id = area_id;
         packUp.zq_id = zq_id;
         packUp.zq_desc = etDescription.getText().toString();

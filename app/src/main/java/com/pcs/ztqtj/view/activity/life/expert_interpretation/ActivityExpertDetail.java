@@ -24,6 +24,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterExpertTalk;
 import com.pcs.ztqtj.control.tool.ShareTools;
@@ -103,7 +104,7 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
     }
 
     private void initUser() {
-        if (!TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().sys_user_id)) {
+        if (ZtqCityDB.getInstance().isLoginService()) {
             logged();
         } else {
             notLogged();
@@ -143,13 +144,13 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
     }
 
     private void commitInfo() {
-        if (!TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().sys_user_id)) {
+        if (ZtqCityDB.getInstance().isLoginService()) {
             String content = my_talk.getText().toString().trim();
             if (TextUtils.isEmpty(content)) {
                 showToast("评论内容不能为空。");
             } else {
                 commitUp.zx_id = id;
-                commitUp.user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+                commitUp.user_id = MyApplication.UID;
                 commitUp.content = content;
                 showProgressDialog();
                 PcsDataDownload.addDownload(commitUp);

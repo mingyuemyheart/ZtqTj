@@ -11,10 +11,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.UserFragmentCallBack;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 
@@ -111,8 +110,7 @@ public class FragmentUserChangePassword extends UserFragmentCallBack implements 
 
     @Override
     public void onClickSubmitButton() {
-        PackLocalUser localUser= ZtqCityDB.getInstance().getMyInfo();
-        okHttpModifyPwd(localUser.sys_user_id, oldPassword, newPassword);
+        okHttpModifyPwd(MyApplication.UID, oldPassword, newPassword);
     }
 
     @Override

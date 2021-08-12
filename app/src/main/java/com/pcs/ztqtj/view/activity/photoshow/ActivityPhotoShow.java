@@ -46,11 +46,11 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.BannerInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterControlMainRow8;
 import com.pcs.ztqtj.control.adapter.photo.AdapterPhotoShow;
@@ -510,8 +510,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
      * 点击个人中心
      */
     private void clickUserCenter() {
-        PackLocalUser localUser= ZtqCityDB.getInstance().getMyInfo();
-        if (!TextUtils.isEmpty(localUser.user_id)) {
+        if (ZtqCityDB.getInstance().isLoginService()) {
             Intent it = new Intent();
             it.setClass(this, ActivityUserCenter.class);
             this.startActivity(it);

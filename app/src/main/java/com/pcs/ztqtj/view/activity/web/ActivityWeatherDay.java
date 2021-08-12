@@ -44,11 +44,11 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterShareGraiView;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.FileUtils;
-import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ShareTools;
@@ -142,8 +142,8 @@ public class ActivityWeatherDay extends FragmentActivityZtqBase implements View.
                 break;
             case MyConfigure.RESULT_LOGIN:
                 //         判断是否登录成功。成功则
-                if (TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().sys_user_id)) {
-                    String userid = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+                if (!ZtqCityDB.getInstance().isLoginService()) {
+                    String userid = MyApplication.UID;
                     controlCommit.loadUrl("javascript:loginCallback ('" + userid + "')");
                 }
 
@@ -177,8 +177,8 @@ public class ActivityWeatherDay extends FragmentActivityZtqBase implements View.
         webView.getSettings().setTextZoom(100);
         controlCommit = new ControlCommit(this, webView, jsInterface);
         String url = "";
-        if (!TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().sys_user_id)) {
-            String userid = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        if (ZtqCityDB.getInstance().isLoginService()) {
+            String userid = MyApplication.UID;
             PackInitDown down = (PackInitDown) PcsDataManager.getInstance().getNetPack(PackInitUp.NAME);
             String pid = down.pid;
             url = mUrl + "?USER_ID=" + userid + "&PID=" + pid;

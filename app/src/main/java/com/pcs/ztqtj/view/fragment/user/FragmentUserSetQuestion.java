@@ -22,10 +22,10 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSetUserQuestionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.UserQuestion;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.ItemClick;
 import com.pcs.ztqtj.control.inter.UserFragmentCallBack;
-import com.pcs.ztqtj.model.ZtqCityDB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,8 +115,8 @@ public class FragmentUserSetQuestion extends UserFragmentCallBack implements Vie
     @Override
     public void onClickSubmitButton() {
         PackPhotoSetUserQuestionUp packUp = new PackPhotoSetUserQuestionUp();
-        packUp.platform_user_id = ZtqCityDB.getInstance().getMyInfo().mobile;
-        packUp.user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        packUp.platform_user_id = MyApplication.MOBILE;
+        packUp.user_id = MyApplication.UID;
         List<UserQuestion> list = new ArrayList<>();
         UserQuestion question1 = new UserQuestion();
         question1.que_id = questionId1;
@@ -154,7 +154,7 @@ public class FragmentUserSetQuestion extends UserFragmentCallBack implements Vie
      */
     private void reqQueryQuestion() {
         PackPhotoQueryQuestionUp packUp = new PackPhotoQueryQuestionUp();
-        packUp.platform_user_id = ZtqCityDB.getInstance().getMyInfo().mobile;
+        packUp.platform_user_id = MyApplication.MOBILE;
         PcsDataDownload.addDownload(packUp);
     }
 

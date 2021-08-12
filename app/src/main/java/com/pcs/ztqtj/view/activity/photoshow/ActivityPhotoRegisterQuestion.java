@@ -9,16 +9,10 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoUserQuestionUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.UserQuestion;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.ItemClick;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
@@ -273,19 +267,6 @@ public class ActivityPhotoRegisterQuestion extends FragmentActivityZtqBase imple
                                                     MyApplication.PORTRAIT= userInfo.getString("avatar");
                                                 }
                                                 MyApplication.saveUserInfo(ActivityPhotoRegisterQuestion.this);
-
-                                                //存储用户数据
-                                                PackLocalUser myUserInfo = new PackLocalUser();
-                                                myUserInfo.user_id = MyApplication.UID;
-                                                myUserInfo.sys_user_id = MyApplication.UID;
-                                                myUserInfo.sys_nick_name = MyApplication.NAME;
-                                                myUserInfo.sys_head_url = MyApplication.PORTRAIT;
-                                                myUserInfo.mobile = MyApplication.MOBILE;
-//                                                myUserInfo.type = packDown.platform_type;
-//                                                myUserInfo.is_jc = packDown.is_jc;
-                                                PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                                                packLocalUserInfo.currUserInfo = myUserInfo;
-                                                ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
 
                                                 gotoLogin();
                                             }

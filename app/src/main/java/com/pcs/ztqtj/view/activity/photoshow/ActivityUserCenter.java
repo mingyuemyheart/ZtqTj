@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -42,7 +41,6 @@ import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.image.GetImageView;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.PhotoShowDB;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
@@ -97,7 +95,6 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
 
     // 退出弹出框
     private DialogTwoButton mLogoutDialog;
-    private PackLocalUser localUser;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +102,6 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
 		setContentView(R.layout.activity_user_center);
 		setTitleText("我");
 		createImageFetcher();
-		localUser= ZtqCityDB.getInstance().getMyInfo();
 		// 初始化列表
 		initList();
 		okHttpOrigin();
@@ -128,12 +124,12 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
 	protected void onResume() {
 		super.onResume();
 		if (textHead!=null){
-            textHead.setText(localUser.sys_nick_name);
+            textHead.setText(MyApplication.NAME);
         }
 		PcsDataBrocastReceiver.registerReceiver(this, mReceiver);
         if(viewHead != null) {
             ImageView iv = (ImageView) viewHead.findViewById(R.id.iv_head);
-            getImageView.setImageView(this, localUser.sys_head_url, iv);
+            getImageView.setImageView(this, MyApplication.PORTRAIT, iv);
         }
 	}
 
@@ -175,16 +171,16 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
 		viewHead = LayoutInflater.from(this).inflate(R.layout.view_photo_center_head, null);
         textHead= (TextView) viewHead.findViewById(R.id.my_name_tv);
 //		textHead.setText(PhotoShowDB.getInstance().getUserPack().nickName);//【以前使用】
-		textHead.setText(localUser.sys_nick_name);
+		textHead.setText(MyApplication.NAME);
         ImageView iv = (ImageView) viewHead.findViewById(R.id.iv_head);
-        getImageView.setImageView(this, localUser.sys_head_url, iv);
+        getImageView.setImageView(this, MyApplication.PORTRAIT, iv);
         LinearLayout ll = (LinearLayout) viewHead.findViewById(R.id.ll_user);
         int height = getViewHeadHeight();
         viewHead.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
         ll.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoUserInformation();
+//                gotoUserInformation();
             }
         });
 		listView.addHeaderView(viewHead);
@@ -297,7 +293,7 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
             public void click(String str) {
                 mLogoutDialog.dismiss();
                 if(str.equals("确定")) {
-                    okHttpLogout();
+                    logout();
                 }
             }
         });
@@ -748,68 +744,18 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
     }
 
     /**
-     * 用户登出
+     * 登出当前账号
      */
-    private void okHttpLogout() {
-        showProgressDialog();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String url = CONST.BASE_URL+"user/logout";
-                JSONObject param = new JSONObject();
-                try {
-                    param.put("token", MyApplication.TOKEN);
-                    String json = param.toString();
-                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            Log.e("logout", e.getMessage());
-                        }
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                return;
-                            }
-                            final String result = response.body().string();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dismissProgressDialog();
-                                    if (!TextUtils.isEmpty(result)) {
-                                        try {
-                                            JSONObject obj = new JSONObject(result);
-                                            if (!obj.isNull("result")) {
-                                                boolean res = obj.getBoolean("result");
-                                                if (res) {
-                                                    MyApplication.clearUserInfo(ActivityUserCenter.this);
-                                                    ZtqCityDB.getInstance().removeMyInfo();
+    private void logout() {
+        MyApplication.clearUserInfo(ActivityUserCenter.this);
 
-                                                    //刷新栏目数据
-                                                    Intent bdIntent = new Intent();
-                                                    bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
-                                                    sendBroadcast(bdIntent);
+        //刷新栏目数据
+        Intent bdIntent = new Intent();
+        bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
+        sendBroadcast(bdIntent);
 
-                                                    setResult(Activity.RESULT_OK);
-                                                    finish();
-                                                }
-                                            } else if (!obj.isNull("errorMessage")) {
-                                                String errorMessage = obj.getString("errorMessage");
-                                                showToast(errorMessage);
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
 }

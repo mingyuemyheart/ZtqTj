@@ -12,8 +12,8 @@ android {
         applicationId "com.tianyi.shawn.tjdecision"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10039
-        versionName "1.2.18"
+        versionCode 10047
+        versionName "1.2.26"
         manifestPlaceholders = [
                 XG_ACCESS_ID:"2100331791",
                 XG_ACCESS_KEY : "AV2S73V38UXQ",

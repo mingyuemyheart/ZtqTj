@@ -3,9 +3,7 @@ package com.pcs.ztqtj.model;
 import android.content.Context;
 import android.util.Log;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalPhotoUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoCenterDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoShowDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
@@ -187,9 +185,8 @@ public class PhotoShowDB {
         }
 
         mPackLocalPhotoUser.email = "";
-        PackLocalUser localUser=ZtqCityDB.getInstance().getMyInfo();
-        mPackLocalPhotoUser.userId = localUser.sys_user_id;
-        mPackLocalPhotoUser.nickName = localUser.sys_nick_name;
+        mPackLocalPhotoUser.userId = MyApplication.UID;
+        mPackLocalPhotoUser.nickName = MyApplication.NAME;
         return mPackLocalPhotoUser;
     }
 

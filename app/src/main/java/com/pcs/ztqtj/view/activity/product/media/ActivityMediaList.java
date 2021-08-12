@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,40 +22,49 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListDown.ParentMedia;
-import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterControlMainRow8;
 import com.pcs.ztqtj.control.adapter.media.AdapterMediaGridView;
 import com.pcs.ztqtj.control.adapter.media.AdapterMediaList;
 import com.pcs.ztqtj.control.inter.ImageClick;
 import com.pcs.ztqtj.control.tool.Utils;
-import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
-import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 import com.pcs.ztqtj.view.myview.LeadPoint;
 import com.pcs.ztqtj.view.myview.MyGridView;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 生活气象-气象影视
  */
 public class ActivityMediaList extends FragmentActivityZtqBase {
 
-    private PackMediaListUp upPack = new PackMediaListUp();
-    private MyReceiver receiver = new MyReceiver();
     private MyGridView myGridView;
     private AdapterMediaGridView myGridViewAdapter;
     /**
@@ -215,14 +225,13 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
             }
         }
         // 注册广播接收
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         mediaParentList = new ArrayList<ParentMedia>();
         gridData = new ArrayList<MediaInfo>();
         myGridViewAdapter = new AdapterMediaGridView(this, gridData, getImageFetcher());
         myGridView.setAdapter(myGridViewAdapter);
         adapterMediaList = new AdapterMediaList(this, gridData, getImageFetcher());
         lv_media.setAdapter(adapterMediaList);
-        reqData();
+        okHttpList();
     }
 
     private ImageClick imageClick = new ImageClick() {
@@ -248,54 +257,6 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
             startActivity(intent);
         }
     };
-
-    /**
-     * 请求气象影视数据
-     */
-    private void reqData() {
-        if (!isOpenNet()) {
-            showToast(getString(R.string.net_err));
-            return;
-        }
-        showProgressDialog();
-        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
-        if (cityMain == null) {
-            return;
-        }
-        if (cityMain.isFjCity) {
-            upPack.area_id = cityMain.ID;
-        } else {
-            upPack.area_id = "1279";
-        }
-        PcsDataDownload.addDownload(upPack);
-    }
-
-    /**
-     * 数据更新广播接收
-     *
-     * @author JiangZy
-     */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String error) {
-            if (name.startsWith(upPack.getName())) {
-                dismissProgressDialog();
-                reqSuccess(name);
-            }
-        }
-    }
-
-    /**
-     * 请求数据返回成功
-     */
-    private void reqSuccess(String name) {
-        mediaParentList.clear();
-        PackMediaListDown packMediaListDown = (PackMediaListDown) PcsDataManager.getInstance().getNetPack(name);
-        if (packMediaListDown != null) {
-            mediaParentList.addAll(packMediaListDown.mediaParentList);
-        }
-        reflashData();
-    }
 
     /**
      * listview填充数据
@@ -402,7 +363,7 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
                     gridData.remove(0);
                     topItemInfo = parent.video_list.get(0);
                     myGridViewAdapter.notifyDataSetChanged();
-                    String imgUrl = getString(R.string.file_download_url) + topItemInfo.imageurl;
+                    String imgUrl = getString(R.string.msyb) + topItemInfo.imageurl;
                     item_text.setText(topItemInfo.title);
                     getImageFetcher().loadImage(imgUrl, item_image, ImageConstant.ImageShowType.SRC);
                 } else {
@@ -462,10 +423,64 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
         startActivity(intent);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.unregisterReceiver(receiver);
+    /**
+     * 获取气象影视列表数据
+     */
+    private void okHttpList() {
+        showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"qxmedia";
+                    Log.e("qxmedia", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dismissProgressDialog();
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("wt_video")) {
+                                                    JSONObject wt_video = bobj.getJSONObject("wt_video");
+                                                    mediaParentList.clear();
+                                                    PackMediaListDown packMediaListDown = new PackMediaListDown();
+                                                    packMediaListDown.fillData(wt_video.toString());
+                                                    if (packMediaListDown != null) {
+                                                        mediaParentList.addAll(packMediaListDown.mediaParentList);
+                                                    }
+                                                    reflashData();
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

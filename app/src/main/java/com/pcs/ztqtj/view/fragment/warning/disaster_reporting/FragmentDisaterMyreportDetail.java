@@ -20,24 +20,19 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjMyReportDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoFullDetail;
@@ -89,7 +84,7 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 
     public void updateFragment(String id) {
         this.id = id;
-        user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        user_id = MyApplication.UID;
         okHttpReportDetail();
     }
 

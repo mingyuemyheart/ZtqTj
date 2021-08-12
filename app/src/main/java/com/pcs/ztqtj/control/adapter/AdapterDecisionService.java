@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 专项服务-决策服务-我的服务 getintent()中 subtitle--是否显示副标题：-决策报告- 0为不显示，其他只为显示
+ * 专项服务-决策服务
  */
-public class AdapterServerMyServer extends BaseExpandableListAdapter {
+public class AdapterDecisionService extends BaseExpandableListAdapter {
 
     private Context context;
     public List<ClassList> classList;
@@ -34,7 +34,7 @@ public class AdapterServerMyServer extends BaseExpandableListAdapter {
     private String showSubtitle;
     private MoreClickListener listener;
 
-    public AdapterServerMyServer(Context context, String showSubtitle) {
+    public AdapterDecisionService(Context context, String showSubtitle) {
         this.context = context;
         this.showSubtitle = showSubtitle;
         classList = new ArrayList<>();
@@ -105,11 +105,10 @@ public class AdapterServerMyServer extends BaseExpandableListAdapter {
         HolderGroup holder = null;
         if (convertView == null) {
             holder = new HolderGroup();
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_myserver_group, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.adapter_pdf_list_group, null);
             holder.myserver_group_item = (TextView) convertView.findViewById(R.id.myserver_group_item);
             holder.myserver_group_channel = (TextView) convertView.findViewById(R.id.myserver_group_channel);
             holder.more = (Button) convertView.findViewById(R.id.more);
-            holder.layout_subtitle = (RelativeLayout) convertView.findViewById(R.id.layout_myserver_group_channel);
             convertView.setTag(holder);
         } else {
             holder = (HolderGroup) convertView.getTag();
@@ -126,13 +125,13 @@ public class AdapterServerMyServer extends BaseExpandableListAdapter {
             if (showtype) {
                 String org_channel_name = "-" + classList.get(typePosition.get(typePo).typePosition).channel_name + "-";
                 if (!showSubtitle.equals("0")) {
-                    holder.layout_subtitle.setVisibility(View.VISIBLE);
+                    holder.myserver_group_channel.setVisibility(View.VISIBLE);
                     holder.myserver_group_channel.setText(org_channel_name);
                 } else {
-                    holder.layout_subtitle.setVisibility(View.GONE);
+                    holder.myserver_group_channel.setVisibility(View.GONE);
                 }
             } else {
-                holder.layout_subtitle.setVisibility(View.GONE);
+                holder.myserver_group_channel.setVisibility(View.GONE);
             }
             holder.myserver_group_item.setText(channels.get(groupPosition).org_name + " " + channels.get(groupPosition).channel_name);
         } catch (Exception e) {
@@ -158,15 +157,14 @@ public class AdapterServerMyServer extends BaseExpandableListAdapter {
         TextView myserver_group_item;
         TextView myserver_group_channel;
         Button more;
-        RelativeLayout layout_subtitle;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.item_myserver_child, null);
-        TextView myserver_title = (TextView) convertView.findViewById(R.id.myserver_title);
-        TextView myserver_time = (TextView) convertView.findViewById(R.id.myserver_time);
-        TextView tv_unit_flag = (TextView) convertView.findViewById(R.id.tv_unit_flag);
+        convertView = LayoutInflater.from(context).inflate(R.layout.adapter_pdf_list, null);
+        TextView item_title = (TextView) convertView.findViewById(R.id.item_title);
+        TextView item_data = (TextView) convertView.findViewById(R.id.item_data);
+        TextView tv_warn_info_flag = (TextView) convertView.findViewById(R.id.tv_warn_info_flag);
         String date2 = channels.get(groupPosition).pro_list.get(childPosition).create_time + ":00";
         date2 = date2.replace("年", "-");
         date2 = date2.replace("月", "-");
@@ -182,19 +180,19 @@ public class AdapterServerMyServer extends BaseExpandableListAdapter {
             e.printStackTrace();
         }
 
-        String id = SharedPreferencesUtil.getData(context.getString(R.string.file_download_url) + channels.get(groupPosition).pro_list.get(childPosition).html_url, "");
+        String id = SharedPreferencesUtil.getData(channels.get(groupPosition).pro_list.get(childPosition).html_url, "");
         if (day < 7) {
             if (!TextUtils.isEmpty(id)) {
-                tv_unit_flag.setText("");
+                tv_warn_info_flag.setText("");
             } else {
-                tv_unit_flag.setText("未读");
+                tv_warn_info_flag.setText("未读");
             }
         } else {
-            tv_unit_flag.setText("");
+            tv_warn_info_flag.setText("");
         }
 
-        myserver_title.setText(channels.get(groupPosition).pro_list.get(childPosition).title);
-        myserver_time.setText(channels.get(groupPosition).pro_list.get(childPosition).create_time);
+        item_title.setText(channels.get(groupPosition).pro_list.get(childPosition).title);
+        item_data.setText(channels.get(groupPosition).pro_list.get(childPosition).create_time);
         return convertView;
     }
 

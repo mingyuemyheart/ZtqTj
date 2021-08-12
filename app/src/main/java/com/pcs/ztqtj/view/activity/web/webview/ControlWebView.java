@@ -44,6 +44,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.banner_share.PackShareToServerDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.banner_share.PackShareToServerUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterShareGraiView;
 import com.pcs.ztqtj.control.tool.CommUtils;
@@ -212,8 +213,8 @@ public class ControlWebView {
                 break;
             case resultCode:
                 //         判断是否登录成功。成功则
-                if (!TextUtils.isEmpty(ZtqCityDB.getInstance().getMyInfo().sys_user_id)) {
-                    String userId = "?USER_ID=" + ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+                if (ZtqCityDB.getInstance().isLoginService()) {
+                    String userId = "?USER_ID=" + MyApplication.UID;
                     String pid = "&PID=";
                     PackInitDown packDown = (PackInitDown) PcsDataManager.getInstance().getNetPack(PackInitUp.NAME);
                     if (packDown != null) {
@@ -432,7 +433,7 @@ public class ControlWebView {
 
     //提交分享结果到服务器
     public void commitShareResult(SHARE_MEDIA share_media) {
-        packShareToServerUp.user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        packShareToServerUp.user_id = MyApplication.UID;
         Random rand = new Random();
         packShareToServerUp.req_mid = System.currentTimeMillis() + "" + (1000 + rand.nextInt(8999));
         if (share_media == SHARE_MEDIA.QZONE) {

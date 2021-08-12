@@ -1,110 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 首页天气第4行（生活指数） -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_home_weather_4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_alpha5"
-    android:orientation="vertical">
-    <!-- 分割线 -->
+    android:paddingTop="5dp"
+    android:background="@color/white_alpha5">
+
+    <TextView
+        android:id="@+id/lifeNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="@string/life_number"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/text_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLifeTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lifeNumber"/>
 
     <ImageView
-        android:layout_width="match_parent"
+        android:id="@+id/ivLife"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:adjustViewBounds="true"
+        android:background="@drawable/icon_calendar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lifeNumber" />
+
+    <TextView
+        android:id="@+id/tv_calendar_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_margintop"
-        android:layout_marginBottom="@dimen/activity_margintop"
-        android:background="@color/white_alpha20" />
+        android:layout_marginStart="20dp"
+        android:textColor="@color/text_white"
+        android:textSize="@dimen/dimen15"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLife"
+        app:layout_constraintStart_toEndOf="@+id/ivLife"
+        app:layout_constraintTop_toTopOf="@+id/ivLife" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.pcs.ztqtj.view.myview.MyGridView
+        android:id="@+id/gridView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:orientation="vertical">
+        android:padding="5dp"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:listSelector="@color/alpha100"
+        android:numColumns="2"
+        android:verticalSpacing="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivLife" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/activity_marginleft_right"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:orientation="vertical">
-
-                <!-- 标题 -->
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_marginleft_right"
-                    android:layout_marginRight="@dimen/activity_marginleft_right"
-                    android:text="@string/life_number"
-                    android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_content" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_margintop"
-                    android:layout_marginBottom="@dimen/activity_margintop"
-                    android:background="@drawable/line_common"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <!-- 按钮：更多 -->
-
-            <Button
-                android:id="@+id/btn_more"
-                android:layout_width="35dp"
-                android:layout_height="23dp"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/btn_life_more"
-                android:visibility="invisible" />
-        </RelativeLayout>
-
-        <!-- 分割线 -->
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/activity_margintop"
-            android:layout_marginBottom="@dimen/activity_margintop"
-            android:background="@color/white_alpha20" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/icon_calendar" />
-
-            <TextView
-                android:id="@+id/tv_calendar_content"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:textColor="@color/text_white"
-                android:textSize="@dimen/dimen15" />
-        </LinearLayout>
-
-        <com.pcs.ztqtj.view.myview.MyGridView
-            android:id="@+id/gridView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_margintop"
-            android:layout_marginRight="@dimen/activity_margintop"
-            android:layout_marginBottom="@dimen/activity_margintop"
-            android:gravity="center"
-            android:horizontalSpacing="5dp"
-            android:listSelector="@color/alpha100"
-            android:numColumns="2"
-            android:verticalSpacing="5dp" />
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

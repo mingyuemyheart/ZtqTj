@@ -18,7 +18,6 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -26,9 +25,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -39,15 +35,10 @@ import android.widget.ViewSwitcher;
 import com.iflytek.cloud.RecognizerResult;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackHourForecastUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.voice.PackVoiceDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.YjxxInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
@@ -63,13 +54,12 @@ import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.JsonParser;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
-import com.pcs.ztqtj.view.activity.ActivityCompetitionEntry;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoShow;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
-import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogVoiceButton;
 import com.pcs.ztqtj.view.myview.MainViewPager;
@@ -82,8 +72,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import okhttp3.Call;
@@ -99,7 +87,6 @@ import okhttp3.Response;
  */
 public class CommandMainRow0 extends CommandMainBase {
 
-    private PackLocalUser localUserinfo;
     private ActivityMain mActivity;
     private ViewGroup mRootLayout;
     private ImageFetcher mImageFetcher;
@@ -107,16 +94,10 @@ public class CommandMainRow0 extends CommandMainBase {
     public PopupWindow popVoice;
     private View mRowView;
     private VoiceTool voiceTool;
-    private TextView tvDesc;
-    private TextView textWarn_second;
-    private TextView textWarn;
-    private GridView lv_warn_content;
-    private GridView lv_warn_contents;
-    private LinearLayout lay_yj01;
-    private LinearLayout lay_yj02;
-    private List<String> list;
-    private List<YjxxInfo> list2, list3;
-    private ImageView img_bel_data,img_youth_bigtitle,iv_weather_day;
+    private TextView tvWarning1,tvWarning2;
+    private LinearLayout llWarning1, llWarning2;
+    private List<String> warningNames;
+    private List<YjxxInfo> warningList1, warningList2;
     private TextView tvNews1Title,tvNews1;
     private TextSwitcher tvNews;
     private List<FestivalDto> newsList = new ArrayList<>();
@@ -137,12 +118,10 @@ public class CommandMainRow0 extends CommandMainBase {
 
     @Override
     protected void refresh() {
-//        refreshWeather();
         okHttpWarningImages();
     }
 
     private void initView() {
-        localUserinfo = ZtqCityDB.getInstance().getMyInfo();
         mRowView = LayoutInflater.from(mActivity).inflate(R.layout.item_home_weather_0, null);
         mRowView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         mRootLayout.addView(mRowView);
@@ -162,66 +141,20 @@ public class CommandMainRow0 extends CommandMainBase {
         popVoice.setFocusable(true);
         popVoice.setOutsideTouchable(true);
 
-        View btn;
-        //设置
-        btn = mRowView.findViewById(R.id.lay_bt_setting);
-        btn.setOnClickListener(mOnClick);
-        //分享
-        btn = mRowView.findViewById(R.id.lay_bt_share);
-        btn.setOnClickListener(mOnClick);
+        ImageView ivShare = mRowView.findViewById(R.id.ivShare);
+        ivShare.setOnClickListener(mOnClick);
         //实景
-        btn = mRowView.findViewById(R.id.lay_bt_recommend);
-        btn.setOnClickListener(mOnClick);
-        //报名按钮
-        btn = mRowView.findViewById(R.id.btn_close);
-        btn.setOnClickListener(mOnClick);
-
-        //日历下广告13
-        img_bel_data = mRowView.findViewById(R.id.img_bel_data);
-        img_bel_data.setOnClickListener(mOnClick);
-        //广告14（青运气象）
-        img_youth_bigtitle = mRowView.findViewById(R.id.img_youth_bigtitle);
-        img_youth_bigtitle.setOnClickListener(mOnClick);
-        //日历右边
-        iv_weather_day = mRowView.findViewById(R.id.iv_weather_day);
-        iv_weather_day.setOnClickListener(mOnClick);
-
-        tvDesc = mRowView.findViewById(R.id.tv_desc);
+        ImageView ivCamera = mRowView.findViewById(R.id.ivCamera);
+        ivCamera.setOnClickListener(mOnClick);
 
         //文字
-        textWarn_second = mRowView.findViewById(R.id.text_warn_area_second);
-        textWarn = mRowView.findViewById(R.id.text_warn_area);
-        //预警列表
-        lv_warn_content = mRowView.findViewById(R.id.grid);
-        //预警列表2
-        lv_warn_contents = mRowView.findViewById(R.id.grid_second);
-        lay_yj01 = mRowView.findViewById(R.id.lay_yj01);
-        lay_yj02 = mRowView.findViewById(R.id.lay_yj02);
+        tvWarning1 = mRowView.findViewById(R.id.tvWarning1);
+        tvWarning2 = mRowView.findViewById(R.id.tvWarning2);
+        llWarning1 = mRowView.findViewById(R.id.llWarning1);
+        llWarning2 = mRowView.findViewById(R.id.llWarning2);
 
         okHttpFestival();
         okHttpEvent();
-    }
-
-    /**
-     * 刷新天气
-     */
-    private void refreshWeather() {
-        PackLocalCity packCity = ZtqCityDB.getInstance().getCityMain();
-        if (packCity == null || packCity.ID == null) {
-            return;
-        }
-
-        // 天气描述
-        PackHourForecastUp packHourUp = new PackHourForecastUp();
-        packHourUp.county_id = packCity.ID;
-        PackHourForecastDown down = (PackHourForecastDown) PcsDataManager.getInstance().getNetPack(packHourUp.getName());
-        if(down != null && !TextUtils.isEmpty(down.desc)) {
-            tvDesc.setText(down.desc);
-            tvDesc.setVisibility(View.VISIBLE);
-            tvDesc.setSelected(true);
-        } else {
-            tvDesc.setVisibility(View.GONE);
-        }
     }
 
     boolean flag = false;
@@ -268,11 +201,6 @@ public class CommandMainRow0 extends CommandMainBase {
 
     private boolean checkAudioPermissions() {
         return PermissionsTools.checkPermissions(mActivity, nessaryPermissions, MyConfigure.REQUEST_PERMISSION_AUDIO);
-    }
-
-    //点击设置
-    private void clickSet() {
-        mActivity.showSetting(true);
     }
 
     /**
@@ -613,57 +541,6 @@ public class CommandMainRow0 extends CommandMainBase {
             }
             return fragment.getView();
         }
-    };
-
-    //点击广告
-    private void clickAD(ImageView imageView) {
-        if (imageView.getTag() != null && TextUtils.isEmpty(imageView.getTag().toString())) {
-            return;
-        }
-        String[] tag = imageView.getTag().toString().split(",");
-        if (tag == null) {
-            return;
-        }
-        Intent it = new Intent(mActivity, ActivityWebView.class);
-        it.putExtra("title", tag[0]);
-        it.putExtra("url", tag[1]);
-        it.putExtra("shareContent", tag[0]);
-        mActivity.startActivity(it);
-    }
-
-    /**
-     * 点击跳转世界气象日活动页面
-     */
-    private void clickWeatherDay() {
-//        mPackBannerUp.position_id = "27";
-//        PackBannerDown packDown = (PackBannerDown) PcsDataManager.getInstance().getNetPack(mPackBannerUp.getName());
-//        if (packDown == null || packDown.arrBannerInfo.size() == 0) {
-//            return;
-//        }
-//        Intent intent = new Intent(mActivity, ActivityWeatherDay.class);
-//        intent.putExtra("title", packDown.arrBannerInfo.get(0).title);
-//        intent.putExtra("url", packDown.arrBannerInfo.get(0).url);
-//        intent.putExtra("BannerInfo", packDown.arrBannerInfo.get(0));
-//        mActivity.startActivity(intent);
-    }
-
-    /**
-     * 关闭气象活动栏目
-     */
-    public void clickClose() {
-        View layout = mRowView.findViewById(R.id.layout_weather_day);
-        layout.setVisibility(View.GONE);
-    }
-
-    /**
-     * 开启气象活动栏目
-     */
-    public void clickShow(String url, String title) {
-        View layout = mRowView.findViewById(R.id.layout_weather_day);
-        ImageView iv = mRowView.findViewById(R.id.iv_weather_day);
-        url = mActivity.getResources().getString(R.string.file_download_url) + url;
-        mImageFetcher.loadImage(url, iv, ImageConstant.ImageShowType.SRC);
-        layout.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -673,17 +550,13 @@ public class CommandMainRow0 extends CommandMainBase {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                //设置
-                case R.id.lay_bt_setting:
-                    clickSet();
-                    break;
                 //分享
-                case R.id.lay_bt_share:
+                case R.id.ivShare:
                     okHttpWeekData();
                     break;
                 //实景
-                case R.id.lay_bt_recommend:
-                    if (TextUtils.isEmpty(localUserinfo.sys_user_id)) {
+                case R.id.ivCamera:
+                    if (!ZtqCityDB.getInstance().isLoginService()) {
                         Intent intent = new Intent(mActivity, ActivityLogin.class);
                         mActivity.startActivityForResult(intent, CONST.RESULT_LOGIN);
                     } else {
@@ -693,78 +566,9 @@ public class CommandMainRow0 extends CommandMainBase {
                         mActivity.startActivity(intent);
                     }
                     break;
-                //日历入口
-                case R.id.calender_enter:
-                    //clickCalenderEnter();
-                    break;
-                //广告14（青运气象）
-                case R.id.img_youth_bigtitle:
-                    clickAD(img_youth_bigtitle);
-                    break;
-                //广告11
-                case R.id.img_bel_data:
-                    clickAD(img_bel_data);
-                    break;
-                //报名按钮
-                case R.id.btn_competition:
-                    mActivity.startActivity(new Intent(mActivity, ActivityCompetitionEntry.class));
-                    break;
-                // 世界气象日活动
-                case R.id.iv_weather_day:
-                    clickWeatherDay();
-                    break;
-                case R.id.btn_close:
-                    clickClose();
-                    break;
             }
         }
     };
-
-//    DialogTwoButton dialogLogin = null;
-//    private void showLoginDialog() {
-//        TextView view = (TextView) LayoutInflater.from(mActivity).inflate(R.layout.dialog_message, null);
-//        view.setText("该功能仅限内部人员使用，请先登录！");
-//
-//        dialogLogin = new DialogTwoButton(mActivity,
-//                view, "返回", "登录", new DialogFactory.DialogListener() {
-//            @Override
-//            public void click(String str) {
-//                dialogLogin.dismiss();
-//                if (str.equals("返回")) {
-//
-//                } else if (str.equals("登录")) {
-//                    Intent intent = new Intent(mActivity, ActivityPhotoLogin.class);
-//                    mActivity.startActivity(intent);
-//                }
-//            }
-//        });
-//        dialogLogin.show();
-//    }
-//
-//    private DialogOneButton dialogPermission = null;
-//    private void showNoPermission() {
-//        TextView view = (TextView) LayoutInflater.from(mActivity).inflate(R.layout.dialog_message, null);
-//        view.setText("暂无此权限！");
-//        dialogPermission = new DialogOneButton(mActivity, view, "确定", new DialogFactory.DialogListener() {
-//            @Override
-//            public void click(String str) {
-//                dialogPermission.dismiss();
-//            }
-//        });
-//        dialogPermission.show();
-//    }
-//
-//    private void checkPermission() {
-//        if(ZtqCityDB.getInstance().isLoginService()) {
-//            if(ZtqCityDB.getInstance().isServiceAccessible()) {
-//                clickAD("13");
-//            } else {
-//                showNoPermission();
-//            }
-//        } else {
-//            showLoginDialog();
-//        }
-//    }
 
     private DialogVoiceButton dialogVoiceButton;
     private boolean isPlay = false;
@@ -801,38 +605,11 @@ public class CommandMainRow0 extends CommandMainBase {
         }
     }
 
-    private HashMap<String, String> mIatResults = new LinkedHashMap<>();
-    private List<PackLocalCity> lists = new ArrayList<>();
     private String errorString = "没查到该城市天气信息";
     public void printResult(RecognizerResult results) {
         String text = JsonParser.parseIatResult(results.getResultString());
-        String sn = null;
-        // 读取json结果中的sn字段
-        try {
-            JSONObject resultJson = new JSONObject(results.getResultString());
-            sn = resultJson.optString("sn");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        mIatResults.put(sn, text);
-
-        StringBuffer resultBuffer = new StringBuffer();
-        for (String key : mIatResults.keySet()) {
-            resultBuffer.append(mIatResults.get(key));
-        }
-        lists.clear();
-        lists.addAll(ZtqCityDB.getInstance().searchCityConfirm(resultBuffer.toString()));
-        if (TextUtils.isEmpty(resultBuffer.toString())) {
-            voiceTool.readResult(errorString);
-        } else if (lists.size() == 0 || lists == null) {
-            mActivity.showProgressDialog();
-            voiceTool.readResult(errorString);
-            mActivity.dismissProgressDialog();
-        } else {
-            isPopVoice = false;
-            okHttpSound();
-        }
+        isPopVoice = false;
+        okHttpSound(text);
     }
 
     public void dismissPopupWindow() {
@@ -846,51 +623,6 @@ public class CommandMainRow0 extends CommandMainBase {
         ConnectivityManager connectivityManager = (ConnectivityManager) mActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI;
-    }
-
-    /**
-     * 首页预警图标适配器
-     */
-    private class Warn_infoAdapter extends BaseAdapter {
-
-        private Context mContext;
-        private ImageView iv_warn_content;
-        private List<YjxxInfo> mList;
-        private ImageFetcher imageFetcher;
-
-        public Warn_infoAdapter(Context context, List<YjxxInfo> list, ImageFetcher imageFetcher) {
-            super();
-            this.mContext = context;
-            this.mList = list;
-            this.imageFetcher = imageFetcher;
-        }
-
-        @Override
-        public int getCount() {
-            return mList.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return i;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            view = LayoutInflater.from(mContext).inflate(R.layout.list_warn_main, null);
-            iv_warn_content = view.findViewById(R.id.iv_warn_content);
-            if (imageFetcher != null && mList.size() > i) {
-                String path = "img_warn/" + mList.get(i).ico + ".png";
-                BitmapDrawable bitmapDrawable = imageFetcher.getImageCache().getBitmapFromAssets(path);
-                iv_warn_content.setImageDrawable(bitmapDrawable);
-            }
-            return view;
-        }
     }
 
     /**
@@ -1018,9 +750,12 @@ public class CommandMainRow0 extends CommandMainBase {
      * 获取预警，首页预警图标
      */
     private void okHttpWarningImages() {
+        tvWarning1.setVisibility(View.GONE);
+        llWarning1.setVisibility(View.GONE);
+        tvWarning2.setVisibility(View.GONE);
+        llWarning2.setVisibility(View.GONE);
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
-        if(city == null) {
-            lv_warn_content.setVisibility(View.GONE);
+        if (city == null) {
             return;
         }
         new Thread(new Runnable() {
@@ -1050,7 +785,7 @@ public class CommandMainRow0 extends CommandMainBase {
                             mActivity.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-//                                    Log.e("yjxx_index_fb_list", result);
+                                    Log.e("yjxx_index_fb_list", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -1062,86 +797,79 @@ public class CommandMainRow0 extends CommandMainBase {
                                                         PackYjxxIndexFbDown packYjxxDown = new PackYjxxIndexFbDown();
                                                         packYjxxDown.fillData(listobj.toString());
                                                         if (packYjxxDown == null) {
-                                                            lay_yj01.setVisibility(View.GONE);
-                                                            lay_yj02.setVisibility(View.GONE);
                                                             return;
                                                         }
-                                                        list = packYjxxDown.list;
-                                                        list2 = packYjxxDown.list_2;
-                                                        list3 = packYjxxDown.list_3;
-                                                        if (list == null || list.size() == 0) {
-                                                            lay_yj01.setVisibility(View.GONE);
-                                                            lay_yj02.setVisibility(View.GONE);
+                                                        warningNames = packYjxxDown.list;
+                                                        warningList1 = packYjxxDown.list_2;
+                                                        warningList2 = packYjxxDown.list_3;
+                                                        if (warningNames == null || warningNames.size() == 0) {
                                                             return;
                                                         }
-                                                        if (list2 == null || list2.size() == 0) {
-                                                            lay_yj01.setVisibility(View.GONE);
-                                                            lay_yj02.setVisibility(View.GONE);
-                                                            return;
-                                                        }
-                                                        lay_yj01.setVisibility(View.VISIBLE);
-                                                        lay_yj02.setVisibility(View.VISIBLE);
-                                                        textWarn.setText(list.get(0));
-                                                        textWarn.setBackgroundResource(R.drawable.border_all_alpha_white);
-                                                        int size = list2.size();
-                                                        int length = 50;
-                                                        DisplayMetrics dm = new DisplayMetrics();
-                                                        mActivity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                                                        float density = dm.density;
-                                                        int gridviewWidth = (int) (size * (length + 4) * density);
-                                                        int itemWidth = (int) (length * density);
 
-                                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(gridviewWidth, 300);
-                                                        lv_warn_content.setLayoutParams(params); // 设置GirdView布局参数,横向布局的关键
-                                                        lv_warn_content.setColumnWidth(itemWidth); // 设置列表项宽
-                                                        lv_warn_content.setHorizontalSpacing(5); // 设置列表项水平间距
-                                                        lv_warn_content.setVerticalSpacing(-3);
-                                                        lv_warn_content.setStretchMode(GridView.NO_STRETCH);
-                                                        lv_warn_content.setNumColumns(size); // 设置列数量=列表集合数
+                                                        if (warningList1 == null || warningList1.size() == 0) {
+                                                            return;
+                                                        }
 
-                                                        Warn_infoAdapter adapter = new Warn_infoAdapter(mActivity, list2, mImageFetcher);
-                                                        lv_warn_content.setAdapter(adapter);
-                                                        lv_warn_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                                            @Override
-                                                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                                                intentWarningCenter(false, list2.get(i).id);
+                                                        tvWarning1.setVisibility(View.VISIBLE);
+                                                        llWarning1.setVisibility(View.VISIBLE);
+                                                        tvWarning1.setText(warningNames.get(0));
+                                                        tvWarning1.setBackgroundResource(R.drawable.border_all_alpha_white);
+
+                                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)CommonUtil.dip2px(mActivity, 45), (int)CommonUtil.dip2px(mActivity, 45));
+                                                        params.leftMargin = (int)CommonUtil.dip2px(mActivity, 5);
+                                                        llWarning1.removeAllViews();
+                                                        for (int i = 0; i < warningList1.size(); i++) {
+                                                            YjxxInfo dto = warningList1.get(i);
+                                                            ImageView ivWarning = new ImageView(mActivity);
+                                                            ivWarning.setTag(dto.id);
+                                                            if (mImageFetcher != null) {
+                                                                String path = "img_warn/" + dto.ico + ".png";
+                                                                BitmapDrawable bitmapDrawable = mImageFetcher.getImageCache().getBitmapFromAssets(path);
+                                                                ivWarning.setImageDrawable(bitmapDrawable);
+                                                                ivWarning.setLayoutParams(params);
+                                                                llWarning1.addView(ivWarning);
+                                                                ivWarning.setOnClickListener(new View.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(View v) {
+                                                                        intentWarningCenter(false, v.getTag()+"");
+                                                                    }
+                                                                });
                                                             }
-                                                        });
-                                                        if (list3 == null || list3.size() == 0) {
-                                                            lay_yj01.setVisibility(View.GONE);
+                                                        }
+
+                                                        if (warningList2 == null || warningList2.size() == 0) {
                                                             return;
                                                         }
-                                                        int gridviewWidth2 = (int) (list3.size() * (length + 4) * density);
-                                                        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(gridviewWidth2, 300);
-                                                        lay_yj01.setVisibility(View.VISIBLE);
-                                                        textWarn_second.setText(list.get(1));
-                                                        textWarn_second.setBackgroundResource(R.drawable.border_all_alpha_white);
-                                                        int sizes = list3.size();
+                                                        tvWarning2.setVisibility(View.VISIBLE);
+                                                        llWarning2.setVisibility(View.VISIBLE);
+                                                        tvWarning2.setText(warningNames.get(1));
+                                                        tvWarning2.setBackgroundResource(R.drawable.border_all_alpha_white);
 
-                                                        lv_warn_contents.setLayoutParams(params2); // 设置GirdView布局参数,横向布局的关键
-                                                        lv_warn_contents.setColumnWidth(itemWidth); // 设置列表项宽
-                                                        lv_warn_contents.setHorizontalSpacing(5); // 设置列表项水平间距
-                                                        lv_warn_contents.setVerticalSpacing(-3);
-                                                        lv_warn_contents.setStretchMode(GridView.NO_STRETCH);
-                                                        lv_warn_contents.setNumColumns(sizes); // 设置列数量=列表集合数
-
-                                                        Warn_infoAdapter adapterS = new Warn_infoAdapter(mActivity, list3, mImageFetcher);
-                                                        lv_warn_contents.setAdapter(adapterS);
-                                                        lv_warn_contents.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                                            @Override
-                                                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                                                intentWarningCenter(true, list3.get(i).id);
+                                                        llWarning2.removeAllViews();
+                                                        for (int i = 0; i < warningList2.size(); i++) {
+                                                            YjxxInfo dto = warningList2.get(i);
+                                                            ImageView ivWarning = new ImageView(mActivity);
+                                                            ivWarning.setTag(dto.id);
+                                                            if (mImageFetcher != null) {
+                                                                String path = "img_warn/" + dto.ico + ".png";
+                                                                BitmapDrawable bitmapDrawable = mImageFetcher.getImageCache().getBitmapFromAssets(path);
+                                                                ivWarning.setImageDrawable(bitmapDrawable);
+                                                                ivWarning.setLayoutParams(params);
+                                                                llWarning2.addView(ivWarning);
+                                                                ivWarning.setOnClickListener(new View.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(View v) {
+                                                                        intentWarningCenter(false, v.getTag()+"");
+                                                                    }
+                                                                });
                                                             }
-                                                        });
+                                                        }
                                                     }
                                                 }
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-                                    } else {
-                                        lay_yj01.setVisibility(View.GONE);
-                                        lay_yj02.setVisibility(View.GONE);
                                     }
                                 }
                             });
@@ -1167,9 +895,10 @@ public class CommandMainRow0 extends CommandMainBase {
     /**
      * 获取实况语音
      */
-    private void okHttpSound() {
-        final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
-        if(city == null) {
+    private void okHttpSound(String name) {
+        final PackLocalCity city = ZtqCityDB.getInstance().getCityInfoInAllCity(name);
+        if (city == null) {
+            voiceTool.readResult(errorString);
             return;
         }
         new Thread(new Runnable() {
@@ -1207,33 +936,26 @@ public class CommandMainRow0 extends CommandMainBase {
                                                 if (!bobj.isNull("sstq_yy")) {
                                                     JSONObject sstq_yy = bobj.getJSONObject("sstq_yy");
                                                     if (!TextUtil.isEmpty(sstq_yy.toString())) {
-                                                        PackVoiceDown down = new PackVoiceDown();
-                                                        down.fillData(sstq_yy.toString());
-                                                        if (down == null) {
-                                                            return;
-                                                        }
-                                                        lists.clear();
-                                                        String str = down.desc.replace("-", "零下");
-                                                        //格式化语音报读数字
-                                                        if (str.contains("12") || str.contains("22") || str.contains("32") || str.contains("42") || str
-                                                                .contains("12.2") || str
-                                                                .contains("22.2") || str.contains("32.2") || str.contains("42.2")) {
-
-                                                        } else {
-                                                            if (str.contains("2.2")) {
-                                                                str = str.replace("2.2", "二点二");
+                                                        if (!sstq_yy.isNull("desc")) {
+                                                            String desc = sstq_yy.getString("desc");
+                                                            String str = desc.replace("-", "零下");
+                                                            //格式化语音报读数字
+                                                            if (str.contains("12") || str.contains("22") || str.contains("32") || str.contains("42") || str
+                                                                    .contains("12.2") || str.contains("22.2") || str.contains("32.2") || str.contains("42.2")) {
                                                             } else {
-                                                                if (str.contains("2.")) {
-                                                                    str = str.replace("2.", "二点");
+                                                                if (str.contains("2.2")) {
+                                                                    str = str.replace("2.2", "二点二");
+                                                                } else {
+                                                                    if (str.contains("2.")) {
+                                                                        str = str.replace("2.", "二点");
+                                                                    }
                                                                 }
                                                             }
-                                                        }
-                                                        str = str.replace(".2", "点二");
-                                                        str = str.replace(".", "点");
-                                                        View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_message, null);
-                                                        TextView dialogmessage = view.findViewById(R.id.dialogmessage);
-                                                        dialogmessage.setText(down.desc);
-                                                        if (dialogVoiceButton == null) {
+                                                            str = str.replace(".2", "点二");
+                                                            str = str.replace(".", "点");
+                                                            View view = LayoutInflater.from(mActivity).inflate(R.layout.dialog_message, null);
+                                                            TextView dialogmessage = view.findViewById(R.id.dialogmessage);
+                                                            dialogmessage.setText(desc);
                                                             dialogVoiceButton = new DialogVoiceButton(mActivity, view, "关闭", new DialogFactory.DialogListener() {
                                                                 @Override
                                                                 public void click(String str) {
@@ -1242,11 +964,11 @@ public class CommandMainRow0 extends CommandMainBase {
                                                                     }
                                                                 }
                                                             });
+                                                            if (!dialogVoiceButton.isShowing()) {
+                                                                dialogVoiceButton.show();
+                                                            }
+                                                            voiceTool.readResult(str);
                                                         }
-                                                        if (!dialogVoiceButton.isShowing()) {
-                                                            dialogVoiceButton.show();
-                                                        }
-                                                        voiceTool.readResult(str);
                                                     }
                                                 }
                                             }

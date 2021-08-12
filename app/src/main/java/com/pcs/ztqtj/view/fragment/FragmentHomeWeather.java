@@ -5,13 +5,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -36,7 +37,6 @@ import com.pcs.ztqtj.control.main_weather.CommandMainRow0;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow1;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow3;
 import com.pcs.ztqtj.control.main_weather.CommandMainRow4;
-import com.pcs.ztqtj.control.main_weather.CommandMainRow5;
 import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
@@ -118,12 +118,10 @@ public class FragmentHomeWeather extends SupportMapFragment {
                 .getWindowManager(), mPulldownView, myRefreshView,
                 mOtherRefreshAnim, mMyInterfaceScrollView);
         mScrollView.setOnTouchListener(mListenerRefreshTouch);
-        View btnCityList = mView.findViewById(R.id.layout_top_left);
-        View btn_citylist = mView.findViewById(R.id.btn_citylist);
-        LinearLayout lay_bt_setting = mView.findViewById(R.id.lay_bt_setting);
-        lay_bt_setting.setOnClickListener(mOnClick);
-        btnCityList.setOnClickListener(mOnClick);
-        btn_citylist.setOnClickListener(mOnClick);
+        ConstraintLayout clTop = mView.findViewById(R.id.clTop);
+        clTop.setOnClickListener(mOnClick);
+        ImageView ivSetting = mView.findViewById(R.id.ivSetting);
+        ivSetting.setOnClickListener(mOnClick);
     }
 
     @Override
@@ -209,8 +207,8 @@ public class FragmentHomeWeather extends SupportMapFragment {
         if (cityMain == null) {
             return;
         }
-        TextView text_cityname = (TextView) mView.findViewById(R.id.text_cityname);
-        TextView text_street = (TextView) mView.findViewById(R.id.text_cityname_street);
+        TextView tvCity = mView.findViewById(R.id.tvCity);
+        TextView tvStreet = mView.findViewById(R.id.tvStreet);
         PackLocalCityLocation packLocalCityLocation = ZtqLocationTool.getInstance().getLocationCity();
 
         //获取定位信息
@@ -235,8 +233,8 @@ public class FragmentHomeWeather extends SupportMapFragment {
                 }
             }
             streen = mRegeocode.getFormatAddress() + "附近";
-            text_street.setText(streen);
-            text_street.setVisibility(View.VISIBLE);
+            tvStreet.setText(streen);
+            tvStreet.setVisibility(View.VISIBLE);
         } else {
             String province = "", city = "", dis = "";
             if (provinceInfo != null) {
@@ -257,10 +255,10 @@ public class FragmentHomeWeather extends SupportMapFragment {
                     cityName += province + "." + city + "." + dis;
                 }
             }
-            text_street.setVisibility(View.GONE);
+            tvStreet.setVisibility(View.GONE);
         }
-        text_cityname.setText(cityName);
-        ActivityAirQualityQuery.setTitel(text_cityname.getText().toString());
+        tvCity.setText(cityName);
+        ActivityAirQualityQuery.setTitel(tvCity.getText().toString());
     }
 
     /**
@@ -277,7 +275,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
         mDataCommand.addCommand(commandMain7DaysWeather);
         mDataCommand.addCommand(new CommandMainRow3(getActivity(), rootLayout, mImageFetcher, savedInstanceState));
         mDataCommand.addCommand(new CommandMainRow4(getActivity(), rootLayout, mImageFetcher));
-        mDataCommand.addCommand(new CommandMainRow5(getActivity(), rootLayout, mImageFetcher));
         mDataCommand.execute();
     }
 
@@ -446,11 +443,10 @@ public class FragmentHomeWeather extends SupportMapFragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.btn_citylist:
-                case R.id.layout_top_left:
+                case R.id.clTop:
                     showCityManager();
                     break;
-                case R.id.lay_bt_setting:
+                case R.id.ivSetting:
                     showSetting();
                     break;
                 default:

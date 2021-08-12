@@ -4,21 +4,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryUp;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.help.ActivityHelp;
 import com.pcs.ztqtj.view.activity.service.AcitvityServeLogin;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackServiceLoginQueryUp;
 
 /**
  * 专项服务-决策服务-我的服务
@@ -49,8 +50,6 @@ public class ServiceLoginTool {
      * @param listener
      */
     public void createAlreadyLogined(Context context, final DialogClickListener listener) {
-        // 删除当前气象服务用户信息
-        ZtqCityDB.getInstance().removeMyInfo();
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_message, null);
         TextView tv = (TextView) view.findViewById(R.id.dialogmessage);
         tv.setText(context.getResources().getString(R.string.promess_service_intro));
@@ -119,12 +118,11 @@ public class ServiceLoginTool {
      * 请求登录状态查询
      */
     public void reqLoginQuery() {
-        PackLocalUser info = ZtqCityDB.getInstance().getMyInfo();
-        if(info == null) {
+        if (!ZtqCityDB.getInstance().isLoginService()) {
             return;
         }
         loginQueryUp = new PackServiceLoginQueryUp();
-        loginQueryUp.user_id = info.user_id;
+        loginQueryUp.user_id = MyApplication.UID;
         PcsDataDownload.addDownload(loginQueryUp);
     }
 

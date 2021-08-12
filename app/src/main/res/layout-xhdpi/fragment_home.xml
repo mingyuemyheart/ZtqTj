@@ -1,74 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- 标题栏 -->
-
-    <LinearLayout
-        android:id="@+id/layout_top_left"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/clTop"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/btn_citylist"
+        <ImageView
+            android:id="@+id/ivAdd"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/btn_add_sel"
-            android:textColor="@color/text_white" />
+            android:src="@drawable/btn_add_sel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            app:layout_constraintTop_toTopOf="@+id/ivAdd"
+            app:layout_constraintBottom_toBottomOf="@+id/ivAdd"
+            app:layout_constraintStart_toEndOf="@+id/ivAdd"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/dimen5"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_cityname"
+                android:id="@+id/tvCity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_white"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/text_cityname_street"
+                android:id="@+id/tvStreet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/text_white"
-                android:textSize="13dp" />
+                android:textSize="13sp" />
+
         </LinearLayout>
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/lay_bt_setting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@mipmap/bt_setting" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/ivSetting"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"
+        android:src="@mipmap/bt_setting"
+        app:layout_constraintBottom_toBottomOf="@+id/clTop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/clTop" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/layout_top_left"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clTop">
 
         <!-- 下拉刷新视图 -->
 
@@ -81,15 +83,12 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!-- 图标 -->
-
             <ImageView
                 android:id="@+id/image_pulldown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/icon_pullwodn_arrow" />
-            <!-- 文字 -->
 
             <TextView
                 android:id="@+id/text_pulldown"
@@ -117,4 +116,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

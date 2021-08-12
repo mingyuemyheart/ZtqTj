@@ -3,9 +3,7 @@ package com.pcs.ztqtj.control.main_weather;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +24,6 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackForecastWeatherTipDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
 import com.pcs.ztqtj.MyApplication;
@@ -82,7 +79,6 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
     private PackWarningCenterYJXXGridIndexDown packDown = null;
     // Bundle
     private Bundle mSavedInstanceState;
-    private TextView tvTip;
 
     public CommandMainRow3(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher, Bundle savedInstanceState) {
         mActivity = (ActivityMain) activity;
@@ -109,13 +105,6 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
     private void initView(View view) {
         Button btn_maps = (Button) view.findViewById(R.id.btn_maps);
         btn_maps.setOnClickListener(mOnBtnMapClick);
-        tvTip = mRootLayout.findViewById(R.id.text_tip);
-
-        String strTip = mActivity.getResources().getString(R.string.map_forecast_tip_init);
-        tvTip.setText(mActivity.getResources().getString(R.string.map_forecast_tip) + strTip);
-
-//        refreshLocation();
-//        okHttpGridWarning();
     }
 
     /**
@@ -123,7 +112,7 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
      */
     private void initMap(View view) {
         if (mAMap == null) {
-            mMapView = view.findViewById(R.id.map);
+            mMapView = view.findViewById(R.id.mapView);
             mMapView.onCreate(mSavedInstanceState);
             //mMapView.onResume();
 
@@ -159,12 +148,12 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
     private void refreshLocation() {
         // 地名
         TextView textView = (TextView) mRootLayout.findViewById(R.id.text_im_here);
-        textView.setText(mActivity.getResources().getString(R.string.locating) + "定位中...");
+        textView.setText(mActivity.getResources().getString(R.string.locating) + "定位中..."+"\n" + mActivity.getString(R.string.map_forecast_tip_init));
         LatLng latLng = ZtqLocationTool.getInstance().getLatLng();
         if (latLng == null) {
             return;
         }
-        mMapView = mRootLayout.findViewById(R.id.map);
+        mMapView = mRootLayout.findViewById(R.id.mapView);
         mAMap = mMapView.getMap();
         // 标记
         if (mMarker != null) {
@@ -173,7 +162,7 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
         showPosition(latLng);
         RegeocodeAddress regeocodeAddress = ZtqLocationTool.getInstance().getSearchAddress();
         if (regeocodeAddress != null) {
-            textView.setText((mActivity.getResources().getString(R.string.locating)) + regeocodeAddress.getFormatAddress());
+            textView.setText((mActivity.getResources().getString(R.string.locating)) + regeocodeAddress.getFormatAddress() +"\n" + mActivity.getString(R.string.map_forecast_tip_init));
         }
     }
 
@@ -289,8 +278,6 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                                                                 adapter.notifyDataSetChanged();
                                                             }
                                                         }
-
-//                                                        okHttpTip(PackForecastWeatherTipUp.NAME);
                                                     }
                                                 }
                                             }
@@ -305,58 +292,6 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-        }).start();
-    }
-
-    /**
-     * 获取提示
-     */
-    private void okHttpTip(final String name) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String url = CONST.BASE_URL+name;
-                Log.e("jc_forecast_weather_tip", url);
-                OkHttpUtil.enqueue(new Request.Builder().url(url).build(), new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    }
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        if (!response.isSuccessful()) {
-                            return;
-                        }
-                        final String result = response.body().string();
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!TextUtil.isEmpty(result)) {
-                                    try {
-                                        JSONObject obj = new JSONObject(result);
-                                        if (!obj.isNull("b")) {
-                                            JSONObject bobj = obj.getJSONObject("b");
-                                            if (!bobj.isNull("jc_forecast_weather_tip")) {
-                                                JSONObject listobj = bobj.getJSONObject("jc_forecast_weather_tip");
-                                                if (!TextUtil.isEmpty(listobj.toString())) {
-                                                    String strTip = mActivity.getResources().getString(R.string.map_forecast_tip_init);
-                                                    PackForecastWeatherTipDown packForecastWeatherTipDown = new PackForecastWeatherTipDown();
-                                                    packForecastWeatherTipDown.fillData(listobj.toString());
-                                                    if (packForecastWeatherTipDown != null) {
-                                                        strTip = packForecastWeatherTipDown.tip;
-                                                    }
-                                                    tvTip.setText(mActivity.getResources().getString(R.string.map_forecast_tip) + strTip);
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        });
-                    }
-                });
             }
         }).start();
     }

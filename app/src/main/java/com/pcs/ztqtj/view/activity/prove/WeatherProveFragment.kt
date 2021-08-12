@@ -15,6 +15,7 @@ import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.OkHttpUtil
+import com.pcs.ztqtj.view.fragment.BaseFragment
 import kotlinx.android.synthetic.main.fragment_weather_prove.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -25,7 +26,7 @@ import java.io.IOException
 /**
  * 气象证明
  */
-class WeatherProveFragment: Fragment() {
+class WeatherProveFragment: BaseFragment() {
 
     private val dataList: ArrayList<ProveDto> = ArrayList()
     private var mAdapter: WeatherProveAdapter? = null

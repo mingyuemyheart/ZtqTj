@@ -128,11 +128,12 @@ public class MyApplication extends MultiDexApplication {
         }
     };
 
+    public static String offline = "offline";
     //本地保存用户信息参数
     public static String USERNAME = "";
     public static String PASSWORD = "";
-    public static String TOKEN = "offline";
-    public static String UID = "";
+    public static String TOKEN = offline;
+    public static String UID = offline;
     public static String NAME = "";//用户名字
     public static String PARTMENT = "";//部门
     public static String DUTY = "";//职务
@@ -162,10 +163,10 @@ public class MyApplication extends MultiDexApplication {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        UID = "";
+        UID = offline;
         USERNAME = "";
         PASSWORD = "";
-        TOKEN = "offline";
+        TOKEN = offline;
         NAME = "";
         PARTMENT = "";
         DUTY = "";
@@ -198,68 +199,16 @@ public class MyApplication extends MultiDexApplication {
      */
     public static void getUserInfo(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(USERINFO, Context.MODE_PRIVATE);
-        UID = sharedPreferences.getString(UserInfo.uId, "");
+        UID = sharedPreferences.getString(UserInfo.uId, offline);
         USERNAME = sharedPreferences.getString(UserInfo.userName, "");
         PASSWORD = sharedPreferences.getString(UserInfo.passWord, "");
-        TOKEN = sharedPreferences.getString(UserInfo.token, "offline");
+        TOKEN = sharedPreferences.getString(UserInfo.token, offline);
         NAME = sharedPreferences.getString(UserInfo.name, "");
         PARTMENT = sharedPreferences.getString(UserInfo.partment, "");
         DUTY = sharedPreferences.getString(UserInfo.duty, "");
         MOBILE = sharedPreferences.getString(UserInfo.mobile, "");
         PORTRAIT = sharedPreferences.getString(UserInfo.portrait, "");
         LIMITINFO = sharedPreferences.getString(UserInfo.limitInfo, "");
-
-        okHttpLogin(context);
-    }
-
-    /**
-     * 游客用户登录
-     */
-    private static void okHttpLogin(final Context context) {
-        if (!TextUtil.isEmpty(TOKEN)) {//已登录状态
-            return;
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject param = new JSONObject();
-                    param.put("token", "offline");
-                    String json = param.toString();
-                    String url = CONST.BASE_URL+"user/offline";
-                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                        }
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                return;
-                            }
-                            final String result = response.body().string();
-                            if (!TextUtils.isEmpty(result)) {
-                                try {
-                                    JSONObject obj = new JSONObject(result);
-                                    if (!obj.isNull("token")) {
-                                        MyApplication.TOKEN = obj.getString("token");
-                                        Log.e("token", MyApplication.TOKEN);
-                                    }
-                                    if (!obj.isNull("limitInfo")) {
-                                        MyApplication.LIMITINFO = obj.getString("limitInfo");
-                                    }
-                                    MyApplication.saveUserInfo(context);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     private void initUmeng() {

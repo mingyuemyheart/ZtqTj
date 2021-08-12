@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalInit;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.command.CommandBatching;
 import com.pcs.ztqtj.control.command.InterCommand;
@@ -196,9 +197,6 @@ public class ActivityLoading extends FragmentActivityBase {
         SharedPreferences shared = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
         boolean first = shared.getBoolean("first", true);
         if(first) {
-            if(ZtqCityDB.getInstance().isLoginService()) {
-                ZtqCityDB.getInstance().removeMyInfo();
-            }
             SharedPreferences.Editor editor = shared.edit();
             editor.putBoolean("first", false);
             editor.apply();

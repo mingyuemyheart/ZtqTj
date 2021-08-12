@@ -122,7 +122,7 @@ public class Hour24View extends View {
 
         // 边线
         mline3Paint = new Paint();
-        mline3Paint.setColor(Color.argb(175, 170, 170, 170));
+        mline3Paint.setColor(0x19FFFFFF);
         mline3Paint.setAntiAlias(true);
         mline3Paint.setStrokeWidth(2);
 

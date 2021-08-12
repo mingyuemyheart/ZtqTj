@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
+import com.pcs.ztqtj.model.ZtqCityDB
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.ColumnDto
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase
@@ -81,7 +81,7 @@ class ActivityServerHyqx : FragmentActivityZtqBase() {
             val holder: Holder
             if (view == null) {
                 holder = Holder()
-                view = LayoutInflater.from(mContext).inflate(R.layout.item_server_second, null)
+                view = LayoutInflater.from(mContext).inflate(R.layout.adapter_special_service, null)
                 holder.itemImageView = view.findViewById<View>(R.id.itemImageView) as ImageView
                 holder.itemimageview_top = view.findViewById<View>(R.id.itemimageview_top) as ImageView
                 holder.itemName = view.findViewById<View>(R.id.itemName) as TextView
@@ -135,7 +135,7 @@ class ActivityServerHyqx : FragmentActivityZtqBase() {
                         startActivity(intent)
                     }
                     "101030302020301" -> {//农情苗情速报
-                        if (TextUtils.isEmpty(MyApplication.UID)) {
+                        if (!ZtqCityDB.getInstance().isLoginService()) {
                             intent = Intent(mContext, ActivityLogin::class.java)
                             startActivityForResult(intent, CONST.RESULT_LOGIN)
                         } else {

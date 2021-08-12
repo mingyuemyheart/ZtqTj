@@ -6,16 +6,13 @@ import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUser;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUserInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggestListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSuggestListUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.SuggestListInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.set.abs_feed_tu.AbsActivityFeekTu;
 
 import java.util.ArrayList;
@@ -66,12 +63,8 @@ public class AcitvityFeedBack extends AbsActivityFeekTu {
             PackSuggDown down = (PackSuggDown) PcsDataManager.getInstance().getNetPack(nameStr);
             if (down != null && down.result.equals("1")) {
                 Toast.makeText(AcitvityFeedBack.this, "您反馈的意见已收录！感谢您的建议！", Toast.LENGTH_SHORT).show();
-                PackLocalUser myUserInfo = ZtqCityDB.getInstance().getMyInfo();
-                if (TextUtils.isEmpty(myUserInfo.mobile)) {
-                    myUserInfo.mobile = phoneNum;
-                    PackLocalUserInfo packLocalUserInfo = new PackLocalUserInfo();
-                    packLocalUserInfo.currUserInfo = myUserInfo;
-                    ZtqCityDB.getInstance().setMyInfo(packLocalUserInfo);
+                if (TextUtils.isEmpty(MyApplication.MOBILE)) {
+                    MyApplication.MOBILE = phoneNum;
                 }
                 cleanUpInfo();
                 reqComment();
@@ -96,9 +89,8 @@ public class AcitvityFeedBack extends AbsActivityFeekTu {
         showProgressDialog();
         uppack = new PackSuggUp();
         uppack.call_way = contact;
-        uppack.user_id = ZtqCityDB.getInstance().getMyInfo().sys_user_id;
-        if (TextUtils.isEmpty(
-                ZtqCityDB.getInstance().getMyInfo().mobile)) {
+        uppack.user_id = MyApplication.UID;
+        if (TextUtils.isEmpty(MyApplication.MOBILE)) {
             uppack.is_bd = "1";
             uppack.mobile = contact;
         }

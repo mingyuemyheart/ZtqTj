@@ -158,7 +158,7 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
      * 初始化控件
      */
     private void initView() {
-        user_id =ZtqCityDB.getInstance().getMyInfo().sys_user_id;
+        user_id = MyApplication.UID;
         tv_disaster_type = (TextView) getView().findViewById(R.id.tv_disaster_type);
         tv_disaster_type.setOnClickListener(this);
         lay_disaster_pic = (LinearLayout) getView().findViewById(R.id.lay_disaster_pic);

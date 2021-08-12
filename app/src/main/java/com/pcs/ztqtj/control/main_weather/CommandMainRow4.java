@@ -58,6 +58,7 @@ public class CommandMainRow4 extends CommandMainBase {
     private ImageFetcher mImageFetcher;
     private AdapterLifeNumberGridView mLifeNumberAdapter = null;
     private List<PackLifeNumberDown.LifeNumber> dataList = new ArrayList<>();
+    private TextView tvLifeTime;
 
     public CommandMainRow4(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher) {
         mActivity = activity;
@@ -73,7 +74,6 @@ public class CommandMainRow4 extends CommandMainBase {
         //初始化适配器
         initAdapterEtc();
         setStatus(Status.SUCC);
-//        okHttpAqi();
     }
 
     @Override
@@ -90,12 +90,13 @@ public class CommandMainRow4 extends CommandMainBase {
      */
     private void initAdapterEtc() {
         rowView = mRootLayout.findViewById(R.id.layout_home_weather_4);
+        tvLifeTime = rowView.findViewById(R.id.tvLifeTime);
         mLifeNumberAdapter = new AdapterLifeNumberGridView(mActivity,mImageFetcher, dataList);
         GridView gridView = (GridView) rowView.findViewById(R.id.gridView);
         gridView.setAdapter(mLifeNumberAdapter);
         gridView.setOnItemClickListener(onItemClickRow4);
         // 按钮
-        Button btnMore = (Button) rowView.findViewById(R.id.btn_more);
+//        Button btnMore = (Button) rowView.findViewById(R.id.btn_more);
 //        btnMore.setOnClickListener(onClickRow4);
         TextView tv_calendar_content = rowView.findViewById(R.id.tv_calendar_content);
 
@@ -149,8 +150,7 @@ public class CommandMainRow4 extends CommandMainBase {
      */
     private AdapterView.OnItemClickListener onItemClickRow4 = new AdapterView.OnItemClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             PackLifeNumberDown.LifeNumber pack = mLifeNumberAdapter.getItemPosition(position);
             if (pack == null) {
                 Toast.makeText(mActivity, "获取生活指数失败", Toast.LENGTH_SHORT).show();
@@ -230,6 +230,9 @@ public class CommandMainRow4 extends CommandMainBase {
                                                             rowView.setVisibility(View.VISIBLE);
                                                             dataList.clear();
                                                             dataList.addAll(mPackLifeNumberDown.dataList);
+                                                            if (!TextUtil.isEmpty(mPackLifeNumberDown.dataList.get(0).create_time)) {
+                                                                tvLifeTime.setText(mPackLifeNumberDown.dataList.get(0).create_time+"更新");
+                                                            }
                                                             if (mLifeNumberAdapter != null) {
                                                                 mLifeNumberAdapter.notifyDataSetChanged();
                                                             }

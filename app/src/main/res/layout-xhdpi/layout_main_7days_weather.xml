@@ -1,46 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:paddingTop="5dp">
 
     <View
+        android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#19FFFFFF" />
+        android:background="#19FFFFFF"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:id="@+id/strDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:gravity="center_vertical"
+        android:layout_marginTop="5dp"
         android:text="逐日预报"
         android:textColor="@color/text_white"
-        android:textSize="@dimen/text_content" />
+        android:textSize="@dimen/text_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider1" />
 
     <TextView
         android:id="@+id/text_content_desc"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="3dp"
         android:layout_marginEnd="10dp"
         android:lineSpacingExtra="3dp"
-        android:singleLine="false"
         android:textColor="@color/text_white"
-        android:textSize="@dimen/dimen14" />
+        android:textSize="@dimen/dimen14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/strDay" />
 
     <View
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#19FFFFFF" />
+        android:layout_marginTop="5dp"
+        android:background="#19FFFFFF"
+        app:layout_constraintTop_toBottomOf="@+id/text_content_desc" />
 
     <com.pcs.ztqtj.view.myview.MyHScrollView
         android:id="@+id/layout_week"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@+id/divider2">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen10">
@@ -49,7 +62,8 @@
                 android:id="@+id/tempertureview"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/weekviewhight"
-                android:layout_marginTop="@dimen/weektophight" />
+                android:layout_marginTop="@dimen/weektophight"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.pcs.ztqtj.view.myview.MyGridView
                 android:id="@+id/maingridview"
@@ -58,8 +72,10 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:listSelector="@android:color/transparent"
-                android:numColumns="7" />
-        </RelativeLayout>
+                android:numColumns="7"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
     </com.pcs.ztqtj.view.myview.MyHScrollView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
