@@ -14,7 +14,6 @@ public class BootStrapReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         // 判断是否是开机启动
         if (Util.getPreferencesBooleanValue(context, "root", "start")) {
             Intent i = new Intent(context, ActivityMain.class);

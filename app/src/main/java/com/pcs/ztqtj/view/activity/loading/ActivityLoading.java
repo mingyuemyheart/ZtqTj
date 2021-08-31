@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
@@ -21,17 +23,32 @@ import com.pcs.ztqtj.control.command.InterCommand;
 import com.pcs.ztqtj.control.inter.Callback;
 import com.pcs.ztqtj.control.loading.CommandLoadingCheck;
 import com.pcs.ztqtj.control.loading.CommandLoadingCity;
-import com.pcs.ztqtj.control.loading.CommandLoadingGoto;
 import com.pcs.ztqtj.control.loading.CommandLoadingMainData;
-import com.pcs.ztqtj.control.loading.CommandLoadingReqImage;
 import com.pcs.ztqtj.control.loading.CommandLoadingUnit;
-import com.pcs.ztqtj.control.loading.CommandLoadingVersion;
 import com.pcs.ztqtj.control.loading.CommandReqInit;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.FragmentActivityBase;
 import com.pcs.ztqtj.view.dialog.PermissionVerifyDialog;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 闪屏页
@@ -63,6 +80,9 @@ public class ActivityLoading extends FragmentActivityBase {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+        
+        TextView text_version = findViewById(R.id.text_version);
+        text_version.setText(CommonUtil.getVersion(this));
 
         dialog = new PermissionVerifyDialog(this, R.style.MyDialog);
         PackLocalInit initDown = (PackLocalInit) PcsDataManager.getInstance().getLocalPack(PackLocalInit.KEY);
@@ -175,18 +195,12 @@ public class ActivityLoading extends FragmentActivityBase {
                 // 单位
                 CommandLoadingUnit commandUnit = new CommandLoadingUnit(ActivityLoading.this);
                 batchingLoading.addCommand(commandUnit);
-                // 版本
-                CommandLoadingVersion commandVersion = new CommandLoadingVersion(ActivityLoading.this);
-                batchingLoading.addCommand(commandVersion);
                 // 初始化
                 CommandReqInit commandInit = new CommandReqInit(ActivityLoading.this);
                 batchingLoading.addCommand(commandInit);
                 //首页数据
                 CommandLoadingMainData commandMainData = new CommandLoadingMainData();
                 batchingLoading.addCommand(commandMainData);
-                //主题插图
-                CommandLoadingReqImage commandReqImage = new CommandLoadingReqImage(ActivityLoading.this);
-                batchingLoading.addCommand(commandReqImage);
                 // 执行
                 batchingLoading.execute();
             }
@@ -210,10 +224,104 @@ public class ActivityLoading extends FragmentActivityBase {
                 Toast.makeText(ActivityLoading.this, R.string.init_error, Toast.LENGTH_SHORT).show();
                 return;
             }
-            // 跳转
-            CommandLoadingGoto commandGoto = new CommandLoadingGoto(ActivityLoading.this, getImageFetcher());
-            commandGoto.execute();
+            okHttpTheme();
         }
     };
+
+    /**
+     * 获取闪屏页照片
+     */
+    private void okHttpTheme() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("type", "0");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"subject_list";
+                    Log.e("subject_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new okhttp3.Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent it = new Intent();
+                                    it.setClass(ActivityLoading.this, ActivityMain.class);
+                                    Bundle bundle = getIntent().getBundleExtra(MyConfigure.EXTRA_BUNDLE);
+                                    if(bundle != null) {
+                                        it.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
+                                    }
+                                    startActivity(it);
+                                    finish();
+                                }
+                            });
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("ztq_img")) {
+                                                    JSONObject ztq_img = bobj.getJSONObject("ztq_img");
+                                                    if (!ztq_img.isNull("dataList")) {
+                                                        JSONObject dataList = ztq_img.getJSONObject("dataList");
+                                                        String imgUrl = "";
+                                                        long showTime = 1500;
+                                                        if (!dataList.isNull("big_img_path")) {
+                                                            String big_img_path = dataList.getString("big_img_path");
+                                                            if (!TextUtil.isEmpty(big_img_path)) {
+                                                                imgUrl = getString(R.string.msyb)+big_img_path;
+                                                            }
+                                                        }
+                                                        if (!dataList.isNull("show_time")) {
+                                                            showTime = dataList.getLong("show_time");
+                                                        }
+
+                                                        Intent it = new Intent();
+                                                        if (!TextUtil.isEmpty(imgUrl)) {
+                                                            it.setClass(ActivityLoading.this, ActivityLoadingImage.class);
+                                                            it.putExtra("imgUrl", imgUrl);
+                                                            it.putExtra("showTime", showTime);
+                                                        } else {
+                                                            it.setClass(ActivityLoading.this, ActivityMain.class);
+                                                        }
+                                                        Bundle bundle = getIntent().getBundleExtra(MyConfigure.EXTRA_BUNDLE);
+                                                        if(bundle != null) {
+                                                            it.putExtra(MyConfigure.EXTRA_BUNDLE, bundle);
+                                                        }
+                                                        startActivity(it);
+                                                        finish();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
 }

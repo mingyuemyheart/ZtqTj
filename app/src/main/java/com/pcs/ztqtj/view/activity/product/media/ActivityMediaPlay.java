@@ -1,5 +1,8 @@
 package com.pcs.ztqtj.view.activity.product.media;
 
+import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -12,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -21,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,27 +37,42 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
+import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
+import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
+import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.main_weather.FragmentAd;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.image.ImageLoader;
 import com.pcs.ztqtj.control.tool.image.ImageUtils;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
+import com.pcs.ztqtj.view.myview.MainViewPager;
 import com.pcs.ztqtj.view.myview.TexureViewVideoView;
-import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
-import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
-import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 气象影视 播放
@@ -99,7 +120,6 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
     private String imagePath = "";
     private ImageLoader mImageLoader;
     private TextView time_textview;
-    private ImageView imageview_bgplaybanner;
 
     private Button btntaunted;
     private Bitmap mBitmap;
@@ -109,11 +129,11 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.media_paly);
+        mImageFetcher = getImageFetcher();
         mediaInfo = (MediaInfo) getIntent().getSerializableExtra("mediaInfo");
         title = mediaInfo.title_two;
         imageurl = mediaInfo.imageurl;
         desc = mediaInfo.desc;
-        mImageFetcher = ActivityMediaPlay.this.getImageFetcher();
 
         if (!TextUtils.isEmpty(mediaInfo.mediaurl)) {
             mediaurl = getString(R.string.msyb) + mediaInfo.mediaurl;
@@ -142,25 +162,8 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
         initData();
     }
 
-    private PackBannerUp mPackBannerUp;
-
-    /**
-     * 刷新广告
-     *
-     * @param position_id 广告ID
-     * @param imageView
-     */
-    private void refreshAD(String position_id, ImageView imageView) {
-
-//
-//        imageView.setBackgroundResource(R.color.text_color);
-        //       imageView.setVisibility(View.VISIBLE);
-        mPackBannerUp = new PackBannerUp();
-        mPackBannerUp.position_id = position_id;
-        PcsDataDownload.addDownload(mPackBannerUp);
-    }
-
     private void initView() {
+        viewPager = findViewById(R.id.viewPager);
         durationTextView = (TextView) findViewById(R.id.duration);
         playedTextView = (TextView) findViewById(R.id.has_played);
 
@@ -176,8 +179,6 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
         play_layout = (RelativeLayout) findViewById(R.id.play_layout);
 
         time_textview = (TextView) findViewById(R.id.time_textview);
-        imageview_bgplaybanner = (ImageView) findViewById(R.id.imageview_bgplaybanner);
-
         btntaunted = (Button) findViewById(R.id.btntaunted);
     }
 
@@ -192,16 +193,14 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
         palyBtn.setOnClickListener(this);
         zoomBtn.setOnClickListener(this);
         btntaunted.setOnClickListener(this);
-        imageview_bgplaybanner.setOnClickListener(this);
-        refreshAD("21", imageview_bgplaybanner);
+
+        okHttpAd();
     }
 
     private String shareC = "";
-    private MyReceiver receiver = new MyReceiver();
 
     private void initData() {
         // 注册广播接收
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         ShareTools.getInstance(this).reqShare();
         setBtnRight(R.drawable.icon_share_new, new OnClickListener() {
             @Override
@@ -237,21 +236,10 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
         Uri uri = Uri.parse(mediaurl);// 此url就是流媒体文件的下载地址
         myVideoView.setVideoURI(uri);
         time_textview.setText("更新：" + time_Text);
-
-        if (!isOpenNet()) {
-            showToast(getString(R.string.open_netword));
-        } else {
-            if (!isWiFiNewWord()) {
-                showToast(getString(R.string.un_wifi_desc));
-            }
-        }
-
-
     }
 
     /**
      * 获取分享截图
-     *
      * @return
      */
     private Bitmap getShareBitmap() {
@@ -326,14 +314,7 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
             int hour = minute / 60;
             int second = i % 60;
             minute %= 60;
-            durationTextView.setText(String.format("%02d:%02d:%02d", hour,
-                    minute, second));
-
-            /*
-             * controler.showAtLocation(myVideoView, Gravity.BOTTOM, 0, 0);
-             * controler.update(screenWidth, controlHeight);
-             * myHandler.sendEmptyMessageDelayed(HIDE_CONTROLER, TIME);
-             */
+            durationTextView.setText(String.format("%02d:%02d:%02d", hour, minute, second));
 
             myVideoView.start();
             palyBtn.setImageResource(R.drawable.btn_pause);
@@ -528,13 +509,13 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
 
         if (is_v_screen) {
             is_v_screen = false;
-            imageview_bgplaybanner.setVisibility(View.GONE);
+            viewPager.setVisibility(View.GONE);
         } else {
             is_v_screen = true;
             if (isFullScreen) {
-                imageview_bgplaybanner.setVisibility(View.GONE);
+                viewPager.setVisibility(View.GONE);
             } else {
-                imageview_bgplaybanner.setVisibility(View.VISIBLE);
+                viewPager.setVisibility(View.VISIBLE);
             }
         }
         super.onConfigurationChanged(newConfig);
@@ -542,7 +523,6 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
 
     @Override
     protected void onPause() {
-
         playedTime = myVideoView.getCurrentPosition();// 获取当前播放位置。
         myVideoView.pause();
         palyBtn.setImageResource(R.drawable.btn_play);
@@ -697,9 +677,9 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
                     setVideoScale(SCREEN_FULL);
                 }
                 if (isFullScreen) {
-                    imageview_bgplaybanner.setVisibility(View.VISIBLE);
+                    viewPager.setVisibility(View.VISIBLE);
                 } else {
-                    imageview_bgplaybanner.setVisibility(View.GONE);
+                    viewPager.setVisibility(View.GONE);
                 }
                 isFullScreen = !isFullScreen;
                 break;
@@ -712,17 +692,6 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
                 } else {
                     showToast("栏目id错误");
                 }
-                break;
-            case R.id.imageview_bgplaybanner:
-
-                if (!packDown.arrBannerInfo.get(0).url.isEmpty()) {
-                    Intent it = new Intent(ActivityMediaPlay.this, ActivityWebView.class);
-                    it.putExtra("title", packDown.arrBannerInfo.get(0).title);
-                    it.putExtra("url", packDown.arrBannerInfo.get(0).url);
-                    it.putExtra("shareContent", packDown.arrBannerInfo.get(0).fx_content);
-                    startActivity(it);
-                }
-
                 break;
         }
 
@@ -760,28 +729,170 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
         }
     };
 
-    private PackBannerDown packDown;
-
     /**
-     * 数据更新广播接收
-     *
-     * @author JiangZy
+     * 获取广告
      */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String error) {
-            if (name.startsWith(mPackBannerUp.getName())) {
-                packDown = (PackBannerDown) PcsDataManager.getInstance().getNetPack(mPackBannerUp.getName());
-                if (packDown == null || packDown.arrBannerInfo.size() == 0) {
-                    imageview_bgplaybanner.setVisibility(View.GONE);
-                    return;
-                } else {
-                    imageview_bgplaybanner.setVisibility(View.VISIBLE);
+    private void okHttpAd() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("ad_type", "B001");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"ad_list";
+                    Log.e("ad_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        initViewPager(result);
+                                    } else {
+                                        viewPager.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-                String url = getResources().getString(R.string.file_download_url) + packDown.arrBannerInfo.get(0).img_path;
-                mImageFetcher.loadImage(url, imageview_bgplaybanner, ImageConstant.ImageShowType.SRC);
             }
+        }).start();
+    }
+
+    private MainViewPager viewPager = null;
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private void initViewPager(String result) {
+        fragments.clear();
+        try {
+            JSONObject obj = new JSONObject(result);
+            if (!obj.isNull("b")) {
+                JSONObject bObj = obj.getJSONObject("b");
+                if (!bObj.isNull("ad")) {
+                    JSONObject adObj = bObj.getJSONObject("ad");
+                    if (!adObj.isNull("ad_list")) {
+                        JSONArray array = adObj.getJSONArray("ad_list");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject itemObj = array.getJSONObject(i);
+                            String imgUrl = getResources().getString(R.string.msyb) + itemObj.getString("img_path");
+                            String name = itemObj.getString("title");
+                            String dataUrl = itemObj.getString("url");
+                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("imgUrl", imgUrl);
+                            bundle.putString("name", name);
+                            bundle.putString("dataUrl", dataUrl);
+                            fragment.setArguments(bundle);
+                            fragments.add(fragment);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (fragments.size() > 0) {
+            viewPager.setVisibility(View.VISIBLE);
+        } else {
+            viewPager.setVisibility(View.GONE);
+        }
+        viewPager.setAdapter(new MyPagerAdapter());
+        viewPager.setSlipping(true);//设置ViewPager是否可以滑动
+        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+
+        mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
+    }
+
+    private final int AUTO_PLUS = 1;
+    private static final int PHOTO_CHANGE_TIME = 2000;//定时变量
+    private int index_plus = 0;
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case AUTO_PLUS:
+                    viewPager.setCurrentItem(index_plus++);//收到消息后设置当前要显示的图片
+                    mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
+                    if (index_plus >= fragments.size()) {
+                        index_plus = 0;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+    };
+
+    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageSelected(int arg0) {
+            index_plus = arg0;
+        }
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
         }
     }
+
+    private class MyPagerAdapter extends PagerAdapter {
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+            try {
+                ((ViewPager) container).removeView(fragments.get(position).getView());
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = fragments.get(position);
+            if (!fragment.isAdded()) { // 如果fragment还没有added
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.add(fragment, fragment.getClass().getSimpleName());
+                ft.commit();
+                /**
+                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
+                 * 会在进程的主线程中,用异步的方式来执行。
+                 * 如果想要立即执行这个等待中的操作,就要调用这个方法(只能在主线程中调用)。
+                 * 要注意的是,所有的回调和相关的行为都会在这个调用中被执行完成,因此要仔细确认这个方法的调用位置。
+                 */
+                getFragmentManager().executePendingTransactions();
+            }
+
+            if (fragment.getView().getParent() == null) {
+                container.addView(fragment.getView()); // 为viewpager增加布局
+            }
+            return fragment.getView();
+        }
+    }
+
 }

@@ -316,7 +316,7 @@ public class ActivityRegister extends FragmentActivityZtqBase implements OnClick
     }
 
     private SpannableString getClickableSpan() {
-        String str = "《天津惠民软件用户服务协议》";
+        String str = "《天津气象软件用户服务协议》";
         SpannableString spanStr = new SpannableString(str);
         // 设置下划线文字
         spanStr.setSpan(new UnderlineSpan(), 0, str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -325,7 +325,7 @@ public class ActivityRegister extends FragmentActivityZtqBase implements OnClick
             @Override
             public void onClick(View widget) {
                 Intent intent = new Intent(ActivityRegister.this, ActivityWebView.class);
-                intent.putExtra("title", "天津惠民软件用户服务协议");
+                intent.putExtra("title", "天津气象软件用户服务协议");
                 intent.putExtra("url", CONST.PROTOCAL);
                 intent.putExtra("shareContent", "用户服务协议");
                 startActivity(intent);

@@ -9,11 +9,11 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.tianyi.shawn.tjdecision"
+        applicationId "com.pcs.ztqtj"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10047
-        versionName "1.2.26"
+        versionCode 10057
+        versionName "1.2.36.0"
         manifestPlaceholders = [
                 XG_ACCESS_ID:"2100331791",
                 XG_ACCESS_KEY : "AV2S73V38UXQ",
@@ -26,9 +26,9 @@ android {
     signingConfigs {
         debug {
             storeFile file('/Users/sunxiaoming/Downloads/创新网络/打包/天译津云气象/tjdecision.keystore')
-            storePassword "123456"
-            keyAlias "tjdecision"
-            keyPassword "123456"
+            storePassword "3331234"
+            keyAlias "chenai"
+            keyPassword "3331234"
         }
     }
     buildTypes {
@@ -68,15 +68,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:multidex:1.0.3'
-
-    //信鸽jar
-    implementation 'com.tencent.xinge:xinge:3.2.3-release'
-    //wup包
-    implementation 'com.tencent.wup:wup:1.0.0.E-release'
-    //mid包
-    implementation 'com.tencent.mid:mid:4.0.6-release'
-    // 信鸽华为推送包
-    implementation 'com.tencent.xinge:xghw:2.5.2.300-release'
 
     // 高德
     implementation 'com.amap.api:3dmap:6.7.0'

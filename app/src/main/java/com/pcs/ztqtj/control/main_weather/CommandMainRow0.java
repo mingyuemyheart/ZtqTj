@@ -60,9 +60,11 @@ import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoShow;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogVoiceButton;
 import com.pcs.ztqtj.view.myview.MainViewPager;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -130,6 +132,8 @@ public class CommandMainRow0 extends CommandMainBase {
         tvNews1 = mRowView.findViewById(R.id.tvNews1);
         tvNews = mRowView.findViewById(R.id.tvNews);
         viewPager = mRowView.findViewById(R.id.viewPager);
+        viewPager1 = mRowView.findViewById(R.id.viewPager1);
+        viewPager2 = mRowView.findViewById(R.id.viewPager2);
         ivFestival = mRowView.findViewById(R.id.ivFestival);
 
         main_voice = mRowView.findViewById(R.id.main_voice);
@@ -155,6 +159,8 @@ public class CommandMainRow0 extends CommandMainBase {
 
         okHttpFestival();
         okHttpEvent();
+        okHttpAd1();
+        okHttpAd2();
     }
 
     boolean flag = false;
@@ -390,160 +396,6 @@ public class CommandMainRow0 extends CommandMainBase {
     }
 
     /**
-     * 获取活动，预警中心按钮上方
-     */
-    private void okHttpEvent() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject param  = new JSONObject();
-                    param.put("token", MyApplication.TOKEN);
-                    String json = param.toString();
-                    final String url = CONST.BASE_URL+"activity_list";
-                    Log.e("activity_list", url);
-                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-                        @Override
-                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        }
-                        @Override
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                return;
-                            }
-                            final String result = response.body().string();
-                            mActivity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-//                                    Log.e("activity_list", result);
-                                    if (!TextUtil.isEmpty(result)) {
-                                        initViewPager(result);
-                                    } else {
-                                        viewPager.setVisibility(View.GONE);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private MainViewPager viewPager = null;
-    private List<Fragment> fragments = new ArrayList<>();
-    private void initViewPager(String result) {
-        fragments.clear();
-        try {
-            JSONObject obj = new JSONObject(result);
-            if (!obj.isNull("result")) {
-                JSONArray array = obj.getJSONArray("result");
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject itemObj = array.getJSONObject(i);
-                    String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("icon");
-                    String name = itemObj.getString("name");
-                    String dataUrl = itemObj.getString("url");
-                    Fragment fragment = new FragmentEvent(mImageFetcher);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("imgUrl", imgUrl);
-                    bundle.putString("name", name);
-                    bundle.putString("dataUrl", dataUrl);
-                    fragment.setArguments(bundle);
-                    fragments.add(fragment);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        viewPager.setVisibility(View.VISIBLE);
-        viewPager.setAdapter(new MyPagerAdapter());
-        viewPager.setSlipping(true);//设置ViewPager是否可以滑动
-        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
-
-        mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
-    }
-
-    private final int AUTO_PLUS = 1;
-    private static final int PHOTO_CHANGE_TIME = 2000;//定时变量
-    private int index_plus = 0;
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case AUTO_PLUS:
-                    viewPager.setCurrentItem(index_plus++);//收到消息后设置当前要显示的图片
-                    mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
-                    if (index_plus >= fragments.size()) {
-                        index_plus = 0;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        };
-    };
-
-    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
-        @Override
-        public void onPageSelected(int arg0) {
-            index_plus = arg0;
-        }
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-        }
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
-    }
-
-    private class MyPagerAdapter extends PagerAdapter {
-        @Override
-        public boolean isViewFromObject(View arg0, Object arg1) {
-            return arg0 == arg1;
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        @Override
-        public void destroyItem(View container, int position, Object object) {
-            try {
-                ((ViewPager) container).removeView(fragments.get(position).getView());
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = fragments.get(position);
-            if (!fragment.isAdded()) { // 如果fragment还没有added
-                FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
-                ft.add(fragment, fragment.getClass().getSimpleName());
-                ft.commit();
-                /**
-                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
-                 * 会在进程的主线程中,用异步的方式来执行。
-                 * 如果想要立即执行这个等待中的操作,就要调用这个方法(只能在主线程中调用)。
-                 * 要注意的是,所有的回调和相关的行为都会在这个调用中被执行完成,因此要仔细确认这个方法的调用位置。
-                 */
-                mActivity.getFragmentManager().executePendingTransactions();
-            }
-
-            if (fragment.getView().getParent() == null) {
-                container.addView(fragment.getView()); // 为viewpager增加布局
-            }
-            return fragment.getView();
-        }
-    }
-
-    /**
      * 点击事件
      */
     private View.OnClickListener mOnClick = new View.OnClickListener() {
@@ -750,10 +602,10 @@ public class CommandMainRow0 extends CommandMainBase {
      * 获取预警，首页预警图标
      */
     private void okHttpWarningImages() {
-        tvWarning1.setVisibility(View.GONE);
-        llWarning1.setVisibility(View.GONE);
-        tvWarning2.setVisibility(View.GONE);
-        llWarning2.setVisibility(View.GONE);
+        tvWarning1.setVisibility(View.INVISIBLE);
+        llWarning1.setVisibility(View.INVISIBLE);
+        tvWarning2.setVisibility(View.INVISIBLE);
+        llWarning2.setVisibility(View.INVISIBLE);
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
         if (city == null) {
             return;
@@ -985,6 +837,420 @@ public class CommandMainRow0 extends CommandMainBase {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 获取活动，预警中心按钮上方
+     */
+    private void okHttpEvent() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"activity_list";
+                    Log.e("activity_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+//                                    Log.e("activity_list", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        initViewPager(result);
+                                    } else {
+                                        viewPager.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private MainViewPager viewPager = null;
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private void initViewPager(String result) {
+        fragments.clear();
+        try {
+            JSONObject obj = new JSONObject(result);
+            if (!obj.isNull("result")) {
+                JSONArray array = obj.getJSONArray("result");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject itemObj = array.getJSONObject(i);
+                    String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("icon");
+                    String name = itemObj.getString("name");
+                    String dataUrl = itemObj.getString("url");
+                    Fragment fragment = new FragmentAd(mImageFetcher);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("imgUrl", imgUrl);
+                    bundle.putString("name", name);
+                    bundle.putString("dataUrl", dataUrl);
+                    fragment.setArguments(bundle);
+                    fragments.add(fragment);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        viewPager.setVisibility(View.VISIBLE);
+        viewPager.setAdapter(new MyPagerAdapter());
+        viewPager.setSlipping(true);//设置ViewPager是否可以滑动
+        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+
+        mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
+    }
+
+    private final int AUTO_PLUS = 1;
+    private static final int PHOTO_CHANGE_TIME = 2000;//定时变量
+    private int index_plus = 0;
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case AUTO_PLUS:
+                    viewPager.setCurrentItem(index_plus++);//收到消息后设置当前要显示的图片
+                    mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
+                    if (index_plus >= fragments.size()) {
+                        index_plus = 0;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+    };
+
+    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageSelected(int arg0) {
+            index_plus = arg0;
+        }
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+    }
+
+    private class MyPagerAdapter extends PagerAdapter {
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+            try {
+                ((ViewPager) container).removeView(fragments.get(position).getView());
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = fragments.get(position);
+            if (!fragment.isAdded()) { // 如果fragment还没有added
+                FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
+                ft.add(fragment, fragment.getClass().getSimpleName());
+                ft.commit();
+                /**
+                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
+                 * 会在进程的主线程中,用异步的方式来执行。
+                 * 如果想要立即执行这个等待中的操作,就要调用这个方法(只能在主线程中调用)。
+                 * 要注意的是,所有的回调和相关的行为都会在这个调用中被执行完成,因此要仔细确认这个方法的调用位置。
+                 */
+                mActivity.getFragmentManager().executePendingTransactions();
+            }
+
+            if (fragment.getView().getParent() == null) {
+                container.addView(fragment.getView()); // 为viewpager增加布局
+            }
+            return fragment.getView();
+        }
+    }
+
+    /**
+     * 获取广告
+     */
+    private void okHttpAd1() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("ad_type", "A001");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"ad_list";
+                    Log.e("ad_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        initViewPager1(result);
+                                    } else {
+                                        viewPager1.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private MainViewPager viewPager1 = null;
+    private ArrayList<Fragment> fragments1 = new ArrayList<>();
+    private void initViewPager1(String result) {
+        fragments1.clear();
+        try {
+            JSONObject obj = new JSONObject(result);
+            if (!obj.isNull("b")) {
+                JSONObject bObj = obj.getJSONObject("b");
+                if (!bObj.isNull("ad")) {
+                    JSONObject adObj = bObj.getJSONObject("ad");
+                    if (!adObj.isNull("ad_list")) {
+                        JSONArray array = adObj.getJSONArray("ad_list");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject itemObj = array.getJSONObject(i);
+                            String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("img_path");
+                            String name = itemObj.getString("title");
+                            String dataUrl = itemObj.getString("url");
+                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("imgUrl", imgUrl);
+                            bundle.putString("name", name);
+                            bundle.putString("dataUrl", dataUrl);
+                            fragment.setArguments(bundle);
+                            fragments1.add(fragment);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (fragments1.size() > 0) {
+            viewPager1.setVisibility(View.VISIBLE);
+        } else {
+            viewPager1.setVisibility(View.GONE);
+        }
+        viewPager1.setAdapter(new MyPagerAdapter1());
+        viewPager1.setSlipping(true);//设置ViewPager是否可以滑动
+    }
+
+    private class MyPagerAdapter1 extends PagerAdapter {
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments1.size();
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+            try {
+                ((ViewPager) container).removeView(fragments1.get(position).getView());
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = fragments1.get(position);
+            if (!fragment.isAdded()) { // 如果fragment还没有added
+                FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
+                ft.add(fragment, fragment.getClass().getSimpleName());
+                ft.commit();
+                /**
+                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
+                 * 会在进程的主线程中,用异步的方式来执行。
+                 * 如果想要立即执行这个等待中的操作,就要调用这个方法(只能在主线程中调用)。
+                 * 要注意的是,所有的回调和相关的行为都会在这个调用中被执行完成,因此要仔细确认这个方法的调用位置。
+                 */
+                mActivity.getFragmentManager().executePendingTransactions();
+            }
+
+            if (fragment.getView().getParent() == null) {
+                container.addView(fragment.getView()); // 为viewpager增加布局
+            }
+            return fragment.getView();
+        }
+    }
+
+    /**
+     * 获取广告
+     */
+    private void okHttpAd2() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("ad_type", "A003");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"ad_list";
+                    Log.e("ad_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            mActivity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        initViewPager2(result);
+                                    } else {
+                                        viewPager2.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private MainViewPager viewPager2 = null;
+    private ArrayList<Fragment> fragments2 = new ArrayList<>();
+    private void initViewPager2(String result) {
+        fragments2.clear();
+        try {
+            JSONObject obj = new JSONObject(result);
+            if (!obj.isNull("b")) {
+                JSONObject bObj = obj.getJSONObject("b");
+                if (!bObj.isNull("ad")) {
+                    JSONObject adObj = bObj.getJSONObject("ad");
+                    if (!adObj.isNull("ad_list")) {
+                        JSONArray array = adObj.getJSONArray("ad_list");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject itemObj = array.getJSONObject(i);
+                            String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("img_path");
+                            String name = itemObj.getString("title");
+                            String dataUrl = itemObj.getString("url");
+                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("imgUrl", imgUrl);
+                            bundle.putString("name", name);
+                            bundle.putString("dataUrl", dataUrl);
+                            fragment.setArguments(bundle);
+                            fragments2.add(fragment);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (fragments2.size() > 0) {
+            viewPager2.setVisibility(View.VISIBLE);
+        } else {
+            viewPager2.setVisibility(View.GONE);
+        }
+        viewPager2.setAdapter(new MyPagerAdapter2());
+        viewPager2.setSlipping(true);//设置ViewPager是否可以滑动
+    }
+
+    private class MyPagerAdapter2 extends PagerAdapter {
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments2.size();
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+            try {
+                ((ViewPager) container).removeView(fragments2.get(position).getView());
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = fragments2.get(position);
+            if (!fragment.isAdded()) { // 如果fragment还没有added
+                FragmentTransaction ft = mActivity.getFragmentManager().beginTransaction();
+                ft.add(fragment, fragment.getClass().getSimpleName());
+                ft.commit();
+                /**
+                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
+                 * 会在进程的主线程中,用异步的方式来执行。
+                 * 如果想要立即执行这个等待中的操作,就要调用这个方法(只能在主线程中调用)。
+                 * 要注意的是,所有的回调和相关的行为都会在这个调用中被执行完成,因此要仔细确认这个方法的调用位置。
+                 */
+                mActivity.getFragmentManager().executePendingTransactions();
+            }
+
+            if (fragment.getView().getParent() == null) {
+                container.addView(fragment.getView()); // 为viewpager增加布局
+            }
+            return fragment.getView();
+        }
     }
 
 }

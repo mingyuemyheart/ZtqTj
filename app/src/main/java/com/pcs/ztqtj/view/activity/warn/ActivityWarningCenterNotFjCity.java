@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.view.activity.warn;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -10,11 +9,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjColumnGradeDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjColumnGradeDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqColumnGrade;
@@ -26,7 +23,6 @@ import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
-import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
 import com.pcs.ztqtj.view.fragment.warning.FragmentDisasterReporting;
 import com.pcs.ztqtj.view.fragment.warning.FragmentWeatherRiskWarn;
 import com.pcs.ztqtj.view.fragment.warning.FragmentWeatherWarningNotFj;
@@ -56,7 +52,6 @@ public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhone
     private GridView gridView = null;
     private AdapterWarningCenterColmn adapter = null;
     private TextView tvShare = null;
-    private TextView tvPushSettings = null;
     private RelativeLayout layout;
     private TextView tvNoData;
     private List<YjZqColumnGrade> list_column = new ArrayList<>();
@@ -77,7 +72,6 @@ public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhone
     private void initView() {
         gridView = (GridView) findViewById(R.id.gridview_warning);
         tvShare = (TextView) findViewById(R.id.tv_share);
-        tvPushSettings = (TextView) findViewById(R.id.tv_push_settings);
         btnHelp.setVisibility(View.GONE);
         tvNoData = (TextView) findViewById(R.id.tv_no_data);
         layout = (RelativeLayout) findViewById(R.id.layout);
@@ -86,7 +80,6 @@ public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhone
 
     private void initEvent() {
         tvShare.setOnClickListener(this);
-        tvPushSettings.setOnClickListener(this);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -233,12 +226,6 @@ public class ActivityWarningCenterNotFjCity extends FragmentActivityZtqWithPhone
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_share:
-                break;
-            case R.id.tv_push_settings:
-                Intent intent = new Intent(ActivityWarningCenterNotFjCity.this, ActivityPushMain.class);
-                intent.putExtra("city", ZtqCityDB.getInstance().getCityMain());
-                intent.putExtra("title", "推送设置");
-                startActivity(intent);
                 break;
         }
     }

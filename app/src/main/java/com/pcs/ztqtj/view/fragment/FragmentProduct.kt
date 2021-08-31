@@ -113,31 +113,31 @@ class FragmentProduct : BaseFragment() {
     private fun intentActivity(data: ColumnDto) {
         var intent: Intent? = null
         when(data.dataCode) {
-            "10103020101" -> {//雷达回波
+            "20101" -> {//雷达回波
                 intent = Intent(activity, ActivityWeatherRadar::class.java)
             }
-            "10103020102" -> {//卫星云图
+            "20102" -> {//卫星云图
                 intent = Intent(activity, ActivitySatelliteCloudChart::class.java)
             }
-            "10103020103" -> {//台风路径
+            "20103" -> {//台风路径
                 intent = Intent(activity, ActivityTyphoon::class.java)
             }
-            "10103020104" -> {//实况查询
+            "20104" -> {//实况查询
                 intent = Intent(activity, ActivityLiveQuery::class.java)
                 val cityMain = ZtqCityDB.getInstance().cityMain
                 val bundle = Bundle()
                 bundle.putSerializable("city", cityMain)
                 intent.putExtras(bundle)
             }
-            "10103020105" -> {//整点天气
+            "20105" -> {//整点天气
                 intent = Intent(activity, ActivityLiveQueryDetail::class.java)
                 intent.putExtra("stationName", "")
                 intent.putExtra("item", "temp")
             }
-            "10103020106" -> {// 闪电监测
+            "20106" -> {// 闪电监测
                 intent = Intent(activity, ActivityLightningMonitor::class.java)
             }
-            "10103020107" -> {// 空气质量
+            "20107" -> {// 空气质量
                 val packCity = ZtqCityDB.getInstance().cityMain
                 if (packCity?.ID == null) {
                     return
@@ -151,75 +151,31 @@ class FragmentProduct : BaseFragment() {
                 intent.putExtra("id", packCity.ID)
                 intent.putExtra("name", packCity.NAME)
             }
-            "10103020108" -> {// 天气形势
+            "20108" -> {// 天气形势
                 intent = Intent(activity, ActivitySituation::class.java)
             }
-            "10103020109" -> {// 城市积水
+            "20109" -> {// 城市积水
                 intent = Intent(activity, ActivityWebView::class.java)
                 intent.putExtra("url", "https://tianjin.welife100.com/Monitor/monitor")
                 intent.putExtra("shareContent", data.dataName)
             }
-            "10103020201" -> {// 气象报告
+            "20201" -> {// 气象报告
                 intent = Intent(activity, ActivityWeatherSummary::class.java)
             }
-            "10103020202" -> {// 指导预报
+            "20202" -> {// 指导预报
                 intent = Intent(activity, ActivityDetailCenterPro::class.java)
                 intent.putExtra("t", data.dataName)
                 intent.putExtra("c", "106")
             }
-            "10103020203" -> {// 模式预报
+            "20203" -> {// 模式预报
                 intent = Intent(activity, ActivityNumericalForecast::class.java)
             }
-            "10103020204" -> {// 海洋气象
+            "20204" -> {// 海洋气象
                 intent = Intent(activity, ActivityOceanMap::class.java)
             }
         }
         intent!!.putExtra("title", data.dataName)
         startActivity(intent)
     }
-
-//    DialogTwoButton dialogLogin = null;
-//    private void showLoginDialog() {
-//        TextView view = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.dialog_message, null);
-//        view.setText("该功能仅限内部人员使用，请先登录！");
-//        dialogLogin = new DialogTwoButton(getContext(), view, "返回", "登录", new DialogFactory.DialogListener() {
-//            @Override
-//            public void click(String str) {
-//                dialogLogin.dismiss();
-//                if (str.equals("返回")) {
-//
-//                } else if (str.equals("登录")) {
-//                    Intent intent = new Intent(getContext(), ActivityPhotoLogin.class);
-//                    startActivity(intent);
-//                }
-//            }
-//        });
-//        dialogLogin.show();
-//    }
-//
-//    private DialogOneButton dialogPermission = null;
-//    private void showNoPermission() {
-//        TextView view = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.dialog_message, null);
-//        view.setText("暂无此权限！");
-//        dialogPermission = new DialogOneButton(getContext(), view, "确定", new DialogFactory.DialogListener() {
-//            @Override
-//            public void click(String str) {
-//                dialogPermission.dismiss();
-//            }
-//        });
-//        dialogPermission.show();
-//    }
-//
-//    private void checkPermission(String channelId, Class<?> cls) {
-//        if(ZtqCityDB.getInstance().isLoginService()) {
-//            if(MyApplication.LIMITINFO.contains(channelId)) {
-//                startActivity(new Intent(getContext(), cls));
-//            } else {
-//                showNoPermission();
-//            }
-//        } else {
-//            showLoginDialog();
-//        }
-//    }
 
 }

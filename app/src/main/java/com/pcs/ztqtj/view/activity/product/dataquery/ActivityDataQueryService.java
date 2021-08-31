@@ -36,10 +36,10 @@ import com.pcs.ztqtj.control.inter.ItemClickListener;
 import com.pcs.ztqtj.control.tool.LoginInformation;
 import com.pcs.ztqtj.control.tool.alipay.AlipayTool;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.tianyi.shawn.tjdecision.wxapi.wxtools.MD5;
-import com.tianyi.shawn.tjdecision.wxapi.wxtools.OrderPayInfo;
-import com.tianyi.shawn.tjdecision.wxapi.wxtools.WXInfo;
-import com.tianyi.shawn.tjdecision.wxapi.wxtools.WXPay;
+import com.pcs.ztqtj.wxapi.wxtools.MD5;
+import com.pcs.ztqtj.wxapi.wxtools.OrderPayInfo;
+import com.pcs.ztqtj.wxapi.wxtools.WXInfo;
+import com.pcs.ztqtj.wxapi.wxtools.WXPay;
 
 import java.util.ArrayList;
 import java.util.List;

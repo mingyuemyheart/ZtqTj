@@ -26,14 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tyaathome on 2018/10/08.
+ * 雷达
  */
 public class RadarMapControl {
 
     private Context context;
     private AMap aMap;
     private List<RadarImgInfo> radarImgList = new ArrayList<>();
-    private LatLng latLng1, latLng2;
     private List<GroundOverlayOptions> mRadarGroundoverlayList = new ArrayList<>();
     private static final int WHAT_PLAY = 0;
     private static final int WHAT_PAUSE = 1;
@@ -73,8 +72,6 @@ public class RadarMapControl {
 
     public void select(LatLng latLng1, LatLng latLng2, List<RadarImgInfo> radarImgList) {
         stopDraw();
-        this.latLng1 = latLng1;
-        this.latLng2 = latLng2;
         this.radarImgList = radarImgList;
         mRadarGroundoverlayList.clear();
         if(!isPlaying) {

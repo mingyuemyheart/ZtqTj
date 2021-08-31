@@ -51,32 +51,32 @@ class FragmentLife : BaseFragment() {
             }
             val intent = Intent()
             when (data.dataCode) {
-                "101030401" -> {
+                "401" -> {
                     // 旅游气象
                     intent.setClass(activity, ActivityTravelView::class.java)
                     intent.putExtra("title", data.dataName)
                     activity!!.startActivity(intent)
                 }
-                "101030402" -> {
+                "402" -> {
                     // 气象影视
                     intent.setClass(activity, ActivityMediaList::class.java)
                     intent.putExtra("title", data.dataName)
                     activity!!.startActivity(intent)
                 }
-                "101030403" -> {
+                "403" -> {
                     //天气新闻
                     intent.setClass(activity, ActivityChannelList::class.java)
                     intent.putExtra("title", data.dataName)
                     intent.putExtra("channel_id", "100005")
                     activity!!.startActivity(intent)
                 }
-                "101030404" -> {
+                "404" -> {
                     //专家解读
                     intent.setClass(activity, ActivityExpertList::class.java)
                     intent.putExtra("title", data.dataName)
                     activity!!.startActivity(intent)
                 }
-                "101030405" -> {
+                "405" -> {
                     //灾害防御
                     intent.setClass(activity, ActivityChannelList::class.java)
                     intent.putExtra("title", data.dataName)
@@ -84,13 +84,13 @@ class FragmentLife : BaseFragment() {
                     intent.putExtra("interfaceUrl", "zhfy")
                     activity!!.startActivity(intent)
                 }
-                "101030406" -> {
+                "406" -> {
                     // 气象科普
                     intent.setClass(activity, ActivityMeteorologicalScience::class.java)
                     intent.putExtra("title", data.dataName)
                     activity!!.startActivity(intent)
                 }
-                "101030407" -> {
+                "407" -> {
                     // 健康气象
                     intent.setClass(activity, ActivityHealthWeather::class.java)
                     intent.putExtra("title", data.dataName)

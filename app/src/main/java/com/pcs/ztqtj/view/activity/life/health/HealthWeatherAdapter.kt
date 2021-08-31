@@ -2,6 +2,7 @@ package com.pcs.ztqtj.view.activity.life.health
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,13 @@ class HealthWeatherAdapter(private val context: Context?, private val mArrayList
 		}
 		if (dto.tips != null) {
 			mHolder.tvTips!!.text = dto.tips
+			if (dto.tips.length >= 20) {
+				mHolder.tvTips!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+			} else if (dto.tips.length >= 15) {
+				mHolder.tvTips!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+			} else {
+				mHolder.tvTips!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+			}
 		}
 		if (!TextUtils.isEmpty(dto.indexIcon)) {
 			val imgUrl = context!!.getString(R.string.msyb)+dto.indexIcon

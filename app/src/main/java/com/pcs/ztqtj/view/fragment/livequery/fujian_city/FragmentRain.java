@@ -50,6 +50,7 @@ import com.pcs.ztqtj.control.adapter.livequery.AdatperAutoRainFall.RainFallIn;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityListCountry;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
@@ -196,7 +197,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
 
     private ImageView iv_auto_hiside;
     private LinearLayout lay_auto_hiside;
-    private LinearLayout lay_is_tj;
+    private LinearLayout lay_is_tj,llHour24;
 
     @Override
     public void onAttach(Activity activity) {
@@ -271,7 +272,8 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         history_max = (TextView) getView().findViewById(R.id.history_max);
         iv_auto_hiside=getView().findViewById(R.id.iv_auto_hiside);
         lay_auto_hiside=getView().findViewById(R.id.lay_auto_hiside);
-        lay_is_tj=getView().findViewById(R.id.lay_is_tj);
+        lay_is_tj= getView().findViewById(R.id.lay_is_tj);
+        llHour24 = getView().findViewById(R.id.llHour24);
     }
 
     private CityListControl cityControl;
@@ -786,7 +788,13 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         PackLocalCity currentParent = cityControl.getCutParentCity();
         if (currentParent != null) {
             if (currentParent.isFjCity/* && ZtqCityDB.getInstance().isServiceAccessible()*/) {
-                lay_is_tj.setVisibility(View.VISIBLE);
+                if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
+                    lay_is_tj.setVisibility(View.VISIBLE);
+                    llHour24.setVisibility(View.VISIBLE);
+                } else {
+                    lay_is_tj.setVisibility(View.GONE);
+                    llHour24.setVisibility(View.GONE);
+                }
                 getView().findViewById(R.id.graph).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.time_search).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.time_search_base).setVisibility(View.VISIBLE);
@@ -797,6 +805,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                 }
             } else {
                 lay_is_tj.setVisibility(View.GONE);
+                llHour24.setVisibility(View.GONE);
                 getView().findViewById(R.id.graph).setVisibility(View.GONE);
                 getView().findViewById(R.id.time_search).setVisibility(View.GONE);
                 getView().findViewById(R.id.time_search_base).setVisibility(View.GONE);

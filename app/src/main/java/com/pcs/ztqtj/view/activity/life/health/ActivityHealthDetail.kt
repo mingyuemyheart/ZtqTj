@@ -19,6 +19,8 @@ import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.life.HealthDto
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_health_detail.*
+import kotlinx.android.synthetic.main.activity_health_detail.llContainer
+import kotlinx.android.synthetic.main.fragment_health_weather.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONException
@@ -32,6 +34,7 @@ class ActivityHealthDetail : FragmentActivityZtqBase() {
 
     private var mAdapter: HealthDetailAdapter? = null
     private val dataList: ArrayList<HealthDto> = ArrayList()
+    private val monthList: ArrayList<HealthDto> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +51,7 @@ class ActivityHealthDetail : FragmentActivityZtqBase() {
         mAdapter = HealthDetailAdapter(this, dataList)
         listView.adapter = mAdapter
         okHttpList()
+        okHttpMonth()
     }
 
     /**
@@ -78,7 +82,6 @@ class ActivityHealthDetail : FragmentActivityZtqBase() {
                             dismissProgressDialog()
                             if (!TextUtils.isEmpty(result)) {
                                 try {
-                                    llContainer.removeAllViews()
                                     dataList.clear()
                                     var dto = HealthDto()
                                     dto.isFirst = true
@@ -110,11 +113,76 @@ class ActivityHealthDetail : FragmentActivityZtqBase() {
                                                 dto.indexIcon = itemObj.getString("indexIcon")
                                             }
                                             dataList.add(dto)
-
-                                            addItem(dto.indexIcon, dto.indexName)
                                         }
                                         if (mAdapter != null) {
                                             mAdapter!!.notifyDataSetChanged()
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+                    }
+                })
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        }.start()
+    }
+
+    /**
+     * 获取本月关注指数
+     */
+    private fun okHttpMonth() {
+        Thread {
+            try {
+                val param = JSONObject()
+                param.put("token", MyApplication.TOKEN)
+                val json = param.toString()
+                val url = CONST.BASE_URL + "healthyindex_month"
+                Log.e("healthyindex_month", url)
+                val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+                val body = RequestBody.create(mediaType, json)
+                OkHttpUtil.enqueue(Request.Builder().url(url).post(body).build(), object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {}
+
+                    @Throws(IOException::class)
+                    override fun onResponse(call: Call, response: Response) {
+                        if (!response.isSuccessful) {
+                            return
+                        }
+                        val result = response.body!!.string()
+                        runOnUiThread {
+                            Log.e("healthyindex_month", result)
+                            if (!TextUtils.isEmpty(result)) {
+                                try {
+                                    llContainer.removeAllViews()
+                                    monthList.clear()
+                                    val obj = JSONObject(result)
+                                    if (!obj.isNull("result")) {
+                                        val array = obj.getJSONArray("result")
+                                        for (i in 0 until array.length()) {
+                                            val dto = HealthDto()
+                                            val itemObj = array.getJSONObject(i)
+                                            if (!itemObj.isNull("indexName")) {
+                                                dto.indexName = itemObj.getString("indexName")
+                                            }
+                                            if (!itemObj.isNull("indexDesc")) {
+                                                dto.indexDesc = itemObj.getString("indexDesc")
+                                            }
+                                            if (!itemObj.isNull("indexContent")) {
+                                                dto.indexContent = itemObj.getString("indexContent")
+                                            }
+                                            if (!itemObj.isNull("indexMonth")) {
+                                                dto.indexMonth = itemObj.getString("indexMonth")
+                                            }
+                                            if (!itemObj.isNull("indexIcon")) {
+                                                dto.indexIcon = itemObj.getString("indexIcon")
+                                            }
+                                            monthList.add(dto)
+
+                                            addItem(dto.indexIcon, dto.indexName)
                                         }
                                     }
                                 } catch (e: JSONException) {

@@ -7,7 +7,6 @@ import android.content.Intent;
 import com.pcs.ztqtj.control.tool.Sound;
 import com.pcs.ztqtj.control.tool.SpeechManager;
 
-
 public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

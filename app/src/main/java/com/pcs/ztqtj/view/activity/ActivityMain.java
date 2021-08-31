@@ -47,8 +47,6 @@ import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackZtqImageUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
@@ -57,8 +55,8 @@ import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.ZtqAppWidget;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
-import com.pcs.ztqtj.control.tool.ZtqPushTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.AutoUpdateUtil;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.ColumnDto;
 import com.pcs.ztqtj.util.CommonUtil;
@@ -135,9 +133,9 @@ public class ActivityMain extends FragmentActivity {
         createImageFetcher();
         mFragmentLeft = new FragmentCityManager();
         initDrawerLayout();
-        downloadImage();//下载主题插图
         checkCity();//检查城市
-        initPrivacy();
+//        initPrivacy();
+        AutoUpdateUtil.checkUpdate(this, this, true);
         ZtqAppWidget.getInstance().updateAllWidget(this);//刷新小部件
         okHttpColumn();
     }
@@ -303,33 +301,33 @@ public class ActivityMain extends FragmentActivity {
             tvName.setText(dto.dataName);
             if (i == 0) {
                 tvName.setTextColor(getResources().getColor(R.color.text_blue_common));
-                if (TextUtils.equals(dto.dataCode, "1010301")) {
+                if (TextUtils.equals(dto.dataCode, "1")) {
                     iv.setImageResource(R.drawable.radio_home_sel);
                     fragment = new FragmentHomeWeather();
                     mFragmentHomeWeather = new FragmentHomeWeather();
-                } else if (TextUtils.equals(dto.dataCode, "1010302")) {
+                } else if (TextUtils.equals(dto.dataCode, "2")) {
                     iv.setImageResource(R.drawable.radio_product_sel);
                     fragment = new FragmentProduct();
-                } else if (TextUtils.equals(dto.dataCode, "1010303")) {
+                } else if (TextUtils.equals(dto.dataCode, "3")) {
                     iv.setImageResource(R.drawable.radio_service_sel);
                     fragment = new FragmentService();
-                } else if (TextUtils.equals(dto.dataCode, "1010304")) {
+                } else if (TextUtils.equals(dto.dataCode, "4")) {
                     iv.setImageResource(R.drawable.radio_live_sel);
                     fragment = new FragmentLife();
                 }
             } else {
                 tvName.setTextColor(getResources().getColor(R.color.text_black_common));
-                if (TextUtils.equals(dto.dataCode, "1010301")) {
+                if (TextUtils.equals(dto.dataCode, "1")) {
                     iv.setImageResource(R.drawable.radio_home_nor);
                     fragment = new FragmentHomeWeather();
                     mFragmentHomeWeather = new FragmentHomeWeather();
-                } else if (TextUtils.equals(dto.dataCode, "1010302")) {
+                } else if (TextUtils.equals(dto.dataCode, "2")) {
                     iv.setImageResource(R.drawable.radio_product_nor);
                     fragment = new FragmentProduct();
-                } else if (TextUtils.equals(dto.dataCode, "1010303")) {
+                } else if (TextUtils.equals(dto.dataCode, "3")) {
                     iv.setImageResource(R.drawable.radio_service_nor);
                     fragment = new FragmentService();
-                } else if (TextUtils.equals(dto.dataCode, "1010304")) {
+                } else if (TextUtils.equals(dto.dataCode, "4")) {
                     iv.setImageResource(R.drawable.radio_live_nor);
                     fragment = new FragmentLife();
                 }
@@ -364,16 +362,16 @@ public class ActivityMain extends FragmentActivity {
                     TextView tvName = (TextView) ll.getChildAt(1);
                     if (i == arg0) {
                         tvName.setTextColor(getResources().getColor(R.color.text_blue_common));
-                        if (TextUtils.equals(ll.getTag()+"", "1010301")) {
+                        if (TextUtils.equals(ll.getTag()+"", "1")) {
                             iv.setImageResource(R.drawable.radio_home_sel);
                             FragmentHomeWeather.HomeRefreshParam param = new FragmentHomeWeather.HomeRefreshParam();
                             param.isChangedCity = true;
                             refreshData(param, true);
                             lockDrawer(false);
-                        } else if (TextUtils.equals(ll.getTag()+"", "1010302")) {
+                        } else if (TextUtils.equals(ll.getTag()+"", "2")) {
                             iv.setImageResource(R.drawable.radio_product_sel);
                             lockDrawer(true);
-                        } else if (TextUtils.equals(ll.getTag()+"", "1010303")) {
+                        } else if (TextUtils.equals(ll.getTag()+"", "3")) {
                             if (!BROADCAST_ACTION_NAME.contains(FragmentService.class.getName())) {
                                 Intent intent = new Intent();
                                 intent.setAction(FragmentService.class.getName());
@@ -382,22 +380,22 @@ public class ActivityMain extends FragmentActivity {
                             }
                             iv.setImageResource(R.drawable.radio_service_sel);
                             lockDrawer(true);
-                        } else if (TextUtils.equals(ll.getTag()+"", "1010304")) {
+                        } else if (TextUtils.equals(ll.getTag()+"", "4")) {
                             iv.setImageResource(R.drawable.radio_live_sel);
                             lockDrawer(true);
                         }
                     } else {
                         tvName.setTextColor(getResources().getColor(R.color.text_black_common));
-                        if (TextUtils.equals(ll.getTag()+"", "1010301")) {
+                        if (TextUtils.equals(ll.getTag()+"", "1")) {
                             iv.setImageResource(R.drawable.radio_home_nor);
                             lockDrawer(false);
-                        } else if (TextUtils.equals(ll.getTag()+"", "1010302")) {
+                        } else if (TextUtils.equals(ll.getTag()+"", "2")) {
                             iv.setImageResource(R.drawable.radio_product_nor);
                             lockDrawer(true);
-                        } else if (TextUtils.equals(ll.getTag()+"", "1010303")) {
+                        } else if (TextUtils.equals(ll.getTag()+"", "3")) {
                             iv.setImageResource(R.drawable.radio_service_nor);
                             lockDrawer(true);
-                        } else if (TextUtils.equals(ll.getTag()+"", "1010304")) {
+                        } else if (TextUtils.equals(ll.getTag()+"", "4")) {
                             iv.setImageResource(R.drawable.radio_live_nor);
                             lockDrawer(true);
                         }
@@ -461,26 +459,26 @@ public class ActivityMain extends FragmentActivity {
         dialog.setCancelable(false);
         dialog.show();
         tvMessage.setText("隐私服务协议");
-        tvContent.setText("感谢您使用“天津惠民”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津惠民隐私政策》和《天津惠民用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津惠民”。我公司将尽全力保护您的个人信息安全。");
-        tvPrivacy.setText("《天津惠民软件用户隐私政策》");
+        tvContent.setText("感谢您使用“天津气象”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津气象隐私政策》和《天津气象用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津气象”。我公司将尽全力保护您的个人信息安全。");
+        tvPrivacy.setText("《天津气象软件用户隐私政策》");
         tvPrivacy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
-                intent.putExtra("title", "天津惠民软件用户隐私政策");
+                intent.putExtra("title", "天津气象软件用户隐私政策");
                 intent.putExtra("url", CONST.PROTOCAL);
-                intent.putExtra("shareContent", "天津惠民软件用户隐私政策");
+                intent.putExtra("shareContent", "天津气象软件用户隐私政策");
                 startActivity(intent);
             }
         });
-        tvProtocal.setText("《天津惠民软件许可及服务协议》");
+        tvProtocal.setText("《天津气象软件许可及服务协议》");
         tvProtocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
-                intent.putExtra("title", "天津惠民软件许可及服务协议");
+                intent.putExtra("title", "天津气象软件许可及服务协议");
                 intent.putExtra("url", CONST.PRIVACY);
-                intent.putExtra("shareContent", "天津惠民软件许可及服务协议");
+                intent.putExtra("shareContent", "天津气象软件许可及服务协议");
                 startActivity(intent);
             }
         });
@@ -617,8 +615,6 @@ public class ActivityMain extends FragmentActivity {
         if (mFragmentLeft != null) {
             mFragmentLeft.refresh(param);
         }
-        // 推送
-        ZtqPushTool.getInstance().refreshPush();
     }
 
     /**
@@ -675,17 +671,6 @@ public class ActivityMain extends FragmentActivity {
 //            }
         }
     };
-
-    /**
-     * 下载主题插图
-     */
-    private void downloadImage() {
-        PackZtqImageDown packImage = (PackZtqImageDown) PcsDataManager.getInstance().getNetPack(PackZtqImageUp.NAME);
-        if (packImage == null) {
-            return;
-        }
-        packImage.beginDownload(getString(R.string.file_download_url), mImageFetcher);
-    }
 
     /**
      * 检查城市
@@ -981,9 +966,6 @@ public class ActivityMain extends FragmentActivity {
                                             if (!obj.isNull("token")) {
                                                 MyApplication.TOKEN = obj.getString("token");
                                             }
-                                            if (!obj.isNull("limitInfo")) {
-                                                MyApplication.LIMITINFO = obj.getString("limitInfo");
-                                            }
                                             if (!obj.isNull("userInfo")) {
                                                 JSONObject userInfo = obj.getJSONObject("userInfo");
                                                 if (!userInfo.isNull("userId")) {
@@ -1067,6 +1049,7 @@ public class ActivityMain extends FragmentActivity {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("result")) {
                                                 columnList.clear();
+                                                MyApplication.LIMITINFO = "";
                                                 JSONArray array = obj.getJSONArray("result");
                                                 for (int i = 0; i < array.length(); i++) {
                                                     JSONObject itemObj = array.getJSONObject(i);
@@ -1139,6 +1122,7 @@ public class ActivityMain extends FragmentActivity {
         try {
             if (!itemObj.isNull("dataCode")) {
                 dto.dataCode = itemObj.getString("dataCode");
+                MyApplication.LIMITINFO += dto.dataCode+",";
             }
             if (!itemObj.isNull("dataName")) {
                 dto.dataName = itemObj.getString("dataName");

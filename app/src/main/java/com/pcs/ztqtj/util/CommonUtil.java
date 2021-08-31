@@ -2,15 +2,19 @@ package com.pcs.ztqtj.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.view.activity.prove.ProveDto;
 
 import java.io.File;
@@ -45,6 +49,21 @@ public class CommonUtil {
     public static int heightPixels(Context context) {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         return dm.heightPixels;
+    }
+
+    /**
+     * 获取版本号
+     * @return 当前应用的版本号
+     */
+    public static String getVersion(Context context) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            return info.versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     /**
@@ -183,6 +202,19 @@ public class CommonUtil {
      */
     public static boolean isCanAccess(String flag) {
         if (TextUtils.equals(flag, "0")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否有查看权限
+     * @param columnId
+     * @return
+     */
+    public static boolean isHaveAuth(String columnId) {
+        Log.e("limitinfo", MyApplication.LIMITINFO);
+        if (MyApplication.LIMITINFO.contains(columnId)) {
             return true;
         }
         return false;

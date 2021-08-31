@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.view.fragment.warning;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,18 +13,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
-import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,17 +100,6 @@ public class FragmentWarningCenterDetail extends Fragment {
                 ShareTools.getInstance(getActivity()).setShareContent(titlecontent,shareContent, bitmap, "0").showWindow(content);
             }
         });
-
-        getView().findViewById(R.id.tv_push_settings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ActivityPushMain.class);
-                intent.putExtra("city", ZtqCityDB.getInstance().getCityMain());
-                intent.putExtra("title", "推送设置");
-                startActivity(intent);
-            }
-        });
-
     }
 
     private void initData() {

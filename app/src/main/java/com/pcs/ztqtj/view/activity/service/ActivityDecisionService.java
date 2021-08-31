@@ -122,7 +122,7 @@ public class ActivityDecisionService extends FragmentActivityZtqWithHelp {
                     JSONObject param  = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", "101030109");//101030301决策服务，101030109决策报告都是一样的数据
+                    info.put("stationId", "109");//301决策服务，109决策报告都是一样的数据
                     info.put("extra", "");
                     param.put("paramInfo", info);
                     String json = param.toString();

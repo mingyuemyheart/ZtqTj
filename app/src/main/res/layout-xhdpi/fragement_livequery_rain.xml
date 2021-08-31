@@ -236,7 +236,7 @@
         <LinearLayout
             android:id="@+id/layout_compare"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- 自动站 -->
@@ -370,9 +370,9 @@
 
             </LinearLayout>
 
-
             <!-- 近24小时 -->
             <LinearLayout
+                android:id="@+id/llHour24"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

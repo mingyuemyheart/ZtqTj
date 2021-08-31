@@ -149,9 +149,6 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
                                                 MyApplication.TOKEN = obj.getString("token");
                                                 Log.e("token", MyApplication.TOKEN);
                                             }
-                                            if (!obj.isNull("limitInfo")) {
-                                                MyApplication.LIMITINFO = obj.getString("limitInfo");
-                                            }
                                             if (!obj.isNull("userInfo")) {
                                                 JSONObject userInfo = obj.getJSONObject("userInfo");
                                                 if (!userInfo.isNull("userId")) {

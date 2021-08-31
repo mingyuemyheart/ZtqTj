@@ -15,6 +15,7 @@ import com.pcs.ztqtj.R
 import com.pcs.ztqtj.model.ZtqCityDB
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.ColumnDto
+import com.pcs.ztqtj.util.CommonUtil
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase
 import com.pcs.ztqtj.view.activity.agricuture.ActivityAgricutureFact
 import com.pcs.ztqtj.view.activity.agricuture.ActivityAgricutureView
@@ -100,42 +101,60 @@ class ActivityServerHyqx : FragmentActivityZtqBase() {
             }
             holder.itemImageView!!.setOnClickListener {
                 when(data.dataCode) {
-                    "10103030201" -> {//交通气象
+                    "30201" -> {//交通气象
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, ActivityTraffic::class.java)
                         intent.putExtra("title", data.dataName)
                         intent.putExtra("dataCode", data.dataCode)
                         startActivity(intent)
                     }
-                    "101030302020101" -> {//农情实况数据
+                    "302020101" -> {//农情实况数据
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, ActivityAgricutureFact::class.java)
                         intent.putExtra("title", data.dataName)
                         intent.putExtra("dataCode", data.dataCode)
                         startActivity(intent)
                     }
-                    "101030302020102" -> {//农田实景
+                    "302020102" -> {//农田实景
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, ActivityAgricutureView::class.java)
                         intent.putExtra("title", data.dataName)
                         intent.putExtra("dataCode", data.dataCode)
                         startActivity(intent)
                     }
-                    "101030302020201" -> {//旬报
+                    "302020201" -> {//旬报
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, ActivityAgricultureWeather::class.java)
                         intent.putExtra("title", data.dataName)
                         intent.putExtra("dataCode", data.dataCode)
-                        intent.putExtra("channel_id", "10103030202")
+                        intent.putExtra("channel_id", "30202")
                         intent.putExtra("type", "xb")
                         startActivity(intent)
                     }
-                    "101030302020202" -> {//月报
+                    "302020202" -> {//月报
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, ActivityAgricultureWeather::class.java)
                         intent.putExtra("title", data.dataName)
                         intent.putExtra("dataCode", data.dataCode)
-                        intent.putExtra("channel_id", "10103030202")
+                        intent.putExtra("channel_id", "30202")
                         intent.putExtra("type", "yb")
                         startActivity(intent)
                     }
-                    "101030302020301" -> {//农情苗情速报
-                        if (!ZtqCityDB.getInstance().isLoginService()) {
+                    "302020301" -> {//农情苗情速报
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
+                        if (!ZtqCityDB.getInstance().isLoginService) {
                             intent = Intent(mContext, ActivityLogin::class.java)
                             startActivityForResult(intent, CONST.RESULT_LOGIN)
                         } else {
@@ -145,12 +164,18 @@ class ActivityServerHyqx : FragmentActivityZtqBase() {
                             startActivity(intent)
                         }
                     }
-                    "101030302020302" -> {//农情苗情互动
+                    "302020302" -> {//农情苗情互动
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, AgriEachActivity::class.java)
                         intent.putExtra("title", data.dataName)
                         startActivity(intent)
                     }
-                    "1010303020204","1010303020205","1010303020206","1010303020207","1010303020208","1010303020209" -> {
+                    "3020204","3020205","3020206","3020207","3020208","3020209" -> {
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         val intent = Intent(mContext, ActivityWebView::class.java)
                         intent.putExtra("title", data.dataName)
                         intent.putExtra("url", data.url)
@@ -158,6 +183,9 @@ class ActivityServerHyqx : FragmentActivityZtqBase() {
                         startActivity(intent)
                     }
                     else -> {//农业气象
+                        if (!CommonUtil.isCanAccess(data.flag)) {
+                            return@setOnClickListener
+                        }
                         if (data.childList.size > 0) {
                             val intent = Intent(mContext, ActivityServerHyqx::class.java)
                             intent.putExtra("title", data.dataName)

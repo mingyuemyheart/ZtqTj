@@ -155,6 +155,7 @@ public class ActivityTraffic extends FragmentActivityWithShare implements View.O
                     info.put("extra", "");
                     param.put("paramInfo", info);
                     String json = param.toString();
+                    Log.e("info_list", json);
                     final String url = CONST.BASE_URL+"info_list";
                     Log.e("info_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);

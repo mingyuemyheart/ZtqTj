@@ -34,7 +34,7 @@ import com.pcs.ztqtj.control.livequery.ControlMapBound;
 import com.pcs.ztqtj.control.livequery.ControlTyphoonHandler;
 import com.pcs.ztqtj.control.livequery.MapElementZIndex;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
-import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
 
@@ -196,52 +196,48 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
 
     public void refreshView(String type) {
 //        RadioButton rbRain = (RadioButton) getView().findViewById(rb_rain);
-        View radar = getView().findViewById(R.id.layout_radar);
+        CheckBox cbSb = getView().findViewById(R.id.rb_sb);
         CheckBox cbGj = getView().findViewById(R.id.rb_gj);
-        CheckBox cbZd = getView().findViewById(R.id.rb_zd);
         CheckBox cbDb = getView().findViewById(R.id.rb_db);
+        CheckBox cbZd = getView().findViewById(R.id.rb_zd);
+        View radar = getView().findViewById(R.id.layout_radar);
         CheckBox cbTyphoon = getView().findViewById(R.id.cb_typhoon);
         if (isProvince) { // 天津内
-            radar.setVisibility(View.VISIBLE);
+            cbSb.setVisibility(View.VISIBLE);
             cbGj.setVisibility(View.VISIBLE);
             cbDb.setVisibility(View.VISIBLE);
             cbZd.setVisibility(View.VISIBLE);
+            radar.setVisibility(View.VISIBLE);
             cbTyphoon.setVisibility(View.VISIBLE);
             ControlMapBound controlMapBound = new ControlMapBound(getActivity(), aMap, R.color.gray);
             controlMapBound.start();
         } else { // 全国
-            radar.setVisibility(View.GONE);
+            cbSb.setVisibility(View.VISIBLE);
             cbGj.setVisibility(View.VISIBLE);
             cbDb.setVisibility(View.GONE);
             cbZd.setVisibility(View.GONE);
+            radar.setVisibility(View.GONE);
             cbTyphoon.setVisibility(View.GONE);
         }
-        if(!isHaveAuth("10103020403")) {
+        if(!CommonUtil.isHaveAuth("2010401")) {
+            cbSb.setVisibility(View.GONE);
+        }
+        if(!CommonUtil.isHaveAuth("2010402")) {
+            cbGj.setVisibility(View.GONE);
+        }
+        if(!CommonUtil.isHaveAuth("2010403")) {
             cbDb.setVisibility(View.GONE);
         }
-        if(!isHaveAuth("10103020404")) {
+        if(!CommonUtil.isHaveAuth("2010404")) {
             cbZd.setVisibility(View.GONE);
         }
-        if(!isHaveAuth("10103020405")) {
+        if(!CommonUtil.isHaveAuth("2010405")) {
             radar.setVisibility(View.GONE);
         }
-        if(!isHaveAuth("10103020406")) {
+        if(!CommonUtil.isHaveAuth("2010406")) {
             cbTyphoon.setVisibility(View.GONE);
         }
         update(ControlDistribution.getColumnType(type));
-    }
-
-    /**
-     * 判断是否有查看权限
-     * @param columnId
-     * @return
-     */
-    private boolean isHaveAuth(String columnId) {
-        Log.e("limitinfo", MyApplication.LIMITINFO);
-        if (MyApplication.LIMITINFO.contains(columnId)) {
-            return true;
-        }
-        return false;
     }
 
     private void createControls() {

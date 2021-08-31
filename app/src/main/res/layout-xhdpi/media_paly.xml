@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/layout"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f0f0f0"
     android:orientation="vertical">
-
 
     <com.pcs.ztqtj.view.myview.TexureViewVideoView
         android:id="@+id/my_videoview"
@@ -16,27 +15,27 @@
         android:visibility="visible" />
 
     <Button
-        android:visibility="gone"
         android:id="@+id/btntaunted"
         android:layout_width="60dp"
         android:layout_height="30dp"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/my_videoview"
+        android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/dimen8"
+        android:layout_marginRight="@dimen/dimen4"
         android:background="@mipmap/icon_taunted"
         android:padding="1dp"
-        android:layout_marginRight="@dimen/dimen4"
         android:text="吐槽"
         android:textColor="@color/text_black"
-        android:textSize="@dimen/text_content" />
+        android:textSize="@dimen/text_content"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/item_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/my_videoview"
-        android:layout_marginBottom="2dip"
         android:layout_marginTop="2dip"
+        android:layout_marginBottom="2dip"
         android:adjustViewBounds="true"
         android:scaleType="fitXY" />
 
@@ -44,28 +43,27 @@
         android:id="@+id/time_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/my_videoview"
         android:layout_alignLeft="@id/my_videoview"
         android:layout_alignRight="@id/my_videoview"
-        android:layout_below="@id/my_videoview"
         android:layout_margin="10dp"
         android:singleLine="true"
         android:textColor="@color/text_color"
         android:textSize="@dimen/dimen18" />
 
-    <ImageView
-        android:id="@+id/imageview_bgplaybanner"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <com.pcs.ztqtj.view.myview.MainViewPager
+        android:id="@+id/viewPager"
+        android:visibility="gone"
         android:layout_above="@id/my_videoview"
-        android:layout_marginBottom="2dip"
-        android:layout_marginTop="2dip" />
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/time_textview"
         android:layout_alignLeft="@id/my_videoview"
-        android:layout_alignRight="@id/my_videoview"
-        android:layout_below="@id/time_textview">
+        android:layout_alignRight="@id/my_videoview">
 
         <TextView
             android:id="@+id/desc_tv"
@@ -73,7 +71,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:paddingBottom="@dimen/dimen20"
-
             android:textColor="@color/text_color"
             android:textSize="@dimen/dimen18"
             android:visibility="visible" />
@@ -83,9 +80,9 @@
         android:id="@+id/play_layout"
         android:layout_width="match_parent"
         android:layout_height="65dp"
+        android:layout_below="@id/my_videoview"
         android:layout_alignLeft="@id/my_videoview"
         android:layout_alignRight="@id/my_videoview"
-        android:layout_below="@id/my_videoview"
         android:layout_marginTop="-65dp"
         android:background="@drawable/bg_bottom_bg_02"
         android:orientation="vertical"
@@ -134,12 +131,12 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@id/seekbar"
                 android:layout_below="@id/seekbar"
-                android:layout_marginRight="10dip"
+                android:layout_alignRight="@id/seekbar"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dip"
                 android:orientation="horizontal">
 
                 <TextView

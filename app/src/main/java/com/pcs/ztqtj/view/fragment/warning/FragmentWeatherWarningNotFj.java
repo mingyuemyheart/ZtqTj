@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.view.fragment.warning;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,7 +37,6 @@ import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
-import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
@@ -67,7 +65,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
     private RadioGroup radioGroup = null;
     private ListView listView = null;
     private LinearLayout llWarningDetailContent = null;
-    private TextView tvShare, tvPush;
+    private TextView tvShare;
     /**
      * 市级对话框
      */
@@ -108,7 +106,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
 
     private void initView() {
         tvShare = (TextView) getView().findViewById(R.id.tv_share);
-        tvPush = (TextView) getView().findViewById(R.id.tv_push_settings);
         radioGroup = (RadioGroup) getView().findViewById(R.id.radiogroup);
         listView = (ListView) getView().findViewById(R.id.warnlistview);
         llWarningDetailContent = (LinearLayout) getView().findViewById(R.id.fragment);
@@ -120,15 +117,6 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferencesUtil.putData(currentWarnList.get(position).id,currentWarnList.get(position).id);
                 okHttpWarningDetail(currentWarnList.get(position).id);
-            }
-        });
-        tvPush.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ActivityPushMain.class);
-                intent.putExtra("city", ZtqCityDB.getInstance().getCityMain());
-                intent.putExtra("title", "推送设置");
-                startActivity(intent);
             }
         });
     }

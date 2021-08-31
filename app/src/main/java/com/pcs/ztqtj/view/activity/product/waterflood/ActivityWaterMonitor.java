@@ -36,7 +36,7 @@ import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.youmeng.ShareUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityWithShare;
-import com.tianyi.shawn.tjdecision.wxapi.wxtools.MD5;
+import com.pcs.ztqtj.wxapi.wxtools.MD5;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;

@@ -1,6 +1,9 @@
 package com.pcs.ztqtj.view.activity.photoshow;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Paint;
@@ -13,8 +16,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -37,38 +41,37 @@ import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
-import com.pcs.lib_ztqfj_v2.model.pack.net.BannerInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackBannerUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.AdapterControlMainRow8;
 import com.pcs.ztqtj.control.adapter.photo.AdapterPhotoShow;
-import com.pcs.ztqtj.control.inter.ImageClick;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
 import com.pcs.ztqtj.control.listener.ListenerRefreshTouch;
 import com.pcs.ztqtj.control.listener.ListenerRefreshTouch.InterfaceScrollView;
+import com.pcs.ztqtj.control.main_weather.FragmentAd;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.PhotoShowDB;
 import com.pcs.ztqtj.model.PhotoShowDB.PhotoShowDBListener;
 import com.pcs.ztqtj.model.PhotoShowDB.PhotoShowType;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.web.ActivityWeatherDay;
-import com.pcs.ztqtj.view.activity.web.MyWebView;
-import com.pcs.ztqtj.view.myview.LeadPoint;
+import com.pcs.ztqtj.view.myview.MainViewPager;
 import com.pcs.ztqtj.view.myview.ViewPulldownRefresh;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,11 +82,20 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 /**
  * 实景开拍主页面
  */
 public class ActivityPhotoShow extends FragmentActivityZtqBase {
 
+    private ImageFetcher mImageFetcher = null;
     public static String CITY_ID = "CITY_ID";
     // 图片最大长度
     private final int PHOTO_MAX_PENGTH = 1920;
@@ -108,18 +120,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
     private boolean mIsLoading = true;
     // 图片文件
     private File mFilePhoto = null;
-
-    private ViewPager vp;
-    private int pagerCurrentPosition = 0;
-    private LeadPoint pointlayout;
-    private static final long delayMillis = 5000;
-    private AdapterControlMainRow8 adapterAdvertisement;
-    private MyReceiver receiver = new MyReceiver();
-    private PackBannerUp packBannerUp = new PackBannerUp();
-    // banner广告list
-    private List<BannerInfo> bannerList = new ArrayList<>();
-    // banner广告活动地址
-    private List<String> urlList = new ArrayList<>();
 
     /**
      * 默认去的是普通图片。不是精选图片
@@ -148,6 +148,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
             }
         }
         createImageFetcher();
+        mImageFetcher = getImageFetcher();
         showProgressDialog();
         String cityId = ZtqCityDB.getInstance().getCityMain().ID;
         imgType = getIntent().getStringExtra("imgType");
@@ -164,12 +165,9 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         // 初始化弹出框
         initPopupWindow();
         initRadioGroup();
-        // 初始化banner控件
-        initBannerView();
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         // 请求数据
         mPhotoShowDB.reqNextPage(getDataType);
-        reqBanner();
+        okHttpAd();
     }
 
     private void initRadioGroup() {
@@ -226,20 +224,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
             mAdapter.notifyDataSetChanged();
             mPhotoShowDB.setRefreshType(PhotoShowDB.PhotoRefreshType.NO_NEED);
         }
-        // banner
-        if (bannerList == null || bannerList.size() == 0) {
-        } else if (pagerCurrentPosition == 0) {
-            pagerCurrentPosition = ((adapterAdvertisement.getCount() / bannerList.size()) / 2) * bannerList.size();
-            if (vp != null && adapterAdvertisement != null) {
-                vp.setCurrentItem(pagerCurrentPosition);
-                moveToNextPager();
-            }
-        } else {
-            if (vp != null && adapterAdvertisement != null) {
-                vp.setCurrentItem(pagerCurrentPosition);
-                moveToNextPager();
-            }
-        }
     }
 
     @Override
@@ -252,10 +236,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
     protected void onDestroy() {
         super.onDestroy();
         mPhotoShowDB.onDestory();
-        if (receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
     }
 
     @Override
@@ -280,6 +260,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
      * 初始化按钮
      */
     private void initButton() {
+        viewPager = findViewById(R.id.viewPager);
         // 个人中心
 //        setBtnRight(R.drawable.icon_photo_show_user_new, mOnClick);
         setBtnRight2(R.drawable.icon_take_picture_new_2, mOnClick);
@@ -399,111 +380,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         } else {
             view.setVisibility(View.GONE);
         }
-    }
-    private  String perfixUrl;
-
-    /**
-     * 获取数据完成
-     */
-    private void initBanner() {
-        pagerCurrentPosition = 0;
-        perfixUrl = getResources().getString(R.string.file_download_url);
-        urlList.clear();
-        for (BannerInfo info : bannerList) {
-            urlList.add(perfixUrl + info.img_path);
-        }
-        adapterAdvertisement = new AdapterControlMainRow8(urlList, imageClick, getImageFetcher());
-        vp.setAdapter(adapterAdvertisement);
-        if (bannerList.size() == 0) {
-            // 如果大小为0的话则不需要计算当前位置
-            layout_banner.setVisibility(View.GONE);
-        } else {
-            layout_banner.setVisibility(View.VISIBLE);
-            // 不为0则计算当前位置
-            pagerCurrentPosition = ((adapterAdvertisement.getCount() / bannerList.size()) / 2) * bannerList.size();
-            vp.setCurrentItem(pagerCurrentPosition);
-            pointlayout.initPoint(bannerList.size());
-        }
-        if (bannerList.size() > 1) {
-            // 如果广告小于等于一个的话这不跳转播放
-            moveToNextPager();
-        }
-    }
-
-    private RelativeLayout layout_banner;
-    private void initBannerView() {
-         layout_banner = (RelativeLayout) findViewById(R.id.layout_banner);
-        ViewGroup.LayoutParams rootParams = layout_banner.getLayoutParams();
-        float scale = 17f / 36f;
-        float screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-        rootParams.height = (int) (screenWidth * scale);
-        layout_banner.setLayoutParams(rootParams);
-        vp = (ViewPager) findViewById(R.id.viewpager);
-        pointlayout = (LeadPoint) findViewById(R.id.pointlayout);
-        vp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int arg0) {
-                pagerCurrentPosition = arg0;
-                if (bannerList.size() > 1) {
-                    pointlayout.setPointSelect(pagerCurrentPosition
-                            % bannerList.size());
-                }
-            }
-
-            @Override
-            public void onPageScrolled(int arg0, float arg1, int arg2) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int arg0) {
-            }
-        });
-
-        vp.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_MOVE:
-                        brannerHandler.removeMessages(0);
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        moveToNextPager();
-                        break;
-                }
-                return false;
-            }
-        });
-    }
-
-    /**
-     * 展示下一张图片
-     */
-    private void moveToNextPager() {
-        brannerHandler.sendEmptyMessageDelayed(0, delayMillis);
-    }
-
-    private final Handler brannerHandler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    brannerHandler.removeMessages(0);
-                    vp.setCurrentItem(pagerCurrentPosition + 1);
-                    moveToNextPager();
-                    break;
-            }
-            return false;
-        }
-    });
-
-    /**
-     * 请求banner数据
-     */
-    private void reqBanner() {
-        packBannerUp = new PackBannerUp();
-        packBannerUp.position_id = "22";
-        PcsDataDownload.addDownload(packBannerUp);
     }
 
     /**
@@ -805,7 +681,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
                     clickPhotoGraph();
                     break;
                 case R.id.btnCamera:
-
                     clickCamera();
                     break;
                 case R.id.btnAlbum:
@@ -822,63 +697,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
             }
         }
     };
-
-    private final ImageClick imageClick = new ImageClick() {
-        @Override
-        public void itemClick(Object path) {
-            BannerInfo bean = null;
-            for (BannerInfo info : bannerList) {
-                if (path.toString().equals(getResources().getString(R.string.file_download_url) + info.img_path)) {
-                    bean = info;
-                    break;
-                }
-            }
-            if (bean != null) {
-                if (bean.title.equals("观云识天.随手拍")) {
-//                    String url = "";
-//                    if(LoginInformation.getInstance().hasLogin()) {
-//                        String userid = LoginInformation.getInstance().getUserId();
-//                        PackInitDown down = (PackInitDown) PcsDataManager.getInstance().getNetPack(PackInitUp.NAME);
-//                        String pid = down.pid;
-//                        url = bean.url + "?USER_ID=" + userid + "&PID=" + pid;
-//                    } else {
-//                        PackInitDown down = (PackInitDown) PcsDataManager.getInstance().getNetPack(PackInitUp.NAME);
-//                        String pid = down.pid;
-//                        url = bean.url + "?USER_ID=&PID=" + pid;
-//                    }
-                    toWeatherDay(bean.url, bean);
-                } else {
-                    toWebView(bean.url, bean.title);
-                }
-            }
-
-        }
-    };
-
-    /**
-     * 顶部图片列表点击进入下一级详情
-     * @param path
-     */
-    private void toWebView(String path, String title) {
-        if (TextUtils.isEmpty(path)||path.equals(perfixUrl)) {
-            return;
-        }
-        Intent intent = new Intent(this, MyWebView.class);
-        intent.putExtra("title", title);
-        intent.putExtra("url", path);
-        startActivity(intent);
-    }
-
-    private void toWeatherDay(String url, BannerInfo bean) {
-        if (TextUtils.isEmpty(url)||url.equals(perfixUrl)) {
-            return;
-        }
-        Intent intent = new Intent(this, ActivityWeatherDay.class);
-        intent.putExtra("title", bean.title);
-        intent.putExtra("url", url);
-        intent.putExtra("BannerInfo", bean);
-        startActivity(intent);
-    }
 
     private AnimationSet getAnmation() {
         AnimationSet animation = new AnimationSet(true);
@@ -956,18 +774,169 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
         }
     };
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.equals(packBannerUp.getName())) {
-                PackBannerDown down = (PackBannerDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
+    /**
+     * 获取广告
+     */
+    private void okHttpAd() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("ad_type", "B002");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    final String url = CONST.BASE_URL+"ad_list";
+                    Log.e("ad_list", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        initViewPager(result);
+                                    } else {
+                                        viewPager.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                bannerList.clear();
-                bannerList.addAll(down.arrBannerInfo);
-                initBanner();
             }
+        }).start();
+    }
+
+    private MainViewPager viewPager = null;
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private void initViewPager(String result) {
+        fragments.clear();
+        try {
+            JSONObject obj = new JSONObject(result);
+            if (!obj.isNull("b")) {
+                JSONObject bObj = obj.getJSONObject("b");
+                if (!bObj.isNull("ad")) {
+                    JSONObject adObj = bObj.getJSONObject("ad");
+                    if (!adObj.isNull("ad_list")) {
+                        JSONArray array = adObj.getJSONArray("ad_list");
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject itemObj = array.getJSONObject(i);
+                            String imgUrl = getResources().getString(R.string.msyb) + itemObj.getString("img_path");
+                            String name = itemObj.getString("title");
+                            String dataUrl = itemObj.getString("url");
+                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("imgUrl", imgUrl);
+                            bundle.putString("name", name);
+                            bundle.putString("dataUrl", dataUrl);
+                            fragment.setArguments(bundle);
+                            fragments.add(fragment);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (fragments.size() > 0) {
+            viewPager.setVisibility(View.VISIBLE);
+        } else {
+            viewPager.setVisibility(View.GONE);
+        }
+        viewPager.setAdapter(new MyPagerAdapter());
+        viewPager.setSlipping(true);//设置ViewPager是否可以滑动
+        viewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+
+        mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
+    }
+
+    private final int AUTO_PLUS = 1;
+    private static final int PHOTO_CHANGE_TIME = 2000;//定时变量
+    private int index_plus = 0;
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case AUTO_PLUS:
+                    viewPager.setCurrentItem(index_plus++);//收到消息后设置当前要显示的图片
+                    mHandler.sendEmptyMessageDelayed(AUTO_PLUS, PHOTO_CHANGE_TIME);
+                    if (index_plus >= fragments.size()) {
+                        index_plus = 0;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        };
+    };
+
+    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageSelected(int arg0) {
+            index_plus = arg0;
+        }
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+    }
+
+    private class MyPagerAdapter extends PagerAdapter {
+        @Override
+        public boolean isViewFromObject(View arg0, Object arg1) {
+            return arg0 == arg1;
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        @Override
+        public void destroyItem(View container, int position, Object object) {
+            try {
+                ((ViewPager) container).removeView(fragments.get(position).getView());
+            } catch (IndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = fragments.get(position);
+            if (!fragment.isAdded()) { // 如果fragment还没有added
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.add(fragment, fragment.getClass().getSimpleName());
+                ft.commit();
+                /**
+                 * 在用FragmentTransaction.commit()方法提交FragmentTransaction对象后
+                 * 会在进程的主线程中,用异步的方式来执行。
+                 * 如果想要立即执行这个等待中的操作,就要调用这个方法(只能在主线程中调用)。
+                 * 要注意的是,所有的回调和相关的行为都会在这个调用中被执行完成,因此要仔细确认这个方法的调用位置。
+                 */
+                getFragmentManager().executePendingTransactions();
+            }
+
+            if (fragment.getView().getParent() == null) {
+                container.addView(fragment.getView()); // 为viewpager增加布局
+            }
+            return fragment.getView();
         }
     }
 

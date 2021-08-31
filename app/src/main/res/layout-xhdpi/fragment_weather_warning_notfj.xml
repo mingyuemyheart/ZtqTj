@@ -23,18 +23,6 @@
             android:textColor="@color/text_white"
             android:textSize="@dimen/text_content" />
 
-        <TextView
-            android:id="@+id/tv_push_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen30"
-            android:background="@drawable/btn_warning_center_bottom"
-            android:gravity="center"
-            android:text="@string/push_settings"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/text_content"
-            android:visibility="gone" />
-
     </LinearLayout>
 
     <LinearLayout

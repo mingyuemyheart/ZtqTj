@@ -669,11 +669,11 @@ public class ControlDistributionDetail {
                     if (column == WIND) {
                         name = "fycx_fbt_station";
                         img_type = PackFycxFbtUp.ZD;
-                        img_type = "10103020403";
+                        img_type = "20403";
                     } else {
                         name = "fycx_fbt_img";
                         img_type = PackFycxFbtUp.SB;
-                        img_type = "10103020401";
+                        img_type = "20401";
                     }
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
@@ -681,21 +681,21 @@ public class ControlDistributionDetail {
                 case ZD: // 自动站
                     name = "fycx_fbt_station";
                     img_type = PackFycxFbtUp.ZD;
-                    img_type = "10103020404";
+                    img_type = "20404";
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case DB: // 代表站
                     name = "fycx_fbt_station";
                     img_type = PackFycxFbtUp.DB;
-                    img_type = "10103020403";
+                    img_type = "20403";
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case GJ: // 国家站
                     name = "fycx_fbt_station";
                     img_type = PackFycxFbtUp.GJ;
-                    img_type = "10103020402";
+                    img_type = "20402";
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
@@ -712,12 +712,12 @@ public class ControlDistributionDetail {
             switch (status) {
                 case RADAR: // 雷达
                     img_type = PackFycxFbtUp.RADAR;
-                    img_type = "10103020405";
+                    img_type = "20405";
                     area_id = siteInfo.type;
                     break;
                 case CLOUD: // 云图
                     img_type = PackFycxFbtUp.CLOUD;
-                    img_type = "10103020406";
+                    img_type = "20406";
                     area_id = "25169";
                     break;
                 case NONE:

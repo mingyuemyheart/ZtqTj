@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -15,18 +16,26 @@ import android.widget.TextView
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher
 import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
+import com.pcs.ztqtj.control.tool.utils.TextUtil
 import com.pcs.ztqtj.model.ZtqCityDB
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.ColumnDto
 import com.pcs.ztqtj.util.CommonUtil
+import com.pcs.ztqtj.util.OkHttpUtil
 import com.pcs.ztqtj.view.activity.ActivityMain
 import com.pcs.ztqtj.view.activity.help.ActivityHelp
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin
 import com.pcs.ztqtj.view.activity.service.ActivityDecisionService
 import com.pcs.ztqtj.view.activity.service.ActivityServerHyqx
 import com.pcs.ztqtj.view.activity.service.ActivitySpecialService
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_service.*
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
 
 /**
  * 专项服务
@@ -47,6 +56,7 @@ class FragmentService : BaseFragment(), OnClickListener {
     }
 
     private fun initView() {
+        okHttpAd()
         imageghelp.setOnClickListener(this)
         btnLogin.setOnClickListener(this)
 
@@ -61,7 +71,7 @@ class FragmentService : BaseFragment(), OnClickListener {
             for (i in 0 until data.childList.size) {
                 val dto = data.childList[i]
                 when(dto.dataCode) {
-                    "101030301" -> {
+                    "301" -> {
                         btnJuece.text = dto.dataName
                         if (CommonUtil.isCanAccess(dto.flag)) {
                             btnJuece.setOnClickListener {
@@ -78,7 +88,7 @@ class FragmentService : BaseFragment(), OnClickListener {
                             btnJuece.setTextColor(ContextCompat.getColor(activity!!, R.color.gray))
                         }
                     }
-                    "101030302" -> {
+                    "302" -> {
                         btnHy.text = dto.dataName
                         if (CommonUtil.isCanAccess(dto.flag)) {
                             btnHy.setOnClickListener {
@@ -96,40 +106,40 @@ class FragmentService : BaseFragment(), OnClickListener {
                             btnHy.setTextColor(ContextCompat.getColor(activity!!, R.color.gray))
                         }
                     }
-                    "101030303" -> {
+                    "303" -> {
                         intentDetail(ivQxt, tvQxt, dto)
                     }
-                    "101030304" -> {
+                    "304" -> {
                         intentDetail(ivBgs, tvBgs, dto)
                     }
-                    "101030305" -> {
+                    "305" -> {
                         intentDetail(ivBhxq, tvBhxq, dto)
                     }
-                    "101030306" -> {
+                    "306" -> {
                         intentDetail(ivDlq, tvDlq, dto)
                     }
-                    "101030307" -> {
+                    "307" -> {
                         intentDetail(ivXqq, tvXqq, dto)
                     }
-                    "101030308" -> {
+                    "308" -> {
                         intentDetail(ivJnq, tvJnq, dto)
                     }
-                    "101030309" -> {
+                    "309" -> {
                         intentDetail(ivBcq, tvBcq, dto)
                     }
-                    "101030310" -> {
+                    "310" -> {
                         intentDetail(ivWqq, tvWqq, dto)
                     }
-                    "101030311" -> {
+                    "311" -> {
                         intentDetail(ivBdq, tvBdq, dto)
                     }
-                    "101030312" -> {
+                    "312" -> {
                         intentDetail(ivJhq, tvJhq, dto)
                     }
-                    "101030313" -> {
+                    "313" -> {
                         intentDetail(ivNhq, tvNhq, dto)
                     }
-                    "101030314" -> {
+                    "314" -> {
                         intentDetail(ivJzq, tvJzq, dto)
                     }
                 }
@@ -210,6 +220,77 @@ class FragmentService : BaseFragment(), OnClickListener {
                 }
             }
         }
+    }
+
+    /**
+     * 获取广告
+     */
+    private fun okHttpAd() {
+        Thread {
+            try {
+                val param = JSONObject()
+                param.put("token", MyApplication.TOKEN)
+                val info = JSONObject()
+                info.put("ad_type", "B003")
+                param.put("paramInfo", info)
+                val json = param.toString()
+                val url = CONST.BASE_URL + "ad_list"
+                Log.e("ad_list", url)
+                val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+                val body = RequestBody.create(mediaType, json)
+                OkHttpUtil.enqueue(Request.Builder().url(url).post(body).build(), object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {}
+
+                    @Throws(IOException::class)
+                    override fun onResponse(call: Call, response: Response) {
+                        if (!response.isSuccessful) {
+                            return
+                        }
+                        if (!isAdded) {
+                            return
+                        }
+                        val result = response.body!!.string()
+                        activity!!.runOnUiThread {
+                            if (!TextUtil.isEmpty(result)) {
+                                try {
+                                    val obj = JSONObject(result)
+                                    if (!obj.isNull("b")) {
+                                        val bObj = obj.getJSONObject("b")
+                                        if (!bObj.isNull("ad")) {
+                                            val adObj = bObj.getJSONObject("ad")
+                                            if (!adObj.isNull("ad_list")) {
+                                                val array = adObj.getJSONArray("ad_list")
+                                                if (array.length() > 0) {
+                                                    val itemObj = array.getJSONObject(0)
+                                                    val imgUrl = resources.getString(R.string.msyb).toString() + itemObj.getString("img_path")
+                                                    val name = itemObj.getString("title")
+                                                    val dataUrl = itemObj.getString("url")
+                                                    Picasso.get().load(imgUrl).into(ivAd)
+                                                    ivAd.visibility = View.VISIBLE
+                                                    ivAd.setOnClickListener {
+                                                        if (!TextUtil.isEmpty(dataUrl) && dataUrl.startsWith("http")) {
+                                                            val it = Intent(activity, ActivityWebView::class.java)
+                                                            it.putExtra("title", name)
+                                                            it.putExtra("url", dataUrl)
+                                                            it.putExtra("shareContent", name)
+                                                            startActivity(it)
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+                    }
+                })
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        }.start()
     }
 
 }

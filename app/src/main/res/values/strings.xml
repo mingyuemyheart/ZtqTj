@@ -2,17 +2,15 @@
 <resources>
 
     <string name="url">http://www.weather-jy.cn:8096/ztq_tj_jc/service.do</string>
-    <string name="file_download_url">http://220.243.129.159:8081/web/</string>//base
-    <string name="shzs">http://220.243.129.159:8081/web/tjfile/ico/</string>//生活指数
-    <string name="air_pollution">http://220.243.129.159:8081/web/tjfile/picture/1806/</string>//空气污染
-    <string name="msyb">http://220.243.129.159:8081/web/tjfile</string>//模式预报
-    <string name="sjkp">http://220.243.129.159:8081/web/tjfile/livePhoto/</string>//实景开拍
+    <string name="file_download_url">https://tjhm-app.weather.com.cn:8081/web/</string>//base
+    <string name="shzs">https://tjhm-app.weather.com.cn:8081/web/tjfile/ico/</string>//生活指数
+    <string name="air_pollution">https://tjhm-app.weather.com.cn:8081/web/tjfile/picture/1806/</string>//空气污染
+    <string name="msyb">https://tjhm-app.weather.com.cn:8081/web/tjfile</string>//模式预报
+    <string name="sjkp">https://tjhm-app.weather.com.cn:8081/web/tjfile/livePhoto/</string>//实景开拍
     <string name="use_asset_db">0</string>
-    <!-- 文件下载测试地址：http://112.5.138.42:9091/zsfj -->
-    <!-- 文件下载正式地址：http://218.85.78.125:8099/ftp -->
-    <string name="app_name">天津惠民</string>
+    <string name="app_name">天津气象</string>
     <string name="version"> </string>
-    <string name="and_app">&#160;@天津惠民</string>
+    <string name="and_app">&#160;@天津气象</string>
     <string name="main">首页</string>
     <string name="tip">提示</string>
     <string name="exit_confirm">是否退出程序？</string>
@@ -39,7 +37,7 @@
     <string name="settime">设置时间</string>
     <string name="typhoon_path">台风路径</string>
     <string name="locating">位置：</string>
-    <string name="careaboutasdescribed_1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;天津惠民客户端由</string>
+    <string name="careaboutasdescribed_1">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;天津气象客户端由</string>
     <string name="careaboutasdescribed_2">权威打造，为决策、专业、行业气象服务用户提供实时天气预报、气象预警信息，以及风雨查询、台风路径、气象雷达、专项服务等专业功能。</string>
     <string name="empty_promess_service">输入的手机号无“专项服务”栏目使用权限，如需订阅，请联系当地气象部门！</string>
     <string name="promess_service_intro">请先登录，才能访问专项服务产品。了解专项服务栏目，请查阅帮助信息！</string>
@@ -52,7 +50,7 @@
     <string name="autosharebundle">请绑定</string>
     <string name="autosharenobundle">没有绑定微博则不发布</string>
     <string name="autosharenobundletime">设置分享时间后，分享天气前会自动更新时间。</string>
-    <string name="mz_content">\t1、 “天津惠民”提供的天气预报信息产品服务仅供用户作为生活、生产等活动的参考信息，用户据此作出的行为及所产生的后果与“天津惠民”及其关联的单位无关。 \n\t2、 由于不可抗力或互联网传输原因等造成信息传播的延迟、中断和缺失，“天津惠民”不承担任何责任。因不可预测或无法控制的系统故障、设备故障、通讯故障等原因给用户造成损失的，“天津惠民”不承担任何的赔偿责任。 \n\t3、 “天津惠民”努力给用户提供及时、准确的天气信息产品服务，但不承担因预报准确率原因引起的任何损失、损害。您在使用“天津惠民”时可能产生的GPRS流量资费各地不同，由当地运营商收取。 \n\t4、“天津惠民”提供的所有数据仅供参考，不具备法律效力，不得挪为他用。 \n\t5、 本声明的最终解释权归“天津惠民”所有。 \n\t 以上风险提示，您已阅读并理解，如果继续使用，即表明您同意承担使用“天津惠民”所有服务可能存在的风险。 </string>
+    <string name="mz_content">\t1、 “天津气象”提供的天气预报信息产品服务仅供用户作为生活、生产等活动的参考信息，用户据此作出的行为及所产生的后果与“天津气象”及其关联的单位无关。 \n\t2、 由于不可抗力或互联网传输原因等造成信息传播的延迟、中断和缺失，“天津气象”不承担任何责任。因不可预测或无法控制的系统故障、设备故障、通讯故障等原因给用户造成损失的，“天津气象”不承担任何的赔偿责任。 \n\t3、 “天津气象”努力给用户提供及时、准确的天气信息产品服务，但不承担因预报准确率原因引起的任何损失、损害。您在使用“天津气象”时可能产生的GPRS流量资费各地不同，由当地运营商收取。 \n\t4、“天津气象”提供的所有数据仅供参考，不具备法律效力，不得挪为他用。 \n\t5、 本声明的最终解释权归“天津气象”所有。 \n\t 以上风险提示，您已阅读并理解，如果继续使用，即表明您同意承担使用“天津气象”所有服务可能存在的风险。 </string>
 
     <string name="feedback_eidtdesc">登录并绑定手机号码，就可以发布您的建议啦！</string>
     <string name="feedback_eidtemail">请输入您的手机号码或账号</string>
@@ -125,7 +123,7 @@
     <string name="forgetpwd">忘记密码请联系为您开通服务权限的专项服务单位。</string>
     <string name="init_password">初始密码：123456。请及时修改密码。忘记密码请联系为您开通专项服务权限的气象服务单位。</string>
     <string name="password_help">请到“帮助”页面，查阅使用说明，修改密码。</string>
-    <string name="text_ztq_tips">天津惠民提示</string>
+    <string name="text_ztq_tips">天津气象提示</string>
     <string name="unlogin">未登录</string>
     <string name="text_change_pwd_tips">您尚未登录，无法修改密码。</string>
     <string name="text_authority_tips">您的手机号无本“专项服务”栏目使用权限，如需开通，请查阅帮助信息！</string>
@@ -151,11 +149,11 @@
     <string name="helpacitvity">帮助</string>
     <string name="more">更多</string>
     <string name="hour_forecast_36">36小时逐时预报</string>
-    <string name="dialog_default_title">天津惠民提示</string>
+    <string name="dialog_default_title">天津气象提示</string>
     <string name="search_no_result">对不起，没有搜索到相关数据</string>
     <string name="search_error">搜索出错</string>
     <string name="search_net_error">搜索失败,请检查网络连接</string>
-    <string name="weatherserve_info">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;天津惠民客户端的“专项服务栏目”，涵盖了天津市各级气象单位发布的决策气象服务、行业气象服务、临近预报服务，满足各地不同的专业、专项气象用户群体和决策用户对气象信息服务的个性化、专业化需求以及日常政务办公需求。\n
+    <string name="weatherserve_info">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;天津气象客户端的“专项服务栏目”，涵盖了天津市各级气象单位发布的决策气象服务、行业气象服务、临近预报服务，满足各地不同的专业、专项气象用户群体和决策用户对气象信息服务的个性化、专业化需求以及日常政务办公需求。\n
         &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;为保障专项服务信息的合法、合理使用，本栏目对登录用户进行授权管理，未经天津市各级气象单位授权的用户，无法获取专项服务的详细内容。详细的管理办法查阅《关于专项服务产品的使用权限》。</string>
     <string name="weather_product_authority_info">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;为保障专项服务信息的合法、合理使用，本栏目对登录用户进行严格的权限管理，未经天津市各级气象单位授权的用户，无法获取服务的详细内容。权限获取及使用说明如下：\n
         &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;1.权限获取：需求人需向所在单位/企业，提交授权申请。需求人信息由所在企业的专项负责人统一向建立合作关系的气象部门专职负责人提供，包括所在单位/企业的个人职务、姓名、联系电话等信息，由当地气象部门核实、由气象部门管理人员在专门的管理平台进行权限的授权操作，并由气象部门向所在单位正式通知开通情况及账号信息。\n
@@ -209,7 +207,7 @@
     <string name="competition_tip3">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;*年龄不能为空</string>
     <string name="competition_tip4">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;*学历不能为空</string>
     <string name="competition_tip5">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;*电话不能为空</string>
-    <string name="competition_share_content">天津市首届气象主播电视选拔赛是由福建电视台都市时尚频道、天津市气象影视中心、中国网福建频道联手打造的大型气象主播选秀活动，将通过选拔、体验、培训、挑战等赛制，发掘和选拔全能型主播。茂盛青春，等你绽放！下载天津惠民客户端速速报名，一起来show吧！</string>
+    <string name="competition_share_content">天津市首届气象主播电视选拔赛是由福建电视台都市时尚频道、天津市气象影视中心、中国网福建频道联手打造的大型气象主播选秀活动，将通过选拔、体验、培训、挑战等赛制，发掘和选拔全能型主播。茂盛青春，等你绽放！下载天津气象客户端速速报名，一起来show吧！</string>
     <string name="no_sdcard">没有存储卡</string>
     <string name="photo_error">获取失败，请移动照片到其他位置</string>
     <string name="photo_up_succ">发布成功,待审核。</string>
@@ -248,8 +246,8 @@
     <string name="login">登录</string>
     <string name="register_now">新用户？现在注册</string>
     <string name="login_other_way">第三方账号登录：</string>
-    <string name="ztq_hint">天津惠民提醒</string>
-    <string name="ztp_hint_content">注册或者授权天津惠民使用您的第三方账户登录，即表示您已经阅读并同意</string>
+    <string name="ztq_hint">天津气象提醒</string>
+    <string name="ztp_hint_content">注册或者授权天津气象使用您的第三方账户登录，即表示您已经阅读并同意</string>
     <string name="now_password_hint">请输入当前密码</string>
     <string name="not_available">暂无</string>
     <string name="pm25_none">PM2.5：暂无</string>

@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.evernote.android.job.JobManager;
@@ -19,9 +18,6 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.ztqtj.control.ControlAppInit;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
-import com.pcs.ztqtj.control.tool.utils.TextUtil;
-import com.pcs.ztqtj.util.CONST;
-import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.appwidget.job.UpdateWidgetJob;
 import com.pcs.ztqtj.view.appwidget.job.WidgetJobCreator;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -36,24 +32,13 @@ import com.umeng.message.entity.UMessage;
 import com.umeng.message.tag.TagManager;
 import com.umeng.socialize.PlatformConfig;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class MyApplication extends MultiDexApplication {
 
     public static Application application;
-    public static final long START_INTERVAL = 300;
     public static String appKey = "606c002b18b72d2d244655a7", msgSecret = "00c225802b55b333e3b62d21370b281f";
     private static PushAgent mPushAgent;
     public static String DEVICETOKEN = "";
@@ -78,12 +63,12 @@ public class MyApplication extends MultiDexApplication {
         ControlAppInit.getInstance().setIs_Main(true);
         application = this;
         // bugly
-        CrashReport.initCrashReport(this, "959e7bdb27", false);
+        CrashReport.initCrashReport(this, "73c5452282", false);
         //崩溃重启
 //        PcsUncaughtException.getInstance().init(this);
         SharedPreferencesUtil.getInstance(this, getPackageName());
         //初始化讯飞ID
-        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=59f0382d");
+        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=60515ebe");
         //初始化
         ControlAppInit.getInstance().init(MyApplication.this);
         //注册锁屏广播接收

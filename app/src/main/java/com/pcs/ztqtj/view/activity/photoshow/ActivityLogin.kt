@@ -206,9 +206,6 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
                                     MyApplication.TOKEN = obj.getString("token")
                                     Log.e("token", MyApplication.TOKEN)
                                 }
-                                if (!obj.isNull("limitInfo")) {
-                                    MyApplication.LIMITINFO = obj.getString("limitInfo")
-                                }
                                 if (!obj.isNull("userInfo")) {
                                     val userInfo = obj.getJSONObject("userInfo")
                                     if (!userInfo.isNull("userId")) {
@@ -299,16 +296,16 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
             R.id.ivClearPwd -> etPwd.setText("")
             R.id.tvProtocal -> {
                 val intent = Intent(this@ActivityLogin, ActivityWebView::class.java)
-                intent.putExtra("title", "天津惠民软件许可及服务协议")
+                intent.putExtra("title", "天津气象软件许可及服务协议")
                 intent.putExtra("url", CONST.PROTOCAL)
-                intent.putExtra("shareContent", "天津惠民软件许可及服务协议")
+                intent.putExtra("shareContent", "天津气象软件许可及服务协议")
                 startActivity(intent)
             }
             R.id.tvPrivacy -> {
                 val intent = Intent(this@ActivityLogin, ActivityWebView::class.java)
-                intent.putExtra("title", "天津惠民软件用户隐私政策")
+                intent.putExtra("title", "天津气象软件用户隐私政策")
                 intent.putExtra("url", CONST.PRIVACY)
-                intent.putExtra("shareContent", "天津惠民软件用户隐私政策")
+                intent.putExtra("shareContent", "天津气象软件用户隐私政策")
                 startActivity(intent)
             }
             R.id.checkbox -> {

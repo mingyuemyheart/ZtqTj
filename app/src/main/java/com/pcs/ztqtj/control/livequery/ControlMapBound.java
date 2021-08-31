@@ -24,9 +24,7 @@ import java.util.concurrent.Executors;
 
 /**
  * 地图边界控制器
- * Created by tyaathome on 2017/5/23.
  */
-
 public class ControlMapBound {
 
     private AMap aMap;

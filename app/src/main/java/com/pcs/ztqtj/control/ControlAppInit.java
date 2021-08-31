@@ -22,7 +22,6 @@ import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
 import com.pcs.ztqtj.control.tool.LocalDataHelper;
 import com.pcs.ztqtj.control.tool.ZtqAppWidget;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
-import com.pcs.ztqtj.control.tool.ZtqPushTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
 
 /**
@@ -179,7 +178,6 @@ public class ControlAppInit {
     }
 
     private InterCommand.InterCommandListener mReqInitListener = new InterCommand.InterCommandListener() {
-
         @Override
         public void done(InterCommand.Status status) {
             if (status == InterCommand.Status.FAIL) {
@@ -190,8 +188,6 @@ public class ControlAppInit {
             try {
                 // 自动下载数据
                 doAutoDownload();
-                // 推送初始化
-                ZtqPushTool.getInstance().refreshPush();
                 // 开始定位
                 ZtqLocationTool.getInstance().beginLocation(mContext);
                 // 刷新小部件
