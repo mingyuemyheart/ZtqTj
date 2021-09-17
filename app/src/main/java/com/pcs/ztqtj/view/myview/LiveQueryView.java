@@ -640,9 +640,15 @@ public class LiveQueryView extends View {
             Bitmap timeBmTemp = Bitmap.createBitmap((int) xSaction / 2 * 3, (int) margButton, Bitmap.Config.ARGB_8888);
             Canvas canvasBmTemp = new Canvas(timeBmTemp);
             if (xValueTop.get(i).length() < 4) {
-                canvasBmTemp.drawText(xValueTop.get(i).replace("时", ""), timeBmTemp.getWidth() / 2, timeBmTemp
+                String unit = "时";
+                if (xValueTop.get(i).endsWith("日")) {
+                    unit = "日";
+                } else {
+                    unit = "时";
+                }
+                canvasBmTemp.drawText(xValueTop.get(i).replace(unit, ""), timeBmTemp.getWidth() / 2, timeBmTemp
                         .getHeight() / 2 - fontHeight / 2, ptTextTop);
-                canvasBmTemp.drawText("时", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
+                canvasBmTemp.drawText(unit, timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
                         ptTextTop);
             } else {
                 String tiem = xValueTop.get(i);
@@ -658,9 +664,15 @@ public class LiveQueryView extends View {
             Bitmap timeBmTemp = Bitmap.createBitmap((int) xSaction / 2 * 3, (int) margButton, Bitmap.Config.ARGB_8888);
             Canvas canvasBmTemp = new Canvas(timeBmTemp);
             if (xValueButtom.get(i).length() < 4) {
-                canvasBmTemp.drawText(xValueButtom.get(i).replace("时", ""), timeBmTemp.getWidth() / 2, timeBmTemp
+                String unit = "时";
+                if (xValueButtom.get(i).endsWith("日")) {
+                    unit = "日";
+                } else {
+                    unit = "时";
+                }
+                canvasBmTemp.drawText(xValueButtom.get(i).replace(unit, ""), timeBmTemp.getWidth() / 2, timeBmTemp
                         .getHeight() / 2 - fontHeight / 2, ptTextButtom);
-                canvasBmTemp.drawText("时", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
+                canvasBmTemp.drawText(unit, timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
                         ptTextButtom);
             } else {
                 String tiem = xValueButtom.get(i);

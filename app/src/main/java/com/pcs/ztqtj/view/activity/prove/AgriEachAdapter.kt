@@ -2,7 +2,6 @@ package com.pcs.ztqtj.view.activity.prove
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.pcs.ztqtj.R
+import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.CommonUtil
 import com.squareup.picasso.Picasso
 
@@ -84,11 +84,7 @@ class AgriEachAdapter(private val context: Context?, private val mArrayList: Arr
 
 						imageView.setOnClickListener {
 							val intent = Intent(context, DisplayPictureActivity::class.java)
-							val data = ProveDto()
-							data.imgUrl = imgUrl
-							val bundle = Bundle()
-							bundle.putParcelable("data", data)
-							intent.putExtras(bundle)
+							intent.putExtra(CONST.WEB_URL, imgUrl)
 							context.startActivity(intent)
 						}
 					}

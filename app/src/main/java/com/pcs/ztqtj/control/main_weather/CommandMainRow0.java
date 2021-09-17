@@ -60,11 +60,9 @@ import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoShow;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
-import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogVoiceButton;
 import com.pcs.ztqtj.view.myview.MainViewPager;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -96,11 +94,11 @@ public class CommandMainRow0 extends CommandMainBase {
     public PopupWindow popVoice;
     private View mRowView;
     private VoiceTool voiceTool;
-    private TextView tvWarning1,tvWarning2;
+    private TextView tvWarning1, tvWarning2;
     private LinearLayout llWarning1, llWarning2;
     private List<String> warningNames;
     private List<YjxxInfo> warningList1, warningList2;
-    private TextView tvNews1Title,tvNews1;
+    private TextView tvNews1Title, tvNews1;
     private TextSwitcher tvNews;
     private List<FestivalDto> newsList = new ArrayList<>();
     private RollingThread rollingThread;
@@ -171,7 +169,7 @@ public class CommandMainRow0 extends CommandMainBase {
                 case R.id.main_voice:
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         flag = checkAudioPermissions();
-                        if(!flag) {
+                        if (!flag) {
                             break;
                         }
                         voiceTool.setRecParam();
@@ -217,10 +215,10 @@ public class CommandMainRow0 extends CommandMainBase {
             @Override
             public void run() {
                 try {
-                    JSONObject param  = new JSONObject();
+                    JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     String json = param.toString();
-                    final String url = CONST.BASE_URL+"festival_list";
+                    final String url = CONST.BASE_URL + "festival_list";
                     Log.e("festival_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -250,7 +248,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                                         dto.name = itemObj.getString("name");
                                                     }
                                                     if (!itemObj.isNull("content")) {
-                                                        dto.content = "公告："+itemObj.getString("content");
+                                                        dto.content = "公告：" + itemObj.getString("content");
                                                     }
                                                     if (!itemObj.isNull("icon")) {
                                                         dto.icon = itemObj.getString("icon");
@@ -290,7 +288,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
                                                     if (!TextUtils.isEmpty(data.icon)) {
                                                         try {
-                                                            InputStream is = mActivity.getResources().getAssets().open("festival/" + data.icon +".png");
+                                                            InputStream is = mActivity.getResources().getAssets().open("festival/" + data.icon + ".png");
                                                             Bitmap bitmap = BitmapFactory.decodeStream(is);
                                                             ivFestival.setImageBitmap(bitmap);
                                                             ivFestival.setVisibility(View.VISIBLE);
@@ -318,7 +316,7 @@ public class CommandMainRow0 extends CommandMainBase {
     }
 
     private class FestivalDto {
-        public String name,content,icon;
+        public String name, content, icon;
     }
 
     @SuppressLint("HandlerLeak")
@@ -333,7 +331,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
             if (!TextUtils.isEmpty(data.icon)) {
                 try {
-                    InputStream is = mActivity.getResources().getAssets().open("festival/" + data.icon +".png");
+                    InputStream is = mActivity.getResources().getAssets().open("festival/" + data.icon + ".png");
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
                     ivFestival.setImageBitmap(bitmap);
                     ivFestival.setVisibility(View.VISIBLE);
@@ -425,10 +423,12 @@ public class CommandMainRow0 extends CommandMainBase {
     private DialogVoiceButton dialogVoiceButton;
     private boolean isPlay = false;
     private int clickNum = 0;
+
     public void speakBegin() {
         main_voice.setBackgroundResource(R.drawable.btn_mainvoice_sel);
         isPlay = true;
     }
+
     public void completeRead() {
         main_voice.setBackgroundResource(R.drawable.btn_mainvoice_nor);
         isPlay = false;
@@ -437,8 +437,10 @@ public class CommandMainRow0 extends CommandMainBase {
             dialogVoiceButton.dismiss();
         }
     }
+
     private boolean isPopVoice = false;
     private ImageView iv_voice;
+
     public void setImageChange(int volume) {
         if (isPopVoice) {
             if (volume == 0) {
@@ -458,6 +460,7 @@ public class CommandMainRow0 extends CommandMainBase {
     }
 
     private String errorString = "没查到该城市天气信息";
+
     public void printResult(RecognizerResult results) {
         String text = JsonParser.parseIatResult(results.getResultString());
         isPopVoice = false;
@@ -482,21 +485,21 @@ public class CommandMainRow0 extends CommandMainBase {
      */
     private void okHttpWeekData() {
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
-        if(city == null) {
+        if (city == null) {
             return;
         }
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    JSONObject param  = new JSONObject();
+                    JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
                     info.put("stationId", city.ID);
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("week_data", json);
-                    final String url = CONST.BASE_URL+"week_data";
+                    final String url = CONST.BASE_URL + "week_data";
                     Log.e("week_data", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -579,7 +582,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                                         if (shareDown != null) {
                                                             shareContnet = shareStr + shareDown.share_content;
                                                         }
-                                                        ShareTools.getInstance(mActivity).setShareContent("分享天气",shareContnet, bitmap, "0").showWindow(mRootLayout);
+                                                        ShareTools.getInstance(mActivity).setShareContent("分享天气", shareContnet, bitmap, "0").showWindow(mRootLayout);
                                                     }
                                                 }
                                             }
@@ -614,14 +617,14 @@ public class CommandMainRow0 extends CommandMainBase {
             @Override
             public void run() {
                 try {
-                    JSONObject param  = new JSONObject();
+                    JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
                     info.put("stationId", city.ID);
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("yjxx_index_fb_list", json);
-                    final String url = CONST.BASE_URL+"yjxx_index_fb_list";
+                    final String url = CONST.BASE_URL + "yjxx_index_fb_list";
                     Log.e("yjxx_index_fb_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -667,8 +670,8 @@ public class CommandMainRow0 extends CommandMainBase {
                                                         tvWarning1.setText(warningNames.get(0));
                                                         tvWarning1.setBackgroundResource(R.drawable.border_all_alpha_white);
 
-                                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int)CommonUtil.dip2px(mActivity, 45), (int)CommonUtil.dip2px(mActivity, 45));
-                                                        params.leftMargin = (int)CommonUtil.dip2px(mActivity, 5);
+                                                        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) CommonUtil.dip2px(mActivity, 45), (int) CommonUtil.dip2px(mActivity, 45));
+                                                        params.leftMargin = (int) CommonUtil.dip2px(mActivity, 5);
                                                         llWarning1.removeAllViews();
                                                         for (int i = 0; i < warningList1.size(); i++) {
                                                             YjxxInfo dto = warningList1.get(i);
@@ -683,7 +686,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                                                 ivWarning.setOnClickListener(new View.OnClickListener() {
                                                                     @Override
                                                                     public void onClick(View v) {
-                                                                        intentWarningCenter(false, v.getTag()+"");
+                                                                        intentWarningCenter(false, v.getTag() + "");
                                                                     }
                                                                 });
                                                             }
@@ -711,7 +714,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                                                 ivWarning.setOnClickListener(new View.OnClickListener() {
                                                                     @Override
                                                                     public void onClick(View v) {
-                                                                        intentWarningCenter(false, v.getTag()+"");
+                                                                        intentWarningCenter(false, v.getTag() + "");
                                                                     }
                                                                 });
                                                             }
@@ -748,6 +751,9 @@ public class CommandMainRow0 extends CommandMainBase {
      * 获取实况语音
      */
     private void okHttpSound(String name) {
+        if (TextUtil.isEmpty(name)) {
+            return;
+        }
         final PackLocalCity city = ZtqCityDB.getInstance().getCityInfoInAllCity(name);
         if (city == null) {
             voiceTool.readResult(errorString);
@@ -764,7 +770,7 @@ public class CommandMainRow0 extends CommandMainBase {
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("sstq_yy", json);
-                    final String url = CONST.BASE_URL+"sstq_yy";
+                    final String url = CONST.BASE_URL + "sstq_yy";
                     Log.e("sstq_yy", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -847,10 +853,10 @@ public class CommandMainRow0 extends CommandMainBase {
             @Override
             public void run() {
                 try {
-                    JSONObject param  = new JSONObject();
+                    JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     String json = param.toString();
-                    final String url = CONST.BASE_URL+"activity_list";
+                    final String url = CONST.BASE_URL + "activity_list";
                     Log.e("activity_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -885,6 +891,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
     private MainViewPager viewPager = null;
     private ArrayList<Fragment> fragments = new ArrayList<>();
+
     private void initViewPager(String result) {
         fragments.clear();
         try {
@@ -934,7 +941,9 @@ public class CommandMainRow0 extends CommandMainBase {
                 default:
                     break;
             }
-        };
+        }
+
+        ;
     };
 
     public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
@@ -942,9 +951,11 @@ public class CommandMainRow0 extends CommandMainBase {
         public void onPageSelected(int arg0) {
             index_plus = arg0;
         }
+
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
         }
+
         @Override
         public void onPageScrollStateChanged(int arg0) {
         }
@@ -1001,13 +1012,13 @@ public class CommandMainRow0 extends CommandMainBase {
             @Override
             public void run() {
                 try {
-                    JSONObject param  = new JSONObject();
+                    JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
                     info.put("ad_type", "A001");
                     param.put("paramInfo", info);
                     String json = param.toString();
-                    final String url = CONST.BASE_URL+"ad_list";
+                    final String url = CONST.BASE_URL + "ad_list";
                     Log.e("ad_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -1041,6 +1052,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
     private MainViewPager viewPager1 = null;
     private ArrayList<Fragment> fragments1 = new ArrayList<>();
+
     private void initViewPager1(String result) {
         fragments1.clear();
         try {
@@ -1131,13 +1143,13 @@ public class CommandMainRow0 extends CommandMainBase {
             @Override
             public void run() {
                 try {
-                    JSONObject param  = new JSONObject();
+                    JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
                     info.put("ad_type", "A003");
                     param.put("paramInfo", info);
                     String json = param.toString();
-                    final String url = CONST.BASE_URL+"ad_list";
+                    final String url = CONST.BASE_URL + "ad_list";
                     Log.e("ad_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
@@ -1171,6 +1183,7 @@ public class CommandMainRow0 extends CommandMainBase {
 
     private MainViewPager viewPager2 = null;
     private ArrayList<Fragment> fragments2 = new ArrayList<>();
+
     private void initViewPager2(String result) {
         fragments2.clear();
         try {

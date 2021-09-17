@@ -530,18 +530,24 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
                         item.value_over24_value = trendDown.skList.get(i).val;
                     }
                 }
-                if (trendDown.ybList.size() > 0) {
-                    item.value_future24_hour = trendDown.ybList.get(i).dt;
-                    if (TextUtils.isEmpty(trendDown.ybList.get(i).val)) {
-                        item.value_future24_value = "--";
-                    } else {
-                        if (trendDown.ybList.get(i).val.equals("0.0")) {
-                            item.value_future24_value = "0";
+
+                try {
+                    if (trendDown.ybList.size() > 0) {
+                        item.value_future24_hour = trendDown.ybList.get(i).dt;
+                        if (TextUtils.isEmpty(trendDown.ybList.get(i).val)) {
+                            item.value_future24_value = "--";
                         } else {
-                            item.value_future24_value = trendDown.ybList.get(i).val;
+                            if (trendDown.ybList.get(i).val.equals("0.0")) {
+                                item.value_future24_value = "0";
+                            } else {
+                                item.value_future24_value = trendDown.ybList.get(i).val;
+                            }
                         }
                     }
+                } catch (IndexOutOfBoundsException e) {
+                    e.printStackTrace();
                 }
+
                 this.mItems.add(item);
             }
         }

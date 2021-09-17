@@ -58,9 +58,9 @@ class HealthWeatherAdapter(private val context: Context?, private val mArrayList
 
 		val dto = mArrayList!![position]
 		if (position % 2 == 0) {
-			mHolder.divider1!!.visibility = View.INVISIBLE
-		} else {
 			mHolder.divider1!!.visibility = View.VISIBLE
+		} else {
+			mHolder.divider1!!.visibility = View.INVISIBLE
 		}
 		if (dto.name != null) {
 			mHolder.tvName!!.text = dto.name
@@ -70,9 +70,9 @@ class HealthWeatherAdapter(private val context: Context?, private val mArrayList
 		}
 		if (dto.tips != null) {
 			mHolder.tvTips!!.text = dto.tips
-			if (dto.tips.length >= 20) {
+			if (dto.tips.length >= 16) {
 				mHolder.tvTips!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-			} else if (dto.tips.length >= 15) {
+			} else if (dto.tips.length >= 12) {
 				mHolder.tvTips!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
 			} else {
 				mHolder.tvTips!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)

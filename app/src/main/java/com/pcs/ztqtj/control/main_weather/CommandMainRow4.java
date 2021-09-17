@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,10 +37,7 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.calendar.ActivityCalendarSecond;
 import com.pcs.ztqtj.view.activity.lifenumber.ActivityLifeNumberEdit;
-import com.pcs.ztqtj.view.activity.product.media.ActivityMediaList;
-import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.myview.MainViewPager;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -92,13 +88,10 @@ public class CommandMainRow4 extends CommandMainBase {
 
     @Override
     protected void refresh() {
-        if (mLifeNumberAdapter!=null){
-            mLifeNumberAdapter.notifyDataSetChanged();
-        }
-        setStatus(Status.SUCC);
         okHttpAqi();
     }
-   private View rowView;
+
+    private View rowView;
     /**
      * 初始化适配器等
      */

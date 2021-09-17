@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -44,6 +43,7 @@ import okhttp3.Response;
  */
 @SuppressLint("ValidFragment")
 public class TravelFragmentOne extends Fragment {
+
     private TextView weatherTextView;
     private TextView tempTextView;
     private TextView dateTextView;
@@ -132,7 +132,7 @@ public class TravelFragmentOne extends Fragment {
                                                 if (!bobj.isNull("weeklytq#"+stationId)) {
                                                     JSONObject weeklytq = bobj.getJSONObject("weeklytq#"+stationId);
                                                     if (!TextUtil.isEmpty(weeklytq.toString())) {
-                                                        PackTravelWeekDown packTravelWeekDown = new PackTravelWeekDown();
+                                                        MyPackTravelWeekDown packTravelWeekDown = new MyPackTravelWeekDown();
                                                         packTravelWeekDown.fillData(weeklytq.toString());
                                                         weekWeatherList = packTravelWeekDown.getWeek();
                                                         if (weekWeatherList.size() > 0) {

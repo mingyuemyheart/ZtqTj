@@ -17,10 +17,10 @@ import android.widget.ImageView;
 public class ImageTouchView extends ImageView {
 
     public static enum StartPostion {
-        ImageLeft, ImageCenter, ImageRight, ImageTJ, ImageNation, ImageTG
+        ImageLeft, ImageCenter, ImageRight, ImageTJ, ImageNation, ImageTG, ImageDX, ImageCZ
     }
 
-    private StartPostion deFaultSP = StartPostion.ImageTJ;
+    private StartPostion deFaultSP = StartPostion.ImageCenter;
     protected Bitmap mBitmap;
     static final int NONE = 0;
     static final int DRAG = 1; // 拖动中
@@ -262,7 +262,7 @@ public class ImageTouchView extends ImageView {
         if (deFaultSP == StartPostion.ImageLeft) {
             imageStartLeft(bm, mScale);
         } else if (deFaultSP == StartPostion.ImageCenter) {
-            imageStartCenter(bm, mScale);
+            imageStartCenter(bm, mScale-1.4f);
         } else if (deFaultSP == StartPostion.ImageRight) {
             imageStartRight(bm, mScale);
         } else if (deFaultSP == StartPostion.ImageTJ) {
@@ -271,6 +271,10 @@ public class ImageTouchView extends ImageView {
             imageStartNation(bm, mScale+0.5f);
         } else if (deFaultSP == StartPostion.ImageTG) {
             imageStartTG(bm, mScale);
+        } else if (deFaultSP == StartPostion.ImageDX) {
+            imageStartDX(bm, mScale+1f);
+        } else if (deFaultSP == StartPostion.ImageCZ) {
+            imageStartCZ(bm, mScale);
         }
     }
 
@@ -365,6 +369,23 @@ public class ImageTouchView extends ImageView {
 
         mLeft = (getWidth() - imageWidth) / 2 + 400;
         mTop = (getHeight() - imageHight) / 2;
+        mRight = mLeft + imageWidth;
+        mBottom = mTop + imageHight;
+    }
+
+    private void imageStartDX(Bitmap bm, float mScale) {
+        mLeft = (getWidth() - bm.getWidth() * mScale) + 1100;
+        mTop = -500;
+        mRight = mLeft + bm.getWidth() * mScale;
+        mBottom = mTop + bm.getHeight() * mScale;
+    }
+
+    private void imageStartCZ(Bitmap bm, float mScale) {
+        float imageWidth = bm.getWidth() * mScale;
+        float imageHight = bm.getHeight() * mScale;
+
+        mLeft = (getWidth() - imageWidth) / 2 + 100;
+        mTop = (getHeight() - imageHight) / 2 + 100;
         mRight = mLeft + imageWidth;
         mBottom = mTop + imageHight;
     }

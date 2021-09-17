@@ -51,9 +51,6 @@ public class AdapterCityList extends BaseAdapter {
     public Boolean showDeleteBtn = false;
     private CityListDeleteBtnClick btnClickListener;
     private ImageFetcher mImageFetcher;
-//    //亲情城市
-//    private PackWeekWeatherFamilyUp mPackFamilyUp = new PackWeekWeatherFamilyUp();
-//
 
     public AdapterCityList(Activity mActivity, List<PackLocalCity> data, CityListDeleteBtnClick btnClickListener, ImageFetcher imageFetcher) {
         this.mActivity = mActivity;
@@ -61,10 +58,6 @@ public class AdapterCityList extends BaseAdapter {
         this.btnClickListener = btnClickListener;
         this.mImageFetcher = imageFetcher;
     }
-
-//    public void setData(List<PackLocalCity> data) {
-//        this.data = data;
-//    }
 
     public void showDeleteButton(boolean showDeleteBtn) {
         this.showDeleteBtn = showDeleteBtn;
@@ -110,8 +103,6 @@ public class AdapterCityList extends BaseAdapter {
         PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
         // 行城市
         PackLocalCity cityRow = data.get(position);
-        // 定位城市
-//        PackLocalCityLocation packLocation = ZtqLocationTool.getInstance().getLocationCity();
 
         if (position == 0 && packSet.isAutoLocation) {
             // 定位城市
@@ -148,7 +139,7 @@ public class AdapterCityList extends BaseAdapter {
             }
         });
 
-        okHttpWeekData(cityRow.ID, holder.weatherCityIcon, holder.weatherTemperature);
+//        okHttpWeekData(cityRow.ID, holder.weatherCityIcon, holder.weatherTemperature);
         return view;
     }
 
@@ -213,8 +204,7 @@ public class AdapterCityList extends BaseAdapter {
                                                         }
                                                         WeekWeatherInfo info = pcsDownPack.getToday();
                                                         if (info != null) {
-                                                            String lowt_hight = "";
-                                                            lowt_hight = info.higt + "/"+ info.lowt + "°C";
+                                                            String lowt_hight = info.higt + "/"+ info.lowt + "°C";
                                                             if ("".equals(lowt_hight)) {
                                                                 weatherCityIcon.setVisibility(View.GONE);
                                                                 weatherTemperature.setVisibility(View.GONE);

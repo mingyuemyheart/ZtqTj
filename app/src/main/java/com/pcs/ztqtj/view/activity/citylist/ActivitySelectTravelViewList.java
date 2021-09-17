@@ -46,9 +46,6 @@ public class ActivitySelectTravelViewList extends FragmentActivityZtqBase {
 		initData();
 	}
 
-
-
-
     private void initView() {
 		selectCityListview = (ExpandableListView) findViewById(R.id.ss_alertgridview);
 		exList = (mExpandableListView) findViewById(R.id.cityListView);
@@ -92,8 +89,7 @@ public class ActivitySelectTravelViewList extends FragmentActivityZtqBase {
 					.getViewsByProcinceID(province.get(i).ID);
 			datasMap.put(province.get(i).ID, infoList);
 		}
-		adapter = new AdapterSelectTravelViewExpandList(this, exList, province,
-				datasMap);
+		adapter = new AdapterSelectTravelViewExpandList(this, exList, province, datasMap);
 		exList.setAdapter(adapter);
 		exList.setSelectedGroup(0);
 	}

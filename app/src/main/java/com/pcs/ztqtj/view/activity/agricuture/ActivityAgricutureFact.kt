@@ -25,12 +25,17 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 专项服务-行业气象-农业气象-农作物发育情况-农情实况数据
  */
 class ActivityAgricutureFact: FragmentActivityZtqBase() {
 
+    private val sdf1 = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA)
+    private val sdf2 = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA)
     private var mAdapter: AdapterAgricutureFact? = null
     private val dataList: ArrayList<AgriDto> = ArrayList()
     private val detailList: ArrayList<AgriDto> = ArrayList()
@@ -66,6 +71,7 @@ class ActivityAgricutureFact: FragmentActivityZtqBase() {
 
         private inner class Holder {
             var tvStationName: TextView? = null
+            var tvTime: TextView? = null
             var tvTemp: TextView? = null
             var tvHumidity: TextView? = null
         }
@@ -89,6 +95,7 @@ class ActivityAgricutureFact: FragmentActivityZtqBase() {
                 holder = Holder()
                 view = LayoutInflater.from(mContext).inflate(R.layout.adapter_agricuture_fact, null)
                 holder.tvStationName = view.findViewById<View>(R.id.tvStationName) as TextView
+                holder.tvTime = view.findViewById<View>(R.id.tvTime) as TextView
                 holder.tvTemp = view.findViewById<View>(R.id.tvTemp) as TextView
                 holder.tvHumidity = view.findViewById<View>(R.id.tvHumidity) as TextView
                 view.tag = holder
@@ -99,6 +106,9 @@ class ActivityAgricutureFact: FragmentActivityZtqBase() {
             val data: AgriDto = dataList[position]
             if (data.stationname != null) {
                 holder.tvStationName!!.text = data.stationname
+            }
+            if (data.observtime != null) {
+                holder.tvTime!!.text = data.observtime
             }
             if (data.ttt150cm != null) {
                 holder.tvTemp!!.text = data.ttt150cm
@@ -158,6 +168,10 @@ class ActivityAgricutureFact: FragmentActivityZtqBase() {
                                         }
                                         if (!itemObj.isNull("datatime")) {
                                             dto.datatime = itemObj.getString("datatime")
+                                        }
+                                        if (!itemObj.isNull("observtime")) {
+                                            dto.observtime = itemObj.getString("observtime")
+                                            dto.observtime = sdf2.format(sdf1.parse(dto.observtime))
                                         }
                                         dataList.add(dto)
                                     }

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?><!-- Activity：基类 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/all_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/bg_number_detail_subt_blue">
 
     <RelativeLayout
+        app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/head_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -51,17 +53,6 @@
                 android:background="@drawable/btn_camera"
                 android:visibility="gone" />
 
-            <Button
-                android:id="@+id/rightbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimen30"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/server_login_button"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize15"
-                android:visibility="gone" />
             <!--提交按钮-->
             <Button
                 android:id="@+id/rightbtn_ok"
@@ -118,11 +109,27 @@
             android:textSize="@dimen/text_the_page_title" />
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/rightbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/head_layout"
+        android:background="@drawable/server_login_button"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/textsize15"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rightbtn"
         android:background="@color/text_white"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical" />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -235,6 +235,7 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     String json = param.toString();
+                    Log.e("qxmedia", json);
                     final String url = CONST.BASE_URL+"qxmedia";
                     Log.e("qxmedia", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);

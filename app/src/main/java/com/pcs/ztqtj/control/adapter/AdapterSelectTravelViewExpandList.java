@@ -172,8 +172,8 @@ public class AdapterSelectTravelViewExpandList extends BaseExpandableListAdapter
 	@Override
 	public int getHeaderState(int groupPosition, int childPosition) {
 		final int childCount = getChildrenCount(groupPosition);
-		if (childPosition == -1 && listView.getChildAt(0).getTop() >= 0
-				|| !listView.isGroupExpanded(groupPosition)) {
+		if (listView.getChildCount() > 0 && listView.getChildAt(0) != null && listView.getChildAt(0).getTop() >= 0
+				&& childPosition == -1 || !listView.isGroupExpanded(groupPosition)) {
 			return PINNED_HEADER_GONE;
 		} else if (childPosition == childCount - 1) {
 			return PINNED_HEADER_PUSHED_UP;

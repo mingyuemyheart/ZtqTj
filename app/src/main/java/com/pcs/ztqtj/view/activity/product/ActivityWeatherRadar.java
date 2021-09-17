@@ -422,6 +422,12 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
             mImage.setImagePositon(ImageTouchView.StartPostion.ImageNation);
         } else if (TextUtils.equals(station_id, "1309")) {//塘沽雷达
             mImage.setImagePositon(ImageTouchView.StartPostion.ImageTG);
+        } else if (TextUtils.equals(station_id, "1310")) {//大兴雷达
+            mImage.setImagePositon(ImageTouchView.StartPostion.ImageDX);
+        } else if (TextUtils.equals(station_id, "1311")) {//沧州雷达
+            mImage.setImagePositon(ImageTouchView.StartPostion.ImageCZ);
+        } else {//塘沽雷达组合发射率
+            mImage.setImagePositon(ImageTouchView.StartPostion.ImageCenter);
         }
 
         showLastImage = true;

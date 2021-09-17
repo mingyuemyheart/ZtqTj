@@ -1,6 +1,7 @@
 package com.pcs.ztqtj.view.activity.agricuture
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -15,6 +16,7 @@ import com.pcs.ztqtj.R
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.OkHttpUtil
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase
+import com.pcs.ztqtj.view.activity.prove.DisplayPictureActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_agricuture_view.*
 import okhttp3.*
@@ -92,6 +94,11 @@ class ActivityAgricutureView: FragmentActivityZtqBase() {
             if (!TextUtils.isEmpty(data.filepath)) {
                 val imgUrl = getString(R.string.file_download_url)+data.filepath
                 Picasso.get().load(imgUrl).error(R.drawable.no_pic).into(holder.imageView)
+                holder.imageView!!.setOnClickListener {
+                    val intent = Intent(this@ActivityAgricutureView, DisplayPictureActivity::class.java)
+                    intent.putExtra(CONST.WEB_URL, imgUrl)
+                    startActivity(intent)
+                }
             } else {
                 holder.imageView!!.setImageResource(R.drawable.no_pic)
             }

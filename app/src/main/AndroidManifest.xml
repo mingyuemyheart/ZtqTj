@@ -383,8 +383,9 @@
 
         <activity
             android:name=".view.activity.product.media.ActivityMediaPlay"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="false" /> <!-- 气象产品:气象影视 播放界面 -->
+            android:exported="false"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustResize" /> <!-- 气象产品:气象影视 播放界面 -->
 
         <activity
             android:name=".view.activity.product.lightning.ActivityLightningMonitor"

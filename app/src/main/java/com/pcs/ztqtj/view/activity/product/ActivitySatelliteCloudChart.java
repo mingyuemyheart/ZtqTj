@@ -91,7 +91,6 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare imple
      */
     private int index = 1;
 
-    private LinearLayout tabLayout;
     private MySeekBar myPopSeekBar;
     private TextView tvPopProgress;
 
@@ -159,7 +158,6 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare imple
     }
 
     private void initView() {
-        tabLayout = (LinearLayout) findViewById(R.id.tab_layout);
         tabName = (TextView) findViewById(R.id.tab_name_station);
         // tabNameText = (TextView) findViewById(R.id.text_name);
         tabDateText = (TextView) findViewById(R.id.text_date);
@@ -182,16 +180,9 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare imple
     }
 
     private void initData() {
+        comm_imgs = new Bitmap[imgCount];
         // 获取卫星云图列表
         okHttpCloudStations();
-        comm_imgs = new Bitmap[imgCount];
-        if (!isOpenNet()) {
-            showToast(getString(R.string.open_netword));
-        } else {
-            if (!isWiFiNewWord()) {
-                showToast(getString(R.string.un_wifi_desc));
-            }
-        }
     }
 
     /**
@@ -252,7 +243,6 @@ public class ActivitySatelliteCloudChart extends FragmentActivityWithShare imple
 
     /**
      * 栏目列表
-     *
      * @param v
      */
     private void loadListContent(View v) {

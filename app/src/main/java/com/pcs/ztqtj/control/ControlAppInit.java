@@ -144,9 +144,9 @@ public class ControlAppInit {
      */
     public void reqInit(Context context) {
         //请求初始化
-        CommandReqInit commandReqInit = new CommandReqInit(context);
-        commandReqInit.addListener(mReqInitListener);
-        commandReqInit.execute();
+//        CommandReqInit commandReqInit = new CommandReqInit(context);
+//        commandReqInit.addListener(mReqInitListener);
+//        commandReqInit.execute();
     }
 
     private Callback callback;

@@ -29,8 +29,6 @@ import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown.ForList;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
@@ -47,6 +45,7 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -110,7 +109,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numerical_center_pro);
-        createImageFetcher();
         setBtnRight(R.drawable.btn_num_more, new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,8 +219,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
         findViewById(R.id.image_right).setOnClickListener(this);
     }
 
-    private String imageKey = "";
-
     /**
      * 子标题改变
      * @param position
@@ -249,11 +245,9 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             webview.setVisibility(View.GONE);
             content_scrollview.setVisibility(View.GONE);
             image_show.setVisibility(View.VISIBLE);
-            showProgressDialog();
             if (!TextUtils.isEmpty(showData.get(position).img)) {
-                imageKey = getString(R.string.file_download_url)+showData.get(position).img;
-                getImageFetcher().addListener(getImageViewlistener);
-                getImageFetcher().loadImage(imageKey, null, ImageConstant.ImageShowType.NONE);
+                String imgUrl = getString(R.string.file_download_url)+showData.get(position).img;
+                Picasso.get().load(imgUrl).into(image_show);
             } else {
                 showToast("服务器不存在这张图标");
             }
@@ -275,23 +269,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
             n_content.setTextColor(getResources().getColor(R.color.bg_black_alpha20));
         }
     }
-
-    ListenerImageLoad getImageViewlistener = new ListenerImageLoad() {
-
-        @Override
-        public void done(String key, boolean isSucc) {
-            if (imageKey.equals(key)) {
-                dismissProgressDialog();
-                if (isSucc && getImageFetcher().getImageCache() != null) {
-                    Bitmap bm = getImageFetcher().getImageCache().getBitmapFromAllCache(key).getBitmap();
-                    image_show.setMyImageBitmap(bm);
-                } else {
-                    image_show.setMyImageBitmap(null);
-                    showToast("图片为空");
-                }
-            }
-        }
-    };
 
     @Override
     public void onClick(View v) {

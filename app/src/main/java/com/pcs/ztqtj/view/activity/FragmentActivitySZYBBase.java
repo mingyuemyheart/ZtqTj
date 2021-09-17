@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -77,7 +78,7 @@ public class FragmentActivitySZYBBase extends FragmentActivityBase {
     public int headHeight = 0; // 顶部布局的数值，需计算
     public int mScreenHeight = 0;
 
-    public LinearLayout all_view;
+    public ConstraintLayout all_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class FragmentActivitySZYBBase extends FragmentActivityBase {
         }
 
         headLayout = (RelativeLayout) findViewById(R.id.head_layout);
-        all_view = (LinearLayout) findViewById(R.id.all_view);
+        all_view = findViewById(R.id.all_view);
         textButton = (Button) findViewById(R.id.rightbtn);
         // 回退按钮
         btnBack = (ImageButton) findViewById(R.id.btn_back);
@@ -301,9 +302,9 @@ public class FragmentActivitySZYBBase extends FragmentActivityBase {
     public void setRightButtonText(int image, String btnName, int width) {
         textButton.setBackgroundResource(image);
         textButton.setText(btnName);
-        ViewGroup.LayoutParams params = textButton.getLayoutParams();
-        params.width = width;
-        textButton.setLayoutParams(params);
+//        ViewGroup.LayoutParams params = textButton.getLayoutParams();
+//        params.width = width;
+//        textButton.setLayoutParams(params);
     }
 
     private Toast toast;

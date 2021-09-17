@@ -89,9 +89,7 @@ class AgriEachSubmitActivity: FragmentActivityZtqBase(), View.OnClickListener {
                 startActivityForResult(intent, 1003)
             } else {//预览
                 val intent = Intent(this, DisplayPictureActivity::class.java)
-                val bundle = Bundle()
-                bundle.putParcelable("data", data)
-                intent.putExtras(bundle)
+                intent.putExtra(CONST.WEB_URL, data.imgUrl)
                 startActivity(intent)
             }
         }

@@ -1032,6 +1032,8 @@ public class ActivityMain extends FragmentActivity {
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
+                            Log.e("onFailure", e.getMessage());
+                            okHttpColumn();
                         }
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
@@ -1122,7 +1124,6 @@ public class ActivityMain extends FragmentActivity {
         try {
             if (!itemObj.isNull("dataCode")) {
                 dto.dataCode = itemObj.getString("dataCode");
-                MyApplication.LIMITINFO += dto.dataCode+",";
             }
             if (!itemObj.isNull("dataName")) {
                 dto.dataName = itemObj.getString("dataName");
@@ -1141,6 +1142,9 @@ public class ActivityMain extends FragmentActivity {
             }
             if (!itemObj.isNull("desc")) {
                 dto.desc = itemObj.getString("desc");
+            }
+            if (TextUtils.equals(dto.flag, "0")) {
+                MyApplication.LIMITINFO += dto.dataCode+",";
             }
         } catch (JSONException e) {
             e.printStackTrace();

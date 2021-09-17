@@ -84,9 +84,7 @@ class SelectPictureActivity : FragmentActivityZtqBase(), View.OnClickListener, S
                 checkCameraAuthority()
             } else {
                 val intent = Intent(this, DisplayPictureActivity::class.java)
-                val bundle = Bundle()
-                bundle.putParcelable("data", dto)
-                intent.putExtras(bundle)
+                intent.putExtra(CONST.WEB_URL, dto.imgUrl)
                 startActivity(intent)
             }
         }

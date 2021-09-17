@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    
     <string name="url">http://www.weather-jy.cn:8096/ztq_tj_jc/service.do</string>
-    <string name="file_download_url">https://tjhm-app.weather.com.cn:8081/web/</string>//base
-    <string name="shzs">https://tjhm-app.weather.com.cn:8081/web/tjfile/ico/</string>//生活指数
-    <string name="air_pollution">https://tjhm-app.weather.com.cn:8081/web/tjfile/picture/1806/</string>//空气污染
-    <string name="msyb">https://tjhm-app.weather.com.cn:8081/web/tjfile</string>//模式预报
-    <string name="sjkp">https://tjhm-app.weather.com.cn:8081/web/tjfile/livePhoto/</string>//实景开拍
+    <string name="file_download_url">http://60.29.105.41:8088/web/</string>//base
+    <string name="shzs">http://60.29.105.41:8088/web/tjfile/ico/</string>//生活指数
+    <string name="air_pollution">http://60.29.105.41:8088/web/tjfile/picture/1806/</string>//空气污染
+    <string name="msyb">http://60.29.105.41:8088/web/tjfile</string>//模式预报
+    <string name="sjkp">http://60.29.105.41:8088/web/tjfile/livePhoto/</string>//实景开拍
     <string name="use_asset_db">0</string>
     <string name="app_name">天津气象</string>
     <string name="version"> </string>

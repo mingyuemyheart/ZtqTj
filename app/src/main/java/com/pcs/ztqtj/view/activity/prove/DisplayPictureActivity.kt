@@ -2,10 +2,10 @@ package com.pcs.ztqtj.view.activity.prove
 
 import android.app.Activity
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import com.pcs.ztqtj.R
+import com.pcs.ztqtj.util.CONST
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_display_picture.*
 import java.io.File
@@ -27,19 +27,17 @@ class DisplayPictureActivity : Activity() {
     }
 
     private fun initWidget() {
-        if (intent.hasExtra("data")) {
-            val data: ProveDto = intent.getParcelableExtra("data")
-            if (data != null) {
-                if (!TextUtils.isEmpty(data.imgUrl)) {
-                    if (data.imgUrl.startsWith("http")) {
-                        Picasso.get().load(data.imgUrl).into(imageView)
-                    } else {
-                        val file = File(data.imgUrl)
-                        if (file.exists()) {
-                            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-                            if (bitmap != null) {
-                                imageView.setImageBitmap(bitmap)
-                            }
+        if (intent.hasExtra(CONST.WEB_URL)) {
+            val imgUrl = intent.getStringExtra(CONST.WEB_URL)
+            if (!TextUtils.isEmpty(imgUrl)) {
+                if (imgUrl.startsWith("http")) {
+                    Picasso.get().load(imgUrl).into(imageView)
+                } else {
+                    val file = File(imgUrl)
+                    if (file.exists()) {
+                        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+                        if (bitmap != null) {
+                            imageView.setImageBitmap(bitmap)
                         }
                     }
                 }

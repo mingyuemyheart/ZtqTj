@@ -18,6 +18,7 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.ztqtj.control.ControlAppInit;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
+import com.pcs.ztqtj.util.CrashHandler;
 import com.pcs.ztqtj.view.appwidget.job.UpdateWidgetJob;
 import com.pcs.ztqtj.view.appwidget.job.WidgetJobCreator;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -52,6 +53,9 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+
         getUserInfo(this);
         initUmeng();
         MobclickAgent.setPageCollectionMode(MobclickAgent.PageMode.AUTO);

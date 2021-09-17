@@ -46,15 +46,6 @@
                     android:textSize="@dimen/text_footnote" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_test_location"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginLeft="40dp"
-                android:text="模拟定位"
-                android:textSize="15dp"
-                android:visibility="gone" />
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,21 +66,6 @@
                     android:text="@string/edit"
                     android:textColor="@color/text_white"
                     android:textSize="@dimen/text_footnote" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/main"
-                    android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_footnote"
-                    android:visibility="gone" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/btn_back_right"
-                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -191,27 +167,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <RelativeLayout
-        android:id="@+id/rl_family_city"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:padding="@dimen/dimen10"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@mipmap/bg_to_family"
-            android:gravity="center_vertical"
-            android:paddingLeft="70dp"
-            android:text="快搜国内城市"
-            android:textColor="@color/text_white"
-            android:textSize="@dimen/text_content" />
-
-    </RelativeLayout>
 
 </RelativeLayout>

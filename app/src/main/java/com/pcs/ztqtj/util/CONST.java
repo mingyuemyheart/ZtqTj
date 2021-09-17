@@ -2,7 +2,8 @@ package com.pcs.ztqtj.util;
 
 public class CONST {
 
-    public static String BASE_IP = "https://tjhm-app.weather.com.cn:8081";
+//    public static String BASE_IP = "https://tjhm-app.weather.com.cn:8081";
+    public static String BASE_IP = "http://60.29.105.41:8088";
     public static String GEO_URL = BASE_IP+"/geo/station/parse";
     public static String BASE_URL = BASE_IP+"/tjapi/app/";
 

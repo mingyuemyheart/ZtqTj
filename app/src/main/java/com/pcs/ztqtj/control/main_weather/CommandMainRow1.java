@@ -231,7 +231,6 @@ public class CommandMainRow1 extends CommandMainBase {
      * 获取实况信息
      */
     private void okHttpSstq(final String stationId, final String sName) {
-        mActivity.showProgressDialog();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -260,7 +259,6 @@ public class CommandMainRow1 extends CommandMainBase {
                                 @Override
                                 public void run() {
 //                                    Log.e("sstq", result);
-                                    mActivity.dismissProgressDialog();
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);

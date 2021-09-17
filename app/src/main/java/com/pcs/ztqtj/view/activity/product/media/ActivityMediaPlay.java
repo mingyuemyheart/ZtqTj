@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,10 +19,12 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,7 +81,7 @@ import okhttp3.Response;
  * 气象影视 播放
  */
 public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClickListener {
-
+    
     private final static String TAG = "MediaPlayActivity";
 
     private int playedTime; // 播放时间
@@ -497,31 +500,6 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
     private boolean is_v_screen = true;
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {// 横竖屏
-        Log.d(TAG, "onConfigurationChanged");
-        getScreenSize();
-        if (isControllerShow) {
-            cancelDelayHide();
-            hideController();
-            showController();
-            hideControllerDelay();
-        }
-
-        if (is_v_screen) {
-            is_v_screen = false;
-            viewPager.setVisibility(View.GONE);
-        } else {
-            is_v_screen = true;
-            if (isFullScreen) {
-                viewPager.setVisibility(View.GONE);
-            } else {
-                viewPager.setVisibility(View.VISIBLE);
-            }
-        }
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
     protected void onPause() {
         playedTime = myVideoView.getCurrentPosition();// 获取当前播放位置。
         myVideoView.pause();
@@ -671,6 +649,16 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
                 PlayMeadia();
                 break;
             case R.id.zoom_btn:
+                if (configuration == null) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                }else {
+                    if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    }else if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    }
+                }
+
                 if (isFullScreen) {
                     setVideoScale(SCREEN_DEFAULT);
                 } else {
@@ -893,6 +881,107 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
             }
             return fragment.getView();
         }
+    }
+
+    
+    private Configuration configuration;//方向监听器
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        getScreenSize();
+        if (isControllerShow) {
+            cancelDelayHide();
+            hideController();
+            showController();
+            hideControllerDelay();
+        }
+
+        if (is_v_screen) {
+            is_v_screen = false;
+            viewPager.setVisibility(View.GONE);
+        } else {
+            is_v_screen = true;
+            if (isFullScreen) {
+                viewPager.setVisibility(View.GONE);
+            } else {
+                viewPager.setVisibility(View.VISIBLE);
+            }
+        }
+        super.onConfigurationChanged(newConfig);
+        
+        configuration = newConfig;
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            showPort();
+        }else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            showLand();
+        }
+    }
+
+    /**
+     * 显示竖屏，隐藏横屏
+     */
+    private void showPort() {
+        headLayout.setVisibility(View.VISIBLE);
+        fullScreen(false);
+        switchVideo();
+    }
+
+    /**
+     * 显示横屏，隐藏竖屏
+     */
+    private void showLand() {
+        headLayout.setVisibility(View.GONE);
+        fullScreen(true);
+        switchVideo();
+    }
+
+    /**
+     * 横竖屏切换视频窗口
+     */
+    private void switchVideo() {
+        if (myVideoView != null) {
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+            int width = dm.widthPixels;
+            int height = width*9/16;
+            LayoutParams params = myVideoView.getLayoutParams();
+            params.width = width;
+            params.height = height;
+            myVideoView.setLayoutParams(params);
+        }
+    }
+
+    private void fullScreen(boolean enable) {
+        if (enable) {
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+            getWindow().setAttributes(lp);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        } else {
+            WindowManager.LayoutParams attr = getWindow().getAttributes();
+            attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setAttributes(attr);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+    }
+
+    private void exit() {
+        if (configuration == null) {
+            finish();
+        }else {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                finish();
+            }else if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+        }
+        return false;
     }
 
 }

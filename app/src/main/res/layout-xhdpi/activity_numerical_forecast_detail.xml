@@ -5,17 +5,18 @@
     android:layout_height="match_parent"
     android:background="@color/text_white"
     android:orientation="vertical">
-        <WebView
-            android:id="@+id/webview"
-            android:layout_width="match_parent"
-            android:visibility="gone"
-            android:background="@color/bg_white"
-            android:layout_height="match_parent" />
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_white"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
         <TextView
             android:id="@+id/spinner_title"
@@ -36,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/bg_rainfall_subtitle"
-            android:orientation="horizontal"></RadioGroup>
+            android:orientation="horizontal"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,7 +114,6 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,9 +126,9 @@
                     android:layout_height="30dp"
                     android:background="@drawable/btn_product_share"
                     android:text="分享"
-                    android:visibility="gone"
                     android:textColor="@color/text_white"
-                    android:textSize="@dimen/text_footnote"/>
+                    android:textSize="@dimen/text_footnote"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/left_right_btn_layout"
@@ -152,6 +152,5 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
 
 </LinearLayout>

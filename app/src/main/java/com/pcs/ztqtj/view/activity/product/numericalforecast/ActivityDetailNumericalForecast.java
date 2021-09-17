@@ -31,21 +31,16 @@ import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown.ForList;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.LmListBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.TitleListBean;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
-import com.pcs.ztqtj.control.adapter.product_numerical.AdapterColumn;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
@@ -53,6 +48,7 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -116,7 +112,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
     private Button image_share;
     private LinearLayout layout_root;
     private int screenwidth = 0;
-    private String imageKey = "";
     private WebView webview;
     /**
      * 单选按钮第几个被选中
@@ -130,7 +125,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createImageFetcher();
         PcsDataBrocastReceiver.registerReceiver(ActivityDetailNumericalForecast.this, receiver);
         setContentView(R.layout.activity_numerical_forecast_detail);
         initView();
@@ -403,20 +397,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
         return pop;
     }
 
-    private ListenerImageLoad mImageListener = new ListenerImageLoad() {
-        @Override
-        public void done(String key, boolean isSucc) {
-            if (imageKey.equals(key)) {
-                if (isSucc && getImageFetcher().getImageCache() != null) {
-                    Bitmap bm = getImageFetcher().getImageCache().getBitmapFromAllCache(key).getBitmap();
-                    image_show.setMyImageBitmap(bm);
-                } else {
-                    showToast("图片为空");
-                }
-            }
-        }
-    };
-
     /**
      * 获取模式预报数据
      */
@@ -636,9 +616,10 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
             //showProgressDialog();
 
             if (!TextUtils.isEmpty(TitleBeanListData.get(raidoItemSelect).get(position).img)) {
-                imageKey = getString(R.string.file_download_url)+TitleBeanListData.get(raidoItemSelect).get(position).img;
-                getImageFetcher().addListener(mImageListener);
-                getImageFetcher().loadImage(imageKey, null, ImageConstant.ImageShowType.NONE);
+                String imgUrl = getString(R.string.file_download_url)+TitleBeanListData.get(raidoItemSelect).get(position).img;
+                if (!TextUtils.isEmpty(imgUrl)) {
+                    Picasso.get().load(imgUrl).into(image_show);
+                }
             } else {
                 showToast("服务器不存在这张图标");
             }

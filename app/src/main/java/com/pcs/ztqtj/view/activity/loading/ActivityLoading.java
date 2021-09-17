@@ -196,11 +196,11 @@ public class ActivityLoading extends FragmentActivityBase {
                 CommandLoadingUnit commandUnit = new CommandLoadingUnit(ActivityLoading.this);
                 batchingLoading.addCommand(commandUnit);
                 // 初始化
-                CommandReqInit commandInit = new CommandReqInit(ActivityLoading.this);
-                batchingLoading.addCommand(commandInit);
+//                CommandReqInit commandInit = new CommandReqInit(ActivityLoading.this);
+//                batchingLoading.addCommand(commandInit);
                 //首页数据
-                CommandLoadingMainData commandMainData = new CommandLoadingMainData();
-                batchingLoading.addCommand(commandMainData);
+//                CommandLoadingMainData commandMainData = new CommandLoadingMainData();
+//                batchingLoading.addCommand(commandMainData);
                 // 执行
                 batchingLoading.execute();
             }

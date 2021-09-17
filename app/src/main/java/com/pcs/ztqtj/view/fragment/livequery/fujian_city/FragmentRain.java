@@ -327,8 +327,12 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         adaptercomp = new AdapterCompImage(getActivity(), rainfallcomp);
         livequery_rainfall_complete.setAdapter(adaptercomp);
 
-        livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
         livequery_city_spinner.setText(cityControl.getCutParentCity().NAME);
+        if (cityControl.getCutParentCity().isFjCity) {
+            livequery_town_spinner.setText(cityControl.getCutParentCity().NAME);
+        } else {
+            livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
+        }
 //			查询具体城市
         seachCityInfo = activity.cityinfo;
         reflushListTitle();

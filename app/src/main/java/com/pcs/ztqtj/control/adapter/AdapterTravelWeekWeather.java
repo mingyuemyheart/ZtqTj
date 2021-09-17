@@ -2,6 +2,7 @@ package com.pcs.ztqtj.control.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,17 +20,14 @@ import java.util.List;
 
 /**
  * 旅游气象的一周天气
- *
- * @author chenjh
  */
 public class AdapterTravelWeekWeather extends BaseAdapter {
 
     private Context mContext;
-    private List<WeekWeatherInfo> dataList = new ArrayList<WeekWeatherInfo>();
+    private List<WeekWeatherInfo> dataList = new ArrayList<>();
     private ImageFetcher mImageFetcher;
 
-    public AdapterTravelWeekWeather(Context context,
-                                    List<WeekWeatherInfo> data, ImageFetcher imageFetcher) {
+    public AdapterTravelWeekWeather(Context context, List<WeekWeatherInfo> data, ImageFetcher imageFetcher) {
         this.mContext = context;
         dataList.addAll(data);
         mImageFetcher = imageFetcher;
@@ -56,15 +54,13 @@ public class AdapterTravelWeekWeather extends BaseAdapter {
         Holder holder;
         if (view == null) {
             holder = new Holder();
-            view = LayoutInflater.from(mContext).inflate(
-                    R.layout.travel_pageone_item, null);
-            holder.weekWeatherIcon = (ImageView) view
-                    .findViewById(R.id.week_weather_icon);
-            holder.weekWeatherIcon = (ImageView) view
-                    .findViewById(R.id.week_weather_icon);
+            view = LayoutInflater.from(mContext).inflate(R.layout.travel_pageone_item, null);
+            holder.day_weather_icon = (ImageView) view.findViewById(R.id.day_weather_icon);
+            holder.night_weather_icon = (ImageView) view.findViewById(R.id.night_weather_icon);
             holder.WeekTv = (TextView) view.findViewById(R.id.item_week);
             holder.WeatherTv = (TextView) view.findViewById(R.id.item_weather);
-            holder.TempTv = (TextView) view.findViewById(R.id.item_temp);
+            holder.tvTempDay = (TextView) view.findViewById(R.id.tvTempDay);
+            holder.tvTempNight = (TextView) view.findViewById(R.id.tvTempNight);
             view.setTag(holder);
         } else {
             holder = (Holder) view.getTag();
@@ -72,45 +68,26 @@ public class AdapterTravelWeekWeather extends BaseAdapter {
         WeekWeatherInfo info = dataList.get(position);
 
         holder.WeekTv.setText(info.week);
-        holder.WeatherTv.setText(info.weather);
-        holder.TempTv.setText(info.higt + "/" + info.lowt + "°C");
-        String path = "weather_icon/daytime/w" + info.wd_day_ico + ".png";
-        BitmapDrawable drawable = mImageFetcher.getImageCache()
-                .getBitmapFromAssets(path);
-        holder.weekWeatherIcon.setImageDrawable(drawable);
+        holder.tvTempDay.setText(info.higt+"°C");
+        holder.tvTempNight.setText(info.lowt + "°C");
+
+        BitmapDrawable day = mImageFetcher.getImageCache().getBitmapFromAssets("weather_icon/daytime/w" + info.wd_day_ico + ".png");
+        holder.day_weather_icon.setImageDrawable(day);
+        BitmapDrawable night = mImageFetcher.getImageCache().getBitmapFromAssets("weather_icon/night/n" + info.wd_night_ico + ".png");
+        holder.night_weather_icon.setImageDrawable(night);
+//        if (!TextUtils.equals(info.wd_day_ico, info.wd_night_ico)) {
+            holder.WeatherTv.setText(info.wd_day+" / "+info.wd_night);
+//        }
 
         return view;
     }
 
     private class Holder {
-        public ImageView weekWeatherIcon;
+        public ImageView day_weather_icon;
+        public ImageView night_weather_icon;
         public TextView WeekTv;
         public TextView WeatherTv;
-        public TextView TempTv;
+        public TextView tvTempDay,tvTempNight;
     }
 
-    /**
-     * 是否是白天
-     *
-     * @return
-     */
-    private String inTime() {
-        Date date1 = new Date();
-        date1.setHours(0);
-        date1.setMinutes(0);
-        Date date2 = new Date();
-        date2.setHours(6);
-        date2.setMinutes(40);
-        Date date3 = new Date();
-        date3.setHours(18);
-        date3.setMinutes(30);
-        Date now = new Date();
-        if (now.after(date1) && now.before(date2)) {
-            return "1";
-        } else if (now.after(date2) && now.before(date3)) {
-            return "2";
-        } else {
-            return "3";
-        }
-    }
 }

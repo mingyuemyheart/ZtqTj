@@ -2,7 +2,7 @@ package com.pcs.ztqtj.view.activity.agricuture;
 
 public class AgriDto {
 
-    public String stationid,stationname,datatime,filepath;
+    public String stationid,stationname,datatime,observtime,filepath;
     public String rh150cm;//湿度
     public String ttt150cm;//温度
 
