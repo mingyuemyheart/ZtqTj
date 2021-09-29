@@ -66,7 +66,11 @@ class HealthWeatherAdapter(private val context: Context?, private val mArrayList
 			mHolder.tvName!!.text = dto.name
 		}
 		if (dto.level != null) {
-			mHolder.tvLevel!!.text = dto.level+"级"
+			if (TextUtils.equals(dto.code, "tgmax") || TextUtils.equals(dto.code, "tgmin")) {
+				mHolder.tvLevel!!.text = dto.level+"℃"
+			} else {
+				mHolder.tvLevel!!.text = dto.level+"级"
+			}
 		}
 		if (dto.tips != null) {
 			mHolder.tvTips!!.text = dto.tips

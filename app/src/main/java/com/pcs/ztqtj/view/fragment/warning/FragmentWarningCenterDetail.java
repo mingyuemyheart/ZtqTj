@@ -14,15 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 
 import java.io.IOException;
@@ -133,17 +131,12 @@ public class FragmentWarningCenterDetail extends Fragment {
         }
         WarnBean bean = (WarnBean) bundle.getSerializable("warninfo");
         if (bean != null) {
-            PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-            String shareAdd="";
-            if (shareDown!=null) {
-                shareAdd=shareDown.share_content;
-            }
             titlecontent = bean.level;
             contentText = bean.msg;
             icon = bean.ico;
             contentImageview = "";
             titledata = bean.put_str;
-            shareContent =  contentText + "(" + titledata + ")" + shareAdd;
+            shareContent =  contentText + "(" + titledata + ")" + CONST.SHARE_URL;
             defend = bean.defend;
         }
         if (TextUtils.isEmpty(icon)) {

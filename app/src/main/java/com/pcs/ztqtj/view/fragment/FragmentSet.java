@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -25,6 +26,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -58,14 +63,15 @@ import com.pcs.ztqtj.model.SetsBean;
 import com.pcs.ztqtj.model.SettingDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.AuthorityUtil;
-import com.pcs.ztqtj.util.CommonUtil;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityUserCenter;
 import com.pcs.ztqtj.view.activity.prove.WeatherProveActivity;
 import com.pcs.ztqtj.view.activity.set.AcitvityAboutZTQ;
 import com.pcs.ztqtj.view.activity.set.AcitvityFeedBack;
-import com.pcs.ztqtj.view.activity.set.ActivityDisclaimer;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
+import com.pcs.ztqtj.view.activity.web.webview.JsInterfaceWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
@@ -269,6 +275,64 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         setsBeanList.add(bean4);
     }
 
+    /**
+     * 免责声明
+     */
+    private void dialogMzsm() {
+        LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.dialog_mzsm, null);
+        TextView tvSure = view.findViewById(R.id.tvSure);
+        WebView webview = view.findViewById(R.id.webview);
+        webview.getSettings().setUseWideViewPort(true);// 设置此属性，可任意比例缩放。
+        webview.getSettings().setTextZoom(100);
+        webview.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith("http:") || url.startsWith("https:")) {
+                    view.removeAllViews();
+                    view.loadUrl(url);
+                    return false;
+                }
+                return true;
+            }
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+            }
+        });
+
+        webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int progress) {
+                super.onProgressChanged(view, progress);
+            }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+            }
+        });
+        WebSettings webSettings = webview.getSettings();
+        webSettings.setJavaScriptEnabled(true);//允许js
+        webSettings.setBlockNetworkImage(false);//后台处理加载图片
+        webview.setDrawingCacheEnabled(true);
+        webview.loadUrl(CONST.MZSM);
+
+        final Dialog dialog = new Dialog(activity, R.style.CustomProgressDialog);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(view);
+        dialog.show();
+        tvSure.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                gotoAcitvity(WeatherProveActivity.class, "气象灾害证明");
+            }
+        });
+    }
+
     public void initListener() {
         gridSets.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -279,7 +343,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                         if (!ZtqCityDB.getInstance().isLoginService()) {
                             gotoLogin();
                         } else {
-                            gotoAcitvity(WeatherProveActivity.class, "气象灾害证明");
+                            dialogMzsm();
                         }
                         break;
                     case 1:
@@ -314,7 +378,11 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                         break;
                     case 2:
                         // 免责声明
-                        gotoAcitvity(ActivityDisclaimer.class, listData.get(position).get("t"));
+                        Intent intent = new Intent(getActivity(), ActivityWebView.class);
+                        intent.putExtra("title", "免责声明");
+                        intent.putExtra("url", CONST.MZSM);
+                        intent.putExtra("shareContent", "免责声明");
+                        startActivity(intent);
                         break;
                     case 3:
                         // 版本监测

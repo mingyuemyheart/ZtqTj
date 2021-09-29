@@ -9,18 +9,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.model.ZtqCityDB;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown.LifeNumber;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,13 +84,7 @@ public class ActivityLifeNumberDetail extends FragmentActivityZtqBase {
         setBtnRight(R.drawable.icon_share_new, new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String content;
-                PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-                if (shareDown != null) {
-                    content = shareC + shareDown.share_content;
-                } else {
-                    content = shareC;
-                }
+                String content = shareC + CONST.SHARE_URL;
                 LinearLayout all_view = (LinearLayout) findViewById(R.id.all_view);
                 Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmap(all_view);
                 shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityLifeNumberDetail.this, shareBitmap);

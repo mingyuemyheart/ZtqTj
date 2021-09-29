@@ -37,7 +37,6 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjRankDown.RainFallRa
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjTimeDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjTimeUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -197,7 +196,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
 
     private ImageView iv_auto_hiside;
     private LinearLayout lay_auto_hiside;
-    private LinearLayout lay_is_tj,llHour24;
+    private LinearLayout lay_is_tj,llHour24,layout_a;
 
     @Override
     public void onAttach(Activity activity) {
@@ -274,6 +273,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         lay_auto_hiside=getView().findViewById(R.id.lay_auto_hiside);
         lay_is_tj= getView().findViewById(R.id.lay_is_tj);
         llHour24 = getView().findViewById(R.id.llHour24);
+        layout_a = getView().findViewById(R.id.layout_a);
     }
 
     private CityListControl cityControl;
@@ -795,24 +795,22 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                 if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
                     lay_is_tj.setVisibility(View.VISIBLE);
                     llHour24.setVisibility(View.VISIBLE);
+                    layout_a.setVisibility(View.VISIBLE);
+                    time_search.setVisibility(View.VISIBLE);
+                    btnTimeSearchBase.setVisibility(View.VISIBLE);
                 } else {
                     lay_is_tj.setVisibility(View.GONE);
                     llHour24.setVisibility(View.GONE);
-                }
-                getView().findViewById(R.id.graph).setVisibility(View.VISIBLE);
-                getView().findViewById(R.id.time_search).setVisibility(View.VISIBLE);
-                getView().findViewById(R.id.time_search_base).setVisibility(View.VISIBLE);
-                if(currentParent.ID.equals("10103")) {
-                    getView().findViewById(R.id.graph).setVisibility(View.GONE);
-                } else {
-                    getView().findViewById(R.id.graph).setVisibility(View.VISIBLE);
+                    layout_a.setVisibility(View.GONE);
+                    time_search.setVisibility(View.GONE);
+                    btnTimeSearchBase.setVisibility(View.GONE);
                 }
             } else {
                 lay_is_tj.setVisibility(View.GONE);
                 llHour24.setVisibility(View.GONE);
-                getView().findViewById(R.id.graph).setVisibility(View.GONE);
-                getView().findViewById(R.id.time_search).setVisibility(View.GONE);
-                getView().findViewById(R.id.time_search_base).setVisibility(View.GONE);
+                layout_a.setVisibility(View.GONE);
+                time_search.setVisibility(View.GONE);
+                btnTimeSearchBase.setVisibility(View.GONE);
             }
         }
     }
@@ -823,11 +821,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private void reqNet() {
         okHttpRankYltjHour();
         okHttpYltjRank();
-
-        // 雨量查询—地区半年降雨量对比（yltj_year）
-        PackYltjYearUp yltjYearUp = new PackYltjYearUp();
-        yltjYearUp.area_id = cityControl.getCutChildCity().ID;
-        PcsDataDownload.addDownload(yltjYearUp);
+        okHttpHistoryMonth();
     }
 
     private class MyReceiver extends PcsDataBrocastReceiver {
@@ -848,8 +842,6 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     msg.setData(bundler);
                     handler.sendMessage(msg);
                 }
-            } else if (name.startsWith(PackYltjYearUp.NAME)) {
-                reFlushImage(name);
             }
         }
     }
@@ -926,12 +918,9 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         }
     }
 
-    private void reFlushImage(String name) {
+    private void reFlushImage(PackYltjYearDown yearDown) {
         // 雨量查询—地区半年降雨量对比（yltj_year）
-        PackYltjYearDown yearDown;
         try {
-            // dismissProgressDialog();
-            yearDown = (PackYltjYearDown) PcsDataManager.getInstance().getNetPack(name);
             if (yearDown == null) {
                 return;
             }
@@ -1151,6 +1140,11 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
                     info.put("stationId", cityControl.getCutChildCity().ID);
+                    if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
+                        info.put("isAuto", true);
+                    } else {
+                        info.put("isAuto", false);
+                    }
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("datastatis_rain", json);
@@ -1309,6 +1303,70 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                                                             rankRainFall.addAll(rankDown.dataList);
                                                         }
                                                         rainfallMaxadatper.notifyDataSetChanged();
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 获取图表
+     */
+    private void okHttpHistoryMonth() {
+        activity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("element", "pre");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("history_month", json);
+                    final String url = CONST.BASE_URL+"history_month";
+                    Log.e("history_month", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.dismissProgressDialog();
+                                    Log.e("history_month", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yltj_year")) {
+                                                    JSONObject yltj_year = bobj.getJSONObject("yltj_year");
+                                                    if (!TextUtil.isEmpty(yltj_year.toString())) {
+                                                        PackYltjYearDown yearDown = new PackYltjYearDown();
+                                                        yearDown.fillData(yltj_year.toString());
+                                                        reFlushImage(yearDown);
                                                     }
                                                 }
                                             }

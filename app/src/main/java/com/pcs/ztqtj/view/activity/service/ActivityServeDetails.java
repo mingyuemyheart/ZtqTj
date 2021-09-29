@@ -16,12 +16,10 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 
 /**
@@ -124,14 +122,12 @@ public class ActivityServeDetails extends FragmentActivitySZYBBase {
                 //网页分享
                 View layout = findViewById(R.id.web_frame_layout).getRootView();
                 Bitmap shareBitmap = ZtqImageTool.getInstance().getWebViewBitmap(ActivityServeDetails.this, mWebView);
-                shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityServeDetails.this, shareBitmap);
-                PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-                String shareContent = "";
-                if (shareDown != null) {
-                    shareContent = shareDown.share_content;
+                if (shareBitmap != null) {
+                    shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityServeDetails.this, shareBitmap);
                 }
-                ShareTools.getInstance(ActivityServeDetails.this).setShareContent(getTitleText(), shareContent, shareBitmap,"1").showWindow(layout);
-
+                if (shareBitmap != null) {
+                    ShareTools.getInstance(ActivityServeDetails.this).setShareContent(getTitleText(), CONST.SHARE_URL, shareBitmap,"1").showWindow(layout);
+                }
             }
         });
     }

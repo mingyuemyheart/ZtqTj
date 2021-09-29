@@ -8,8 +8,12 @@ public class CONST {
     public static String BASE_URL = BASE_IP+"/tjapi/app/";
 
 
+    public static final String SHARE_URL = "https://tjhm-app.weather.com.cn:8081/web/build/index.html";//分享地址
+
     public static final String PROTOCAL = BASE_IP+"/web/tjfile/smart/yhxy.html";//用户协议
     public static final String PRIVACY = BASE_IP+"/web/tjfile/smart/yszc.html";//隐私政策
+    public static final String MZSM = BASE_IP+"/web/tjfile/wap/mzsm.html";//免责声明
+    public static final String SQZN = BASE_IP+"/web/tjfile/wap/sqzn.html";//申请指南
 
     public static final String WEB_URL = "web_Url";//网页地址的标示
     public static final String ACTIVITY_NAME = "activity_name";//界面名称

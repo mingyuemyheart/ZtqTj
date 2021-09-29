@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.control.tool.utils.TextUtil
+import com.pcs.ztqtj.util.CommonUtil
 import com.pcs.ztqtj.util.OkHttpUtil
 import okhttp3.Call
 import okhttp3.Callback
@@ -96,10 +97,12 @@ class WeatherProveAdapter(private val context: Context?, private val mArrayList:
 			"0" -> {
 				mHolder.tvStatus!!.text = "待审核"
 				mHolder.tvOption!!.text = ""
+				mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.transparent))
 			}
 			"1" -> {
 				mHolder.tvStatus!!.text = "制作中"
 				mHolder.tvOption!!.text = ""
+				mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.transparent))
 			}
 			"2" -> {
 				mHolder.tvStatus!!.text = "审核未通过"
@@ -107,21 +110,28 @@ class WeatherProveAdapter(private val context: Context?, private val mArrayList:
 				if (dto.auditOpinion != null) {
 					mHolder.tvOption!!.text = dto.auditOpinion
 					mHolder.tvOption!!.setTextColor(Color.RED)
+					mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.transparent))
 				}
 			}
 			"3" -> {
 				mHolder.tvStatus!!.text = "已制作"
 				mHolder.tvOption!!.text = "待推送"
+				mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.transparent))
 			}
 			"4" -> {
 				mHolder.tvStatus!!.text = "已推送"
-				mHolder.tvOption!!.text = "下载"
-				mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.bg_title))
-				mHolder.tvOption!!.setTextColor(Color.WHITE)
-				mHolder.tvOption!!.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f)
-				mHolder.tvOption!!.setPadding(20, 3, 20, 3)
-				mHolder.tvOption!!.setOnClickListener {
-					okHttpFile(context!!.getString(R.string.msyb)+"/"+dto.pdfPath)
+				if (TextUtils.isEmpty(dto.imgPath)) {
+					mHolder.tvOption!!.text = ""
+					mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.transparent))
+				} else {
+					mHolder.tvOption!!.text = "下载"
+					mHolder.tvOption!!.setBackgroundColor(ContextCompat.getColor(context!!, R.color.bg_title))
+					mHolder.tvOption!!.setTextColor(Color.WHITE)
+					mHolder.tvOption!!.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f)
+					mHolder.tvOption!!.setPadding(20, 3, 20, 3)
+					mHolder.tvOption!!.setOnClickListener {
+						okHttpFile(context.getString(R.string.msyb)+"/"+dto.imgPath)
+					}
 				}
 			}
 		}
@@ -130,17 +140,11 @@ class WeatherProveAdapter(private val context: Context?, private val mArrayList:
 	}
 
 	private fun okHttpFile(url: String) {
-		if (TextUtils.isEmpty(url)) {
-			return
-		}
-
-		Log.e("percent", url)
-		var fileName = "1.pdf"
+		var fileName = "1.png"
 		if (url.contains("/")) {
 			val names = url.split("/")
 			fileName = names[names.size-1]
 		}
-		Log.e("percent", fileName)
 		Thread {
 			OkHttpUtil.enqueue(Request.Builder().url(url).build(), object : Callback {
 				override fun onFailure(call: Call, e: IOException) {}
@@ -156,7 +160,7 @@ class WeatherProveAdapter(private val context: Context?, private val mArrayList:
 						inputStream = response.body!!.byteStream() //获取输入流
 						val total = response.body!!.contentLength().toFloat() //获取文件大小
 						if (inputStream != null) {
-							val files = File("${context!!.getExternalFilesDir(null)}/TianjinHuimin")
+							val files = File("${context!!.getExternalFilesDir(null)}/TianjinWeather")
 							if (!files.exists()) {
 								files.mkdirs()
 							}
@@ -173,6 +177,7 @@ class WeatherProveAdapter(private val context: Context?, private val mArrayList:
 								if (percent >= 100) {
 									mUIHandler.post {
 										Toast.makeText(context, "文件已保存至${filePath}", Toast.LENGTH_LONG).show()
+										CommonUtil.notifyAlbum(context, File(filePath))
 									}
 								}
 //								val msg = handler.obtainMessage(1001)

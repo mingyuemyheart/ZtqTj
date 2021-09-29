@@ -6,17 +6,16 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackNearReportDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.service.PackNearReportUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 
 /**
  * Created by chenjx
@@ -73,14 +72,7 @@ public class ActivityNearReport extends FragmentActivitySZYBBase {
 
                 }
                 shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityNearReport.this, shareBitmap);
-                PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack
-                        (PackShareAboutUp.getNameCom());
-                String shareContent = "";
-                if (shareDown != null) {
-                    shareContent = shareDown.share_content;
-                }
-                ShareTools.getInstance(ActivityNearReport.this).setShareContent(getTitleText(),
-                        shareContent, shareBitmap, "0").showWindow(layout);
+                ShareTools.getInstance(ActivityNearReport.this).setShareContent(getTitleText(), CONST.SHARE_URL, shareBitmap, "0").showWindow(layout);
             }
         });
     }

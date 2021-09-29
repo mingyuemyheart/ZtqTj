@@ -254,10 +254,6 @@
             android:screenOrientation="portrait" />
 
         <!-- 免责声明 -->
-        <activity
-            android:name=".view.activity.set.ActivityDisclaimer"
-            android:exported="false"
-            android:screenOrientation="portrait" />
         <!-- 栏目管理 -->
         <activity
             android:name=".view.activity.set.ActivityProgramerManager"

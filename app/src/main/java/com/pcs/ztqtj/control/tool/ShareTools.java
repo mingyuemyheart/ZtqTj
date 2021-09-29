@@ -18,10 +18,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterShareTool;
 import com.umeng.socialize.ShareAction;
@@ -58,7 +54,7 @@ public class ShareTools {
     private static Context mContext;
     private String mShare = "";
     private Bitmap mBitmap;
-    private String mShareUrl = "";
+    private String mShareUrl = "https://tjhm-app.weather.com.cn:8081/web/build/index.html";
     private String mTitle = "";
     private static ShareCallBackListener shareCallBackListener;
 
@@ -103,10 +99,6 @@ public class ShareTools {
         mShare = share;
         mBitmap = shareBitmap;
         flags = flag;
-        PackShareAboutDown shareDown =
-                (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-        mShareUrl = shareDown.share_content;
-//        mShareUrl = "http://ztq.soweather.com:8096/ztq_sh_download/";
         return instance;
     }
 
@@ -121,10 +113,6 @@ public class ShareTools {
         mShare = share;
         mBitmap = shareBitmap;
         flags = flag;
-        PackShareAboutDown shareDown =
-                (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-        mShareUrl = shareDown.share_content;
-//        mShareUrl = "http://ztq.soweather.com:8096/ztq_sh_download/";
         return instance;
     }
 
@@ -139,7 +127,6 @@ public class ShareTools {
     public ShareTools setShareContent(String title, String shareContent, String url, Bitmap shareBitmap) {
         this.mTitle = title;
         this.mShare = shareContent;
-        this.mShareUrl = url;
         this.mBitmap = shareBitmap;
         return instance;
     }
@@ -343,16 +330,6 @@ public class ShareTools {
             e.printStackTrace();
         }
         return f;
-    }
-
-    /**
-     * 请求分享接口
-     */
-    public void reqShare() {
-        PackShareAboutUp packUp = new PackShareAboutUp();
-        // 气象产品分享--短信分享
-        packUp.keyword = "ABOUT_QXCP_DXFW";
-        PcsDataDownload.addDownload(packUp);
     }
 
     private static UMShareListener umShareListener = new UMShareListener() {

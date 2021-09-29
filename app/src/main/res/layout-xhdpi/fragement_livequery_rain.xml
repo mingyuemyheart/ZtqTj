@@ -594,7 +594,6 @@
 
                     </LinearLayout>
 
-
                     <com.pcs.ztqtj.view.myview.MyListView
                         android:id="@+id/livequery_rainfall_complete_"
                         android:layout_width="match_parent"

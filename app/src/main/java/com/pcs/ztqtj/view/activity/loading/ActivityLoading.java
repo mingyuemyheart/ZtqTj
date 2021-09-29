@@ -23,9 +23,7 @@ import com.pcs.ztqtj.control.command.InterCommand;
 import com.pcs.ztqtj.control.inter.Callback;
 import com.pcs.ztqtj.control.loading.CommandLoadingCheck;
 import com.pcs.ztqtj.control.loading.CommandLoadingCity;
-import com.pcs.ztqtj.control.loading.CommandLoadingMainData;
 import com.pcs.ztqtj.control.loading.CommandLoadingUnit;
-import com.pcs.ztqtj.control.loading.CommandReqInit;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
@@ -195,12 +193,6 @@ public class ActivityLoading extends FragmentActivityBase {
                 // 单位
                 CommandLoadingUnit commandUnit = new CommandLoadingUnit(ActivityLoading.this);
                 batchingLoading.addCommand(commandUnit);
-                // 初始化
-//                CommandReqInit commandInit = new CommandReqInit(ActivityLoading.this);
-//                batchingLoading.addCommand(commandInit);
-                //首页数据
-//                CommandLoadingMainData commandMainData = new CommandLoadingMainData();
-//                batchingLoading.addCommand(commandMainData);
                 // 执行
                 batchingLoading.execute();
             }

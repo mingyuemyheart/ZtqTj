@@ -271,11 +271,11 @@ public class CommandMainRow1 extends CommandMainBase {
                                                         packSstq.fillData(sstqobj.toString());
 
                                                         // 气温
-                                                        String tempStr = packSstq.ct;
-                                                        if (!TextUtils.isEmpty(packSstq.ct) && packSstq.ct.indexOf(".") > -1) {
-                                                            tempStr = packSstq.ct.substring(0, packSstq.ct.indexOf(".") + 1);
+                                                        if (packSstq.ct != null) {
+                                                            text_temperature.setText(packSstq.ct);
+                                                        } else {
+                                                            text_temperature.setText("暂无");
                                                         }
-                                                        text_temperature.setText(tempStr);
 
                                                         // 湿度
                                                         if (!TextUtils.isEmpty(packSstq.humidity)) {

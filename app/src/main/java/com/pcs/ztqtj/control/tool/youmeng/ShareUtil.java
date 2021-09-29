@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
+import com.pcs.ztqtj.util.CONST;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.ShareContent;
 import com.umeng.socialize.UMShareAPI;
@@ -168,35 +166,8 @@ public class ShareUtil {
     private static void shareContent(Activity activity, String title, String contentstr, Bitmap shareImage) {
         context = activity;
         final SHARE_MEDIA[] displaylist = new SHARE_MEDIA[]{SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QQ, SHARE_MEDIA.SMS};
-//        ShareContent weixin = new ShareContent();
-//        ShareContent circle = new ShareContent();
-//        ShareContent sina = new ShareContent();
-//        ShareContent sms = new ShareContent();
-//        if (contentstr != null) {
-//            weixin.mText = contentstr;
-////            circle.mText = contentstr;
-//            sina.mText = contentstr;
-//            sms.mText = contentstr;
-//        }
-//        if (shareImage != null) {
-//            UMImage umImage = new UMImage(activity, shareImage);
-//            weixin.mMedia = umImage;
-//            circle.mMedia = umImage;
-//            sina.mMedia = umImage;
-//            sms.mMedia = umImage;
-//        }
 
-        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-        String[] str=shareDown.share_content.split("http");
-        String urlAnther = "http"+str[1];
-//      String url = "http://sns.whalecloud.com/sina2/callback";
-//        weixin.mTargetUrl = urlAnther;
-//        circle.mTargetUrl = urlAnther;
-//        sina.mTargetUrl = urlAnther;
-//        sms.mTargetUrl = urlAnther;
-
-
-        UMWeb web = new UMWeb(urlAnther);
+        UMWeb web = new UMWeb(CONST.SHARE_URL);
         web.setTitle(title);//标题
         web.setThumb(new UMImage(activity,shareImage));  //缩略图
         web.setDescription(contentstr);//描述
@@ -255,8 +226,7 @@ public class ShareUtil {
     //自定义分享代码
     public static void autoShare(Activity activity, SHARE_MEDIA platform, String context,String title,String clickPath,Bitmap bm) {
         UMImage umImage = new UMImage(activity, bm);
-        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-        UMWeb  web = new UMWeb(shareDown.share_content);
+        UMWeb  web = new UMWeb(CONST.SHARE_URL);
         web.setTitle(title);//标题
         web.setThumb(umImage);  //缩略图
         web.setDescription(context);//描述

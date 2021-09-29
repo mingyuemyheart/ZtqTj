@@ -14,8 +14,6 @@ import android.widget.RelativeLayout;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.ColumnInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
@@ -23,6 +21,7 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
 import java.util.ArrayList;
@@ -66,25 +65,23 @@ public class ActivityTyphoonRoad extends FragmentActivityZtqBase {
         PcsDataDownload.addDownload(packYjZqColumnUp);
     }
 
-    private PackShareAboutUp packUp = new PackShareAboutUp();
-
     /**
      * 请求分享接口
      */
     private void reqShare() {
-        showProgressDialog();
-        packUp = new PackShareAboutUp();
-        // 气象产品分享--短信分享
-        packUp.keyword = "ABOUT_QXCP_DXFW";
-        PcsDataBrocastReceiver.registerReceiver(ActivityTyphoonRoad.this, mReceiver);
-        PcsDataDownload.addDownload(packUp);
+        View layout = findViewById(android.R.id.content).getRootView();
+        if (layout != null) {
+            Bitmap headBm = ZtqImageTool.getInstance().getScreenBitmap(head_layout);
+            Bitmap contentBm = ZtqImageTool.getInstance().screenshotWebView(web_weather);
+            Bitmap bitmap = ZtqImageTool.getInstance().stitch(headBm, contentBm);
+            bitmap = ZtqImageTool.getInstance().stitchQR(ActivityTyphoonRoad.this, bitmap);
+            ShareTools.getInstance(ActivityTyphoonRoad.this).setShareContent(getTitleText(), mShare, bitmap, "0").showWindow(layout);
+        }
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-
             switch (v.getId()) {
                 case R.id.btn_right:
                     reqShare();
@@ -100,7 +97,7 @@ public class ActivityTyphoonRoad extends FragmentActivityZtqBase {
     }
 
     public List<ColumnInfo> arrcolumnInfo = new ArrayList<>();
-    private String mShare;
+    private String mShare = CONST.SHARE_URL;
     private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {
         @Override
         public void onReceive(String nameStr, String errorStr) {
@@ -116,27 +113,6 @@ public class ActivityTyphoonRoad extends FragmentActivityZtqBase {
                 arrcolumnInfo.clear();
                 arrcolumnInfo.addAll(packDowns.arrcolumnInfo);
                 setWebView(arrcolumnInfo.get(0).req_url);
-            } else if (packUp.getName().equals(nameStr)) {
-                dismissProgressDialog();
-                PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (down == null) {
-                    return;
-                }
-                mShare = down.share_content;
-                View layout = findViewById(android.R.id.content).getRootView();
-                if (layout != null) {
-//                            mShareBitmap = ZtqImageTool.getInstance().getScreenBitmapNew(FragmentActivityWithShare
-// .this);
-//                            mShareBitmap = ZtqImageTool.getInstance().stitchQR(FragmentActivityWithShare.this,
-// mShareBitmap);
-                    Bitmap headBm = ZtqImageTool.getInstance().getScreenBitmap(head_layout);
-                    Bitmap contentBm = ZtqImageTool.getInstance().screenshotWebView(web_weather);
-                    Bitmap bitmap = ZtqImageTool.getInstance().stitch(headBm, contentBm);
-                    bitmap = ZtqImageTool.getInstance().stitchQR(ActivityTyphoonRoad.this, bitmap);
-                    ShareTools.getInstance(ActivityTyphoonRoad.this).setShareContent(getTitleText(), mShare,
-                            bitmap, "0").showWindow(layout);
-//                    ShareUtil.share(ActivityTyphoonRoad.this, getTitleText() + " " + mShare, bitmap);
-                }
             }
         }
     };

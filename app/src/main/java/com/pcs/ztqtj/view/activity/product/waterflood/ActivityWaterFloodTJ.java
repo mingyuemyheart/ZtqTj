@@ -21,10 +21,7 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRavrListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackRavrListUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.floodsummary.PackReverListUp;
@@ -35,6 +32,7 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.NetTask;
 import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 
 import java.util.ArrayList;
@@ -339,16 +337,7 @@ public class ActivityWaterFloodTJ extends FragmentActivityZtqBase implements Vie
                 public void onMapScreenShot(Bitmap bitmap) {
                     if(bitmap == null) return;
                     View layout = findViewById(R.id.layout);
-                    PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp
-                            .getNameCom());
-
-                    String shareContnet;
-                    if (shareDown != null) {
-                        shareContnet = shareDown.share_content;
-                    } else {
-                        shareContnet = "天津气象分享";
-                    }
-                    ShareTools.getInstance(ActivityWaterFloodTJ.this).setShareContent(getTitleText(),shareContnet, bitmap, "0").showWindow(layout);
+                    ShareTools.getInstance(ActivityWaterFloodTJ.this).setShareContent(getTitleText(), CONST.SHARE_URL, bitmap, "0").showWindow(layout);
                 }
 
                 @Override

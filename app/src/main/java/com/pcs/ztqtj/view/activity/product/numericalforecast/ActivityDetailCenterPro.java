@@ -27,14 +27,10 @@ import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown.ForList;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.TitleListBean;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
@@ -200,16 +196,6 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
 
         showData = new ArrayList<>();
         dataeaum = new ArrayList<>();
-        getShareContext();
-    }
-
-    private PackShareAboutUp aboutShare = new PackShareAboutUp();
-    private PackShareAboutDown shareDwon;
-
-    private void getShareContext() {
-        // 气象产品分享--短信分享
-        aboutShare.keyword = "ABOUT_QXCP_DXFW";
-        PcsDataDownload.addDownload(aboutShare);
     }
 
     private void initEvent() {
@@ -300,16 +286,8 @@ public class ActivityDetailCenterPro extends FragmentActivitySZYBBase implements
                 }
                 break;
             case R.id.image_share:
-                if (shareDwon == null) {
-                    shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(aboutShare.getName());
-                }
-                if (shareDwon == null) {
-                    return;
-                }
-                String chareContent = shareDwon.share_content;
                 Bitmap bitmap = BitmapUtil.takeScreenShot(ActivityDetailCenterPro.this);
-                ShareTools.getInstance(ActivityDetailCenterPro.this).setShareContent(getTitleText(),chareContent, bitmap, "0")
-                        .showWindow(layout_detail_center);
+                ShareTools.getInstance(ActivityDetailCenterPro.this).setShareContent(getTitleText(),CONST.SHARE_URL, bitmap, "0").showWindow(layout_detail_center);
                 break;
             default:
                 break;

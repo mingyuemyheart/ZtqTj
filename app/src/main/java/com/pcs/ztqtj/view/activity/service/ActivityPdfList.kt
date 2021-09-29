@@ -44,7 +44,13 @@ class ActivityPdfList : FragmentActivityZtqWithHelp() {
                     titleText = dto.dataName
                 }
 
-                if (dto.childList.size > 0) {
+                val size = dto.childList.size
+                if (size <= 1) {
+                    llContainer.visibility = View.GONE
+                } else {
+                    llContainer.visibility = View.VISIBLE
+                }
+                if (size > 0) {
                     for (i in 0 until dto.childList.size) {
                         val llItem = LinearLayout(this)
                         llItem.orientation = LinearLayout.VERTICAL

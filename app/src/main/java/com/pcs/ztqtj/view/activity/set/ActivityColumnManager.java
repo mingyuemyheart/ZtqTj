@@ -23,7 +23,6 @@ import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalSetUpdate;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
@@ -36,7 +35,9 @@ import com.pcs.ztqtj.control.adapter.adapter_set.AdapterSetDialogList;
 import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.model.SettingDB;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogOneButton;
 import com.pcs.ztqtj.view.dialog.DialogTwoButton;
@@ -138,7 +139,11 @@ public class ActivityColumnManager extends FragmentActivityZtqBase {
                         break;
                     case 5:
                         // 免责声明
-                        gotoAcitvity(ActivityDisclaimer.class, listData.get(position).get("t"));
+                        Intent intent = new Intent(ActivityColumnManager.this, ActivityWebView.class);
+                        intent.putExtra("title", "免责声明");
+                        intent.putExtra("url", CONST.MZSM);
+                        intent.putExtra("shareContent", "免责声明");
+                        startActivity(intent);
                         break;
 //                    case 7:
 //                        // 气象短信
@@ -471,8 +476,6 @@ public class ActivityColumnManager extends FragmentActivityZtqBase {
     private void gotoAcitvity(Class intentactivity, String titletext) {
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
-        PackLocalCityInfo citylist = ZtqCityDB.getInstance()
-                .getCurrentCityInfo();
         PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
         bundle.putSerializable("city", cityMain);
         bundle.putString("title", titletext);

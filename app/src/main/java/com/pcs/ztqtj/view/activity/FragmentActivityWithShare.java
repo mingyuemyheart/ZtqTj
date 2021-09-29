@@ -8,11 +8,6 @@ import android.view.View;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 
 /**
  * 带分享的activity父类
@@ -21,41 +16,36 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 public class FragmentActivityWithShare extends FragmentActivityZtqBase {
 
     // 分享文字
-    protected String mShare = "";
+    protected String mShare = "https://tjhm-app.weather.com.cn:8081/web/build/index.html";
     // 分享内容
     protected Bitmap mShareBitmap;
     // 高德地图截图
     protected Bitmap mAmapBitmap;
-
-    private PackShareAboutUp packUp = new PackShareAboutUp();
-    private MyReceiver receiver = new MyReceiver();
-
     private View.OnClickListener subClassListener;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setBtnRight(R.drawable.icon_share_new, listener);
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
-        reqShare();
     }
 
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
             if(subClassListener != null) {
                 subClassListener.onClick(v);
             } else {
-
                 switch (v.getId()) {
                     case R.id.btn_right:
                         View layout = findViewById(android.R.id.content).getRootView();
                         if (layout != null) {
                             mShareBitmap = ZtqImageTool.getInstance().getScreenBitmapNew(FragmentActivityWithShare.this);
-                            mShareBitmap = ZtqImageTool.getInstance().stitchQR(FragmentActivityWithShare.this, mShareBitmap);
-                            ShareTools.getInstance(FragmentActivityWithShare.this).setShareContent(getTitleText(), mShare, mShareBitmap,"0").showWindow(layout);
+                            if (mShareBitmap != null) {
+                                mShareBitmap = ZtqImageTool.getInstance().stitchQR(FragmentActivityWithShare.this, mShareBitmap);
+                                if (mShareBitmap != null) {
+                                    ShareTools.getInstance(FragmentActivityWithShare.this).setShareContent(getTitleText(), mShare, mShareBitmap,"0").showWindow(layout);
+                                }
+                            }
                         }
                         break;
                 }
@@ -104,37 +94,4 @@ public class FragmentActivityWithShare extends FragmentActivityZtqBase {
         return statusBarHeight1;
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
-    }
-
-    /**
-     * 请求分享接口
-     */
-    private void reqShare() {
-        packUp = new PackShareAboutUp();
-        // 气象产品分享--短信分享
-        packUp.keyword = "ABOUT_QXCP_DXFW";
-        PcsDataDownload.addDownload(packUp);
-    }
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if(packUp.getName().equals(nameStr)) {
-                PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(down == null) {
-                    return ;
-                }
-                mShare = down.share_content;
-            }
-        }
-    }
 }

@@ -19,10 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
@@ -149,12 +146,7 @@ public class FragmentWeatherWarningNotFj extends Fragment implements WarnFragmen
             tvShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-                    String shareAdd="";
-                    if (shareDown!=null) {
-                        shareAdd=shareDown.share_content;
-                    }
-                    String shareContent =  bean.msg + "(" + bean.put_str + ")" + shareAdd;
+                    String shareContent =  bean.msg + "(" + bean.put_str + ")" + CONST.SHARE_URL;
                     View content = getView().findViewById(R.id.fragment);
                     Bitmap bitmap = ZtqImageTool.getInstance().getScreenBitmap(content);
                     bitmap = ZtqImageTool.getInstance().stitchQR(getActivity(), bitmap);

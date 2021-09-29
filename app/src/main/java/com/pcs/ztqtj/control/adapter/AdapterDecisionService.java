@@ -8,14 +8,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.ClassList;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.DesServer;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down.SubClassList;
+import com.pcs.ztqtj.view.activity.service.MyPackQxfuMyproV2Down;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,8 +26,8 @@ import java.util.List;
 public class AdapterDecisionService extends BaseExpandableListAdapter {
 
     private Context context;
-    public List<ClassList> classList;
-    public List<SubClassList> channels;
+    public List<MyPackQxfuMyproV2Down.ClassList> classList;
+    public List<MyPackQxfuMyproV2Down.SubClassList> channels;
     private String showSubtitle;
     private MoreClickListener listener;
 
@@ -49,7 +46,7 @@ public class AdapterDecisionService extends BaseExpandableListAdapter {
 
     private List<IntType> typePosition;
 
-    public void setData(List<ClassList> classList) {
+    public void setData(List<MyPackQxfuMyproV2Down.ClassList> classList) {
         this.classList = classList;
         this.channels.clear();
         typePosition.clear();
@@ -86,7 +83,7 @@ public class AdapterDecisionService extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        DesServer bena = channels.get(groupPosition).pro_list.get(childPosition);
+        MyPackQxfuMyproV2Down.DesServer bena = channels.get(groupPosition).pro_list.get(childPosition);
         return bena;
     }
 
@@ -207,7 +204,7 @@ public class AdapterDecisionService extends BaseExpandableListAdapter {
     }
 
     public interface MoreClickListener {
-        void onClick(SubClassList bean);
+        void onClick(MyPackQxfuMyproV2Down.SubClassList bean);
     }
 
     /**

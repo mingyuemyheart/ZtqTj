@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore.Images;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +27,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -43,16 +41,13 @@ import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.LatLng;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarListDown.StationInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.PackRadarNewUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.radar.RadarImgInfo;
 import com.pcs.ztqtj.MyApplication;
@@ -87,7 +82,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -325,53 +319,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
     }
 
     /**
-     * 数据更新广播接收
-     */
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String error) {
-            if (packRadarNewUp.getName().equals(name)) {
-                dismissProgressDialog();
-                PackRadarNewDown down = (PackRadarNewDown) PcsDataManager.getInstance().getNetPack(name);
-                if (down == null) {
-                    return;
-                }
-
-                list_level.clear();
-                list_level.add("");
-                list_level.addAll(down.leve);
-                list_level.add("");
-                hor_scr.setLayoutManager(new GridLayoutManager(ActivityWeatherRadar.this, list_level.size()));
-                adapterRadar.notifyDataSetChanged();
-                seekBar_maps.setMax(list_level.size() - 1);
-                levelList.clear();
-                levelList.add("0");
-                levelList.addAll(down.leve);
-                levelList.add(down.leve.get(down.leve.size()-1));
-                if(!TextUtils.isEmpty(packRadarNewUp.leve) &&!TextUtils.isEmpty(down.lat1) && !TextUtils.isEmpty(down.lat2) &&
-                        !TextUtils.isEmpty(down.lon1) && !TextUtils.isEmpty(down.lon1)) {
-                    LatLng latLng1 = new LatLng(Double.parseDouble(down.lat1), Double.parseDouble(down.lon1));
-                    LatLng latLng2 = new LatLng(Double.parseDouble(down.lat2), Double.parseDouble(down.lon2));
-                    radarImgList.clear();
-                    radarImgList.addAll(down.radarImgList);
-                    Collections.reverse(radarImgList);
-                    mapControl.select(latLng1, latLng2, radarImgList);
-                    if(radarImgList != null && radarImgList.size() > 0) {
-                        RadarImgInfo info = radarImgList.get(radarImgList.size()-1);
-                        reflushTime(info);
-                    } else {
-                        img_time.setText("");
-                    }
-                }
-                if(TextUtils.isEmpty(packRadarNewUp.leve) && levelList.size() >= 2) {
-                    reqMap(levelList.get(1));
-                    seekBar_maps.setProgress(1);
-                }
-            }
-        }
-    }
-
-    /**
      * 默认雷达雷达站点
      */
     private void updateStationList() {
@@ -503,15 +450,13 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
                         RadarImgInfo info = radarImgList.get(i);
                         String url = getString(R.string.file_download_url)+info.img;
                         if (key.equals(url)) {
-                            comm_imgs[i] = getImageFetcher().getImageCache()
-                                    .getBitmapFromAllCache(key).getBitmap();
+                            comm_imgs[i] = getImageFetcher().getImageCache().getBitmapFromAllCache(key).getBitmap();
                             downloadImageAll();
                             break;
                         }
                     }
                 } else {
-                    comm_imgs[count] = BitmapFactory.decodeResource(
-                            getResources(), R.drawable.alph100png);
+                    comm_imgs[count] = BitmapFactory.decodeResource(getResources(), R.drawable.alph100png);
                 }
                 if (count < imgCount) {
                     count++;
@@ -736,7 +681,6 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
      * 隐藏底部布局
      */
     private void hideButton() {
-
         if (mBottomBar != null && status == STATUS_START
                 && mBottomBar.getVisibility() == View.VISIBLE) {
             Animation anim = AnimationUtils.loadAnimation(
@@ -862,10 +806,13 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
             case R.id.btn_right:
                 View layout = findViewById(R.id.all_view);
                 Bitmap shareBitmap = BitmapUtil.takeScreenShot(this);
+                if (shareBitmap != null) {
 //                Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmap(layout);
-                shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityWeatherRadar.this, shareBitmap);
-                ShareTools.getInstance(ActivityWeatherRadar.this).setShareContent(getTitleText(), mShare,
-                        shareBitmap, "0").showWindow(layout);
+                    shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityWeatherRadar.this, shareBitmap);
+                    if (shareBitmap != null) {
+                        ShareTools.getInstance(ActivityWeatherRadar.this).setShareContent(getTitleText(), mShare, shareBitmap, "0").showWindow(layout);
+                    }
+                }
                 break;
             case R.id.btn_right2:
                 clickSaveGif();
@@ -900,7 +847,7 @@ public class ActivityWeatherRadar extends FragmentActivityWithShare implements V
                 return Observable.just(radarImgInfo).map(new Function<RadarImgInfo, Bitmap>() {
                     @Override
                     public Bitmap apply(RadarImgInfo info) throws Exception {
-                        String path = info.img;
+                        String path = getString(R.string.file_download_url)+info.img;
                         return getBitmapFromURL(path);
                     }
                 });

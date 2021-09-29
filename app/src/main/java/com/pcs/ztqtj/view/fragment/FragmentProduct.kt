@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.control.adapter.AdapterProductProduct
-import com.pcs.ztqtj.control.tool.ShareTools
 import com.pcs.ztqtj.model.ZtqCityDB
 import com.pcs.ztqtj.util.ColumnDto
 import com.pcs.ztqtj.util.CommonUtil
@@ -57,7 +56,6 @@ class FragmentProduct : BaseFragment() {
         product_top_right_button.setOnClickListener {
             startActivity(Intent(activity, ActivityProgramerManager::class.java))
         }
-        ShareTools.getInstance(activity).reqShare()
 
         val dto: ColumnDto = arguments!!.getParcelable("data")
         if (dto != null) {

@@ -8,9 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackWeatherSummaryDown;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -87,14 +84,7 @@ public class ActivityWeatherSummary extends FragmentActivitySZYBBase {
 
                 }
                 shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityWeatherSummary.this, shareBitmap);
-                PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack
-                        (PackShareAboutUp.getNameCom());
-                String shareContent = "";
-                if (shareDown != null) {
-                    shareContent = shareDown.share_content;
-                }
-                ShareTools.getInstance(ActivityWeatherSummary.this).setShareContent(getTitleText(),
-                        shareContent, shareBitmap, "0").showWindow(layout);
+                ShareTools.getInstance(ActivityWeatherSummary.this).setShareContent(getTitleText(), CONST.SHARE_URL, shareBitmap, "0").showWindow(layout);
             }
         });
     }

@@ -202,7 +202,7 @@ public class ControlDistributionDetail {
             markerOptions.position(latLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val)))
                     //.zIndex(MapElementZIndex.markerZIndex)
-                    .anchor(0.5f, 0.35f);
+                    .anchor(0.5f, 1.3f);
             // 添加点数据至缓存列表
             Marker marker = aMap.addMarker(markerOptions);
             //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
@@ -246,7 +246,7 @@ public class ControlDistributionDetail {
                     .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val)))
                     //.zIndex(MapElementZIndex.markerZIndex)
                     .rotateAngle(-Float.parseFloat(bean.fx))
-                    .anchor(0.5f, 0.35f);
+                    .anchor(0.5f, 1.3f);
             // 添加点数据至缓存列表
             Marker marker = aMap.addMarker(markerOptions);
             //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));

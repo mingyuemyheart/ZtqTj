@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -177,10 +178,17 @@ public class ActivityWebView extends FragmentActivityZtqBase {
             public void onReceivedTitle(WebView view, String title) {
                 super.onReceivedTitle(view, title);
             }
+
+            @Override
+            public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                super.onGeolocationPermissionsShowPrompt(origin, callback);
+                callback.invoke(origin, true, false);
+            }
         });
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);//允许js
         webSettings.setBlockNetworkImage(false);//后台处理加载图片
+        webSettings.setGeolocationEnabled(true);
         JsInterfaceWebView interBanner = new JsInterfaceWebView(this);
         webview.addJavascriptInterface(interBanner, "js");
         webview.setDrawingCacheEnabled(true);

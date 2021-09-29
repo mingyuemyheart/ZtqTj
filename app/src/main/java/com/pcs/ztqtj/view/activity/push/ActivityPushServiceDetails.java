@@ -12,36 +12,27 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.NetTask;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhone;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 
 public class ActivityPushServiceDetails extends FragmentActivityZtqWithPhone {
     private WebView webview;
     private TextView tvShare;
-    // 分享包
-    private PackShareAboutUp shareAboutUp = new PackShareAboutUp();
-
-
     private TextView show_warnTv;
-
     private TextView show_warn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_push_service_detail);
-        PcsDataBrocastReceiver.registerReceiver(ActivityPushServiceDetails.this, receiver);
         initView();
         initEvent();
         initData();
@@ -144,10 +135,9 @@ public class ActivityPushServiceDetails extends FragmentActivityZtqWithPhone {
 
     private void reqNet() {
         dismissProgressDialog();
-        PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
         String title = getIntent().getStringExtra("title");
         title = TextUtils.isEmpty(title) ? "" : title;
-        String content = title + shareDown.share_content;
+        String content = title + CONST.SHARE_URL;
         Bitmap bitmap = ZtqImageTool.getInstance().getScreenBitmap(webview);
 
         View layout = findViewById(R.id.layout_main);
@@ -156,13 +146,6 @@ public class ActivityPushServiceDetails extends FragmentActivityZtqWithPhone {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiver);
-    }
-
-    private MyReceiver receiver = new MyReceiver();
     private PackPullServiceUp packup;
 
     public void req(String id) {
@@ -188,38 +171,6 @@ public class ActivityPushServiceDetails extends FragmentActivityZtqWithPhone {
         });
         task.execute(packup);
         //PcsDataDownload.addDownload(packup);
-    }
-
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            // 取出内容替换
-            if (packup != null && name.equals(packup.getName())) {
-//                dismissProgressDialog();
-//                if (!TextUtils.isEmpty(errorStr)) {
-//                    showToast(errorStr);
-//                    return;
-//                }
-//                packDown = (PackPullServiceDown) PcsDataManager.getInstance().getNetPack(name);
-//                if (packDown == null) {
-//                    return;
-//                }
-//                webview.loadUrl(packDown.html_url);
-            } else if (name.equals(shareAboutUp.getName())) {
-//                dismissProgressDialog();
-//                if (!TextUtils.isEmpty(errorStr)) {
-//                    showToast(errorStr);
-//                    return;
-//                }
-//                shareAboutDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(name);
-//                if (shareAboutDown == null) {
-//                    showToast("分享失败！");
-//                    return;
-//                }
-//                share(shareAboutDown);
-            }
-        }
     }
 
 }

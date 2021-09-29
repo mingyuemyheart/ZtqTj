@@ -38,8 +38,6 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackCommitMoviceDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCommitMoviceUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackUserPictureUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.banner_share.PackShareToServerDown;
@@ -53,6 +51,7 @@ import com.pcs.ztqtj.control.tool.KWHttpRequest;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.cammer.ActivityVideo;
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -395,9 +394,7 @@ public class ControlWebView {
 //                    shareClickUrl = activity.shareContent.substring(activity.shareContent.indexOf("http"), activity.shareContent.length());
 //                }
                 if (TextUtils.isEmpty(activity.url)) {
-                    PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-                    String[] str=shareDown.share_content.split("http");
-                    activity.url = "http"+str[1];
+                    activity.url = CONST.SHARE_URL;
                 }
 
 //                activity.url

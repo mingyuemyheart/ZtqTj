@@ -20,12 +20,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfo;
 import com.pcs.ztqtj.MyApplication;
@@ -198,9 +195,7 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 //        scroll.scrollTo(0,1280);
         Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmap(view);
         shareBitmap = ZtqImageTool.getInstance().stitchQR(getActivity(), shareBitmap);
-        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp
-                .getNameCom());
-        ShareTools.getInstance(getActivity()).setShareContent(shareDown.share_content, shareBitmap,"1").showWindow(scroll);
+        ShareTools.getInstance(getActivity()).setShareContent(CONST.SHARE_URL, shareBitmap,"1").showWindow(scroll);
     }
 
     public void SetBottom() {

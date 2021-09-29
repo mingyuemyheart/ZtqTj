@@ -13,7 +13,7 @@
         android:gravity="center"
         android:minWidth="250dp"
         android:orientation="vertical"
-        android:padding="10dp"
+        android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,34 +22,10 @@
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="系统默认为游客权限，部分功能请登录后进行查看。"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/tvContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/text_color4"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvPrivacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:padding="10dp"
-            android:textColor="@color/red"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvProtocal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:padding="10dp"
-            android:textColor="@color/red"
-            android:textSize="14sp" />
     </LinearLayout>
 
     <TextView
@@ -68,7 +44,7 @@
         android:layout_height="@dimen/dimen40"
         android:background="@drawable/dialog_left_btn"
         android:gravity="center"
-        android:text="暂不同意"
+        android:text="取消"
         android:textColor="@color/text_color4"
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/divider2"
@@ -90,7 +66,7 @@
         android:layout_height="@dimen/dimen40"
         android:background="@drawable/dialog_right_btn"
         android:gravity="center"
-        android:text="同意"
+        android:text="登录"
         android:textColor="#1e90ff"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.view.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,8 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
@@ -31,27 +28,18 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownload;
-import com.pcs.lib.lib_pcs_v3.control.file.PcsFileDownloadListener;
-import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackCheckVersionUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceRefresh;
 import com.pcs.ztqtj.control.tool.AutoDownloadWeather;
-import com.pcs.ztqtj.control.tool.CommUtils;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.ZtqAppWidget;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
@@ -62,10 +50,6 @@ import com.pcs.ztqtj.util.ColumnDto;
 import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.citylist.ActivityCityList;
-import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
-import com.pcs.ztqtj.view.dialog.DialogFactory;
-import com.pcs.ztqtj.view.dialog.DialogOneButton;
-import com.pcs.ztqtj.view.dialog.DialogTwoButton;
 import com.pcs.ztqtj.view.fragment.FragmentCityManager;
 import com.pcs.ztqtj.view.fragment.FragmentHomeWeather;
 import com.pcs.ztqtj.view.fragment.FragmentLife;
@@ -80,7 +64,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,17 +91,10 @@ public class ActivityMain extends FragmentActivity {
     private boolean mFetcherResumed = false;
     private FragmentCityManager mFragmentLeft;
     private FragmentHomeWeather mFragmentHomeWeather;
-    private DialogTwoButton checkDialogdescribe;
-    private PackCheckVersionDown packcheckversion;
-    private DialogOneButton checkDialogdownload;
-    private TextView desc_download;
-    private ProgressBar progerssBar;
 
     // 等待对话框
     private ProgressDialog mProgressDialog = null;
 
-    //文件下载
-    private PcsFileDownload mFileDownload;
     //点击回退时间
     private long mBackTime = 0;
     private DrawerLayout drawerLayout;
@@ -134,7 +110,6 @@ public class ActivityMain extends FragmentActivity {
         mFragmentLeft = new FragmentCityManager();
         initDrawerLayout();
         checkCity();//检查城市
-//        initPrivacy();
         AutoUpdateUtil.checkUpdate(this, this, true);
         ZtqAppWidget.getInstance().updateAllWidget(this);//刷新小部件
         okHttpColumn();
@@ -430,26 +405,9 @@ public class ActivityMain extends FragmentActivity {
         }
     }
 
-    private void initPrivacy() {
-        SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
-        try {
-            String currentVer = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            String lastVer = sharedPreferences.getString("ver", "-1");
-            if (!TextUtils.equals(currentVer, lastVer)) {
-                dialogPrivacy(currentVer);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void dialogPrivacy(final String ver) {
+    private void dialogTip() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.dialog_privacy, null);
-        TextView tvMessage = view.findViewById(R.id.tvMessage);
-        TextView tvContent = view.findViewById(R.id.tvContent);
-        TextView tvPrivacy = view.findViewById(R.id.tvPrivacy);
-        TextView tvProtocal = view.findViewById(R.id.tvProtocal);
         TextView tvNegtive = view.findViewById(R.id.tvNegtive);
         TextView tvPositive = view.findViewById(R.id.tvPositive);
 
@@ -458,79 +416,20 @@ public class ActivityMain extends FragmentActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
         dialog.show();
-        tvMessage.setText("隐私服务协议");
-        tvContent.setText("感谢您使用“天津气象”。根据我国网络信息安全相关法律法规的要求，我公司制定了《天津气象隐私政策》和《天津气象用户服务协议》，对使用过程中可能出现的个人信息收集、使用、共享和保护等情况进行说明。为了您更好地了解并使用相关服务，请在使用前认真阅读完整版隐私政策。您需确认同意后方可使用“天津气象”。我公司将尽全力保护您的个人信息安全。");
-        tvPrivacy.setText("《天津气象软件用户隐私政策》");
-        tvPrivacy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
-                intent.putExtra("title", "天津气象软件用户隐私政策");
-                intent.putExtra("url", CONST.PROTOCAL);
-                intent.putExtra("shareContent", "天津气象软件用户隐私政策");
-                startActivity(intent);
-            }
-        });
-        tvProtocal.setText("《天津气象软件许可及服务协议》");
-        tvProtocal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ActivityMain.this, ActivityWebView.class);
-                intent.putExtra("title", "天津气象软件许可及服务协议");
-                intent.putExtra("url", CONST.PRIVACY);
-                intent.putExtra("shareContent", "天津气象软件许可及服务协议");
-                startActivity(intent);
-            }
-        });
         tvNegtive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                dialog.dismiss();
             }
         });
         tvPositive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                SharedPreferences sharedPreferences = getSharedPreferences("privacyVersion", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("ver", ver);
-                editor.apply();
+                showSetting(true);
             }
         });
     }
-
-    /**
-     * 处理升级
-     */
-    @SuppressLint("HandlerLeak")
-    private final Handler handlerVersion = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            try {
-                if (mFileDownload == null) {
-                    mFileDownload = new PcsFileDownload();
-                }
-                View viewdownload = LayoutInflater.from(ActivityMain.this).inflate(R.layout.dialog_download, null);
-                desc_download = viewdownload.findViewById(R.id.desc_download);
-                progerssBar = viewdownload.findViewById(R.id.progressbar);
-                checkDialogdownload = new DialogOneButton(ActivityMain.this, viewdownload, "取消", new DialogFactory.DialogListener() {
-                    @Override
-                    public void click(String str) {
-                        checkDialogdownload.dismiss();
-                        mFileDownload.cancel();
-                    }
-                });
-                checkDialogdownload.setTitle("正在下载");
-                checkDialogdownload.show();
-                String[] appname = packcheckversion.file.split("/");
-                mFileDownload.downloadFile(downloadlistener, getString(R.string.file_download_url) + packcheckversion.file,
-                        PcsGetPathValue.getInstance().getAppPath() + appname[appname.length - 1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     @Override
     protected void onResume() {
@@ -596,9 +495,6 @@ public class ActivityMain extends FragmentActivity {
             if (data.getBooleanExtra("finish", false)) {
                 finish();
                 System.exit(0);
-            }
-            if (data.getBooleanExtra("checkVersion", false)) {
-                checkVerSion();
             }
         }
     }
@@ -682,8 +578,6 @@ public class ActivityMain extends FragmentActivity {
             // 选择城市
             toCityListActivity();
         } else {
-            // 检查版本
-            checkVerSion();
             checkUserInfo();
         }
     }
@@ -698,94 +592,11 @@ public class ActivityMain extends FragmentActivity {
         startActivityForResult(it, MyConfigure.RESULT_CITY_LIST);
     }
 
-    // 检测版本
-    private void checkVerSion() {
-        packcheckversion = (PackCheckVersionDown) PcsDataManager.getInstance().getNetPack(PackCheckVersionUp.NAME);
-        if (packcheckversion == null) {
-            return;
-        }
-        if (packcheckversion.nv == null || "".equals(packcheckversion.nv)) {
-            return;
-        }
-
-        PackageManager packageManager = getPackageManager();
-        // getPackageName()是你当前类的包名，0代表是获取版本信息
-        PackageInfo packInfo;
-        int version = 0;
-        try {
-            packInfo = packageManager.getPackageInfo(ActivityMain.this.getPackageName(), 0);
-            version = packInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (Integer.parseInt(packcheckversion.nv) > version) {
-            View view = LayoutInflater.from(ActivityMain.this).inflate(R.layout.dialog_message, null);
-            ((TextView) view.findViewById(R.id.dialogmessage)).setText(packcheckversion.des);
-            if(packcheckversion.leve.equals("4")) {
-                checkDialogdescribe = new DialogTwoButton(ActivityMain.this,
-                        view, "立即升级", "退出客户端", new DialogFactory.DialogListener() {
-                    @Override
-                    public void click(String str) {
-                        //checkDialogdescribe.dismiss();
-                        if (str.equals("立即升级")) {
-                            if (!isWiFiNewWord()) {
-                                reminDialog();
-                            } else {
-                                handlerVersion.sendEmptyMessage(0);
-                            }
-                        } else if (str.equals("退出客户端")) {
-                            checkDialogdescribe.dismiss();
-                            exit();
-                        }
-                    }
-                });
-            } else {
-                checkDialogdescribe = new DialogTwoButton(ActivityMain.this,
-                        view, "立即升级", "以后再说", new DialogFactory.DialogListener() {
-                    @Override
-                    public void click(String str) {
-                        checkDialogdescribe.dismiss();
-                        if (str.equals("立即升级")) {
-                            if (!isWiFiNewWord()) {
-                                reminDialog();
-                            } else {
-                                handlerVersion.sendEmptyMessage(0);
-                            }
-                        } else if (str.equals("以后再说")) {
-                            checkDialogdescribe.dismiss();
-                        }
-                    }
-                });
-            }
-            checkDialogdescribe.setCancelable(false);
-            checkDialogdescribe.setTitle("天津气象提示");
-            checkDialogdescribe.show();
-        }
-    }
-
     /* 判断是否是处于wifi状态下*/
     protected boolean isWiFiNewWord() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI;
-    }
-
-    private DialogTwoButton dialogRemain;
-
-    private void reminDialog() {
-        View view = LayoutInflater.from(ActivityMain.this).inflate(R.layout.download_remind, null);
-        dialogRemain = new DialogTwoButton(ActivityMain.this,
-                view, "确定", "取消", new DialogFactory.DialogListener() {
-            @Override
-            public void click(String str) {
-                dialogRemain.dismiss();
-                if (str.equals("确定")) {
-                    handlerVersion.sendEmptyMessage(0);
-                }
-            }
-        });
-        dialogRemain.setTitle("天津气象提示");
-        dialogRemain.show();
     }
 
     public InterfaceRefresh getRefreshView() {
@@ -795,42 +606,6 @@ public class ActivityMain extends FragmentActivity {
     public ImageFetcher getImageFetcher() {
         return mImageFetcher;
     }
-
-    /**
-     * 版本升级下载监听
-     */
-    PcsFileDownloadListener downloadlistener = new PcsFileDownloadListener() {
-        @Override
-        public void progress(String url, String fileName, long netSize, long downSize) {
-            if (checkDialogdownload.isShowing()) {
-                progerssBar.setMax((int) netSize);
-                progerssBar.setProgress((int) downSize);
-                float press = ((float) downSize / (float) netSize) * 100f;
-                desc_download.setText(String.format("%.2f", press) + "%");
-            }
-        }
-
-        @Override
-        public void downloadSucc(String url, String fileName) {
-            try {
-                if (checkDialogdownload.isShowing()) {
-                    checkDialogdownload.dismiss();
-                }
-                String[] appname = packcheckversion.file.split("/");
-                File file = new File(PcsGetPathValue.getInstance().getAppPath() + appname[appname.length - 1]);
-                CommUtils.openIfAPK(file);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void downloadErr(String url, String fileName, String errMsg) {
-            if (checkDialogdownload.isShowing()) {
-                checkDialogdownload.dismiss();
-            }
-        }
-    };
 
     /**
      * 定位改变监听
@@ -893,121 +668,12 @@ public class ActivityMain extends FragmentActivity {
         boolean first = shared.getBoolean("first", true);
         if(first) {
             if(!ZtqCityDB.getInstance().isLoginService()) {
-                showLoginDialog();
+                dialogTip();
             }
             SharedPreferences.Editor editor = shared.edit();
             editor.putBoolean("first", false);
             editor.apply();
         }
-    }
-
-    private DialogOneButton loginDialog;
-    private void showLoginDialog() {
-        View view = LayoutInflater.from(this).inflate(R.layout.layout_main_login, null);
-        final EditText etUserName = view.findViewById(R.id.et_username);
-        final EditText etPassword = view.findViewById(R.id.et_password);
-        loginDialog = new DialogOneButton(this, view, "登录", new DialogFactory.DialogListener() {
-            @Override
-            public void click(String str) {
-                if (str.equals("登录")) {
-                    if (TextUtils.isEmpty(etUserName.getText().toString())) {
-                        Toast.makeText(ActivityMain.this, "请输入账号或手机号", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    if (TextUtils.isEmpty(etPassword.getText().toString())) {
-                        Toast.makeText(ActivityMain.this, "请输入密码", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    okHttpLogin(etUserName.getText().toString(), etPassword.getText().toString());
-                } else if(str.equals("close")) {
-                    if(loginDialog != null) {
-                        loginDialog.dismiss();
-                    }
-                }
-            }
-        });
-        loginDialog.setCanceledOnTouchOutside(true);
-        loginDialog.showCloseBtn();
-        loginDialog.show();
-    }
-
-    /**
-     * 用户登录
-     */
-    private void okHttpLogin(final String uName, final String pwd) {
-        showProgressDialog();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    JSONObject param = new JSONObject();
-                    param.put("loginName", uName);
-                    param.put("pwd", pwd);
-                    String json = param.toString();
-                    String url = CONST.BASE_URL+"user/login";
-                    final RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                        }
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                return;
-                            }
-                            final String result = response.body().string();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dismissProgressDialog();
-                                    if (!TextUtils.isEmpty(result)) {
-                                        try {
-                                            JSONObject obj = new JSONObject(result);
-                                            if (!obj.isNull("token")) {
-                                                MyApplication.TOKEN = obj.getString("token");
-                                            }
-                                            if (!obj.isNull("userInfo")) {
-                                                JSONObject userInfo = obj.getJSONObject("userInfo");
-                                                if (!userInfo.isNull("userId")) {
-                                                    MyApplication.UID = userInfo.getString("userId");
-                                                }
-                                                if (!userInfo.isNull("loginName")) {
-                                                    MyApplication.USERNAME = userInfo.getString("loginName");
-                                                }
-                                                if (!userInfo.isNull("password")) {
-                                                    MyApplication.PASSWORD = userInfo.getString("password");
-                                                }
-                                                if (!userInfo.isNull("userName")) {
-                                                    MyApplication.NAME= userInfo.getString("userName");
-                                                }
-                                                if (!userInfo.isNull("phonenumber")) {
-                                                    MyApplication.MOBILE= userInfo.getString("phonenumber");
-                                                }
-                                                if (!userInfo.isNull("avatar")) {
-                                                    MyApplication.PORTRAIT= userInfo.getString("avatar");
-                                                }
-                                                MyApplication.saveUserInfo(ActivityMain.this);
-
-                                                Toast.makeText(ActivityMain.this, getString(R.string.login_succ), Toast.LENGTH_SHORT).show();
-                                                if(loginDialog != null) {
-                                                    loginDialog.dismiss();
-                                                }
-
-                                                okHttpColumn();
-                                            }
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     /**

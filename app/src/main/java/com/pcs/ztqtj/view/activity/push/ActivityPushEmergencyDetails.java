@@ -8,18 +8,17 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.NetTask;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarnPubDetailUp;
 
 import java.util.HashMap;
 
@@ -137,18 +136,13 @@ public class ActivityPushEmergencyDetails extends FragmentActivityZtqBase {
         }
     }
 
-    private PackShareAboutUp shareAboutUp;
     private void reqNet() {
-
-        PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
         View layout = findViewById(R.id.layout_main);
         View rootView = layout.getRootView();
         Bitmap bitmap = ZtqImageTool.getInstance().getScreenBitmap(layout);
         bitmap = ZtqImageTool.getInstance().stitchQR(ActivityPushEmergencyDetails.this, bitmap);
-        ShareTools.getInstance(ActivityPushEmergencyDetails.this).setShareContent(shareContent+shareDown.share_content, bitmap,"0").showWindow(rootView);
+        ShareTools.getInstance(ActivityPushEmergencyDetails.this).setShareContent(shareContent+ CONST.SHARE_URL, bitmap,"0").showWindow(rootView);
     }
-
-
 
     public void initView() {
         shareButton = (ImageButton) findViewById(R.id.warn_share);

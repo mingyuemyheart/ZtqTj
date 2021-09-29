@@ -15,22 +15,21 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
-import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoFullDetail;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfo;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoFullDetail;
 
 /**
  * Created by Administrator on 2017/11/10 0010.
@@ -237,9 +236,7 @@ public class ActivityOtherDetail extends FragmentActivityZtqWithPhoneListAndHelp
 //        scroll.scrollTo(0,1280);
         Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmapNew(ActivityOtherDetail.this);
         shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityOtherDetail.this, shareBitmap);
-        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp
-                .getNameCom());
-        ShareTools.getInstance(ActivityOtherDetail.this).setShareContent(getTitleText(),shareDown.share_content, shareBitmap,"1").showWindow(scroll);
+        ShareTools.getInstance(ActivityOtherDetail.this).setShareContent(getTitleText(), CONST.SHARE_URL, shareBitmap,"1").showWindow(scroll);
     }
 
     private ImageFetcher mImageFetcher;

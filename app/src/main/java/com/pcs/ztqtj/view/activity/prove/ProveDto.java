@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class ProveDto implements Parcelable {
 
+    public String id;
     public String columnName;
     public String flag;//flag:Y：已完成，N:未完成，全部：不传
     public String contactsName;//姓名
@@ -17,6 +18,7 @@ public class ProveDto implements Parcelable {
     public String status;//审核状态
     public String auditOpinion;//审核意见
     public String pdfPath;//下载链接
+    public String imgPath;
 
     public String imgName,imgUrl;
     public long fileSize;//文件大小
@@ -32,6 +34,7 @@ public class ProveDto implements Parcelable {
     }
 
     protected ProveDto(Parcel in) {
+        id = in.readString();
         columnName = in.readString();
         flag = in.readString();
         contactsName = in.readString();
@@ -45,6 +48,7 @@ public class ProveDto implements Parcelable {
         status = in.readString();
         auditOpinion = in.readString();
         pdfPath = in.readString();
+        imgPath = in.readString();
         imgName = in.readString();
         imgUrl = in.readString();
         fileSize = in.readLong();
@@ -74,6 +78,7 @@ public class ProveDto implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(columnName);
         dest.writeString(flag);
         dest.writeString(contactsName);
@@ -87,6 +92,7 @@ public class ProveDto implements Parcelable {
         dest.writeString(status);
         dest.writeString(auditOpinion);
         dest.writeString(pdfPath);
+        dest.writeString(imgPath);
         dest.writeString(imgName);
         dest.writeString(imgUrl);
         dest.writeLong(fileSize);

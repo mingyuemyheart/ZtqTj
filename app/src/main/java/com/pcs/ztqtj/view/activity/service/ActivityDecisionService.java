@@ -10,7 +10,6 @@ import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackQxfuMyproV2Down;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterDecisionService;
@@ -70,17 +69,20 @@ public class ActivityDecisionService extends FragmentActivityZtqWithHelp {
         listAdatper = new AdapterDecisionService(ActivityDecisionService.this, showSubtitle);
         listAdatper.setMoreListener(new AdapterDecisionService.MoreClickListener() {
             @Override
-            public void onClick(PackQxfuMyproV2Down.SubClassList bean) {
+            public void onClick(MyPackQxfuMyproV2Down.SubClassList bean) {
                 Intent intent = new Intent(ActivityDecisionService.this, ActivityPdfList.class);
                 ColumnDto data = new ColumnDto();
-                data.dataCode = bean.channel_id;
                 data.dataName = bean.channel_name;
-                ArrayList<ColumnDto> childList = new ArrayList<>();
-                ColumnDto child = new ColumnDto();
-                child.dataCode = bean.channel_id;
-                child.dataName = bean.org_name;
-                childList.add(child);
-                data.childList.addAll(childList);
+                if (bean.childList.size() > 0) {
+                    data.childList.addAll(bean.childList);
+                } else {
+                    ArrayList<ColumnDto> childList = new ArrayList<>();
+                    ColumnDto child = new ColumnDto();
+                    child.dataCode = bean.channel_id;
+                    child.dataName = bean.channel_name;
+                    childList.add(child);
+                    data.childList.addAll(childList);
+                }
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("data", data);
                 intent.putExtras(bundle);
@@ -97,8 +99,8 @@ public class ActivityDecisionService extends FragmentActivityZtqWithHelp {
         explistviw.setOnChildClickListener(new OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                PackQxfuMyproV2Down.DesServer currentDes = (PackQxfuMyproV2Down.DesServer) listAdatper.getChild(groupPosition, childPosition);
-                PackQxfuMyproV2Down.SubClassList currentSubClass = (PackQxfuMyproV2Down.SubClassList) listAdatper.getGroup(groupPosition);
+                MyPackQxfuMyproV2Down.DesServer currentDes = (MyPackQxfuMyproV2Down.DesServer) listAdatper.getChild(groupPosition, childPosition);
+                MyPackQxfuMyproV2Down.SubClassList currentSubClass = (MyPackQxfuMyproV2Down.SubClassList) listAdatper.getGroup(groupPosition);
                 Intent intent = new Intent(ActivityDecisionService.this, ActivityServeDetails.class);
                 SharedPreferencesUtil.putData(getString(R.string.file_download_url)+currentDes.html_url,getString(R.string.file_download_url)+currentDes.html_url);
                 intent.putExtra("url", getString(R.string.file_download_url)+currentDes.html_url);
@@ -153,7 +155,7 @@ public class ActivityDecisionService extends FragmentActivityZtqWithHelp {
                                                 if (!bobj.isNull("qxfw_mypro_v2")) {
                                                     JSONObject qxfw_mypro_v2 = bobj.getJSONObject("qxfw_mypro_v2");
                                                     if (!TextUtil.isEmpty(qxfw_mypro_v2.toString())) {
-                                                        PackQxfuMyproV2Down down = new PackQxfuMyproV2Down();
+                                                        MyPackQxfuMyproV2Down down = new MyPackQxfuMyproV2Down();
                                                         down.fillData(qxfw_mypro_v2.toString());
                                                         if (down != null) {
                                                             try {

@@ -1,16 +1,15 @@
 package com.pcs.ztqtj.view.activity.life.travel;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
+import com.pcs.ztqtj.util.CONST;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class MyPackWeekWeatherDown extends PcsPackDown {
     public String key;
@@ -147,11 +146,7 @@ public abstract class MyPackWeekWeatherDown extends PcsPackDown {
             shareC.append(((WeekWeatherInfo)list.get(2)).higt + "~");
             shareC.append(((WeekWeatherInfo)list.get(2)).lowt + "°");
         }
-
-        PackShareAboutDown shareDown = (PackShareAboutDown)PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-        if (shareDown != null && shareDown.share_content != null) {
-            shareC.append(shareDown.share_content);
-        }
+        shareC.append(CONST.SHARE_URL);
         return shareC.toString();
     }
 }

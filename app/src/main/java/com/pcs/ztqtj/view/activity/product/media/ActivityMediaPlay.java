@@ -204,7 +204,6 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
 
     private void initData() {
         // 注册广播接收
-        ShareTools.getInstance(this).reqShare();
         setBtnRight(R.drawable.icon_share_new, new OnClickListener() {
             @Override
             public void onClick(View v) {

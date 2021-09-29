@@ -1,20 +1,22 @@
 package com.pcs.ztqtj.view.activity.prove
 
+import android.app.Dialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.pcs.ztqtj.MyApplication
 import com.pcs.ztqtj.R
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.OkHttpUtil
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase
 import com.pcs.ztqtj.view.fragment.BaseFragment
 import kotlinx.android.synthetic.main.fragment_weather_prove.*
 import okhttp3.*
@@ -91,6 +93,10 @@ class WeatherProveFragment: BaseFragment() {
     private fun initListView() {
         mAdapter = WeatherProveAdapter(activity, dataList)
         listView.adapter = mAdapter
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val data = dataList[position]
+            dialogExit(activity!!, "删除", "确定删除该条证明?", data.id)
+        }
 
         refresh()
     }
@@ -136,6 +142,9 @@ class WeatherProveFragment: BaseFragment() {
                                         for (i in 0 until array.length()) {
                                             val dto = ProveDto()
                                             val itemObj = array.getJSONObject(i)
+                                            if (!itemObj.isNull("id")) {
+                                                dto.id = itemObj.getString("id")
+                                            }
                                             if (!itemObj.isNull("contactsName")) {
                                                 dto.contactsName = itemObj.getString("contactsName")
                                             }
@@ -157,6 +166,9 @@ class WeatherProveFragment: BaseFragment() {
                                             if (!itemObj.isNull("pdfPath")) {
                                                 dto.pdfPath = itemObj.getString("pdfPath")
                                             }
+                                            if (!itemObj.isNull("imgPath")) {
+                                                dto.imgPath = itemObj.getString("imgPath")
+                                            }
                                             dataList.add(dto)
                                         }
                                     }
@@ -168,6 +180,78 @@ class WeatherProveFragment: BaseFragment() {
                                         tvNoData.visibility = View.VISIBLE
                                     } else {
                                         tvNoData.visibility = View.GONE
+                                    }
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                }
+            })
+        }.start()
+    }
+
+    /**
+     * 退出对话框
+     */
+    private fun dialogExit(context: Context, title: String?, content: String?, id: String?) {
+        val inflater = context.getSystemService(FragmentActivityZtqBase.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.dialog_exit, null)
+        val tipTitle = view.findViewById<TextView>(R.id.tipTitle)
+        val tipContent = view.findViewById<TextView>(R.id.tipContent)
+        val tvCancel = view.findViewById<TextView>(R.id.tvCancel)
+        val tvSure = view.findViewById<TextView>(R.id.tvSure)
+        if (TextUtils.isEmpty(title)) {
+            tipTitle.text = "提示"
+        } else {
+            tipTitle.text = title
+        }
+        tipContent.text = content
+        val dialog = Dialog(context, R.style.CustomProgressDialog)
+        dialog.setContentView(view)
+        dialog.show()
+        tvCancel.setOnClickListener { dialog.dismiss() }
+        tvSure.setOnClickListener {
+            dialog.dismiss()
+            okHttpDelete(id)
+        }
+    }
+
+    private fun okHttpDelete(id: String?) {
+        Thread {
+            val url = "${CONST.BASE_URL}disaster_proof/remove"
+            Log.e("remove", url)
+            val param = JSONObject()
+            param.put("token", MyApplication.TOKEN)
+            val info = JSONObject()
+            info.put("id", id)
+            param.put("paramInfo", info)
+            val json: String = param.toString()
+            Log.e("remove", json)
+            val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+            val body = RequestBody.create(mediaType, json)
+            OkHttpUtil.enqueue(Request.Builder().url(url).post(body).build(), object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    if (activity == null) {
+                        return
+                    }
+                    if (!response.isSuccessful) {
+                        return
+                    }
+                    val result = response.body!!.string()
+                    activity!!.runOnUiThread {
+                        Log.e("remove", result)
+                        if (!TextUtils.isEmpty(result)) {
+                            try {
+                                val obj = JSONObject(result)
+                                if (!obj.isNull("status")) {
+                                    val status = obj.getString("status")
+                                    if (TextUtils.equals(status, "success")) {
+                                        okHttpList()
                                     }
                                 }
                             } catch (e: JSONException) {

@@ -18,13 +18,9 @@ import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackWdtjZdzDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.PackYltjYearTempUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.YltjYear;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -33,6 +29,7 @@ import com.pcs.ztqtj.control.adapter.livequery.AdapterTempertureHight;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQueryDetail;
@@ -88,17 +85,11 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
     private ImageView table_data;
     private LinearLayout comp_layout;
 
-    private MyReceiver receiver = new MyReceiver();
     private ActivityLiveQuery activity;
     private CityListControl cityControl;
     private boolean isShowPopupWindow = false;
     // 当前时间段选择位置
     private int currentHourPosition = 0;
-
-    /**
-     * 半年对比图
-     */
-    private PackYltjYearTempUp yltjYearUp;
 
     private final List<YltjYear> yltjYearList = new ArrayList<YltjYear>();
     private List<YltjYear> rainfallcomp = new ArrayList<>();
@@ -139,15 +130,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         initEvent();
         initData();
         redrawUI();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(receiver != null) {
-            getActivity().unregisterReceiver(receiver);
-            receiver = null;
-        }
     }
 
     @Override
@@ -195,7 +177,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
     }
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(this.getActivity(), receiver);
         cityControl = new CityListControl(activity.cityinfo);
         tvDataDesc.setText("区域、地区自动站高温查询");
 
@@ -237,8 +218,8 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         PackLocalCity currentParent = cityControl.getCutParentCity();
         if (currentParent != null) {
             if (currentParent.isFjCity) {
-                if(currentParent.ID.equals("10103")) {
-                    lay_tem_a.setVisibility(View.GONE);
+                if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
+                    lay_tem_a.setVisibility(View.VISIBLE);
                 } else {
                     lay_tem_a.setVisibility(View.VISIBLE);
                 }
@@ -297,9 +278,8 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         return list;
     }
 
-    private void reFlushImage(String name) {
+    private void reFlushImage(PackYltjYearTempDown yltjYearTempDown) {
         // 雨量查询—地区半年降雨量对比（yltj_year）
-        PackYltjYearTempDown yltjYearTempDown = (PackYltjYearTempDown) PcsDataManager.getInstance().getNetPack(name);
         if (yltjYearTempDown == null) {
             return;
         }
@@ -534,15 +514,8 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
                 reqHour();
                 break;
         }
-        reqYear();
-    }
 
-    private void reqYear() {
-        // 雨量查询—地区半年降雨量对比（yltj_year）
-        yltjYearUp = new PackYltjYearTempUp();
-        yltjYearUp.area_id = cityControl.getCutChildCity().ID;
-        yltjYearUp.type = "1";
-        PcsDataDownload.addDownload(yltjYearUp);
+        okHttpHistoryMonth();
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -741,15 +714,6 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
         HOURS
     }
 
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (yltjYearUp != null && nameStr.equals(yltjYearUp.getName())) {
-                reFlushImage(nameStr);
-            }
-        }
-    }
-
     /**
      * 获取高温排行
      */
@@ -803,6 +767,70 @@ public class FragmentHighTemperature extends FragmentLiveQueryCommon {
                         });
                     }
                 });
+            }
+        }).start();
+    }
+
+    /**
+     * 获取图表
+     */
+    private void okHttpHistoryMonth() {
+        activity.showProgressDialog();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("element", "tmax");
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("history_month", json);
+                    final String url = CONST.BASE_URL+"history_month";
+                    Log.e("history_month", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    activity.dismissProgressDialog();
+                                    Log.e("history_month", result);
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("yltj_wd_year")) {
+                                                    JSONObject yltj_wd_year = bobj.getJSONObject("yltj_wd_year");
+                                                    if (!TextUtil.isEmpty(yltj_wd_year.toString())) {
+                                                        PackYltjYearTempDown yearDown = new PackYltjYearTempDown();
+                                                        yearDown.fillData(yltj_wd_year.toString());
+                                                        reFlushImage(yearDown);
+                                                    }
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

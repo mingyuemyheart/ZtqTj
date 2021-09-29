@@ -34,11 +34,8 @@ import android.widget.ViewSwitcher;
 
 import com.iflytek.cloud.RecognizerResult;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.YjxxInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
@@ -575,14 +572,12 @@ public class CommandMainRow0 extends CommandMainBase {
                                                         }
 
                                                         Bitmap bitmap = BitmapUtil.takeScreenShot(mActivity);
-                                                        bitmap = ZtqImageTool.getInstance().stitchQR(mActivity, bitmap);
-                                                        PackShareAboutDown shareDown = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
-
-                                                        String shareContnet = "";
-                                                        if (shareDown != null) {
-                                                            shareContnet = shareStr + shareDown.share_content;
+                                                        if (bitmap != null) {
+                                                            bitmap = ZtqImageTool.getInstance().stitchQR(mActivity, bitmap);
                                                         }
-                                                        ShareTools.getInstance(mActivity).setShareContent("分享天气", shareContnet, bitmap, "0").showWindow(mRootLayout);
+                                                        if (bitmap != null) {
+                                                            ShareTools.getInstance(mActivity).setShareContent("分享天气", shareStr+"", bitmap, "0").showWindow(mRootLayout);
+                                                        }
                                                     }
                                                 }
                                             }

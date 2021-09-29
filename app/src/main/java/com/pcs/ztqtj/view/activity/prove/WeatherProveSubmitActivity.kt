@@ -27,7 +27,7 @@ import com.pcs.ztqtj.R
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.OkHttpUtil
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase
-import com.pcs.ztqtj.view.activity.set.ActivityDisclaimer
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView
 import com.pcs.ztqtj.view.myview.wheelview.NumericWheelAdapter
 import com.pcs.ztqtj.view.myview.wheelview.OnWheelScrollListener
 import com.pcs.ztqtj.view.myview.wheelview.WheelView
@@ -94,7 +94,7 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
 
     private val maxCount1 = 3
     private val maxCount2 = 7
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather_prove_submit)
@@ -103,6 +103,8 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
 
     private fun initWidget() {
         titleText = "气象灾害证明"
+        tvDeclare.setOnClickListener(this)
+        tvGuide.setOnClickListener(this)
         tvPerson.setOnClickListener(this)
         tvUnit.setOnClickListener(this)
         rbPerson.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -140,7 +142,6 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
         tvGuide.setOnClickListener(this)
 
         startLocation()
-        initPrompt()
         initWheelView()
         initSavePerson()
         initSpinner()
@@ -176,23 +177,6 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
                 amapLocation.province + amapLocation.city + amapLocation.district + amapLocation.street + amapLocation.aoiName
             }
         }
-    }
-
-    /**
-     * 初始化免责声明
-     */
-    private fun initPrompt() {
-        val str1 = "*该项服务仅限于天津市辖区范围内使用，最终解释权归天津市气象服务中心所有。"
-        val str2 = "免责声明"
-        val buffer = StringBuffer()
-        buffer.append(str1).append(str2)
-        val builder = SpannableStringBuilder(buffer.toString())
-        val builderSpan1 = ForegroundColorSpan(Color.RED)
-        val builderSpan2 = ForegroundColorSpan(ContextCompat.getColor(this, R.color.bg_title))
-        builder.setSpan(builderSpan1, 0, str1.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        builder.setSpan(builderSpan2, str1.length, str1.length + str2.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        tvPrompt.text = builder
-        tvPrompt.setOnClickListener(this)
     }
 
     private fun initWheelView() {
@@ -693,11 +677,18 @@ class WeatherProveSubmitActivity: FragmentActivityZtqBase(), View.OnClickListene
 
     override fun onClick(v: View?) {
         when(v!!.id) {
-            R.id.tvPrompt -> {
-                val intent = Intent(this, ActivityDisclaimer::class.java)
-                val bundle = Bundle()
-                bundle.putString("title", "免责声明")
-                intent.putExtras(bundle)
+            R.id.tvDeclare -> {
+                val intent = Intent(this, ActivityWebView::class.java)
+                intent.putExtra("title", tvDeclare.text.toString())
+                intent.putExtra("url", CONST.MZSM)
+                intent.putExtra("shareContent", tvDeclare.text.toString())
+                startActivity(intent)
+            }
+            R.id.tvGuide -> {
+                val intent = Intent(this, ActivityWebView::class.java)
+                intent.putExtra("title", tvGuide.text.toString())
+                intent.putExtra("url", CONST.SQZN)
+                intent.putExtra("shareContent", tvGuide.text.toString())
                 startActivity(intent)
             }
             R.id.tvPerson -> {

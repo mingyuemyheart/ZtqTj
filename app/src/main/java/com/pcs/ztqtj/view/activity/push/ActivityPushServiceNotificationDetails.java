@@ -13,6 +13,11 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.NetTask;
@@ -20,23 +25,13 @@ import com.pcs.ztqtj.control.tool.ServiceLoginTool;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.SharedPreferencesUtil;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhone;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackPullServiceUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 
 public class ActivityPushServiceNotificationDetails extends FragmentActivityZtqWithPhone {
     private WebView webview;
     private TextView tvShare;
-    // 分享包
-    private PackShareAboutUp shareAboutUp = new PackShareAboutUp();
-
     private TextView show_warnTv;
-
     private TextView show_warn;
 
     @Override
@@ -158,31 +153,9 @@ public class ActivityPushServiceNotificationDetails extends FragmentActivityZtqW
     }
 
     private void reqNet() {
-
-//        if(!isOpenNet()){
-//            showToast(getString(R.string.net_err));
-//            return ;
-//        }
-//        shareAboutUp = new PackShareAboutUp();
-//        shareAboutUp.keyword = "ABOUT_QXFW";
-//        NetTask task = new NetTask(this, new NetTask.NetListener() {
-//            @Override
-//            public void onComplete(PcsPackDown down) {
-//                dismissProgressDialog();
-//                if (down == null) {
-//                    showToast("分享失败！");
-//                    return;
-//                }
-//                PackShareAboutDown shareDown = (PackShareAboutDown) down;
-//                share(shareDown);
-//            }
-//        });
-//        task.execute(shareAboutUp);
-
-        PackShareAboutDown shareDown= (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(PackShareAboutUp.getNameCom());
         String title = getIntent().getStringExtra("title");
         title = TextUtils.isEmpty(title) ? "" : title;
-        String content = title + shareDown.share_content;
+        String content = title + CONST.SHARE_URL;
         Bitmap bitmap = ZtqImageTool.getInstance().getScreenBitmap(webview);
 //        ShareUtil.share(this, content, bitmap);
 
@@ -284,9 +257,6 @@ public class ActivityPushServiceNotificationDetails extends FragmentActivityZtqW
                 }
             });
 
-//            if (packup != null && name.equals(packup.getName())) {
-//            } else if (name.equals(shareAboutUp.getName())) {
-//            }
         }
     }
 

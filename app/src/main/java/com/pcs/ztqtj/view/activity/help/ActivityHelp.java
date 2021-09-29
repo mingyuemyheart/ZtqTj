@@ -38,8 +38,6 @@ public class ActivityHelp extends FragmentActivityZtqBase {
 	private ListView listview;
 	private AdapterHelpList adapter;
 	private List<String> listData;
-	
-
 	private DialogTwoButton myDialog;
 	private TextView messageTextView;
 
@@ -57,7 +55,7 @@ public class ActivityHelp extends FragmentActivityZtqBase {
 		listData = new ArrayList<String>();
 		listData.add("关于专项服务栏目");
 		listData.add("专项服务产品使用权限");
-		listData.add("修改密码");
+//		listData.add("修改密码");
 //		listData.add("气象服务单位联系方式");
 		adapter = new AdapterHelpList(getApplication(), listData);
 		listview.setAdapter(adapter);

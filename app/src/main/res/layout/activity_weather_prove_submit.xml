@@ -27,6 +27,32 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/tvDeclare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintEnd_toStartOf="@+id/tvGuide"
+                android:text="免责声明"
+                android:padding="10dp"
+                android:textColor="@color/bg_title"
+                android:textSize="@dimen/dimen12"
+                app:layout_constraintTop_toTopOf="@+id/tvGuide"
+                app:layout_constraintEnd_toEndOf="@+id/tvGuide" />
+
+            <TextView
+                android:id="@+id/tvGuide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:padding="10dp"
+                android:text="使用指南"
+                android:textColor="@color/bg_title"
+                android:textSize="@dimen/dimen12"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
                 android:id="@+id/tvPerson"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -39,7 +65,7 @@
                 android:textSize="@dimen/dimen14"
                 app:layout_constraintEnd_toStartOf="@+id/tvUnit"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvPrompt" />
+                app:layout_constraintTop_toBottomOf="@+id/tvGuide" />
 
             <TextView
                 android:id="@+id/tvUnit"
@@ -825,18 +851,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/dimen16"
                 app:layout_constraintTop_toBottomOf="@+id/gridViewBaodan" />
-
-            <TextView
-                android:id="@+id/tvGuide"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="使用指南"
-                android:textColor="@color/bg_title"
-                android:textSize="@dimen/dimen14"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvSubmit" />
 
         </android.support.constraint.ConstraintLayout>
 

@@ -28,16 +28,11 @@ import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastColumnDown.ForList;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.LmListBean;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown.TitleListBean;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutUp;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.livequery.AdapterData;
@@ -79,7 +74,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
     private RadioGroup number_radio_group;
     private List<String> spinner_data = new ArrayList<>();
     private List<String> spinner_title_data = new ArrayList<>();
-    private MyReceiver receiver = new MyReceiver();
     private ScrollView content_scrollview;
 
     /**
@@ -125,25 +119,14 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PcsDataBrocastReceiver.registerReceiver(ActivityDetailNumericalForecast.this, receiver);
         setContentView(R.layout.activity_numerical_forecast_detail);
         initView();
         initEvent();
     }
 
-    private PackShareAboutUp aboutShare = new PackShareAboutUp();
-    private PackShareAboutDown shareDwon;
-
-    private void getShareContext() {
-        // 气象产品分享--短信分享
-        aboutShare.keyword = "ABOUT_QXCP_DXFW";
-        PcsDataDownload.addDownload(aboutShare);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
     }
 
     private void initEvent() {
@@ -186,8 +169,6 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
         screenwidth = Util.getScreenWidth(ActivityDetailNumericalForecast.this);
 
         initWebView();
-
-        getShareContext();
 
         Intent intent = getIntent();
         String title = intent.getStringExtra("t");
@@ -316,30 +297,11 @@ public class ActivityDetailNumericalForecast extends FragmentActivitySZYBBase im
                 }
                 break;
             case R.id.image_share:
-                if (shareDwon == null) {
-                    shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(aboutShare.getName());
-                }
-                if (shareDwon == null) {
-                    return;
-                }
-                String chareContent = shareDwon.share_content;
                 Bitmap bitmap = BitmapUtil.takeScreenShot(ActivityDetailNumericalForecast.this);
-                ShareTools.getInstance(ActivityDetailNumericalForecast.this).setShareContent(getTitleText(),
-                        chareContent, bitmap,
-                        "0").showWindow(layout_root);
+                ShareTools.getInstance(ActivityDetailNumericalForecast.this).setShareContent(getTitleText(), CONST.SHARE_URL, bitmap, "0").showWindow(layout_root);
                 break;
             default:
                 break;
-        }
-    }
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-        @Override
-        public void onReceive(String name, String errorStr) {
-            if (aboutShare != null && aboutShare.getName().equals(name)) {
-                dismissProgressDialog();
-                shareDwon = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack(name);
-            }
         }
     }
 
