@@ -10,13 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -41,15 +40,12 @@ public class TravelFragmentTwo extends Fragment {
 	private TextView travel_pagetwo_text;
 	private ImageView travelTwoBanner;
 
-	ImageFetcher mImageFetcher;
-
 	public TravelFragmentTwo() {
 	}
 
 	@SuppressLint("ValidFragment")
-    public TravelFragmentTwo(String cityId, ImageFetcher imageFetcher) {
+    public TravelFragmentTwo(String cityId) {
 		this.cityId = cityId;
-		mImageFetcher = imageFetcher;
 	}
 
 	@Override
@@ -113,7 +109,7 @@ public class TravelFragmentTwo extends Fragment {
 													}
 													if (!lyqx.isNull("img")) {
 														String url = getString(R.string.file_download_url) + lyqx.getString("img");
-														mImageFetcher.loadImage(url, travelTwoBanner, ImageConstant.ImageShowType.SRC);
+														Picasso.get().load(url).into(travelTwoBanner);
 													}
 												}
 											}

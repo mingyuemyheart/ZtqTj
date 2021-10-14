@@ -13,7 +13,7 @@
         android:background="@drawable/btn_town"
         android:singleLine="false"
         android:textColor="@android:color/white"
-        android:textSize="19sp" />
+        android:textSize="19dp" />
 
     <View
         android:id="@+id/line_white_view"

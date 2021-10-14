@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="4dp"
                 android:textColor="#363636"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
 
             <ImageView
                 android:layout_width="match_parent"

@@ -22,7 +22,6 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.services.geocoder.RegeocodeAddress;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterYJXXGridIndexDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
@@ -66,7 +65,6 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
 
     private ActivityMain mActivity;
     private ViewGroup mRootLayout;
-    private ImageFetcher imageFetcher;
     private View mRowView;
     private TextureMapView mMapView;
     // 定位标记
@@ -80,10 +78,9 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
     // Bundle
     private Bundle mSavedInstanceState;
 
-    public CommandMainRow3(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher, Bundle savedInstanceState) {
+    public CommandMainRow3(Activity activity, ViewGroup rootLayout, Bundle savedInstanceState) {
         mActivity = (ActivityMain) activity;
         mRootLayout = rootLayout;
-        this.imageFetcher = imageFetcher;
         mSavedInstanceState = savedInstanceState;
     }
 
@@ -272,7 +269,7 @@ public class CommandMainRow3 extends CommandMainBase implements AdapterView.OnIt
                                                             dataList.clear();
                                                             dataList.addAll(packDown.dataList);
                                                             if (adapter == null) {
-                                                                adapter = new AdapterWarningCenterGrid(mActivity, dataList, imageFetcher);
+                                                                adapter = new AdapterWarningCenterGrid(mActivity, dataList);
                                                                 gridView.setAdapter(adapter);
                                                             } else {
                                                                 adapter.notifyDataSetChanged();

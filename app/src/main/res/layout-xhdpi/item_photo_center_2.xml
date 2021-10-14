@@ -59,7 +59,7 @@
             android:gravity="center"
             android:text="今天"
             android:textColor="@color/mblue"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
         <!-- 其他时间的圆圈 -->
         <LinearLayout
@@ -79,14 +79,14 @@
                 android:layout_marginTop="-4dp"
                 android:layout_marginRight="-2dp"
                 android:textColor="@color/mblue"
-                android:textSize="14sp" />
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/sign_slash"
                 android:textColor="@color/mblue"
-                android:textSize="12sp" />
+                android:textSize="12dp" />
 
             <TextView
                 android:id="@+id/time_day"
@@ -95,7 +95,7 @@
                 android:layout_marginLeft="-2dp"
                 android:layout_marginBottom="-4dp"
                 android:textColor="@color/mblue"
-                android:textSize="10sp" />
+                android:textSize="10dp" />
 
         </LinearLayout>
 
@@ -133,7 +133,7 @@
             android:layout_marginBottom="3dp"
             android:layout_toRightOf="@id/address_iv"
             android:textColor="@color/mgrey"
-            android:textSize="12sp" />
+            android:textSize="12dp" />
     </RelativeLayout>
 
     <RelativeLayout

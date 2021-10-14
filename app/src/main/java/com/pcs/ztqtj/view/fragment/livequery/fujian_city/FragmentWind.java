@@ -79,6 +79,8 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
     // 列表头标题
     private FltjZd titleMaxRain;
 
+    private String currentStationId = "10103";
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -189,7 +191,14 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
         windAutoList.add(titleMaxRain);
         cityControl = new CityListControl(activity.cityinfo);
         livequery_city_spinner.setText(cityControl.getCutParentCity().NAME);
-        livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
+        if (cityControl.getCutParentCity().isFjCity) {
+            livequery_town_spinner.setText(cityControl.getCutParentCity().NAME);
+            currentStationId = cityControl.getCutParentCity().ID;
+        } else {
+            livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
+            currentStationId = cityControl.getCutChildCity().ID;
+        }
+
         if (livequery_city_spinner.getText().toString().equals("天津")){
             description_title_search2.setText(cityControl.getCutChildCity().NAME + " 自动站瞬时风况统计表");
         }else{
@@ -294,6 +303,7 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
                     break;
                 case 1:
                     cityControl.checkChild(item);
+                    currentStationId = cityControl.getCutChildCity().ID;
                     down_draw_select();
                     break;
             }
@@ -368,7 +378,7 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("stationId", currentStationId);
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("datastatis_wd", json);
@@ -433,7 +443,7 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("stationId", currentStationId);
                     info.put("hourType", hourType);
                     param.put("paramInfo", info);
                     String json = param.toString();

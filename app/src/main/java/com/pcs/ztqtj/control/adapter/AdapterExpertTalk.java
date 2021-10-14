@@ -1,6 +1,5 @@
 package com.pcs.ztqtj.control.adapter;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +7,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkDown;
+import com.pcs.ztqtj.R;
 
 import java.util.List;
 
@@ -23,11 +20,9 @@ import java.util.List;
 public class AdapterExpertTalk extends BaseAdapter {
 
     private List<PackExpertDetailTalkDown.ItemTalk> listData;
-    private ImageFetcher imageFetcher;
 
-    public AdapterExpertTalk(List<PackExpertDetailTalkDown.ItemTalk> listData, ImageFetcher imageFetcher) {
+    public AdapterExpertTalk(List<PackExpertDetailTalkDown.ItemTalk> listData) {
         this.listData = listData;
-        this.imageFetcher = imageFetcher;
     }
 
 

@@ -16,8 +16,6 @@ import android.widget.TextView;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitUp;
@@ -34,6 +32,7 @@ import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
 import com.pcs.ztqtj.view.myview.MyListView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +63,6 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
 
     private int page = 1;
 
-    // 图片获取类
-    private ImageFetcher mImageFetcher = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,10 +91,9 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
         mImageLoader = new ImageLoader(ActivityExpertDetail.this);
         setTitleText("专家解读");
         talkListData = new ArrayList<>();
-        adatperTalk = new AdapterExpertTalk(talkListData, getImageFetcher());
+        adatperTalk = new AdapterExpertTalk(talkListData);
         user_talk.setAdapter(adatperTalk);
         commitUp = new PackExpertDetailTalkCommitUp();
-        mImageFetcher = getImageFetcher();
         initUser();
         reqData();
     }
@@ -287,7 +282,7 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
             if (bitmap != null) {
                 bigImageView.setImageBitmap(bitmap);
             } else {
-                mImageFetcher.loadImage(big_ico, bigImageView, ImageConstant.ImageShowType.SRC);
+                Picasso.get().load(big_ico).into(bigImageView);
             }
         }
 

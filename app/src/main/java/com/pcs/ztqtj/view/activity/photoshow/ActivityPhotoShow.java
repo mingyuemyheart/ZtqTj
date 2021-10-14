@@ -45,7 +45,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
 import com.pcs.lib_ztqfj_v2.model.pack.net.photowall.PackPhotoSingle;
 import com.pcs.ztqtj.MyApplication;
@@ -95,7 +94,6 @@ import okhttp3.Response;
  */
 public class ActivityPhotoShow extends FragmentActivityZtqBase {
 
-    private ImageFetcher mImageFetcher = null;
     public static String CITY_ID = "CITY_ID";
     // 图片最大长度
     private final int PHOTO_MAX_PENGTH = 1920;
@@ -147,8 +145,6 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
                 setTitleText(title);
             }
         }
-        createImageFetcher();
-        mImageFetcher = getImageFetcher();
         showProgressDialog();
         String cityId = ZtqCityDB.getInstance().getCityMain().ID;
         imgType = getIntent().getStringExtra("imgType");
@@ -837,7 +833,7 @@ public class ActivityPhotoShow extends FragmentActivityZtqBase {
                             String imgUrl = getResources().getString(R.string.msyb) + itemObj.getString("img_path");
                             String name = itemObj.getString("title");
                             String dataUrl = itemObj.getString("url");
-                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Fragment fragment = new FragmentAd();
                             Bundle bundle = new Bundle();
                             bundle.putString("imgUrl", imgUrl);
                             bundle.putString("name", name);

@@ -7,10 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
+import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackMainWeekWeatherDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
 import com.pcs.ztqtj.MyApplication;
@@ -21,7 +22,6 @@ import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
-import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.myview.TemperatureView;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +29,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -48,7 +50,6 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     private Activity activity;
     private ViewGroup rootLayout;
     private View rowView;
-    private ImageFetcher imageFetcher;
     private Adapter7DaysGridView adapter;
     private List<WeekWeatherInfo> weekList = new ArrayList<>();
     //改变城市
@@ -56,13 +57,12 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     private GridView gridViewWeek;
     private TemperatureView tempertureview;
     private InterfaceShowBg mShowBg;
+    private TextView tvPublicUnit;
+    private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
 
     public CommandMain7DaysWeather(Activity activity , ViewGroup rootLayout, InterfaceShowBg mShowBg) {
         this.activity = activity;
         this.rootLayout = rootLayout;
-        if(activity instanceof ActivityMain) {
-            imageFetcher = ((ActivityMain) activity).getImageFetcher();
-        }
         this.mShowBg = mShowBg;
     }
 
@@ -70,9 +70,10 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     protected void init() {
         rowView = LayoutInflater.from(activity).inflate(R.layout.layout_main_7days_weather, rootLayout, false);
         rootLayout.addView(rowView);
+        tvPublicUnit = rowView.findViewById(R.id.tvPublicUnit);
         tempertureview = rowView.findViewById(R.id.tempertureview);
         gridViewWeek = rowView.findViewById(R.id.maingridview);
-        adapter = new Adapter7DaysGridView(activity,imageFetcher, weekList, mShowBg);
+        adapter = new Adapter7DaysGridView(activity, weekList, mShowBg);
         gridViewWeek.setAdapter(adapter);
     }
 
@@ -130,6 +131,8 @@ public class CommandMain7DaysWeather extends CommandMainBase {
                                                         PackMainWeekWeatherDown packWeekDown = new PackMainWeekWeatherDown();
                                                         packWeekDown.fillData(p_new_weekobj.toString());
                                                         if (packWeekDown != null && packWeekDown.getWeek() != null && packWeekDown.getWeek().size() != 0) {
+                                                            tvPublicUnit.setText(getAreaName()+sdf1.format(packWeekDown.sys_time_l)+"发布");
+
                                                             weekList = new ArrayList<>(packWeekDown.getWeek());
                                                             int size = weekList.size();
                                                             int width = getWeekItemWidth()*size;
@@ -184,6 +187,24 @@ public class CommandMain7DaysWeather extends CommandMainBase {
 
     private int getWeekItemWidth() {
         return (int) (Util.getScreenWidth(activity)/7.0f);
+    }
+
+    private String getAreaName() {
+        String area = "";
+        PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
+        String name = cityMain.NAME;
+        if (name.equals("天津市区")) {
+            area = "天津市";
+        } else if (name.equals("宝坻区") || name.equals("北辰区") || name.equals("东丽区") || name.equals("滨海新区") || name.equals("静海区")
+                || name.equals("蓟州区") || name.equals("津南区") || name.equals("武清区") || name.equals("宁河区") || name.equals("西青区")){
+            area = name;
+        } else {
+            area = "";
+        }
+        if (!cityMain.ID.startsWith("10103")) {
+            return "";
+        }
+        return area+"气象台：";
     }
 
 }

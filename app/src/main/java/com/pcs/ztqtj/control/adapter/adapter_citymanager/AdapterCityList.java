@@ -1,7 +1,7 @@
 package com.pcs.ztqtj.control.adapter.adapter_citymanager;
 
 import android.app.Activity;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalLocationSet;
@@ -24,6 +23,7 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,13 +50,11 @@ public class AdapterCityList extends BaseAdapter {
     private List<PackLocalCity> data;
     public Boolean showDeleteBtn = false;
     private CityListDeleteBtnClick btnClickListener;
-    private ImageFetcher mImageFetcher;
 
-    public AdapterCityList(Activity mActivity, List<PackLocalCity> data, CityListDeleteBtnClick btnClickListener, ImageFetcher imageFetcher) {
+    public AdapterCityList(Activity mActivity, List<PackLocalCity> data, CityListDeleteBtnClick btnClickListener) {
         this.mActivity = mActivity;
         this.data = data;
         this.btnClickListener = btnClickListener;
-        this.mImageFetcher = imageFetcher;
     }
 
     public void showDeleteButton(boolean showDeleteBtn) {
@@ -214,10 +212,12 @@ public class AdapterCityList extends BaseAdapter {
                                                                 weatherTemperature.setText(lowt_hight);
                                                             }
                                                             String imgUrl = pcsDownPack.getIconPath(pcsDownPack.getTodayIndex());
-                                                            if (!TextUtil.isEmpty(imgUrl) && mImageFetcher != null) {
+                                                            if (!TextUtil.isEmpty(imgUrl)) {
                                                                 try {
-                                                                    BitmapDrawable bitmap = mImageFetcher.getImageCache().getBitmapFromAssets(imgUrl);
-                                                                    weatherCityIcon.setImageDrawable(bitmap);
+                                                                    Bitmap bitmap = CommonUtil.getImageFromAssetsFile(mActivity, imgUrl);
+                                                                    if (bitmap != null) {
+                                                                        weatherCityIcon.setImageBitmap(bitmap);
+                                                                    }
                                                                 } catch (NullPointerException e) {
                                                                     e.printStackTrace();
                                                                 }

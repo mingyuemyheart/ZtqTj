@@ -10,8 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalLife;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown;
@@ -19,6 +17,7 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown.LifeNumber;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,11 +35,9 @@ public class AdapterLifeNumberEdit extends BaseAdapter {
 	private PackLifeNumberDown mDownPack = new PackLifeNumberDown();
 
 	private List<LifeNumber> localNum = new ArrayList<LifeNumber>();
-	private ImageFetcher mImageFetcher;
 
-	public AdapterLifeNumberEdit(Context context, ImageFetcher mImageFetcher) {
+	public AdapterLifeNumberEdit(Context context) {
 		mContext = context;
-		this.mImageFetcher = mImageFetcher;
         PackLocalCityMain cityMain = ZtqCityDB.getInstance().getCityMain();
         String area = cityMain.ID;
 		localNum = PackLocalLife.getInstance().getLifeNumber(mContext);
@@ -86,9 +83,8 @@ public class AdapterLifeNumberEdit extends BaseAdapter {
 		}
 		LifeNumber lifeNumber = mDownPack.dataList.get(position);
 		holder.content.setText(lifeNumber.index_name + "指数");
-		String url = mContext.getString(R.string.file_download_url)
-				+ lifeNumber.ico2_path;
-		mImageFetcher.loadImage(url, holder.icon, ImageConstant.ImageShowType.SRC);
+		String url = mContext.getString(R.string.file_download_url) + lifeNumber.ico2_path;
+		Picasso.get().load(url).into(holder.icon);
 		boolean isCheck = false;
 		for (int i = 0; i < localNum.size(); i++) {
 			if (localNum.get(i).id.equals(lifeNumber.id)) {

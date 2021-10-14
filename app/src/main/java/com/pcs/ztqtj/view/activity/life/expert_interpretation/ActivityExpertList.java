@@ -84,7 +84,7 @@ public class ActivityExpertList extends FragmentActivityZtqBase {
         }
         listData = new ArrayList<>();
         listDataSource = new ArrayList<>();
-        adapterExpertList = new AdapterExpertList(listData, getImageFetcher());
+        adapterExpertList = new AdapterExpertList(listData);
         list_content.setAdapter(adapterExpertList);
         getTitleList();
     }

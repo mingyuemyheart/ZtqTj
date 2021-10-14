@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.TravelSubjectInfo;
+import com.pcs.ztqtj.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +24,10 @@ public class AdapterTravelTourSpots extends BaseAdapter {
 
 	private Context context = null;
 	private List<TravelSubjectInfo> dataList = new ArrayList<TravelSubjectInfo>();
-	private ImageFetcher imageFetcher = null;
 
-	public AdapterTravelTourSpots(Context context,
-			List<TravelSubjectInfo> dataList, ImageFetcher imageFetcher) {
+	public AdapterTravelTourSpots(Context context, List<TravelSubjectInfo> dataList) {
 		this.context = context;
 		this.dataList = dataList;
-		this.imageFetcher = imageFetcher;
 	}
 
 	@Override

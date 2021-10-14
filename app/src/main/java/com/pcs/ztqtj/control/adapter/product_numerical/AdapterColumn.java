@@ -8,10 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
+import com.pcs.ztqtj.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -22,13 +21,10 @@ public class AdapterColumn extends BaseAdapter{
 
     private Context context;
     private List<? extends InterfaceColumn> dataList;
-    private ImageFetcher imageFetcher;
 
-    public AdapterColumn(Context context, List<? extends InterfaceColumn> dataList, ImageFetcher imageFetcher) {
+    public AdapterColumn(Context context, List<? extends InterfaceColumn> dataList) {
         this.context = context;
         this.dataList = dataList;
-        this.imageFetcher = imageFetcher;
-        this.imageFetcher.setLoadingImage(R.drawable.alph100png);
     }
 
     @Override
@@ -66,7 +62,7 @@ public class AdapterColumn extends BaseAdapter{
         } else {
             path = context.getResources().getString(R.string.msyb) + imgUrl;
         }
-        imageFetcher.loadImage(path, holder.itemImage, ImageConstant.ImageShowType.SRC);
+        Picasso.get().load(path).into(holder.itemImage);
         holder.itemText.setText(dataList.get(position).getTitle());
 
         return convertView;

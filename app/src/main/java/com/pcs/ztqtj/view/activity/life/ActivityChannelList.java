@@ -81,7 +81,7 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 
 	private void initData() {
 		airTitleList.clear();
-		mAdapter = new AdapterChannelList(getApplicationContext(), airTitleList, getImageFetcher());
+		mAdapter = new AdapterChannelList(getApplicationContext(), airTitleList);
 		myListView.setAdapter(mAdapter);
 		showProgressDialog();
 		title = getIntent().getStringExtra("title");

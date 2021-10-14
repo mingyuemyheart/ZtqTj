@@ -9,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
-import com.pcs.lib_ztqfj_v2.model.pack.net.expert.ItemExpert;
 import com.pcs.ztqtj.view.activity.life.expert_interpretation.ActivityExpertList;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -22,11 +20,9 @@ import java.util.List;
 public class AdapterExpertList extends BaseAdapter {
 
     private List<ActivityExpertList.MyItemExpert> listData;
-    private ImageFetcher imageFetcher;
 
-    public AdapterExpertList(List<ActivityExpertList.MyItemExpert> listData, ImageFetcher imageFetcher) {
+    public AdapterExpertList(List<ActivityExpertList.MyItemExpert> listData) {
         this.listData = listData;
-        this.imageFetcher = imageFetcher;
     }
 
 
@@ -63,7 +59,7 @@ public class AdapterExpertList extends BaseAdapter {
         holder.item_time.setText(item.release_time);
         String imagePath = item.small_img;
         if (!TextUtils.isEmpty(imagePath) || "null".equals(imagePath)) {
-            imageFetcher.loadImage(parent.getContext().getString(R.string.msyb) + imagePath, holder.item_img, ImageConstant.ImageShowType.SRC);
+            Picasso.get().load(parent.getContext().getString(R.string.msyb) + imagePath).into(holder.item_img);
         }
         return view;
     }

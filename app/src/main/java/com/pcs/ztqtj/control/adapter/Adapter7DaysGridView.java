@@ -1,7 +1,7 @@
 package com.pcs.ztqtj.control.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.inter.InterfaceShowBg;
+import com.pcs.ztqtj.util.CommonUtil;
 
 import java.util.List;
 
@@ -24,14 +24,12 @@ import java.util.List;
 public class Adapter7DaysGridView extends BaseAdapter {
 
     private List<WeekWeatherInfo> weekList;
-    private ImageFetcher imageFetcher;
     private int mCurrentPosition = 1;
     private Context mcontext;
     private InterfaceShowBg mShowBg;
 
-    public Adapter7DaysGridView(Context context, ImageFetcher imageFetcher, List<WeekWeatherInfo> weekList, InterfaceShowBg mShowBg) {
+    public Adapter7DaysGridView(Context context, List<WeekWeatherInfo> weekList, InterfaceShowBg mShowBg) {
         this.weekList = weekList;
-        this.imageFetcher = imageFetcher;
         this.mcontext = context;
         this.mShowBg = mShowBg;
     }
@@ -105,10 +103,14 @@ public class Adapter7DaysGridView extends BaseAdapter {
 
             String strDay = "weather_icon/daytime/w" + info.wd_day_ico + ".png";
             String strNight = "weather_icon/night/n" + info.wd_night_ico + ".png";
-            BitmapDrawable drawableDay = imageFetcher.getImageCache().getBitmapFromAssets(strDay);
-            BitmapDrawable drawableNight = imageFetcher.getImageCache().getBitmapFromAssets(strNight);
-            holder.hightImg.setImageDrawable(drawableDay);
-            holder.lowImg.setImageDrawable(drawableNight);
+            Bitmap drawableDay = CommonUtil.getImageFromAssetsFile(mcontext, strDay);
+            Bitmap drawableNight = CommonUtil.getImageFromAssetsFile(mcontext, strNight);
+            if (drawableDay != null) {
+                holder.hightImg.setImageBitmap(drawableDay);
+            }
+            if (drawableNight != null) {
+                holder.lowImg.setImageBitmap(drawableNight);
+            }
 
             if (weekList.size() <= position || mCurrentPosition >= weekList.size()) {
             } else {

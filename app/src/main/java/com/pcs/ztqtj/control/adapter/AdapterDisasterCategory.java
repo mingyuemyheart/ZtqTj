@@ -8,10 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.tool.inter.InterfaceColumn;
+import com.pcs.ztqtj.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +25,10 @@ public class AdapterDisasterCategory extends BaseAdapter {
     private List<? extends InterfaceColumn> listdata = new ArrayList<>();
     // 当前点击位置
     private int currentClickedPosition = -1;
-    private ImageFetcher imageFetcher;
 
-    public AdapterDisasterCategory(Context context, List<? extends InterfaceColumn> listdata, ImageFetcher imageFetcher) {
+    public AdapterDisasterCategory(Context context, List<? extends InterfaceColumn> listdata) {
         this.context = context;
         this.listdata = listdata;
-        this.imageFetcher = imageFetcher;
     }
 
     @Override
@@ -64,8 +61,7 @@ public class AdapterDisasterCategory extends BaseAdapter {
         }
 
         InterfaceColumn bean = listdata.get(position);
-        imageFetcher.loadImage(context.getResources().getString(R.string.file_download_url) + bean.getIconPath(),
-                holder.ivPic, ImageConstant.ImageShowType.SRC);
+        Picasso.get().load(context.getResources().getString(R.string.file_download_url) + bean.getIconPath()).into(holder.ivPic);
         holder.tvName.setText(bean.getTitle());
 
         if(currentClickedPosition == position) {

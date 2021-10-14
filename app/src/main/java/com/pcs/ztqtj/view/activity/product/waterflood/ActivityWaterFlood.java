@@ -150,7 +150,7 @@ public class ActivityWaterFlood extends FragmentActivityZtqBase {
                 if(packDown == null || packDown.lm_list == null || packDown.lm_list.size() == 0) {
                     return ;
                 }
-                adapter = new AdapterColumn(ActivityWaterFlood.this, packDown.lm_list, getImageFetcher());
+                adapter = new AdapterColumn(ActivityWaterFlood.this, packDown.lm_list);
                 gridView.setAdapter(adapter);
             }
         }

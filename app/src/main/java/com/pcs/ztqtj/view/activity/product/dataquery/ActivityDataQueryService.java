@@ -19,7 +19,6 @@ import android.widget.TextView;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.OrderMealInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryOrderDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryOrderUp;
@@ -40,6 +39,7 @@ import com.pcs.ztqtj.wxapi.wxtools.MD5;
 import com.pcs.ztqtj.wxapi.wxtools.OrderPayInfo;
 import com.pcs.ztqtj.wxapi.wxtools.WXInfo;
 import com.pcs.ztqtj.wxapi.wxtools.WXPay;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,8 +116,7 @@ public class ActivityDataQueryService extends FragmentActivityZtqBase {
     private void initData() {
         userId = LoginInformation.getInstance().getUserId();
         tvWelcome.setText("亲爱的" + LoginInformation.getInstance().getUsername() + ",欢迎您！");
-        getImageFetcher().loadImage(LoginInformation.getInstance().getUserIconUrl(), ivAvator, ImageConstant
-                .ImageShowType.CIRCLE);
+        Picasso.get().load(LoginInformation.getInstance().getUserIconUrl()).into(ivAvator);
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
         //requestUserOrder();
         requestPayOrder();

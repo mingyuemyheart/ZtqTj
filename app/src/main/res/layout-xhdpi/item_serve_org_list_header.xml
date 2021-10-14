@@ -17,7 +17,7 @@
 	    android:layout_centerVertical="true"
 	    android:textColor="#fff"
 	    android:textStyle="bold"
-	    android:textSize="18sp"/>
+	    android:textSize="18dp"/>
 	
 	<ImageView
         android:id="@+id/imagevew_delete"

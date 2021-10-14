@@ -1,16 +1,16 @@
 package com.pcs.ztqtj.control.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.WarnCenterYJXXGridBean;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.util.CommonUtil;
 
 import java.util.List;
 
@@ -21,12 +21,10 @@ public class AdapterWarningCenterGrid extends BaseAdapter {
 
     private Context context;
     private List<WarnCenterYJXXGridBean> dataList;
-    private ImageFetcher imageFetcher;
 
-    public AdapterWarningCenterGrid(Context context, List<WarnCenterYJXXGridBean> dataList, ImageFetcher imageFetcher) {
+    public AdapterWarningCenterGrid(Context context, List<WarnCenterYJXXGridBean> dataList) {
         this.context = context;
         this.dataList = dataList;
-        this.imageFetcher = imageFetcher;
     }
 
     @Override
@@ -55,11 +53,12 @@ public class AdapterWarningCenterGrid extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
         WarnCenterYJXXGridBean info = dataList.get(position);
-        if(imageFetcher != null) {
-            String path = "img_warn/" + info.ico + ".png";
-            BitmapDrawable bitmapDrawable = imageFetcher.getImageCache().getBitmapFromAssets(path);
-            holder.iv.setImageDrawable(bitmapDrawable);
+        String path = "img_warn/" + info.ico + ".png";
+        Bitmap bitmap = CommonUtil.getImageFromAssetsFile(context, path);
+        if (bitmap != null) {
+            holder.iv.setImageBitmap(bitmap);
         }
         return convertView;
     }

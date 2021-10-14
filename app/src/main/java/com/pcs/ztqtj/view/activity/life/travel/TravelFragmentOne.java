@@ -1,7 +1,7 @@
 package com.pcs.ztqtj.view.activity.life.travel;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -13,13 +13,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterTravelWeekWeather;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,12 +55,10 @@ public class TravelFragmentOne extends Fragment {
     private String cityId = "";
     private String cityName = "";
     private List<WeekWeatherInfo> weekWeatherList = new ArrayList<>();
-    private ImageFetcher mImageFetcher;
 
-    public TravelFragmentOne(String cityId, String cityName, ImageFetcher imageFetcher) {
+    public TravelFragmentOne(String cityId, String cityName) {
         this.cityId = cityId;
         this.cityName = cityName;
-        mImageFetcher = imageFetcher;
     }
 
     @Override
@@ -138,7 +136,7 @@ public class TravelFragmentOne extends Fragment {
                                                         if (weekWeatherList.size() > 0) {
                                                             WeekWeatherInfo info = weekWeatherList.get(0);
                                                             updateWeather(info);
-                                                            weekAdapter = new AdapterTravelWeekWeather(getActivity(), weekWeatherList.subList(1, weekWeatherList.size()), mImageFetcher);
+                                                            weekAdapter = new AdapterTravelWeekWeather(getActivity(), weekWeatherList.subList(1, weekWeatherList.size()));
                                                             weekweather.setAdapter(weekAdapter);
                                                             weekAdapter.notifyDataSetChanged();
                                                             shareC = packTravelWeekDown.getShareStr(cityName);
@@ -157,8 +155,10 @@ public class TravelFragmentOne extends Fragment {
                                                         tempTextView.setText(h_l_str);
                                                         dateTextView.setText(info.gdt + "" + info.week);
 
-                                                        Drawable drawable = mImageFetcher.getImageCache().getBitmapFromAssets(packTravelWeekDown.getIconPath(packTravelWeekDown.getTodayIndex()));
-                                                        iconImageView.setImageDrawable(drawable);
+                                                        Bitmap bitmap = CommonUtil.getImageFromAssetsFile(getActivity(), packTravelWeekDown.getIconPath(packTravelWeekDown.getTodayIndex()));
+                                                        if (bitmap != null) {
+                                                            iconImageView.setImageBitmap(bitmap);
+                                                        }
                                                     }
                                                 }
                                             }

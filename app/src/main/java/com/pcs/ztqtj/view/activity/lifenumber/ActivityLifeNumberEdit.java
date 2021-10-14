@@ -31,7 +31,7 @@ public class ActivityLifeNumberEdit extends FragmentActivityZtqBase {
 		createImageFetcher();
 		// 列表
 		ListView listView = (ListView) findViewById(R.id.list);
-		mAdapter = new AdapterLifeNumberEdit(ActivityLifeNumberEdit.this, getImageFetcher());
+		mAdapter = new AdapterLifeNumberEdit(ActivityLifeNumberEdit.this);
 		listView.setAdapter(mAdapter);
 		listView.setOnItemClickListener(new MyItemClickListener());
 	}

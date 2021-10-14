@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textSize="16sp"
+        android:textSize="@dimen/textsize16"
         android:textColor="@color/text_color3"
         android:textColorHint="@color/hint"
         android:hint="请输入已注册的手机号码或账号"
@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPhone"
         android:padding="10dp"
-        android:textSize="16sp"
+        android:textSize="@dimen/textsize16"
         android:textColor="@color/text_color3"
         android:textColorHint="@color/hint"
         android:hint="请输入您的密码"
@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_color4"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:text="已阅读并同意"/>
 
     <TextView
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:text="用户协议"
         android:textColor="@color/bg_title"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <TextView
         android:id="@+id/str2"
@@ -105,7 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_color4"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:text="和"/>
 
     <TextView
@@ -118,7 +118,7 @@
         android:layout_height="wrap_content"
         android:text="隐私政策"
         android:textColor="@color/bg_title"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <TextView
         android:id="@+id/tvLogin"
@@ -130,7 +130,7 @@
         android:gravity="center"
         android:text="登录"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18dp" />
 
     <TextView
         android:visibility="gone"
@@ -144,7 +144,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="修改密码"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <TextView
         android:visibility="gone"
@@ -158,6 +158,6 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="找回密码"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
 </android.support.constraint.ConstraintLayout>

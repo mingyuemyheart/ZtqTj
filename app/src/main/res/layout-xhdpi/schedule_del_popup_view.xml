@@ -35,7 +35,7 @@
             android:text="@string/delete_memo"
             android:textColor="#333333"
             android:paddingLeft="3dp"
-            android:textSize="15sp" />
+            android:textSize="15dp" />
 
         <LinearLayout
             android:layout_width="fill_parent"

@@ -1,7 +1,6 @@
 package com.pcs.ztqtj.view.activity.product.situation;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,8 +20,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ListenerImageLoad;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackNumericalForecastDown;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -34,6 +31,7 @@ import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.activity.air_quality.AcitvityAirWhatAQI;
 import com.pcs.ztqtj.view.myview.ImageTouchView;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -521,24 +519,11 @@ public class ActivitySituation extends FragmentActivityZtqBase implements View.O
         } else if (packNumericalForecastDown.TitleBeanList.get(tiemposition).type.equals("2")) {
             content_scrollview.setVisibility(View.GONE);
             image_show.setVisibility(View.VISIBLE);
-            showProgressDialog();
             if (!TextUtils.isEmpty(packNumericalForecastDown.TitleBeanList.get(tiemposition).img)) {
                 final String imageKey = getString(R.string.file_download_url)+packNumericalForecastDown.TitleBeanList.get(tiemposition).img;
-                getImageFetcher().addListener(new ListenerImageLoad() {
-                    @Override
-                    public void done(String key, boolean isSucc) {
-                        if (imageKey.equals(key)) {
-                            dismissProgressDialog();
-                            if (isSucc && getImageFetcher().getImageCache() != null) {
-                                Bitmap bm = getImageFetcher().getImageCache().getBitmapFromAllCache(key).getBitmap();
-                                image_show.setMyImageBitmap(bm);
-                            } else {
-                                showToast("图片为空");
-                            }
-                        }
-                    }
-                });
-                getImageFetcher().loadImage(imageKey, null, ImageConstant.ImageShowType.NONE);
+                if (!TextUtil.isEmpty(imageKey)) {
+                    Picasso.get().load(imageKey).into(image_show);
+                }
             } else {
                 showToast("服务器不存在这张图标");
             }

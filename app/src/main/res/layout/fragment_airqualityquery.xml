@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <ScrollView
         android:scrollbars="none"
@@ -673,172 +674,71 @@
                                     android:layout_marginLeft="5dp"
                                     android:textColor="@color/text_white"/>
 
-
                             </LinearLayout>
 
                         </RelativeLayout>
 
-
                     </LinearLayout>
-
 
                 </LinearLayout>
 
-
             </LinearLayout>
 
-            <LinearLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <TextView
+                    android:paddingLeft="10dp"
+                    android:id="@+id/tv_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AQI走势图"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:textColor="@color/text_white"/>
 
-                    <TextView
-                        android:paddingLeft="10dp"
-                        android:id="@+id/tv_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="AQI走势图"
-                        android:textColor="@color/text_white"/>
-
-                </LinearLayout>
-
-                <RelativeLayout
+                <HorizontalScrollView
+                    android:id="@+id/hScrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="10dp">
-
-                    <com.pcs.ztqtj.view.myview.AirQualityView
-                        android:id="@+id/airQueryView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-
-                    <TextView
-                        android:id="@+id/null_air_data"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="暂无数据"
-                        android:textColor="@color/text_gray"
-                        android:textSize="@dimen/dimen20"
-                        android:visibility="gone"/>
+                    app:layout_constraintTop_toBottomOf="@+id/tv_type"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
 
                     <LinearLayout
-                        android:id="@+id/lay_wuranlevel"
+                        android:id="@+id/llContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginBottom="60dp"
-                        android:layout_marginTop="14dp"
-                        android:gravity="right"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"/>
+                </HorizontalScrollView>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
+                <ImageView
+                    android:id="@+id/ivLegend"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintTop_toBottomOf="@+id/hScrollView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/legend_aqi"/>
 
-                            <TextView
-                                android:id="@+id/tv_level_ys"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:gravity="right|center_vertical"
-                                android:text="严重污染"
-                                android:textColor="@color/air_quality_6"
-                                android:textSize="12dp"/>
+                <TextView
+                    android:id="@+id/null_air_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_type"
+                    android:gravity="center"
+                    android:text="暂无数据"
+                    android:textColor="@color/text_gray"
+                    android:textSize="@dimen/dimen20"
+                    android:visibility="gone"/>
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_level_zd"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:gravity="right|center_vertical"
-                                android:text="重度污染"
-                                android:textColor="@color/air_quality_5"
-                                android:textSize="12dp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_level_zdwr"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:gravity="right|center_vertical"
-                                android:text="中度污染"
-                                android:textColor="@color/air_quality_4"
-                                android:textSize="12dp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_level_qd"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:gravity="right|center_vertical"
-                                android:text="轻度污染"
-                                android:textColor="@color/air_quality_3"
-                                android:textSize="12dp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1">
-
-                            <TextView
-                                android:id="@+id/tv_level_l"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:gravity="right|center_vertical"
-                                android:text="良"
-                                android:textColor="@color/air_quality_2"
-                                android:textSize="12dp"/>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            >
-
-                            <TextView
-                                android:id="@+id/tv_level_y"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_marginRight="10dp"
-                                android:gravity="right|center_vertical"
-                                android:text="优"
-                                android:textColor="@color/air_quality_1"
-                                android:textSize="12dp"/>
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-                </RelativeLayout>
-            </LinearLayout>
+            </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>
 

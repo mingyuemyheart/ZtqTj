@@ -257,8 +257,7 @@ public class ActivityTravelSubjectMap extends FragmentActivityZtqBase implements
         double lat = Double.parseDouble(mSubject.lat);
         double log = Double.parseDouble(mSubject.log);
         firstPoint = new LatLng(lat, log);
-        adapterSpots = new AdapterTravelTourSpots(this, tourSpotsList,
-                getImageFetcher());
+        adapterSpots = new AdapterTravelTourSpots(this, tourSpotsList);
         lvSpots.setAdapter(adapterSpots);
     }
 
@@ -433,8 +432,7 @@ public class ActivityTravelSubjectMap extends FragmentActivityZtqBase implements
     private void addStartPointToMap(TravelWeatherSubject subject) {
         String preURL = getResources().getString(R.string.file_download_url);
         getImageFetcher().addListener(mListenerImageLoad);
-        getImageFetcher().loadImage(preURL + subject.traffic_ico, null,
-                ImageConstant.ImageShowType.NONE);
+        getImageFetcher().loadImage(preURL + subject.traffic_ico, null, ImageConstant.ImageShowType.NONE);
     }
 
     /**

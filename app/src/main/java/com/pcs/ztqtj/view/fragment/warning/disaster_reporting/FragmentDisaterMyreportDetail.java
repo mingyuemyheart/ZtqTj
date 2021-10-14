@@ -20,9 +20,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfo;
 import com.pcs.ztqtj.MyApplication;
@@ -33,6 +30,7 @@ import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoFullDetail;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -240,7 +238,7 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 
         if (!TextUtils.isEmpty(pic_url) && !TextUtils.equals(pic_url, "null")) {
             lay_fujian01.setVisibility(View.VISIBLE);
-            getImageFetcher().loadImage(getString(R.string.msyb)+"/"+pic_url, iv_detail_pic, ImageConstant.ImageShowType.SRC);
+            Picasso.get().load(getString(R.string.msyb)+"/"+pic_url).into(iv_detail_pic);
         } else {
             lay_fujian01.setVisibility(View.GONE);
 //            iv_detail_pic.setImageResource(R.drawable
@@ -259,7 +257,7 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 
         if (!TextUtils.isEmpty(vid_url)  && !TextUtils.equals(vid_url, "null")) {
             lay_fujian03.setVisibility(View.VISIBLE);
-            getImageFetcher().loadImage(getString(R.string.msyb)+"/"+tub_url, iv_detail_video, ImageConstant.ImageShowType.SRC);
+            Picasso.get().load(getString(R.string.msyb)+"/"+tub_url).into(iv_detail_video);
             iv_paly_video.setVisibility(View.VISIBLE);
         } else {
             lay_fujian03.setVisibility(View.GONE);
@@ -268,31 +266,6 @@ public class FragmentDisaterMyreportDetail extends Fragment implements View.OnCl
 //            iv_paly_video.setVisibility(View.GONE);
         }
     }
-
-
-    private ImageFetcher mImageFetcher;
-
-    protected ImageFetcher getImageFetcher() {
-        if (mImageFetcher == null) {
-            createImageFetcher();
-        }
-
-        return mImageFetcher;
-    }
-
-    /**
-     * 创建图片获取类
-     */
-    protected void createImageFetcher() {
-        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(
-                getActivity());
-        cacheParams.setMemCacheSizePercent(0.25f);
-        mImageFetcher = new ImageFetcher(getActivity());
-        mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(),
-                cacheParams);
-        mImageFetcher.setLoadingImage(R.drawable.no_pic);
-    }
-
 
     public void showProgressDialog() {
         showProgressDialog("请等待...");

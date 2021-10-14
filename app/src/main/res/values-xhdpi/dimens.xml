@@ -74,11 +74,11 @@
     <dimen name="dimen260">260dp</dimen>
     <dimen name="dimen300">300dp</dimen>
     <!-- texview上的字体大小 -->
-    <dimen name="textsize19">19sp</dimen>
-    <dimen name="textsize17">17sp</dimen>
-    <dimen name="textsize16">16sp</dimen>
-    <dimen name="textsize15">14sp</dimen>
-    <dimen name="textsize10">10sp</dimen>
+    <dimen name="textsize19">19dp</dimen>
+    <dimen name="textsize17">17dp</dimen>
+    <dimen name="textsize16">16dp</dimen>
+    <dimen name="textsize15">14dp</dimen>
+    <dimen name="textsize10">10dp</dimen>
     <dimen name="dimen480">480dp</dimen>
     <!-- dialog_按钮布局，标题布局的高 -->
     <dimen name="dialog_hight">40dp</dimen>

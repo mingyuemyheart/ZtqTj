@@ -11,13 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.inter.ItemClickListener;
-import com.pcs.ztqtj.view.activity.product.dataquery.ActivityDataQuery;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.AreaConfig;
 import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryAreaConfigDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.dataquery.PackDataQueryAreaConfigUp;
@@ -26,6 +22,10 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertListUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.inter.ItemClickListener;
+import com.pcs.ztqtj.view.activity.product.dataquery.ActivityDataQuery;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -211,7 +211,7 @@ public class FragmentDisasterType extends Fragment {
                 if(!TextUtils.isEmpty(down.big_img)) {
                     image.setVisibility(View.VISIBLE);
                     String path = getString(R.string.file_download_url) + down.big_img;
-                    mActivity.getImageFetcher().loadImage(path, image, ImageConstant.ImageShowType.SRC);
+                    Picasso.get().load(path).into(image);
                 } else {
                     image.setVisibility(View.GONE);
                 }

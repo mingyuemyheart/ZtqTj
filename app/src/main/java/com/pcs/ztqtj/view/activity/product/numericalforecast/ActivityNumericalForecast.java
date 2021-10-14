@@ -285,7 +285,7 @@ public class ActivityNumericalForecast extends FragmentActivitySZYBBase {
                                                     packNumericalForecastColumnDown.fillData(forecast_column_n2.toString());
                                                     analysis();
                                                     adapter.setData(listLeve1, listLeve2);
-                                                    gridAdapter = new AdapterColumn(ActivityNumericalForecast.this, listLeve1, getImageFetcher());
+                                                    gridAdapter = new AdapterColumn(ActivityNumericalForecast.this, listLeve1);
                                                     gridView.setAdapter(gridAdapter);
                                                 }
                                             }

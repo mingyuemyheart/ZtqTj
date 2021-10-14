@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -19,6 +22,8 @@ import com.pcs.ztqtj.view.activity.prove.ProveDto;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -235,6 +240,25 @@ public class CommonUtil {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 从Assets中读取图片
+     */
+    public static Bitmap getImageFromAssetsFile(Context context, String fileName) {
+        if (context == null) {
+            return null;
+        }
+        Bitmap image = null;
+        AssetManager am = context.getResources().getAssets();
+        try {
+            InputStream is = am.open(fileName);
+            image = BitmapFactory.decodeStream(is);
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
 }

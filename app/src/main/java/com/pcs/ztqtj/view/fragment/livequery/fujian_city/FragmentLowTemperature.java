@@ -111,6 +111,8 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
     private SelectType currentSelectType = SelectType.CURRENT;
     private LinearLayout lay_tem_a;
 
+    private String currentStationId = "10103";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -184,7 +186,14 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
         rb24h.setText("近24小时最低");
         setHours();
         tvCityDropDown.setText(cityControl.getCutParentCity().NAME);
-        tvTownDropDown.setText(cityControl.getCutChildCity().NAME);
+        if (cityControl.getCutParentCity().isFjCity) {
+            tvTownDropDown.setText(cityControl.getCutParentCity().NAME);
+            currentStationId = cityControl.getCutParentCity().ID;
+        } else {
+            tvTownDropDown.setText(cityControl.getCutChildCity().NAME);
+            currentStationId = cityControl.getCutChildCity().ID;
+        }
+
         if (tvCityDropDown.getText().toString().equals("天津")) {
             tvTempDescTitle.setText(cityControl.getCutChildCity().NAME + " 自动站低温实况统计表");
         } else {
@@ -221,7 +230,7 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                 if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
                     lay_tem_a.setVisibility(View.VISIBLE);
                 } else {
-                    lay_tem_a.setVisibility(View.VISIBLE);
+                    lay_tem_a.setVisibility(View.GONE);
                 }
             } else {
                 lay_tem_a.setVisibility(View.GONE);
@@ -445,10 +454,9 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
             JSONObject param = new JSONObject();
             param.put("token", MyApplication.TOKEN);
             JSONObject info = new JSONObject();
-            String stationId = cityControl.getCutChildCity().ID;
-            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("stationId", currentStationId);
             info.put("flag", "minTempObs");//minTempObs （低温实况值）、min24h（24小时低温）
-            if (stationId.startsWith("10103")) {
+            if (currentStationId.startsWith("10103")) {
                 info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
             } else {
                 info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
@@ -467,10 +475,9 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
             JSONObject param = new JSONObject();
             param.put("token", MyApplication.TOKEN);
             JSONObject info = new JSONObject();
-            String stationId = cityControl.getCutChildCity().ID;
-            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("stationId", currentStationId);
             info.put("flag", "min24h");//minTempObs （低温实况值）、min24h（24小时低温）
-            if (stationId.startsWith("10103")) {
+            if (currentStationId.startsWith("10103")) {
                 info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
             } else {
                 info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
@@ -490,10 +497,9 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
             JSONObject param = new JSONObject();
             param.put("token", MyApplication.TOKEN);
             JSONObject info = new JSONObject();
-            String stationId = cityControl.getCutChildCity().ID;
-            info.put("stationId", cityControl.getCutChildCity().ID);
+            info.put("stationId", currentStationId);
             info.put("flag", "min24h");//minTempObs （低温实况值）、min24h（24小时低温）
-            if (stationId.startsWith("10103")) {
+            if (currentStationId.startsWith("10103")) {
                 info.put("type", "天津");//如果是天津及其下属区，传天津，不是则为""
             } else {
                 info.put("type", "");//如果是天津及其下属区，传天津，不是则为""
@@ -681,6 +687,7 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                     break;
                 case 1:
                     cityControl.checkChild(item);
+                    currentStationId = cityControl.getCutChildCity().ID;
                     setTempDescTitle();
                     if (isShowCompImage) {
                         description_title_search3_.setText(cityControl.getCutChildCity().NAME + "低温对比图℃");
@@ -792,7 +799,7 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("stationId", currentStationId);
                     info.put("element", "tmin");
                     param.put("paramInfo", info);
                     String json = param.toString();
@@ -816,6 +823,11 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                                     activity.dismissProgressDialog();
                                     Log.e("history_month", result);
                                     if (!TextUtil.isEmpty(result)) {
+                                        if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
+                                            lay_tem_a.setVisibility(View.VISIBLE);
+                                        } else {
+                                            lay_tem_a.setVisibility(View.GONE);
+                                        }
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -832,6 +844,8 @@ public class FragmentLowTemperature extends FragmentLiveQueryCommon {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
+                                    } else {
+                                        lay_tem_a.setVisibility(View.GONE);
                                     }
                                 }
                             });

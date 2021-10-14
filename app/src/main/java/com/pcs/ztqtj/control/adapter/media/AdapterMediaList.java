@@ -8,10 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
+import com.pcs.ztqtj.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -23,12 +22,10 @@ import java.util.ArrayList;
 public class AdapterMediaList extends BaseAdapter {
     private Context mcontext;
     private ArrayList<MediaInfo> list;
-    private ImageFetcher mImageFetcher = null;
 
-    public AdapterMediaList(Context context, ArrayList<MediaInfo> mlist, ImageFetcher mImageFetcher) {
+    public AdapterMediaList(Context context, ArrayList<MediaInfo> mlist) {
         this.mcontext = context;
         this.list = mlist;
-        this.mImageFetcher = mImageFetcher;
     }
 
     @Override
@@ -64,7 +61,7 @@ public class AdapterMediaList extends BaseAdapter {
         handler.tv_content.setText(list.get(i).desc);
         handler.tv_time.setText(list.get(i).time);
         String url = mcontext.getString(R.string.msyb) + list.get(i).imageurl;
-        mImageFetcher.loadImage(url, handler.item_image, ImageConstant.ImageShowType.SRC);
+        Picasso.get().load(url).into(handler.item_image);
         return view;
     }
 

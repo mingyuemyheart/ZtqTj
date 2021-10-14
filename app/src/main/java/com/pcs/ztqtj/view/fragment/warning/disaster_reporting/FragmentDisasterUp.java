@@ -48,8 +48,6 @@ import android.widget.Toast;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
@@ -489,29 +487,6 @@ public class FragmentDisasterUp extends FragmentReportBase implements View.OnCli
             lps.alpha = 0.7f;
             getActivity().getWindow().setAttributes(lps);
         }
-    }
-
-    private ImageFetcher mImageFetcher;
-
-    protected ImageFetcher getImageFetcher() {
-        if (mImageFetcher == null) {
-            createImageFetcher();
-        }
-
-        return mImageFetcher;
-    }
-
-    /**
-     * 创建图片获取类
-     */
-    protected void createImageFetcher() {
-        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(
-                getActivity());
-        cacheParams.setMemCacheSizePercent(0.25f);
-        mImageFetcher = new ImageFetcher(getActivity());
-        mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(),
-                cacheParams);
-        mImageFetcher.setLoadingImage(R.drawable.no_pic);
     }
 
     private File mFilePhoto;

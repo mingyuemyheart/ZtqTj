@@ -187,7 +187,7 @@ public class ActivityAgricultureZQZB extends FragmentActivityZtqBase implements 
         channel_id = getIntent().getStringExtra("channel_id");
         PcsDataBrocastReceiver.registerReceiver(this, receiver);
         initKWHttpRequest();
-        adapter = new AdapterDisasterCategory(this, disasterList, getImageFetcher());
+        adapter = new AdapterDisasterCategory(this, disasterList);
         gridView.setAdapter(adapter);
         initPopupWindow();
         update();

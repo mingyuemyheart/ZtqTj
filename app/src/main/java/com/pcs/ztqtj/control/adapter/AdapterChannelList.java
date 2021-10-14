@@ -9,10 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.ztqtj.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,12 +22,10 @@ public class AdapterChannelList extends BaseAdapter {
 
 	private List<ArtTitleInfo> mItems;
 	private Context context;
-    private ImageFetcher imageFetcher;
 
-	public AdapterChannelList(Context context, List<ArtTitleInfo> items, ImageFetcher imageFetcher) {
+	public AdapterChannelList(Context context, List<ArtTitleInfo> items) {
 		this.mItems = items;
 		this.context = context;
-        this.imageFetcher = imageFetcher;
 	}
 
 	@Override
@@ -71,7 +68,7 @@ public class AdapterChannelList extends BaseAdapter {
 		viewHodler.itemTitle.setText(title);
 		viewHodler.itemDes.setText(description);
         if (!TextUtils.isEmpty(info.small_ico) || "null".equals(info.small_ico)) {
-            imageFetcher.loadImage(small_ico, viewHodler.itemImg, ImageConstant.ImageShowType.SRC);
+			Picasso.get().load(small_ico).into(viewHodler.itemImg);
         } else {
 			viewHodler.itemImg.setImageResource(R.drawable.no_pic);
 		}

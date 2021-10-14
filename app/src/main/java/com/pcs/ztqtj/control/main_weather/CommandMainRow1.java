@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSstqDown;
 import com.pcs.ztqtj.MyApplication;
@@ -70,7 +69,7 @@ public class CommandMainRow1 extends CommandMainBase {
     private String stationName = "";
     private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA);
 
-    public CommandMainRow1(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher, InterfaceShowBg showBg, Fragment fragment) {
+    public CommandMainRow1(Activity activity, ViewGroup rootLayout, InterfaceShowBg showBg, Fragment fragment) {
         mActivity = (ActivityMain) activity;
         mRootLayout = rootLayout;
     }

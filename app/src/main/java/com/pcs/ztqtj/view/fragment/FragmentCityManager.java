@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityLocation;
@@ -76,7 +75,6 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
     // 刷新视图
     private InterfaceRefresh mRefreshView;
     // 滑动菜单
-    private ImageFetcher mImageFetcher;
     private CheckBox mCheckBoxLocation;
     private TextView city_state_info;
     private Button editcity;
@@ -123,11 +121,10 @@ public class FragmentCityManager extends Fragment implements OnClickListener,Int
      */
     private void initData() {
         if(getActivity() instanceof ActivityMain) {
-            mImageFetcher = ((ActivityMain)getActivity()).getImageFetcher();
             mRefreshView = ((ActivityMain)getActivity()).getRefreshView();
         }
         listCityInfo.clear();
-        adapter = new AdapterCityList(getActivity(), listCityInfo, btnClickListener, mImageFetcher);
+        adapter = new AdapterCityList(getActivity(), listCityInfo, btnClickListener);
         listview.setAdapter(adapter);
         mCheckBoxLocation.setChecked(ZtqLocationTool.getInstance().getIsAutoLocation());
     }

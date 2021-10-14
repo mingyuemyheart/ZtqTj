@@ -69,7 +69,7 @@ public class ActivityTravelBookmark extends FragmentActivityZtqBase {
 
     private void initView() {
         gridBookmark = (GridView) findViewById(R.id.grid_bookmark);
-        adapterBookmark = new AdapterTravelBookmarks(this, listCityInfo,getImageFetcher());
+        adapterBookmark = new AdapterTravelBookmarks(this, listCityInfo);
         adapterBookmark.setOnClickItemListener(new OnClickItemListener() {
 
             @Override

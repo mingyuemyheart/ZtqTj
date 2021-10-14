@@ -8,24 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
+import com.squareup.picasso.Picasso;
 
 /**
  * 广告
  */
 public class FragmentAd extends Fragment {
 
-    private ImageFetcher mImageFetcher;
-
     public FragmentAd() {
-    }
-
-    public FragmentAd(ImageFetcher imageFetcher) {
-        mImageFetcher = imageFetcher;
     }
 
     @Override
@@ -44,11 +37,7 @@ public class FragmentAd extends Fragment {
         final String name = getArguments().getString("name");
         final String dataUrl = getArguments().getString("dataUrl");
         ImageView imageView = view.findViewById(R.id.imageView);
-
-        if (mImageFetcher != null) {
-            mImageFetcher.loadImage(imgUrl, imageView, ImageConstant.ImageShowType.SRC);
-        }
-
+        Picasso.get().load(imgUrl).into(imageView);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

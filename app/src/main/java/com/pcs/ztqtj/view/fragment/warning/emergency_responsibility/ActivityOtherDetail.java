@@ -18,9 +18,6 @@ import android.widget.Toast;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageCache;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.PackYjZqInfoUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.sh_warn.YjZqInfo;
@@ -30,6 +27,7 @@ import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqWithPhoneListAndHelp;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityPhotoFullDetail;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Administrator on 2017/11/10 0010.
@@ -159,22 +157,21 @@ public class ActivityOtherDetail extends FragmentActivityZtqWithPhoneListAndHelp
 
         if (!TextUtils.isEmpty(pic_url)) {
             lay_fujian01.setVisibility(View.VISIBLE);
-            getImageFetcher().loadImage(pic_url, iv_detail_pic, ImageConstant.ImageShowType.SRC);
+            Picasso.get().load(pic_url).into(iv_detail_pic);
         } else {
             lay_fujian01.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(voi_url)) {
             lay_fujian02.setVisibility(View.VISIBLE);
-            iv_detail_voice.setBackgroundDrawable(ActivityOtherDetail.this.getResources().getDrawable(R.drawable
-                    .recordresource));
+            iv_detail_voice.setBackgroundDrawable(ActivityOtherDetail.this.getResources().getDrawable(R.drawable.recordresource));
         } else {
             lay_fujian02.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(vid_url)) {
             lay_fujian03.setVisibility(View.VISIBLE);
-            getImageFetcher().loadImage(tub_url, iv_detail_video, ImageConstant.ImageShowType.SRC);
+            Picasso.get().load(tub_url).into(iv_detail_video);
             iv_paly_video.setVisibility(View.VISIBLE);
         } else {
             lay_fujian03.setVisibility(View.GONE);
@@ -237,29 +234,6 @@ public class ActivityOtherDetail extends FragmentActivityZtqWithPhoneListAndHelp
         Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmapNew(ActivityOtherDetail.this);
         shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityOtherDetail.this, shareBitmap);
         ShareTools.getInstance(ActivityOtherDetail.this).setShareContent(getTitleText(), CONST.SHARE_URL, shareBitmap,"1").showWindow(scroll);
-    }
-
-    private ImageFetcher mImageFetcher;
-
-    public ImageFetcher getImageFetcher() {
-        if (mImageFetcher == null) {
-            createImageFetcher();
-        }
-
-        return mImageFetcher;
-    }
-
-    /**
-     * 创建图片获取类
-     */
-    protected void createImageFetcher() {
-        ImageCache.ImageCacheParams cacheParams = new ImageCache.ImageCacheParams(
-                ActivityOtherDetail.this);
-        cacheParams.setMemCacheSizePercent(0.25f);
-        mImageFetcher = new ImageFetcher(ActivityOtherDetail.this);
-        mImageFetcher.addImageCache(ActivityOtherDetail.this.getSupportFragmentManager(),
-                cacheParams);
-        mImageFetcher.setLoadingImage(R.drawable.no_pic);
     }
 
     public void showProgressDialog() {

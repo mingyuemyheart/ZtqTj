@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="系统默认为游客权限，部分功能请登录后进行查看。"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="16dp" />
 
     </LinearLayout>
 
@@ -46,7 +46,7 @@
         android:gravity="center"
         android:text="取消"
         android:textColor="@color/text_color4"
-        android:textSize="16sp"
+        android:textSize="16dp"
         app:layout_constraintEnd_toStartOf="@+id/divider2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider1" />
@@ -68,7 +68,7 @@
         android:gravity="center"
         android:text="登录"
         android:textColor="#1e90ff"
-        android:textSize="16sp"
+        android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/divider2"
         app:layout_constraintTop_toBottomOf="@+id/divider1" />

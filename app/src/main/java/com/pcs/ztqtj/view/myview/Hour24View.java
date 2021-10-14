@@ -325,8 +325,8 @@ public class Hour24View extends View {
 
 //          业务规则：当第一个城市雨量为0时，雨量位置一直显示“雨量 0.0mm”。不管后面的其他小时有无降雨。
             float xWidth = comWidth / 2;
-            canvas.drawText("雨量", xWidth, getHeight() - fontHeight / 2 - fontHeight, mTextPaintS);
-            canvas.drawText(mLowRain.get(0) + "mm", xWidth, getHeight() - fontHeight / 2, mTextPaintS);
+            canvas.drawText("雨量", xWidth, getHeight()  - fontHeight, mTextPaintS);
+            canvas.drawText(mLowRain.get(0) + "mm", xWidth, getHeight() - fontHeight / 5, mTextPaintS);
         }
 
         if (mTopTemp != null && mTopTemp.size() > 0) {

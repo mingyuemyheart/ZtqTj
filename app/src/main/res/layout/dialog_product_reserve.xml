@@ -25,7 +25,7 @@
             android:lineSpacingExtra="5dp"
             android:text="针对不同领域的行业用户、团体和个人，提供最权威的专业专项和公共气象服务，服务领域涵盖海洋、保险、旅游、供暖、电力、交通、建筑等诸多方面。依托强大的专业技术团队和雄厚的综合观测实力，负责提供实况监测、预报预警、气象资料、气候可行性论证等多种类别的专业气象服务产品，以需求为导向，提供定制化、分众化和智能化的专业气象服务。遵循“监测精密、预报精准、服务精细”的理念，辅助受众趋利避害、防灾减灾，科学合理地安排生产、经营等活动，获取更大的社会和经济效益。"
             android:textColor="@color/black"
-            android:textSize="14sp"/>
+            android:textSize="14dp"/>
 
         <TextView
             android:id="@+id/tv1"
@@ -36,7 +36,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvContent"
             android:text="联系方式："
             android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/tv2"
@@ -47,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv1"
             android:text="天津市气象服务中心"
             android:textColor="@color/bg_title"
-            android:textSize="14sp" />
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/tvNumber1"
@@ -58,7 +58,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv2"
             android:text="022-23333578"
             android:textColor="@color/bg_title"
-            android:textSize="14sp" />
+            android:textSize="14dp" />
 
         <TextView
             android:id="@+id/tvNumber2"
@@ -69,7 +69,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tvNumber1"
             android:text="022-23348205"
             android:textColor="@color/bg_title"
-            android:textSize="14sp" />
+            android:textSize="14dp" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -85,6 +85,6 @@
         app:layout_constraintTop_toBottomOf="@+id/clTop"
         android:background="@drawable/corner_bottom_blue"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="16dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="未注册的手机号验证通过后将自动注册"
-        android:textSize="14sp"
+        android:textSize="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/text_color4"/>
@@ -26,7 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPrompt"
-        android:textSize="16sp"
+        android:textSize="16dp"
         android:maxLength="11"
         android:inputType="phone"
         android:textColor="@color/text_color3"
@@ -56,7 +56,7 @@
         app:layout_constraintEnd_toStartOf="@+id/tvSend"
         android:layout_marginEnd="10dp"
         android:padding="10dp"
-        android:textSize="16sp"
+        android:textSize="16dp"
         android:textColor="@color/text_color3"
         android:textColorHint="@color/hint"
         android:hint="请输入验证码"
@@ -91,7 +91,7 @@
         android:paddingEnd="10dp"
         android:text="获取验证码"
         android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <ImageView
         android:id="@+id/checkbox"
@@ -111,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_color4"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:text="已阅读并同意"/>
 
     <TextView
@@ -124,7 +124,7 @@
         android:layout_height="wrap_content"
         android:text="用户协议"
         android:textColor="@color/bg_title"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <TextView
         android:id="@+id/str2"
@@ -135,7 +135,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_color4"
-        android:textSize="14sp"
+        android:textSize="14dp"
         android:text="和"/>
 
     <TextView
@@ -148,7 +148,7 @@
         android:layout_height="wrap_content"
         android:text="隐私政策"
         android:textColor="@color/bg_title"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <TextView
         android:id="@+id/tvLogin"
@@ -160,7 +160,7 @@
         android:gravity="center"
         android:text="登录"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18dp" />
 
     <TextView
         android:id="@+id/tvUserLogin"
@@ -173,7 +173,7 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:text="账号密码登录"
-        android:textSize="14sp" />
+        android:textSize="14dp" />
 
     <ImageView
         android:id="@+id/ivQQ"

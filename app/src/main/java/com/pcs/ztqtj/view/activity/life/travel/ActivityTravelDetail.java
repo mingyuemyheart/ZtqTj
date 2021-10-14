@@ -119,10 +119,10 @@ public class ActivityTravelDetail extends FragmentActivityZtqBase implements OnC
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    travelFragmentOne = new TravelFragmentOne(cityId, cityName, getImageFetcher());
+                    travelFragmentOne = new TravelFragmentOne(cityId, cityName);
                     return travelFragmentOne;
                 case 1:
-                    travelFragmentTwo = new TravelFragmentTwo(cityId, getImageFetcher());
+                    travelFragmentTwo = new TravelFragmentTwo(cityId);
                     return travelFragmentTwo;
             }
             return null;

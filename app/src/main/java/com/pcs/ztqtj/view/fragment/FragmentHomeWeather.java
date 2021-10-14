@@ -1,6 +1,7 @@
 package com.pcs.ztqtj.view.fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,6 +43,7 @@ import com.pcs.ztqtj.control.tool.MyConfigure;
 import com.pcs.ztqtj.control.tool.PermissionsTools;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.model.ZtqCityDB;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.newairquality.ActivityAirQualityQuery;
 import com.pcs.ztqtj.view.myview.MyScrollView;
@@ -68,7 +70,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
     private InterfaceRefresh mOtherRefreshAnim;
     // 天气广播列表
     private static Map<Integer, WeatherReceiver> mListReceiver = new HashMap<>();
-    private ImageFetcher mImageFetcher;
     // 数据命令
     private CommandBatching mDataCommand = null;
 
@@ -95,8 +96,6 @@ public class FragmentHomeWeather extends SupportMapFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ActivityMain activity = (ActivityMain) getActivity();
-        mImageFetcher = activity.getImageFetcher();
         mOtherRefreshAnim = null;
 
         mScrollView = mView.findViewById(R.id.scroll_view);
@@ -268,13 +267,13 @@ public class FragmentHomeWeather extends SupportMapFragment {
         ViewGroup rootLayout = mScrollView.findViewById(R.id.scroll_view_layout);
 
         mDataCommand = new CommandBatching();
-        mDataCommand.addCommand(new CommandMainRow0((ActivityMain) getActivity(), rootLayout, mImageFetcher));
-        mDataCommand.addCommand(new CommandMainRow1(getActivity(), rootLayout, mImageFetcher, mShowBg, this));
+        mDataCommand.addCommand(new CommandMainRow0((ActivityMain) getActivity(), rootLayout));
+        mDataCommand.addCommand(new CommandMainRow1(getActivity(), rootLayout, mShowBg, this));
         mDataCommand.addCommand(new CommandMain24Hours(getActivity(), rootLayout));
         commandMain7DaysWeather = new CommandMain7DaysWeather(getActivity(), rootLayout, mShowBg);
         mDataCommand.addCommand(commandMain7DaysWeather);
-        mDataCommand.addCommand(new CommandMainRow3(getActivity(), rootLayout, mImageFetcher, savedInstanceState));
-        mDataCommand.addCommand(new CommandMainRow4(getActivity(), rootLayout, mImageFetcher));
+        mDataCommand.addCommand(new CommandMainRow3(getActivity(), rootLayout, savedInstanceState));
+        mDataCommand.addCommand(new CommandMainRow4(getActivity(), rootLayout));
         mDataCommand.execute();
     }
 
@@ -430,11 +429,11 @@ public class FragmentHomeWeather extends SupportMapFragment {
             if (mPrevBg.equals(bgPath)) {
                 return;
             }
-            BitmapDrawable bitmapBg = mImageFetcher.getImageCache().getBitmapFromAssets(bgPath);
+            Bitmap bitmapBg = CommonUtil.getImageFromAssetsFile(getContext(), bgPath);
             if (bitmapBg == null) {
                 return;
             }
-            mView.setBackgroundDrawable(bitmapBg);
+            mView.setBackground(new BitmapDrawable(bitmapBg));
             mPrevBg = bgPath;
         }
     };

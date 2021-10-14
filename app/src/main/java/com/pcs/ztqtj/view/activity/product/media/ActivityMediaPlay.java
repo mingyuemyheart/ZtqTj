@@ -43,7 +43,6 @@ import android.widget.TextView;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsGetPathValue;
 import com.pcs.lib.lib_pcs_v3.control.file.PcsMD5;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -126,13 +125,11 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
 
     private Button btntaunted;
     private Bitmap mBitmap;
-    private ImageFetcher mImageFetcher;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.media_paly);
-        mImageFetcher = getImageFetcher();
         mediaInfo = (MediaInfo) getIntent().getSerializableExtra("mediaInfo");
         title = mediaInfo.title_two;
         imageurl = mediaInfo.imageurl;
@@ -779,7 +776,7 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
                             String imgUrl = getResources().getString(R.string.msyb) + itemObj.getString("img_path");
                             String name = itemObj.getString("title");
                             String dataUrl = itemObj.getString("url");
-                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Fragment fragment = new FragmentAd();
                             Bundle bundle = new Bundle();
                             bundle.putString("imgUrl", imgUrl);
                             bundle.putString("name", name);

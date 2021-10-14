@@ -34,7 +34,6 @@ import android.widget.ViewSwitcher;
 
 import com.iflytek.cloud.RecognizerResult;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackYjxxIndexFbDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.YjxxInfo;
@@ -60,6 +59,7 @@ import com.pcs.ztqtj.view.activity.warn.ActivityWarningCenterNotFjCity;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
 import com.pcs.ztqtj.view.dialog.DialogVoiceButton;
 import com.pcs.ztqtj.view.myview.MainViewPager;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -86,7 +86,6 @@ public class CommandMainRow0 extends CommandMainBase {
 
     private ActivityMain mActivity;
     private ViewGroup mRootLayout;
-    private ImageFetcher mImageFetcher;
     private ImageView main_voice;
     public PopupWindow popVoice;
     private View mRowView;
@@ -101,10 +100,9 @@ public class CommandMainRow0 extends CommandMainBase {
     private RollingThread rollingThread;
     private ImageView ivFestival;
 
-    public CommandMainRow0(ActivityMain activity, ViewGroup rootLayout, ImageFetcher imageFetcher) {
+    public CommandMainRow0(ActivityMain activity, ViewGroup rootLayout) {
         mActivity = activity;
         mRootLayout = rootLayout;
-        mImageFetcher = imageFetcher;
         voiceTool = VoiceTool.getInstance(mActivity, CommandMainRow0.this);
     }
 
@@ -672,19 +670,19 @@ public class CommandMainRow0 extends CommandMainBase {
                                                             YjxxInfo dto = warningList1.get(i);
                                                             ImageView ivWarning = new ImageView(mActivity);
                                                             ivWarning.setTag(dto.id);
-                                                            if (mImageFetcher != null) {
-                                                                String path = "img_warn/" + dto.ico + ".png";
-                                                                BitmapDrawable bitmapDrawable = mImageFetcher.getImageCache().getBitmapFromAssets(path);
-                                                                ivWarning.setImageDrawable(bitmapDrawable);
-                                                                ivWarning.setLayoutParams(params);
-                                                                llWarning1.addView(ivWarning);
-                                                                ivWarning.setOnClickListener(new View.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(View v) {
-                                                                        intentWarningCenter(false, v.getTag() + "");
-                                                                    }
-                                                                });
+                                                            String path = "img_warn/" + dto.ico + ".png";
+                                                            Bitmap bitmap = CommonUtil.getImageFromAssetsFile(mActivity, path);
+                                                            if (bitmap != null) {
+                                                                ivWarning.setImageBitmap(bitmap);
                                                             }
+                                                            ivWarning.setLayoutParams(params);
+                                                            llWarning1.addView(ivWarning);
+                                                            ivWarning.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    intentWarningCenter(false, v.getTag() + "");
+                                                                }
+                                                            });
                                                         }
 
                                                         if (warningList2 == null || warningList2.size() == 0) {
@@ -700,19 +698,19 @@ public class CommandMainRow0 extends CommandMainBase {
                                                             YjxxInfo dto = warningList2.get(i);
                                                             ImageView ivWarning = new ImageView(mActivity);
                                                             ivWarning.setTag(dto.id);
-                                                            if (mImageFetcher != null) {
-                                                                String path = "img_warn/" + dto.ico + ".png";
-                                                                BitmapDrawable bitmapDrawable = mImageFetcher.getImageCache().getBitmapFromAssets(path);
-                                                                ivWarning.setImageDrawable(bitmapDrawable);
-                                                                ivWarning.setLayoutParams(params);
-                                                                llWarning2.addView(ivWarning);
-                                                                ivWarning.setOnClickListener(new View.OnClickListener() {
-                                                                    @Override
-                                                                    public void onClick(View v) {
-                                                                        intentWarningCenter(false, v.getTag() + "");
-                                                                    }
-                                                                });
+                                                            String path = "img_warn/" + dto.ico + ".png";
+                                                            Bitmap bitmap = CommonUtil.getImageFromAssetsFile(mActivity, path);
+                                                            if (bitmap != null) {
+                                                                ivWarning.setImageBitmap(bitmap);
                                                             }
+                                                            ivWarning.setLayoutParams(params);
+                                                            llWarning2.addView(ivWarning);
+                                                            ivWarning.setOnClickListener(new View.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(View v) {
+                                                                    intentWarningCenter(false, v.getTag() + "");
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                 }
@@ -898,7 +896,7 @@ public class CommandMainRow0 extends CommandMainBase {
                     String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("icon");
                     String name = itemObj.getString("name");
                     String dataUrl = itemObj.getString("url");
-                    Fragment fragment = new FragmentAd(mImageFetcher);
+                    Fragment fragment = new FragmentAd();
                     Bundle bundle = new Bundle();
                     bundle.putString("imgUrl", imgUrl);
                     bundle.putString("name", name);
@@ -1063,7 +1061,7 @@ public class CommandMainRow0 extends CommandMainBase {
                             String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("img_path");
                             String name = itemObj.getString("title");
                             String dataUrl = itemObj.getString("url");
-                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Fragment fragment = new FragmentAd();
                             Bundle bundle = new Bundle();
                             bundle.putString("imgUrl", imgUrl);
                             bundle.putString("name", name);
@@ -1194,7 +1192,7 @@ public class CommandMainRow0 extends CommandMainBase {
                             String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("img_path");
                             String name = itemObj.getString("title");
                             String dataUrl = itemObj.getString("url");
-                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Fragment fragment = new FragmentAd();
                             Bundle bundle = new Bundle();
                             bundle.putString("imgUrl", imgUrl);
                             bundle.putString("name", name);

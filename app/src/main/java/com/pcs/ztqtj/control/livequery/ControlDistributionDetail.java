@@ -2,11 +2,14 @@ package com.pcs.ztqtj.control.livequery;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Matrix;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amap.api.maps.AMap;
@@ -187,6 +190,7 @@ public class ControlDistributionDetail {
      * @param down
      */
     private void addMarkersToMap(final PackFycxFbtDown down) {
+        clear(ZD);
         if(down.list.size() == 0) {
             mActivity.showToast("无数据！");
             return;
@@ -200,7 +204,7 @@ public class ControlDistributionDetail {
             LatLng latLng = new LatLng(Double.parseDouble(bean.lat), Double.parseDouble(bean.lon));
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val)))
+                    .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, "")))
                     //.zIndex(MapElementZIndex.markerZIndex)
                     .anchor(0.5f, 1.3f);
             // 添加点数据至缓存列表
@@ -229,6 +233,7 @@ public class ControlDistributionDetail {
      * @param down
      */
     private void addWindMarkersToMap(final PackFycxFbtDown down) {
+        clear(SB);
         if(down.list.size() == 0) {
             mActivity.showToast("无数据！");
             return;
@@ -243,9 +248,9 @@ public class ControlDistributionDetail {
             LatLng latLng = new LatLng(Double.parseDouble(bean.lat), Double.parseDouble(bean.lon));
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val)))
+                    .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, bean.fx)))
                     //.zIndex(MapElementZIndex.markerZIndex)
-                    .rotateAngle(-Float.parseFloat(bean.fx))
+//                    .rotateAngle(-Float.parseFloat(bean.fx))
                     .anchor(0.5f, 1.3f);
             // 添加点数据至缓存列表
             Marker marker = aMap.addMarker(markerOptions);
@@ -311,7 +316,7 @@ public class ControlDistributionDetail {
      * @param value
      * @return
      */
-    private Bitmap getIcon(ControlDistribution.ColumnCategory column, String value) {
+    private Bitmap getIcon(ControlDistribution.ColumnCategory column, String value, String fx) {
         boolean isTotal = false;
         if(currentFlagInfo != null &&
                 !currentFlagInfo.type.equals("1")) {
@@ -333,12 +338,24 @@ public class ControlDistributionDetail {
         }
         //视图
         View view = mActivity.getLayoutInflater().inflate(R.layout.mymarker, null);
-        view.setBackgroundResource(resid);
-        if((column == WIND && currentStatus != SB) || (column != WIND)) {
+        ImageView marker_image = (ImageView) view.findViewById(R.id.marker_image);
+        if (!TextUtils.isEmpty(fx)) {
+            marker_image.setVisibility(View.VISIBLE);
+            int drawableId = LegendInterval.getInstance().getWindDrawableId(fValue, true);
+            marker_image.setImageResource(drawableId);
+            marker_image.setRotation(Float.valueOf(fx));
+        } else {
+            marker_image.setVisibility(View.GONE);
             TextView textView = (TextView) view.findViewById(R.id.marker_text);
             textView.setTextColor(mActivity.getResources().getColor(LegendInterval.getInstance().getTextColorId(column, fValue)));
             textView.setText(value);
+            view.setBackgroundResource(resid);
         }
+//        if((column == WIND && currentStatus != SB) || (column != WIND)) {
+//            TextView textView = (TextView) view.findViewById(R.id.marker_text);
+//            textView.setTextColor(mActivity.getResources().getColor(LegendInterval.getInstance().getTextColorId(column, fValue)));
+//            textView.setText(value);
+//        }
         return BitmapDescriptorFactory.fromView(view).getBitmap();
     }
 

@@ -9,10 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackKnowWarnDetailDown.KnowWarnDetailBean;
+import com.pcs.ztqtj.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,12 +23,10 @@ import java.util.List;
 public class AdapterImageDisaster extends BaseAdapter {
     private Context context;
     private List<KnowWarnDetailBean> datalist;
-    private ImageFetcher imageFetcher;
 
-    public AdapterImageDisaster(Context context, List<KnowWarnDetailBean> datalist, ImageFetcher imageFetcher) {
+    public AdapterImageDisaster(Context context, List<KnowWarnDetailBean> datalist) {
         this.context = context;
         this.datalist = datalist;
-        this.imageFetcher = imageFetcher;
     }
 
     @Override

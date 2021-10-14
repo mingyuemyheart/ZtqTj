@@ -1,7 +1,7 @@
 package com.pcs.ztqtj.control.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.PackTravelWeekDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.week.WeekWeatherInfo;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,15 +29,12 @@ public class AdapterTravelBookmarks extends BaseAdapter {
 
     private Context context;
     private List<PackTravelWeekDown> dataList = new ArrayList<PackTravelWeekDown>();
-    private ImageFetcher imageFetcher = null;
     private OnClickDeleteButtonListener lDelete = null;
     private OnClickItemListener lItemClick = null;
 
-    public AdapterTravelBookmarks(Context context,
-                                  List<PackTravelWeekDown> dataList, ImageFetcher imageFetcher) {
+    public AdapterTravelBookmarks(Context context, List<PackTravelWeekDown> dataList) {
         this.context = context;
         this.dataList = dataList;
-        this.imageFetcher = imageFetcher;
     }
 
     @Override
@@ -102,9 +99,10 @@ public class AdapterTravelBookmarks extends BaseAdapter {
                 holder.tvScenicSpotsName.setText(pack.cityName);
                 holder.tvTemp.setText(info.higt + "~" + info.lowt + "℃");
                 holder.tvCity.setText(pack.p_name);
-                BitmapDrawable drawable = imageFetcher.getImageCache()
-                        .getBitmapFromAssets(pack.getIconPath(0));
-                holder.ivWeatherIcon.setImageDrawable(drawable);
+                Bitmap bitmap = CommonUtil.getImageFromAssetsFile(context, pack.getIconPath(0));
+                if (bitmap != null) {
+                    holder.ivWeatherIcon.setImageBitmap(bitmap);
+                }
 
                 holder.btnFavoriteDelete
                         .setOnClickListener(new OnClickListener() {

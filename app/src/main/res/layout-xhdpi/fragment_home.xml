@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_white"
-                android:textSize="16sp" />
+                android:textSize="16dp" />
 
             <TextView
                 android:id="@+id/tvStreet"
@@ -48,7 +48,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textColor="@color/text_white"
-                android:textSize="13sp" />
+                android:textSize="13dp" />
 
         </LinearLayout>
 

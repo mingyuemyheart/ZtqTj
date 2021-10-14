@@ -348,7 +348,7 @@
                 android:paddingRight="0dp"
                 android:textColor="@color/text_gray_deep"
                 android:textColorHint="@color/hint"
-                android:textSize="15sp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <View

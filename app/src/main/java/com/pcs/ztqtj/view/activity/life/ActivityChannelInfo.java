@@ -9,8 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.ztqtj.R;
@@ -18,6 +16,7 @@ import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.image.ImageLoader;
 import com.pcs.ztqtj.view.activity.FragmentActivitySZYBBase;
+import com.squareup.picasso.Picasso;
 
 /**
  * 生活气象-气象科普-列表-详情
@@ -26,7 +25,6 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 
 	private ImageLoader mImageLoader;
 	private ImageView bigImageView;// 图片获取类
-	private ImageFetcher mImageFetcher = null;
 	private TextView TextView1;
 	private TextView textTitle;
 	private TextView textTime;
@@ -40,7 +38,6 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 		info = (ArtTitleInfo) getIntent().getSerializableExtra("info");
 		title = getIntent().getStringExtra("title");
 		mImageLoader = new ImageLoader(this);
-		mImageFetcher = getImageFetcher();
 		setTitleText(title);
 		initView();
 		initData();
@@ -92,7 +89,7 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 			if (bitmap != null) {
 				bigImageView.setImageBitmap(bitmap);
 			} else {
-				mImageFetcher.loadImage(big_ico, bigImageView, ImageConstant.ImageShowType.SRC);
+				Picasso.get().load(big_ico).into(bigImageView);
 			}
 		}
 

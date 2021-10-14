@@ -198,6 +198,8 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
     private LinearLayout lay_auto_hiside;
     private LinearLayout lay_is_tj,llHour24,layout_a;
 
+    private String currentStationId = "10103";
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -330,14 +332,16 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
         livequery_city_spinner.setText(cityControl.getCutParentCity().NAME);
         if (cityControl.getCutParentCity().isFjCity) {
             livequery_town_spinner.setText(cityControl.getCutParentCity().NAME);
+            currentStationId = cityControl.getCutParentCity().ID;
         } else {
             livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
+            currentStationId = cityControl.getCutChildCity().ID;
         }
 //			查询具体城市
         seachCityInfo = activity.cityinfo;
         reflushListTitle();
-        reqNet();
         redrawUI();
+        reqNet();
     }
 
     /***
@@ -762,29 +766,22 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     cityControl.checkParent(item);
                     // 默认获取第一个数据
                     livequery_town_spinner.setText(cityControl.getCutChildCity().NAME);
-                    reqDataTownSelect();
                     rainfalladatper.setClickposition(0);
                     baseRainfallAdatper.setClickposition(0);
-                    redrawUI();
+                    activity.showProgressDialog();
+                    reflushListTitle();
+                    reqNet();
                     break;
                 case town_spinner:
                     cityControl.checkChild(item);
-                    reqDataTownSelect();
+                    currentStationId = cityControl.getCutChildCity().ID;
                     rainfalladatper.setClickposition(0);
                     baseRainfallAdatper.setClickposition(0);
-                    redrawUI();
-                    okHttpYltjRank();
+                    activity.showProgressDialog();
+                    reflushListTitle();
+                    reqNet();
                     break;
             }
-        }
-
-        /**
-         * 城镇选择后获取信息
-         */
-        private void reqDataTownSelect() {
-            activity.showProgressDialog();
-            reflushListTitle();
-            reqNet();
         }
     };
 
@@ -1139,7 +1136,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("stationId", currentStationId);
                     if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
                         info.put("isAuto", true);
                     } else {
@@ -1165,7 +1162,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                                 @Override
                                 public void run() {
                                     activity.dismissProgressDialog();
-                                    Log.e("datastatis_rain", result);
+//                                    Log.e("datastatis_rain", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -1265,7 +1262,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("stationId", currentStationId);
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("datastatis_rain1h3h", json);
@@ -1286,7 +1283,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                                 @Override
                                 public void run() {
                                     activity.dismissProgressDialog();
-                                    Log.e("datastatis_rain1h3h", result);
+//                                    Log.e("datastatis_rain1h3h", result);
                                     if (!TextUtil.isEmpty(result)) {
                                         try {
                                             JSONObject obj = new JSONObject(result);
@@ -1333,7 +1330,7 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                     JSONObject param = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", cityControl.getCutChildCity().ID);
+                    info.put("stationId", currentStationId);
                     info.put("element", "pre");
                     param.put("paramInfo", info);
                     String json = param.toString();
@@ -1357,6 +1354,11 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                                     activity.dismissProgressDialog();
                                     Log.e("history_month", result);
                                     if (!TextUtil.isEmpty(result)) {
+                                        if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
+                                            layout_a.setVisibility(View.VISIBLE);
+                                        } else {
+                                            layout_a.setVisibility(View.GONE);
+                                        }
                                         try {
                                             JSONObject obj = new JSONObject(result);
                                             if (!obj.isNull("b")) {
@@ -1373,6 +1375,8 @@ public class FragmentRain extends FragmentLiveQueryCommon implements OnClickList
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
+                                    } else {
+                                        layout_a.setVisibility(View.GONE);
                                     }
                                 }
                             });

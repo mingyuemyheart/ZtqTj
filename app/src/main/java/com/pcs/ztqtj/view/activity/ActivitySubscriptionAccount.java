@@ -6,15 +6,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSubscriptionAccountDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackSubscriptionAccountUp;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.squareup.picasso.Picasso;
 
 public class ActivitySubscriptionAccount extends FragmentActivityZtqBase {
 
@@ -89,8 +89,8 @@ public class ActivitySubscriptionAccount extends FragmentActivityZtqBase {
                 tvUnit.setText(down.zt);
                 String iconPath = getString(R.string.file_download_url) + down.Img1;
                 String qrPath = getString(R.string.file_download_url) + down.Img2;
-                getImageFetcher().loadImage(iconPath, ivIcon, ImageConstant.ImageShowType.SRC);
-                getImageFetcher().loadImage(qrPath, ivQr, ImageConstant.ImageShowType.SRC);
+                Picasso.get().load(iconPath).into(ivIcon);
+                Picasso.get().load(qrPath).into(ivQr);
             }
         }
     }

@@ -83,7 +83,6 @@ public class AirQualityView extends View {
         this.setPadding(0, 0, 0, 0);
     }
 
-
     public AirQualityView(Context context, AttributeSet a) {
         super(context, a);
         this.setPadding(0, 0, 0, 0);
@@ -105,24 +104,18 @@ public class AirQualityView extends View {
     private int stationX = 48;
     private int ringR = 0;
 
-
     private void initPointValue() {
-
         margTop = ScreenUtil.dip2px(getContext(), 15);
         margRight = ScreenUtil.dip2px(getContext(), 15);
         sizeText = ScreenUtil.dip2px(getContext(), 12);
         ringR = ScreenUtil.dip2px(getContext(), 4);
-        ptTextButtom =
-                DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
+        ptTextButtom = DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
         ptTextTop = DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
-        ptTextButtomFloag =
-                DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
-        ptTextYValue =
-                DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
+        ptTextButtomFloag = DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
+        ptTextYValue = DrawViewTool.getInstance().getTextPaint(getContext().getResources().getColor(R.color.text_white));
         ptTextButtom.setTextSize(sizeText);
         ptTextTop.setTextSize(sizeText);
         ptTextYValue.setTextSize(sizeText);
-
         ptTextButtomFloag.setTextSize(sizeText);
 
         ptLineWidth = DrawViewTool.getInstance().getMyLine(Color.argb(0, 0, 0, 0));
@@ -131,7 +124,6 @@ public class AirQualityView extends View {
 
         ptYLine = DrawViewTool.getInstance().getMyLine(getContext().getResources().getColor(R.color.bg_white));
         ptYLine.setStrokeWidth(2);
-
 
         ptLineNull = DrawViewTool.getInstance().getMyLine(getContext().getResources().getColor(R.color.bg_white));
         ptLineNull.setStrokeWidth(1);
@@ -144,8 +136,6 @@ public class AirQualityView extends View {
         ptNext24.setStrokeWidth(ringR / 3);
         ptPre24.setStrokeWidth(ringR / 3);
     }
-
-    private boolean isMove = true;
 
     /**
      * 处理触碰事件
@@ -180,9 +170,7 @@ public class AirQualityView extends View {
                     startX = stopX;
                     startY = stopY;
                     invalidate();
-
                 }
-
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mode = NONE;
@@ -240,7 +228,6 @@ public class AirQualityView extends View {
                     setActView(i, pointCut);
                     return;
                 }
-
             }
         }
     }
@@ -279,7 +266,6 @@ public class AirQualityView extends View {
             drawClickImageView(p, strValue + value, false);
         }
     }
-
 
     private void drawClickImageView(Point p, String value, boolean isYb) {
         reinvalidate = true;
@@ -358,7 +344,6 @@ public class AirQualityView extends View {
         imageStartRight(bm, mScale);
     }
 
-
     /**
      * 初始化状态
      */
@@ -373,7 +358,6 @@ public class AirQualityView extends View {
         this.dstRect = null;
         this.mBitmap = null;
     }
-
 
     /**
      * 居中 所有的都居中
@@ -420,7 +404,6 @@ public class AirQualityView extends View {
         mBottom = mTop + imageHight;
     }
 
-
     public void moveToPro(boolean isTrue) {
         mLeft = 0;
         whatX = 0;
@@ -433,7 +416,6 @@ public class AirQualityView extends View {
         invalidate();
     }
 
-
     private List<Point> rectangleAcHight = new ArrayList<>();
     private List<String> yValue = new ArrayList<>();
     private List<String> xValueButtom = new ArrayList<>();
@@ -444,7 +426,7 @@ public class AirQualityView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (reinvalidate) {
-            mBitmap = drawImage();
+            mBitmap = drawImage(canvas);
             setBitmap(mBitmap);
             reinvalidate = false;
             checkOutScreen();
@@ -462,7 +444,6 @@ public class AirQualityView extends View {
         } else if (whatX + disX > getWidth()) {
             disX = 0;
         }
-
 
         if (disY != 0 || disX != 0) {
             whatX += disX;
@@ -482,70 +463,34 @@ public class AirQualityView extends View {
         this.disY = 0;
         this.disX = 0;
 
-        Path mPath = new Path();
-        mPath.moveTo(0, 0);
-        mPath.lineTo(margLeft, 0);
-        mPath.lineTo(margLeft, getHeight());
-        mPath.lineTo(0, getHeight());
-        mPath.close();
-        canvas.drawPath(mPath, ptLineWidth);
-        ptLine.setColor(getResources().getColor(R.color.green));
-        canvas.drawLine(margLeft, margTop, margLeft, getHeight() - margButton, ptLine);
-        float h_len = (getHeight() - margButton - margTop) / 6;
-        if (type.equals("0")){
-            ptLine.setARGB(255, 153, 51, 51);
-            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
-            ptLine.setARGB(255, 204, 51, 153);
-            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
-            ptLine.setARGB(255, 255, 0, 0);
-            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
-            ptLine.setARGB(255, 255, 103, 0);
-            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
-            ptLine.setARGB(255, 255, 255, 102);
-            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
-            ptLine.setARGB(255, 100, 227, 100);
-            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
-        }else if (type.equals("1")||type.equals("3")){
-            ptLine.setARGB(255, 255, 255, 102);
-            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
-            ptLine.setARGB(255, 100, 227, 100);
-            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
-        }else if (type.equals("2")){
-            ptLine.setARGB(255, 255, 103, 0);
-            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
-            ptLine.setARGB(255, 255, 255, 102);
-            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
-            ptLine.setARGB(255, 100, 227, 100);
-            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
-        }else if (type.equals("4")){
-            ptLine.setARGB(255, 255, 0, 0);
-            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
-            ptLine.setARGB(255, 255, 103, 0);
-            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
-            ptLine.setARGB(255, 255, 255, 102);
-            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
-            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
-            ptLine.setARGB(255, 100, 227, 100);
-            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
-        }
+//        Path mPath = new Path();
+//        mPath.moveTo(0, 0);
+//        mPath.lineTo(margLeft, 0);
+//        mPath.lineTo(margLeft, getHeight());
+//        mPath.lineTo(0, getHeight());
+//        mPath.close();
+//        canvas.drawPath(mPath, ptLineWidth);
+//        ptLine.setColor(getResources().getColor(R.color.green));
+//        canvas.drawLine(margLeft, margTop, margLeft, getHeight() - margButton, ptLine);
 
-        float acturalYhight = getHeight() - margButton - margTop;
-        float actionYalue = acturalYhight / ySize;
-        Paint.FontMetrics fontMetrics = ptTextButtom.getFontMetrics();
-        float fontHeight = fontMetrics.bottom - fontMetrics.top;
+//        float height = getHeight() - margButton - margTop;
+//        for (int i = 0; i < yDivider.length; i++) {
+//            int val = Integer.valueOf(yDivider[i].trim());
+//            if (val >= min && val <= max) {
+//                yValue.add(yDivider[i]);
+//                float stopY = margTop + (val / (max-min)) * height;
+//                float textHeight = ptTextYValue.measureText(val+"");
+//                canvas.drawText(val+"", margLeft / 2, stopY+textHeight/2, ptTextYValue);
+//
+//
+//                ptLine.setARGB(255, 153, 51, 51);
+//                canvas.drawLine(margLeft, margTop, margLeft, stopY, ptLine);
+//            }
+//        }
+//        yValue_conetent.clear();
+//        yValue_conetent.addAll(yValue);
+//        Collections.reverse(yValue);
 
-        for (int i = 0; i < yValue.size(); i++) {
-            float yValueHight = actionYalue * i + margTop + fontHeight / 3;
-            canvas.drawText(yValue.get(i), margLeft / 2, yValueHight, ptTextYValue);
-        }
     }
 
     private int widthScale = 2;
@@ -554,7 +499,7 @@ public class AirQualityView extends View {
     private float xSaction;
 
     /*  创建一个画布，在这个画笔上绘制图，然后用这张图放大缩小；*/
-    private Bitmap drawImage() {
+    private Bitmap drawImage(Canvas canvas) {
         int AllViewWidth = getWidth() * widthScale;
         Bitmap bitmapAltered = Bitmap.createBitmap(AllViewWidth, getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvasBm = new Canvas(bitmapAltered);
@@ -575,7 +520,7 @@ public class AirQualityView extends View {
         canvasBm.drawLine(margLeft, viewYHight, AllViewWidth - margRight, viewYHight, ptYLine);
 
         xSaction = viewXWidth / stationX;
-        countValue((int) acturalYhight, xSaction);
+        countValue(canvas, xSaction);
         float actionYalue = acturalYhight / ySize;
         for (int i = 0; i < ySize; i++) {
             float yValueHight = actionYalue * i + margTop;
@@ -591,14 +536,12 @@ public class AirQualityView extends View {
             if (xValueTop.get(i).length() < 4) {
                 canvasBmTemp.drawText(xValueTop.get(i).replace("时", ""), timeBmTemp.getWidth() / 2,
                         timeBmTemp.getHeight() / 2 - fontHeight / 2, ptTextTop);
-                canvasBmTemp.drawText("时", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
-                        ptTextTop);
+                canvasBmTemp.drawText("时", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2, ptTextTop);
             } else {
                 String tiem = xValueTop.get(i);
                 canvasBmTemp.drawText(tiem.substring(0, tiem.indexOf("日")), timeBmTemp.getWidth() / 2,
                         timeBmTemp.getHeight() / 2 - fontHeight / 2, ptTextTop);
-                canvasBmTemp.drawText("日", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
-                        ptTextTop);
+                canvasBmTemp.drawText("日", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2, ptTextTop);
             }
             float withXPosition = (int) (xSaction * ((i + 24) * 2 + 1) + margLeft - xSaction / 2);//每一个值横坐标的位置
             canvasBm.drawBitmap(timeBmTemp, withXPosition, getHeight() - margButton, new Paint());
@@ -610,14 +553,12 @@ public class AirQualityView extends View {
             if (xValueButtom.get(i).contains("时")) {
                 canvasBmTemp.drawText(xValueButtom.get(i).replace("时", ""), timeBmTemp.getWidth() / 2,
                         timeBmTemp.getHeight() / 2 - fontHeight / 2, ptTextButtom);
-                canvasBmTemp.drawText("时", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
-                        ptTextButtom);
+                canvasBmTemp.drawText("时", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2, ptTextButtom);
             } else {
                 String tiem = xValueButtom.get(i);
                 canvasBmTemp.drawText(tiem.substring(0, tiem.indexOf("日")), timeBmTemp.getWidth() / 2,
                         timeBmTemp.getHeight() / 2 - fontHeight / 2, ptTextButtom);
-                canvasBmTemp.drawText("日", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2,
-                        ptTextButtom);
+                canvasBmTemp.drawText("日", timeBmTemp.getWidth() / 2, timeBmTemp.getHeight() / 2 + fontHeight / 2, ptTextButtom);
             }
             float withXPosition = (int) (xSaction * (i * 2 + 1) + margLeft - xSaction / 2);//每一个值横坐标的位置
             canvasBm.drawBitmap(timeBmTemp, withXPosition, getHeight() - margButton, new Paint());
@@ -628,7 +569,6 @@ public class AirQualityView extends View {
         } else if (cutDraw == IsDrawRectangele.BROKENLINE) {
             drawBrokenLine(canvasBm, viewYHight);
         }
-
 
         if (cutClickBitmap.bm != null) {
             int bmx, bmy;
@@ -644,11 +584,8 @@ public class AirQualityView extends View {
             }
             canvasBm.drawBitmap(cutClickBitmap.bm, x, y, new Paint());
         }
-
-
         return bitmapAltered;
     }
-
 
     private IsDrawRectangele cutDraw = IsDrawRectangele.RECTANGLE;
 
@@ -674,7 +611,6 @@ public class AirQualityView extends View {
             }
         }
     }
-
 
     /***
      * 绘制折线图
@@ -715,19 +651,23 @@ public class AirQualityView extends View {
 
     private List<PackAirTrendDown.AirMapBean> skList = new ArrayList<>();
 
-    private String[] str_level;
-    private String type="0";
+    private String[] yDivider;
+    private String[] texts;//优、良、轻度污染等文字
+    private int[] colors;//优、良、轻度污染等文字
+    private String dataType = "AQI";
 
     /**
      * 设置数据
      */
-    public void setNewData(List<PackAirTrendDown.AirMapBean> skList, String[] str, String tyype) {
+    public void setNewData(List<PackAirTrendDown.AirMapBean> skList, String[] yDivider, String[] texts, int[] colors, String dataType) {
         this.skList.clear();
         this.skList.addAll(skList);
         cutClickBitmap.bm = null;
         reinvalidate = true;
-        this.str_level = str;
-        this.type = tyype;
+        this.yDivider = yDivider;
+        this.texts = texts;
+        this.colors = colors;
+        this.dataType = dataType;
         reDefaultValue();
         invalidate();
     }
@@ -735,10 +675,9 @@ public class AirQualityView extends View {
     /**
      * 计算柱状图位置，高度值
      *
-     * @param acturalYhight
      * @param xSaction
      */
-    private void countValue(int acturalYhight, float xSaction) {
+    private void countValue(Canvas canvas, float xSaction) {
         xValueButtom.clear();
         xValueTop.clear();
         rectangleAcHight.clear();
@@ -763,118 +702,130 @@ public class AirQualityView extends View {
         float max = Collections.max(listData);
         float min = Collections.min(listData);
 
-        float ySeactionTemp = 300;
-        float tempMin = min % ySeactionTemp;
-        if (min > 0) {
-            min = min - tempMin;
-        } else if (tempMin == 0) {
-            min -= ySeactionTemp;
-        } else {
-            min = min - tempMin - ySeactionTemp;
-        }
-
-        if (min < 0) {
-            min = 0;
-        }
-
-        float tempMax = max % ySeactionTemp;
-        max += ySeactionTemp - tempMax;
-
-        float ySection = (max - min) / ySize;
-        float yProportion;
-        if (max == 0 && max == min) {
-            yProportion = 0;
-        } else {
-            yProportion = acturalYhight / (max - min);
-        }
-        setYValue();
-        setAllXYValue(yProportion, xSaction, listDataAc, listDataPre, min);
-
-    }
-
-    private void setAllXYValue(float yProportion, float xSaction, List<Float> listDataAc, List<Float> listDataPre,
-                               float min) {
-        float h_len = (getHeight() - margButton - margTop) / 6;
-        for (int i = 0; i < listDataAc.size(); i++) {
-            Point point = new Point();
-            if (DataNull == listDataAc.get(i)) {
-                point.y = (int) DataNull;
-                point.x = (int) (xSaction * (i * 2 + 1) + margLeft);
-            } else {
-                if (yValue_conetent.size() > 0) {
-                    if (listDataAc.get(i) < Float.valueOf(yValue_conetent.get(1))) {
-                        point.y = (int) ((listDataAc.get(i) / Float.valueOf(yValue_conetent.get(1))) * h_len);
-                    } else if (listDataAc.get(i) < Float.valueOf(yValue_conetent.get(2))) {
-                        point.y = (int) ((listDataAc.get(i) / Float.valueOf(yValue_conetent.get(2))) * h_len * 2);
-                    } else if (listDataAc.get(i) < Float.valueOf(yValue_conetent.get(3))) {
-                        point.y = (int) ((listDataAc.get(i) / Float.valueOf(yValue_conetent.get(3))) * h_len * 3);
-                    } else if (listDataAc.get(i) < Float.valueOf(yValue_conetent.get(4))) {
-                        point.y = (int) ((listDataAc.get(i) / Float.valueOf(yValue_conetent.get(4))) * h_len * 4);
-                    } else if (listDataAc.get(i) < Float.valueOf(yValue_conetent.get(5))) {
-                        point.y = (int) (((listDataAc.get(i)) / Float.valueOf(yValue_conetent.get(5))) * h_len + h_len * 5);
-                    } else {
-                        point.y = (int) (((listDataAc.get(i)) / Float.valueOf(yValue_conetent.get(6))) * h_len + h_len * 6);
-                    }
-                }
-                point.x = (int) (xSaction * (i * 2 + 1) + margLeft);
+        for (int i = 0; i < yDivider.length-1; i++) {
+            int val1 = Integer.valueOf(yDivider[i].trim());
+            int val2 = Integer.valueOf(yDivider[i+1].trim());
+            if (min > val1 && min < val2) {
+                min = val1;
             }
-            rectangleAcHight.add(point);
+            if (max > val1 && max < val2) {
+                max = val2;
+            }
         }
-    }
 
+        setYValue(canvas, min, max);
+        setAllXYValue(xSaction, listDataAc, min, max);
+    }
 
     /**
      * #############y轴值##########
      */
-    private void setYValue() {
-        if (type.equals("0")) {
-            if (str_level.length > 0) {
-                yValue.add(str_level[0]);
-                yValue.add(str_level[1]);
-                yValue.add(str_level[2]);
-                yValue.add(str_level[3]);
-                yValue.add(str_level[4]);
-                yValue.add(str_level[5]);
-                yValue.add(str_level[6]);
+    private void setYValue(Canvas canvas, float min, float max) {
+        float height = getHeight() - margButton - margTop;
+        float h_len = height/6;
+        for (int i = yDivider.length-1; i >= 0; i--) {
+            int val = Integer.valueOf(yDivider[i].trim());
+            int color = colors[i];
+            ptLine.setColor(color);
+            if (val >= min && val <= max) {
+                yValue.add(val+"");
             }
-        } else if (type.equals("1")) {
-            yValue.add("0");
-            yValue.add("1");
-            yValue.add("3");
-            yValue.add("5");
-            yValue.add("7");
-            yValue.add("9");
-            yValue.add("10");
-        } else if (type.equals("2")) {
-            yValue.add("0");
-            yValue.add("50");
-            yValue.add("100");
-            yValue.add("150");
-            yValue.add("200");
-            yValue.add("300");
-            yValue.add("400");
-        } else if (type.equals("3")) {
-            yValue.add("0");
-            yValue.add("50");
-            yValue.add("100");
-            yValue.add("150");
-            yValue.add("170");
-            yValue.add("190");
-            yValue.add("200");
-        } else if (type.equals("4")) {
-            yValue.add("0");
-            yValue.add("80");
-            yValue.add("160");
-            yValue.add("200");
-            yValue.add("250");
-            yValue.add("300");
-            yValue.add("400");
+//            if (val <= 50) {
+//                ptLine.setARGB(255, 100, 227, 100);
+//            } else if (val <= 100) {
+//                ptLine.setARGB(255, 255, 255, 102);
+//            } else if (val <= 150) {
+//                ptLine.setARGB(255, 255, 103, 0);
+//            } else if (val <= 200) {
+//                ptLine.setARGB(255, 255, 0, 0);
+//            } else if (val <= 300) {
+//                ptLine.setARGB(255, 204, 51, 153);
+//            } else if (val <= 500) {
+//                ptLine.setARGB(255, 153, 51, 51);
+//            }
+            if (i == 0) {
+                canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len * i, ptLine);
+            } else {
+                canvas.drawLine(margLeft, margTop + h_len * (i-1), margLeft, margTop + h_len * i, ptLine);
+            }
         }
         yValue_conetent.clear();
         yValue_conetent.addAll(yValue);
 
-        Collections.reverse(yValue);
+        Paint.FontMetrics fontMetrics = ptTextYValue.getFontMetrics();
+        float fontHeight = fontMetrics.bottom - fontMetrics.top;
+        for (int i = yDivider.length-1; i >= 0; i--) {
+            int val = Integer.valueOf(yDivider[i].trim());
+            if (val >= min && val <= max) {
+                float stopY = margTop + height*val/(max-min);
+                float textHeight = ptTextYValue.measureText(yValue.get(i));
+                canvas.drawText(yValue.get(i), margLeft / 2, stopY+textHeight/2-fontHeight/3, ptTextYValue);
+            }
+        }
+
+
+//        if (dataType.equals("AQI") || dataType.equals("PM2_5") || dataType.equals("PM10")){
+//            ptLine.setARGB(255, 153, 51, 51);
+//            canvas.drawLine(margLeft, margTop, margLeft, margTop + (int) ((listDataAc.get(i) / Float.valueOf(max-min)) * height), ptLine);
+//            ptLine.setARGB(255, 204, 51, 153);
+//            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
+//            ptLine.setARGB(255, 255, 0, 0);
+//            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
+//            ptLine.setARGB(255, 255, 103, 0);
+//            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
+//            ptLine.setARGB(255, 255, 255, 102);
+//            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
+//            ptLine.setARGB(255, 100, 227, 100);
+//            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
+//        }else if (dataType.equals("CO")||dataType.equals("SO2")){
+//            ptLine.setARGB(255, 255, 255, 102);
+//            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
+//            ptLine.setARGB(255, 100, 227, 100);
+//            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
+//        }else if (dataType.equals("NO2")){
+//            ptLine.setARGB(255, 255, 103, 0);
+//            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
+//            ptLine.setARGB(255, 255, 255, 102);
+//            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
+//            ptLine.setARGB(255, 100, 227, 100);
+//            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
+//        }else if (dataType.equals("03_1H")){
+//            ptLine.setARGB(255, 255, 0, 0);
+//            canvas.drawLine(margLeft, margTop, margLeft, margTop + h_len, ptLine);
+//            ptLine.setARGB(255, 255, 103, 0);
+//            canvas.drawLine(margLeft, margTop + h_len, margLeft, margTop + h_len * 2, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 2, margLeft, margTop + h_len * 3, ptLine);
+//            ptLine.setARGB(255, 255, 255, 102);
+//            canvas.drawLine(margLeft, margTop + h_len * 3, margLeft, margTop + h_len * 4, ptLine);
+//            canvas.drawLine(margLeft, margTop + h_len * 4, margLeft, margTop + h_len * 5, ptLine);
+//            ptLine.setARGB(255, 100, 227, 100);
+//            canvas.drawLine(margLeft, margTop + h_len * 5, margLeft, margTop + h_len * 6, ptLine);
+//        }
     }
+
+    private void setAllXYValue(float xSaction, List<Float> listDataAc, float min, float max) {
+        float height = getHeight() - margButton - margTop;
+        for (int i = 0; i < listDataAc.size(); i++) {
+            Point point = new Point();
+            if (DataNull == listDataAc.get(i)) {
+                point.y = (int) DataNull;
+            } else {
+                if (yValue_conetent.size() > 0) {
+                    point.y = (int) ((listDataAc.get(i) / Float.valueOf(max-min)) * height);
+                }
+            }
+            point.x = (int) (xSaction * (i * 2 + 1) + margLeft);
+            rectangleAcHight.add(point);
+        }
+    }
+
     public Bitmap getClickBitmap(String value, boolean isYb, boolean isOnTop) {
         View view = LayoutInflater.from(this.getContext()).inflate(R.layout.pop_livequery, null);
         TextView textView = (TextView) view.findViewById(R.id.tv_value);
@@ -892,8 +843,7 @@ public class AirQualityView extends View {
                     , 0);
         }
         view.setDrawingCacheEnabled(true);
-        view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0,
-                MeasureSpec.UNSPECIFIED));
+        view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         view.buildDrawingCache();
         Bitmap bitmap = view.getDrawingCache();

@@ -8,10 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.ztqtj.R;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
+import com.pcs.ztqtj.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -22,12 +21,10 @@ public class AdapterMediaGrid extends BaseAdapter {
 
 	private Context mContext;
 	private List<MediaInfo> dataList;
-	private ImageFetcher mImageFetcher;
 
-	public AdapterMediaGrid(Context context, List<MediaInfo> data, ImageFetcher mImageFetcher) {
+	public AdapterMediaGrid(Context context, List<MediaInfo> data) {
 		this.mContext = context;
 		this.dataList = data;
-		this.mImageFetcher=mImageFetcher;
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class AdapterMediaGrid extends BaseAdapter {
 		}
 
 		String url = mContext.getString(R.string.msyb) + info.imageurl;
-		mImageFetcher.loadImage(url, holder.itemImage, ImageConstant.ImageShowType.SRC);
+		Picasso.get().load(url).into(holder.itemImage);
 		holder.itemName.setVisibility(View.VISIBLE);
 		return view;
 	}

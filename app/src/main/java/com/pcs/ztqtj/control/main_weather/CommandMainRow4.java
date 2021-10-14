@@ -22,8 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
-import com.pcs.lib.lib_pcs_v3.model.image.ImageFetcher;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackLifeNumberDown;
 import com.pcs.ztqtj.MyApplication;
@@ -38,6 +36,7 @@ import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.calendar.ActivityCalendarSecond;
 import com.pcs.ztqtj.view.activity.lifenumber.ActivityLifeNumberEdit;
 import com.pcs.ztqtj.view.myview.MainViewPager;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -64,15 +63,13 @@ public class CommandMainRow4 extends CommandMainBase {
 
     private Activity mActivity;
     private ViewGroup mRootLayout;
-    private ImageFetcher mImageFetcher;
     private AdapterLifeNumberGridView mLifeNumberAdapter = null;
     private List<PackLifeNumberDown.LifeNumber> dataList = new ArrayList<>();
     private TextView tvLifeTime;
 
-    public CommandMainRow4(Activity activity, ViewGroup rootLayout, ImageFetcher imageFetcher) {
+    public CommandMainRow4(Activity activity, ViewGroup rootLayout) {
         mActivity = activity;
         mRootLayout = rootLayout;
-        mImageFetcher = imageFetcher;
     }
 
     @Override
@@ -99,7 +96,7 @@ public class CommandMainRow4 extends CommandMainBase {
         rowView = mRootLayout.findViewById(R.id.layout_home_weather_4);
         tvLifeTime = rowView.findViewById(R.id.tvLifeTime);
         viewPager = rowView.findViewById(R.id.viewPager);
-        mLifeNumberAdapter = new AdapterLifeNumberGridView(mActivity,mImageFetcher, dataList);
+        mLifeNumberAdapter = new AdapterLifeNumberGridView(mActivity, dataList);
         GridView gridView = (GridView) rowView.findViewById(R.id.gridView);
         gridView.setAdapter(mLifeNumberAdapter);
         gridView.setOnItemClickListener(onItemClickRow4);
@@ -180,7 +177,7 @@ public class CommandMainRow4 extends CommandMainBase {
         dialog.show();
 
         try {
-            mImageFetcher.loadImage(mActivity.getString(R.string.shzs)+ pack.ico_path, image, ImageConstant.ImageShowType.SRC);
+            Picasso.get().load(mActivity.getString(R.string.shzs)+ pack.ico_path).into(image);
             text_title.setText(pack.index_name);
             text_content.setText(pack.simple_des);
         } catch (Exception e) {
@@ -326,7 +323,7 @@ public class CommandMainRow4 extends CommandMainBase {
                             String imgUrl = mActivity.getResources().getString(R.string.msyb) + itemObj.getString("img_path");
                             String name = itemObj.getString("title");
                             String dataUrl = itemObj.getString("url");
-                            Fragment fragment = new FragmentAd(mImageFetcher);
+                            Fragment fragment = new FragmentAd();
                             Bundle bundle = new Bundle();
                             bundle.putString("imgUrl", imgUrl);
                             bundle.putString("name", name);

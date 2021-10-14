@@ -86,7 +86,7 @@ public class ActivityImageDisaster extends FragmentActivityZtqBase {
 	private void initData() {
 		dataeaum = new ArrayList<>();
 		knowWarnList = new ArrayList<>();
-		adatper = new AdapterImageDisaster(ActivityImageDisaster.this, knowWarnList, getImageFetcher());
+		adatper = new AdapterImageDisaster(ActivityImageDisaster.this, knowWarnList);
 		contextlistview.setAdapter(adatper);
 		okHttpWarningType();
 	}

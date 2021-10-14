@@ -17,7 +17,6 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.image.ImageConstant;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.MediaInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.media.PackMediaListDown.ParentMedia;
@@ -31,6 +30,7 @@ import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.myview.MyGridView;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -81,7 +81,6 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
         if (title != null) {
             setTitleText(title);
         }
-        createImageFetcher();
         initView();
         initData();
         initEvent();
@@ -123,9 +122,9 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
         // 注册广播接收
         mediaParentList = new ArrayList<>();
         gridData = new ArrayList<>();
-        myGridViewAdapter = new AdapterMediaGrid(this, gridData, getImageFetcher());
+        myGridViewAdapter = new AdapterMediaGrid(this, gridData);
         myGridView.setAdapter(myGridViewAdapter);
-        adapterMediaList = new AdapterMediaList(this, gridData, getImageFetcher());
+        adapterMediaList = new AdapterMediaList(this, gridData);
         lv_media.setAdapter(adapterMediaList);
 
         okHttpList();
@@ -155,7 +154,7 @@ public class ActivityMediaList extends FragmentActivityZtqBase {
                 myGridViewAdapter.notifyDataSetChanged();
                 String imgUrl = getString(R.string.msyb) + topItemInfo.imageurl;
                 item_text.setText(topItemInfo.title);
-                getImageFetcher().loadImage(imgUrl, item_image, ImageConstant.ImageShowType.SRC);
+                Picasso.get().load(imgUrl).into(item_image);
             } else {
                 isDataNull(true);
             }
