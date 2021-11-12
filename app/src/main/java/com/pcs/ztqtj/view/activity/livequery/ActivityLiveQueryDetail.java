@@ -136,6 +136,8 @@ public class ActivityLiveQueryDetail extends FragmentActivityZtqBase implements 
             } else {
                 okHttpSstq();
             }
+        } else {
+            init();
         }
         initMap(savedInstanceState);
     }

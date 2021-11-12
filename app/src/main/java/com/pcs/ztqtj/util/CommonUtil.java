@@ -14,16 +14,34 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLngBounds;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.Polyline;
+import com.amap.api.maps.model.PolylineOptions;
 import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.view.activity.prove.ProveDto;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -259,6 +277,121 @@ public class CommonUtil {
             e.printStackTrace();
         }
         return image;
+    }
+
+    /**
+     * 读取assets下文件
+     * @param fileName
+     * @return
+     */
+    public static String getFromAssets(Context context, String fileName) {
+        String Result = "";
+        try {
+            InputStreamReader inputReader = new InputStreamReader(context.getResources().getAssets().open(fileName));
+            BufferedReader bufReader = new BufferedReader(inputReader);
+            String line = "";
+            while ((line = bufReader.readLine()) != null)
+                Result += line;
+            return Result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result;
+    }
+
+    /**
+     * 绘制天津
+     */
+    private static List<Polyline> hhlyList = new ArrayList<>();
+    public static void drawHhlyJson(Context context, AMap aMap) {
+        if (aMap == null) {
+            return;
+        }
+        String result = CommonUtil.getFromAssets(context, "hhly.json");
+        if (!TextUtils.isEmpty(result)) {
+            try {
+                LatLngBounds.Builder builder = LatLngBounds.builder();
+                JSONObject obj = new JSONObject(result);
+                JSONArray array = obj.getJSONArray("features");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject itemObj = array.getJSONObject(i);
+
+                    JSONObject geometry = itemObj.getJSONObject("geometry");
+                    if (!geometry.isNull("rings")) {
+                        JSONArray rings = geometry.getJSONArray("rings");
+                        for (int m = 0; m < rings.length(); m++) {
+                            JSONArray array2 = rings.getJSONArray(m);
+                            PolylineOptions polylineOption = new PolylineOptions();
+                            polylineOption.width(5).color(context.getResources().getColor(R.color.colorPrimary));
+                            for (int j = 0; j < array2.length(); j++) {
+                                JSONArray itemArray = array2.getJSONArray(j);
+                                double lng = itemArray.getDouble(0);
+                                double lat = itemArray.getDouble(1);
+                                polylineOption.add(new LatLng(lat, lng));
+                                builder.include(new LatLng(lat, lng));
+                            }
+                            Polyline polyline = aMap.addPolyline(polylineOption);
+                            hhlyList.add(polyline);
+                        }
+                    }
+                }
+//                if (array.length() > 0) {
+//                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+//                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void removeHhlyJson() {
+        for (Polyline polyline: hhlyList) {
+            polyline.remove();
+        }
+        hhlyList.clear();
+    }
+
+    /**
+     * 绘制自动站
+     */
+    public static void drawAutoJson(Context context, AMap aMap) {
+        if (aMap == null) {
+            return;
+        }
+        String result = CommonUtil.getFromAssets(context, "auto_station.json");
+        if (!TextUtils.isEmpty(result)) {
+            try {
+                LatLngBounds.Builder builder = LatLngBounds.builder();
+                JSONArray array = new JSONArray(result);
+                for (int i = 0; i < 2000; i++) {
+                    JSONArray itemArray = array.getJSONArray(i);
+                    String stationId = itemArray.getString(0);
+                    String stationName = itemArray.getString(1);
+                    String lng = itemArray.getString(2);
+                    String lat = itemArray.getString(3);
+                    if (TextUtils.isEmpty(lng) || lng.contains("N")) {
+                        continue;
+                    }
+                    if (TextUtils.isEmpty(lat) || lat.contains("N")) {
+                        continue;
+                    }
+                    View view = LayoutInflater.from(context).inflate(R.layout.marker_icon_station, null);
+                    TextView tvStationName = view.findViewById(R.id.tvStationName);
+                    tvStationName.setText(stationName+"\n"+stationId);
+                    MarkerOptions options = new MarkerOptions();
+                    options.anchor(0.5f, 0.5f);
+                    LatLng latLng = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
+                    builder.include(latLng);
+                    options.position(latLng);
+                    options.icon(BitmapDescriptorFactory.fromView(view));
+                    Marker marker = aMap.addMarker(options);
+                }
+//                if (array.length() > 0) {
+//                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+//                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

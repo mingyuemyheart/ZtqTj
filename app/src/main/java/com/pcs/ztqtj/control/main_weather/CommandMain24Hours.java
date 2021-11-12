@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amap.api.maps.model.LatLng;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.MyPackHourForecastDown;
 import com.pcs.ztqtj.control.adapter.hour_forecast.AdapterMainHourForecast;
+import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
@@ -74,8 +76,8 @@ public class CommandMain24Hours extends CommandMainBase {
      * 获取逐时预报
      */
     private void okHttpHourForecast() {
+        final LatLng latLng = ZtqLocationTool.getInstance().getLatLng();
         final PackLocalCity city = ZtqCityDB.getInstance().getCityMain();
-        if (city == null) return;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -83,11 +85,25 @@ public class CommandMain24Hours extends CommandMainBase {
                     JSONObject param  = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     JSONObject info = new JSONObject();
-                    info.put("stationId", city.ID);
+                    if (latLng != null) {
+                        info.put("lat", latLng.latitude+"");
+                        info.put("lon", latLng.longitude+"");
+                        info.put("typeModel", "forecast");
+                    } else {
+                        if (city != null) {
+                            info.put("stationId", city.ID);
+                        }
+                    }
                     param.put("paramInfo", info);
                     String json = param.toString();
                     Log.e("forecast", json);
-                    final String url = CONST.BASE_URL+"forecast";
+                    String dataUrl = "";
+                    if (latLng != null) {
+                        dataUrl = CONST.BASE_URL+"grid";
+                    } else {
+                        dataUrl = CONST.BASE_URL+"forecast";
+                    }
+                    final String url = dataUrl;
                     Log.e("forecast", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                     OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {

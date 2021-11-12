@@ -794,6 +794,9 @@ public class ActivityMain extends FragmentActivity {
             if (!itemObj.isNull("dataName")) {
                 dto.dataName = itemObj.getString("dataName");
             }
+            if (!itemObj.isNull("dataType")) {
+                dto.dataType = itemObj.getString("dataType");
+            }
             if (!itemObj.isNull("parentId")) {
                 dto.parentId = itemObj.getString("parentId");
             }

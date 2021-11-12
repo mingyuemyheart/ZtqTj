@@ -30,7 +30,11 @@ public class MyPackHourForecastDown extends PackHourForecastDown {
                 MyPackHourForecastDown.HourForecast pack = new MyPackHourForecastDown.HourForecast();
                 pack.ico = row.getString("ico");
                 pack.rainfall = row.getString("rainfall");
-                pack.temperature = row.getString("temperature");
+                if (!row.isNull("temperature")) {
+                    pack.temperature = row.getString("temperature");
+                } else {
+                    pack.temperature = "";
+                }
                 pack.windspeed = row.getString("windspeed");
                 pack.windlevel = row.getString("windlevel");
                 pack.winddir = row.getString("winddir");

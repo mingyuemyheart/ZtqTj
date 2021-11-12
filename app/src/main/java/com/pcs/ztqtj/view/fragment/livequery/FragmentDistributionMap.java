@@ -75,6 +75,8 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
     private Marker currentClickMarker;
     private ActivityLiveQuery mActivity;
 
+    private ControlMapBound controlMapBound;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -129,6 +131,7 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
     }
 
     private void initData() {
+        controlMapBound = new ControlMapBound(getActivity(), aMap, R.color.gray);
         initArguments();
         addLocationMarkerToMap();
         initControls();
@@ -209,8 +212,9 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
             cbZd.setVisibility(View.VISIBLE);
             radar.setVisibility(View.VISIBLE);
             cbTyphoon.setVisibility(View.VISIBLE);
-            ControlMapBound controlMapBound = new ControlMapBound(getActivity(), aMap, R.color.gray);
-            controlMapBound.start();
+            if (controlMapBound != null) {
+                controlMapBound.start();
+            }
         } else { // 全国
             cbSb.setVisibility(View.VISIBLE);
             cbGj.setVisibility(View.VISIBLE);
@@ -245,7 +249,7 @@ public class FragmentDistributionMap extends FragmentLiveQueryCommon {
         // 图例控制器
         controlList.add(mLegendControl);
         controlList.add(new ControlTyphoonHandler(this, mActivity, layout));
-        controlList.add(new ControlDistributionHandler(this, mActivity, layout));
+        controlList.add(new ControlDistributionHandler(this, mActivity, layout, aMap, controlMapBound));
     }
 
     /**

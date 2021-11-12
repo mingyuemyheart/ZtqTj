@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
@@ -23,6 +24,7 @@ import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.myview.TemperatureView;
+import com.pcs.ztqtj.view.myview.typhoon.AutoFitTextView;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -58,7 +61,8 @@ public class CommandMain7DaysWeather extends CommandMainBase {
     private TemperatureView tempertureview;
     private InterfaceShowBg mShowBg;
     private TextView tvPublicUnit;
-    private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINA);
+    private ImageView ivPublicUnit;
+    private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:00", Locale.CHINA);
 
     public CommandMain7DaysWeather(Activity activity , ViewGroup rootLayout, InterfaceShowBg mShowBg) {
         this.activity = activity;
@@ -71,6 +75,7 @@ public class CommandMain7DaysWeather extends CommandMainBase {
         rowView = LayoutInflater.from(activity).inflate(R.layout.layout_main_7days_weather, rootLayout, false);
         rootLayout.addView(rowView);
         tvPublicUnit = rowView.findViewById(R.id.tvPublicUnit);
+        ivPublicUnit = rowView.findViewById(R.id.ivPublicUnit);
         tempertureview = rowView.findViewById(R.id.tempertureview);
         gridViewWeek = rowView.findViewById(R.id.maingridview);
         adapter = new Adapter7DaysGridView(activity, weekList, mShowBg);
@@ -131,7 +136,12 @@ public class CommandMain7DaysWeather extends CommandMainBase {
                                                         PackMainWeekWeatherDown packWeekDown = new PackMainWeekWeatherDown();
                                                         packWeekDown.fillData(p_new_weekobj.toString());
                                                         if (packWeekDown != null && packWeekDown.getWeek() != null && packWeekDown.getWeek().size() != 0) {
-                                                            tvPublicUnit.setText(getAreaName()+sdf1.format(packWeekDown.sys_time_l)+"发布");
+                                                            if (!TextUtils.isEmpty(getAreaName())) {
+                                                                ivPublicUnit.setVisibility(View.VISIBLE);
+                                                            } else {
+                                                                ivPublicUnit.setVisibility(View.GONE);
+                                                            }
+                                                            tvPublicUnit.setText(getAreaName()+sdf1.format(new Date())+"发布");
 
                                                             weekList = new ArrayList<>(packWeekDown.getWeek());
                                                             int size = weekList.size();

@@ -2,13 +2,12 @@ package com.pcs.ztqtj.util;
 
 public class CONST {
 
-//    public static String BASE_IP = "https://tjhm-app.weather.com.cn:8081";
-    public static String BASE_IP = "http://60.29.105.41:8088";
+    public static String BASE_IP = "https://www.tjqx.net.cn:8088";
     public static String GEO_URL = BASE_IP+"/geo/station/parse";
     public static String BASE_URL = BASE_IP+"/tjapi/app/";
 
 
-    public static final String SHARE_URL = "https://tjhm-app.weather.com.cn:8081/web/build/index.html";//分享地址
+    public static final String SHARE_URL = BASE_IP+"/web/build/index.html";//分享地址
 
     public static final String PROTOCAL = BASE_IP+"/web/tjfile/smart/yhxy.html";//用户协议
     public static final String PRIVACY = BASE_IP+"/web/tjfile/smart/yszc.html";//隐私政策
@@ -31,5 +30,9 @@ public class CONST {
     public static final int color2 = android.R.color.holo_blue_light;
     public static final int color3 = android.R.color.holo_blue_bright;
     public static final int color4 = android.R.color.holo_blue_light;
+
+    //数据类型
+    public static final String LOCAL = "local";
+    public static final String WEB = "web";
 
 }

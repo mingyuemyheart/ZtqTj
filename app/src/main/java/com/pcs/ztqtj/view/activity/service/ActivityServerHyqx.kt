@@ -12,6 +12,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.pcs.ztqtj.R
+import com.pcs.ztqtj.control.tool.utils.TextUtil
 import com.pcs.ztqtj.model.ZtqCityDB
 import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.ColumnDto
@@ -100,99 +101,127 @@ class ActivityServerHyqx : FragmentActivityZtqBase() {
                 holder.itemImageView!!.setImageResource(R.drawable.no_pic)
             }
             holder.itemImageView!!.setOnClickListener {
-                when(data.dataCode) {
-                    "30201" -> {//交通气象
+                when(data.dataType) {
+                    CONST.WEB -> {
                         if (!CommonUtil.isCanAccess(data.flag)) {
                             return@setOnClickListener
                         }
-                        val intent = Intent(mContext, ActivityTraffic::class.java)
-                        intent.putExtra("title", data.dataName)
-                        intent.putExtra("dataCode", data.dataCode)
-                        startActivity(intent)
-                    }
-                    "302020101" -> {//农情实况数据
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        val intent = Intent(mContext, ActivityAgricutureFact::class.java)
-                        intent.putExtra("title", data.dataName)
-                        intent.putExtra("dataCode", data.dataCode)
-                        startActivity(intent)
-                    }
-                    "302020102" -> {//农田实景
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        val intent = Intent(mContext, ActivityAgricutureView::class.java)
-                        intent.putExtra("title", data.dataName)
-                        intent.putExtra("dataCode", data.dataCode)
-                        startActivity(intent)
-                    }
-                    "302020201" -> {//旬报
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        val intent = Intent(mContext, ActivityAgricultureWeather::class.java)
-                        intent.putExtra("title", data.dataName)
-                        intent.putExtra("dataCode", data.dataCode)
-                        intent.putExtra("channel_id", "30202")
-                        intent.putExtra("type", "xb")
-                        startActivity(intent)
-                    }
-                    "302020202" -> {//月报
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        val intent = Intent(mContext, ActivityAgricultureWeather::class.java)
-                        intent.putExtra("title", data.dataName)
-                        intent.putExtra("dataCode", data.dataCode)
-                        intent.putExtra("channel_id", "30202")
-                        intent.putExtra("type", "yb")
-                        startActivity(intent)
-                    }
-                    "302020301" -> {//农情苗情速报
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        if (!ZtqCityDB.getInstance().isLoginService) {
-                            intent = Intent(mContext, ActivityLogin::class.java)
-                            startActivityForResult(intent, CONST.RESULT_LOGIN)
-                        } else {
-                            val intent = Intent(mContext, ActivityPhotoShow::class.java)
+                        if (!TextUtil.isEmpty(data.url) && data.url.startsWith("http")) {
+                            val intent = Intent(mContext, ActivityWebView::class.java)
                             intent.putExtra("title", data.dataName)
-                            intent.putExtra("imgType", "2")//imgType:图片类型，1（实景开拍），2（农业开拍分类）必须传，区分哪个业务
+                            intent.putExtra("url", data.url)
+                            intent.putExtra("shareContent", data.dataName)
                             startActivity(intent)
                         }
                     }
-                    "302020302" -> {//农情苗情互动
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        val intent = Intent(mContext, AgriEachActivity::class.java)
-                        intent.putExtra("title", data.dataName)
-                        startActivity(intent)
-                    }
-                    "3020204","3020205","3020206","3020207","3020208","3020209" -> {
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        val intent = Intent(mContext, ActivityWebView::class.java)
-                        intent.putExtra("title", data.dataName)
-                        intent.putExtra("url", data.url)
-                        intent.putExtra("shareContent", data.dataName)
-                        startActivity(intent)
-                    }
-                    else -> {//农业气象
-                        if (!CommonUtil.isCanAccess(data.flag)) {
-                            return@setOnClickListener
-                        }
-                        if (data.childList.size > 0) {
-                            val intent = Intent(mContext, ActivityServerHyqx::class.java)
-                            intent.putExtra("title", data.dataName)
-                            val bundle = Bundle()
-                            bundle.putParcelableArrayList("dataList", data.childList)
-                            intent.putExtras(bundle)
-                            startActivity(intent)
+                    CONST.LOCAL -> {
+                        when(data.dataCode) {
+                            "3020101" -> {//交通气象周报
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, ActivityTraffic::class.java)
+                                intent.putExtra("title", data.dataName)
+                                intent.putExtra("dataCode", data.dataCode)
+                                startActivity(intent)
+                            }
+//                            "3020102", "3020103" -> {//高速天气、交通隐患点
+//                                if (!CommonUtil.isCanAccess(data.flag)) {
+//                                    return@setOnClickListener
+//                                }
+//                                if (!TextUtil.isEmpty(data.url) && data.url.startsWith("http")) {
+//                                    val intent = Intent(mContext, ActivityWebView::class.java)
+//                                    intent.putExtra("title", data.dataName)
+//                                    intent.putExtra("url", data.url)
+//                                    intent.putExtra("shareContent", data.dataName)
+//                                    startActivity(intent)
+//                                }
+//                            }
+                            "302020101" -> {//农情实况数据
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, ActivityAgricutureFact::class.java)
+                                intent.putExtra("title", data.dataName)
+                                intent.putExtra("dataCode", data.dataCode)
+                                startActivity(intent)
+                            }
+                            "302020102" -> {//农田实景
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, ActivityAgricutureView::class.java)
+                                intent.putExtra("title", data.dataName)
+                                intent.putExtra("dataCode", data.dataCode)
+                                startActivity(intent)
+                            }
+                            "302020201" -> {//旬报
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, ActivityAgricultureWeather::class.java)
+                                intent.putExtra("title", data.dataName)
+                                intent.putExtra("dataCode", data.dataCode)
+                                intent.putExtra("channel_id", "30202")
+                                intent.putExtra("type", "xb")
+                                startActivity(intent)
+                            }
+                            "302020202" -> {//月报
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, ActivityAgricultureWeather::class.java)
+                                intent.putExtra("title", data.dataName)
+                                intent.putExtra("dataCode", data.dataCode)
+                                intent.putExtra("channel_id", "30202")
+                                intent.putExtra("type", "yb")
+                                startActivity(intent)
+                            }
+                            "302020301" -> {//农情苗情速报
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                if (!ZtqCityDB.getInstance().isLoginService) {
+                                    intent = Intent(mContext, ActivityLogin::class.java)
+                                    startActivityForResult(intent, CONST.RESULT_LOGIN)
+                                } else {
+                                    val intent = Intent(mContext, ActivityPhotoShow::class.java)
+                                    intent.putExtra("title", data.dataName)
+                                    intent.putExtra("imgType", "2")//imgType:图片类型，1（实景开拍），2（农业开拍分类）必须传，区分哪个业务
+                                    startActivity(intent)
+                                }
+                            }
+                            "302020302" -> {//农情苗情互动
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, AgriEachActivity::class.java)
+                                intent.putExtra("title", data.dataName)
+                                startActivity(intent)
+                            }
+                            "3020204","3020205","3020206","3020207","3020208","3020209" -> {
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                val intent = Intent(mContext, ActivityWebView::class.java)
+                                intent.putExtra("title", data.dataName)
+                                intent.putExtra("url", data.url)
+                                intent.putExtra("shareContent", data.dataName)
+                                startActivity(intent)
+                            }
+                            else -> {//交通气象、农业气象
+                                if (!CommonUtil.isCanAccess(data.flag)) {
+                                    return@setOnClickListener
+                                }
+                                if (data.childList.size > 0) {
+                                    val intent = Intent(mContext, ActivityServerHyqx::class.java)
+                                    intent.putExtra("title", data.dataName)
+                                    val bundle = Bundle()
+                                    bundle.putParcelableArrayList("dataList", data.childList)
+                                    intent.putExtras(bundle)
+                                    startActivity(intent)
+                                }
+                            }
                         }
                     }
                 }

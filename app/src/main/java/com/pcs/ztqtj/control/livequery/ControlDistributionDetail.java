@@ -206,7 +206,7 @@ public class ControlDistributionDetail {
             markerOptions.position(latLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, "")))
                     //.zIndex(MapElementZIndex.markerZIndex)
-                    .anchor(0.5f, 1.3f);
+                    .anchor(0.5f, 0.0f);
             // 添加点数据至缓存列表
             Marker marker = aMap.addMarker(markerOptions);
             //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
@@ -249,9 +249,7 @@ public class ControlDistributionDetail {
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(latLng)
                     .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, bean.fx)))
-                    //.zIndex(MapElementZIndex.markerZIndex)
-//                    .rotateAngle(-Float.parseFloat(bean.fx))
-                    .anchor(0.5f, 1.3f);
+                    .anchor(0.5f, 1.0f);
             // 添加点数据至缓存列表
             Marker marker = aMap.addMarker(markerOptions);
             //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
@@ -328,17 +326,18 @@ public class ControlDistributionDetail {
         if(column == RAIN && (currentStatus == ZD || currentStatus == DB || currentStatus == GJ)) {
             resid = LegendInterval.getInstance().getDrawableId(column, fValue, isTotal);
         } else if(column == WIND) {
-            if(currentStatus == SB) {
-                resid = LegendInterval.getInstance().getWindDrawableId(fValue, true);
-            } else {
+//            if(currentStatus == SB) {
+//                resid = LegendInterval.getInstance().getWindDrawableId(fValue, true);
+//            } else {
                 resid = LegendInterval.getInstance().getWindDrawableId(fValue, false);
-            }
+//            }
         } else {
             resid = LegendInterval.getInstance().getDrawableId(column, fValue);
         }
         //视图
         View view = mActivity.getLayoutInflater().inflate(R.layout.mymarker, null);
         ImageView marker_image = (ImageView) view.findViewById(R.id.marker_image);
+        TextView tvValue = (TextView) view.findViewById(R.id.marker_text);
         if (!TextUtils.isEmpty(fx)) {
             marker_image.setVisibility(View.VISIBLE);
             int drawableId = LegendInterval.getInstance().getWindDrawableId(fValue, true);
@@ -346,9 +345,8 @@ public class ControlDistributionDetail {
             marker_image.setRotation(Float.valueOf(fx));
         } else {
             marker_image.setVisibility(View.GONE);
-            TextView textView = (TextView) view.findViewById(R.id.marker_text);
-            textView.setTextColor(mActivity.getResources().getColor(LegendInterval.getInstance().getTextColorId(column, fValue)));
-            textView.setText(value);
+            tvValue.setTextColor(mActivity.getResources().getColor(LegendInterval.getInstance().getTextColorId(column, fValue)));
+            tvValue.setText(value);
             view.setBackgroundResource(resid);
         }
 //        if((column == WIND && currentStatus != SB) || (column != WIND)) {
@@ -645,6 +643,7 @@ public class ControlDistributionDetail {
      * @param column
      * @param status
      */
+    private String windType = "2010404";
     public void reqDistribution(ControlDistribution.ColumnCategory column, final ControlDistribution.DistributionStatus status,
                                 ColumnInfo siteInfo, ColumnInfo flagInfo) {
         currentColumn = column;
@@ -685,34 +684,65 @@ public class ControlDistributionDetail {
                 case SB: // 色斑
                     if (column == WIND) {
                         name = "fycx_fbt_station";
-                        img_type = PackFycxFbtUp.ZD;
-                        img_type = "2010403";
+                        img_type = windType;
                     } else {
                         name = "fycx_fbt_img";
-                        img_type = PackFycxFbtUp.SB;
                         img_type = "2010401";
                     }
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case ZD: // 自动站
+                    if (column == WIND) {
+                        name = "fycx_fbt_station";
+                        img_type = "2010404";
+                        PackFycxFbtUp fycxFbtUp = new PackFycxFbtUp();
+                        fycxFbtUp.type = type;
+                        fycxFbtUp.img_type = img_type;
+                        fycxFbtUp.falg = flag;
+                        fycxFbtUp.area_id = area_id;
+                        okHttpFycxFbt(name,fycxFbtUp, status);
+                    }
+
                     name = "fycx_fbt_station";
-                    img_type = PackFycxFbtUp.ZD;
                     img_type = "2010404";
+                    windType = img_type;
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case DB: // 代表站
+                    if (column == WIND) {
+                        name = "fycx_fbt_station";
+                        img_type = "2010403";
+                        PackFycxFbtUp fycxFbtUp = new PackFycxFbtUp();
+                        fycxFbtUp.type = type;
+                        fycxFbtUp.img_type = img_type;
+                        fycxFbtUp.falg = flag;
+                        fycxFbtUp.area_id = area_id;
+                        okHttpFycxFbt(name,fycxFbtUp, status);
+                    }
+
                     name = "fycx_fbt_station";
-                    img_type = PackFycxFbtUp.DB;
                     img_type = "2010403";
+                    windType = img_type;
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
                 case GJ: // 国家站
+                    if (column == WIND) {
+                        name = "fycx_fbt_station";
+                        img_type = "2010402";
+                        PackFycxFbtUp fycxFbtUp = new PackFycxFbtUp();
+                        fycxFbtUp.type = type;
+                        fycxFbtUp.img_type = img_type;
+                        fycxFbtUp.falg = flag;
+                        fycxFbtUp.area_id = area_id;
+                        okHttpFycxFbt(name,fycxFbtUp, status);
+                    }
+
                     name = "fycx_fbt_station";
-                    img_type = PackFycxFbtUp.GJ;
                     img_type = "2010402";
+                    windType = img_type;
                     flag = flagInfo.type;
                     area_id = siteInfo.type;
                     break;
@@ -728,23 +758,16 @@ public class ControlDistributionDetail {
         } else {
             switch (status) {
                 case RADAR: // 雷达
-                    img_type = PackFycxFbtUp.RADAR;
                     img_type = "2010405";
                     area_id = siteInfo.type;
                     break;
                 case CLOUD: // 云图
-                    img_type = PackFycxFbtUp.CLOUD;
                     img_type = "2010406";
                     area_id = "25169";
                     break;
                 case NONE:
                     return;
             }
-//            fycxFbtLdUp = new PackFycxFbtLdUp();
-//            fycxFbtLdUp.area_id = area_id;
-//            fycxFbtLdUp.img_type = img_type;
-//            fycxFbtLdUp.type = type;
-//            PcsDataDownload.addDownload(fycxFbtLdUp);
 
             PackFycxFbtUp fycxFbtUp = new PackFycxFbtUp();
             fycxFbtUp.type = type;
@@ -832,17 +855,32 @@ public class ControlDistributionDetail {
                                                             }
                                                             break;
                                                             case ZD: {
+                                                                if (cbSb.isChecked()) {
+                                                                    if (currentColumn == WIND) {
+                                                                        addWindMarkersToMap(fbtDown);
+                                                                    }
+                                                                }
                                                                 if(cbZd.isChecked()) {
                                                                     addMarkersToMap(fbtDown);
                                                                 }
                                                             }
                                                             break;
                                                             case DB: {
+                                                                if (cbSb.isChecked()) {
+                                                                    if (currentColumn == WIND) {
+                                                                        addWindMarkersToMap(fbtDown);
+                                                                    }
+                                                                }
                                                                 if(cbDb.isChecked()) {
                                                                     addMarkersToMap(fbtDown);
                                                                 }
                                                             }
                                                             case GJ: {
+                                                                if (cbSb.isChecked()) {
+                                                                    if (currentColumn == WIND) {
+                                                                        addWindMarkersToMap(fbtDown);
+                                                                    }
+                                                                }
                                                                 if(cbGj.isChecked()) {
                                                                     addMarkersToMap(fbtDown);
                                                                 }

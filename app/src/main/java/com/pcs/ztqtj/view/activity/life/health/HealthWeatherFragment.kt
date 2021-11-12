@@ -22,6 +22,7 @@ import com.pcs.ztqtj.view.activity.life.HealthDto
 import kotlinx.android.synthetic.main.fragment_health_weather.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -128,6 +129,7 @@ class HealthWeatherFragment: Fragment() {
     private fun okHttpHealthIndex() {
         Thread {
             try {
+                val name = arguments!!.getString("name")
                 val lat = arguments!!.getDouble("lat", 0.0)
                 val lng = arguments!!.getDouble("lng", 0.0)
                 val param = JSONObject()
@@ -163,24 +165,14 @@ class HealthWeatherFragment: Fragment() {
                                     if (!obj.isNull("result")) {
                                         val array = obj.getJSONArray("result")
                                         for (i in 0 until array.length()) {
-                                            val dto = HealthDto()
-                                            val itemObj = array.getJSONObject(i)
-                                            if (!itemObj.isNull("code")) {
-                                                dto.code = itemObj.getString("code")
+                                            val objHour = array.getJSONObject(i)
+                                            if (name.startsWith("24小时") && !objHour.isNull("24h")) {
+                                                val itemArray = objHour.getJSONArray("24h")
+                                                parseLatestData(itemArray)
+                                            } else if (name.startsWith("48小时") && !objHour.isNull("48h")) {
+                                                val itemArray = objHour.getJSONArray("48h")
+                                                parseLatestData(itemArray)
                                             }
-                                            if (!itemObj.isNull("name")) {
-                                                dto.name = itemObj.getString("name")
-                                            }
-                                            if (!itemObj.isNull("level")) {
-                                                dto.level = itemObj.getString("level")
-                                            }
-                                            if (!itemObj.isNull("tips")) {
-                                                dto.tips = itemObj.getString("tips")
-                                            }
-                                            if (!itemObj.isNull("icon")) {
-                                                dto.indexIcon = itemObj.getString("icon")
-                                            }
-                                            dataList.add(dto)
                                         }
                                         if (mAdapter != null) {
                                             mAdapter!!.notifyDataSetChanged()
@@ -197,6 +189,32 @@ class HealthWeatherFragment: Fragment() {
                 e.printStackTrace()
             }
         }.start()
+    }
+
+    private fun parseLatestData(itemArray: JSONArray) {
+        for (j in 0 until itemArray.length()) {
+            val dto = HealthDto()
+            val itemObj = itemArray.getJSONObject(j)
+            if (!itemObj.isNull("code")) {
+                dto.code = itemObj.getString("code")
+            }
+            if (!itemObj.isNull("name")) {
+                dto.name = itemObj.getString("name")
+            }
+            if (!itemObj.isNull("level")) {
+                dto.level = itemObj.getString("level")
+            }
+            if (!itemObj.isNull("tips")) {
+                dto.tips = itemObj.getString("tips")
+            }
+            if (!itemObj.isNull("icon")) {
+                dto.indexIcon = itemObj.getString("icon")
+            }
+            dataList.add(dto)
+        }
+        if (mAdapter != null) {
+            mAdapter!!.notifyDataSetChanged()
+        }
     }
 
     /**

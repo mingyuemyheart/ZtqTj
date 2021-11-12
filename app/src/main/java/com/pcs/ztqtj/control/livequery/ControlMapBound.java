@@ -45,8 +45,8 @@ public class ControlMapBound {
     //画图任务列表
     private List<DrawTask> drawTaskList = new ArrayList<>();
     // 面数据列表
-    private List<Polygon> polygonLv1List = new ArrayList<>();
-    private List<Polygon> polygonLv2List = new ArrayList<>();
+    public List<Polygon> polygonLv1List = new ArrayList<>();
+    public List<Polygon> polygonLv2List = new ArrayList<>();
 
     private static final boolean isSingleBound = true;
 
@@ -176,7 +176,7 @@ public class ControlMapBound {
         }
     }
 
-    private void showBounds(boolean b, List<Polygon> polygonList) {
+    public void showBounds(boolean b, List<Polygon> polygonList) {
         for (Polygon polygon : polygonList) {
             polygon.setVisible(b);
         }

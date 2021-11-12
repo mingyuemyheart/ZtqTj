@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ColumnDto implements Parcelable {
 
-    public String dataCode,dataName,desc,parentId,icon,flag,url;
+    public String dataCode,dataName,dataType,desc,parentId,icon,flag,url;
 
     public ArrayList<ColumnDto> childList = new ArrayList<>();
 
@@ -18,6 +18,7 @@ public class ColumnDto implements Parcelable {
     protected ColumnDto(Parcel in) {
         dataCode = in.readString();
         dataName = in.readString();
+        dataType = in.readString();
         desc = in.readString();
         parentId = in.readString();
         icon = in.readString();
@@ -30,6 +31,7 @@ public class ColumnDto implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(dataCode);
         dest.writeString(dataName);
+        dest.writeString(dataType);
         dest.writeString(desc);
         dest.writeString(parentId);
         dest.writeString(icon);

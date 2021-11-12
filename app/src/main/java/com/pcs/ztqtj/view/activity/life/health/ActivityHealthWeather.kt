@@ -154,6 +154,7 @@ class ActivityHealthWeather : FragmentActivityZtqBase(), AMapLocationListener {
 
             val fragment = HealthWeatherFragment()
             val bundle = Bundle()
+            bundle.putString("name", tv.text.toString())
             bundle.putString("position", position)
             bundle.putDouble("lat", lat)
             bundle.putDouble("lng", lng)

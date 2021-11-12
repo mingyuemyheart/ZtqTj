@@ -12,8 +12,8 @@ android {
         applicationId "com.pcs.ztqtj"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10079
-        versionName "1.2.58.0"
+        versionCode 10095
+        versionName "1.2.64.0"
         manifestPlaceholders = [
                 XG_ACCESS_ID:"2100331791",
                 XG_ACCESS_KEY : "AV2S73V38UXQ",

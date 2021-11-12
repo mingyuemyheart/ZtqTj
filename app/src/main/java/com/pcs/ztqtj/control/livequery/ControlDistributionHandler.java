@@ -1,6 +1,7 @@
 package com.pcs.ztqtj.control.livequery;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -15,6 +16,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.GroundOverlayOptions;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCity;
 import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalCityMain;
@@ -25,6 +28,7 @@ import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.waterflood.AdapterPopWindow;
 import com.pcs.ztqtj.model.ZtqCityDB;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.livequery.ActivityLiveQuery;
 import com.pcs.ztqtj.view.fragment.livequery.FragmentDistributionMap;
@@ -57,6 +61,8 @@ import static com.pcs.ztqtj.control.livequery.ControlDistribution.DistributionSt
  */
 public class ControlDistributionHandler extends ControlDistributionBase {
 
+    private AMap aMap;
+    private ControlMapBound controlMapBound;
     private FragmentDistributionMap mFragment;
     private Context mContext;
     private ActivityLiveQuery mActivity;
@@ -91,7 +97,9 @@ public class ControlDistributionHandler extends ControlDistributionBase {
     private static final int WHAT_PLAY = 0;
     private static final int WHAT_PAUSE = 1;
 
-    public ControlDistributionHandler(FragmentDistributionMap fragment, ActivityLiveQuery activity, ViewGroup rootLayout) {
+    public ControlDistributionHandler(FragmentDistributionMap fragment, ActivityLiveQuery activity, ViewGroup rootLayout, AMap aMap, ControlMapBound controlMapBound) {
+        this.aMap = aMap;
+        this.controlMapBound = controlMapBound;
         mFragment = fragment;
         mActivity = activity;
         mContext = activity;
@@ -339,9 +347,6 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                     //controlDistribution.clearAll();
                     controlDistribution.clearDistribution();
                     controlDistribution.clearAutoSite();
-                    if(cbSb.isChecked()) {
-                        controlDistribution.reqDistribution(currentColumn, SB, currentSiteInfo, currentFlagInfo);
-                    }
                     if(cbZd.isChecked()) {
                         controlDistribution.reqDistribution(currentColumn, ZD, currentSiteInfo, currentFlagInfo);
                     } else if(cbDb.isChecked()) {
@@ -354,6 +359,9 @@ public class ControlDistributionHandler extends ControlDistributionBase {
 //                    } else if(cbCloud.isChecked()) {
 //                        controlDistribution.reqDistribution(currentColumn, CLOUD, currentSiteInfo, currentFlagInfo);
 //                    }
+                    if(cbSb.isChecked()) {
+                        controlDistribution.reqDistribution(currentColumn, SB, currentSiteInfo, currentFlagInfo);
+                    }
                 }
             });
         } else {
@@ -362,14 +370,38 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     pop.dismiss();
                     dropDownView.setText(dataeaum.get(position));
+                    if (TextUtils.equals(dataeaum.get(position), "海河流域") || TextUtils.equals(dataeaum.get(position), "海洋")) {
+                        cbDb.setClickable(false);
+                        cbDb.setTextColor(Color.LTGRAY);
+                        if (controlMapBound != null) {
+                            controlMapBound.showBounds(false, controlMapBound.polygonLv1List);
+                            controlMapBound.showBounds(false, controlMapBound.polygonLv2List);
+                        }
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommonUtil.drawHhlyJson(mActivity, aMap);
+                            }
+                        }).start();
+                    } else {
+                        cbDb.setClickable(true);
+                        cbDb.setTextColor(mActivity.getResources().getColor(R.color.text_black_common));
+                        if (controlMapBound != null) {
+                            controlMapBound.showBounds(true, controlMapBound.polygonLv1List);
+                            controlMapBound.showBounds(true, controlMapBound.polygonLv2List);
+                        }
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommonUtil.removeHhlyJson();
+                            }
+                        }).start();
+                    }
                     currentSiteInfo = siteColumnList.get(position);
                     //controlDistribution.clearAll();
                     controlDistribution.clearDistribution();
                     controlDistribution.clearAutoSite();
                     controlDistribution.clearRadar();
-                    if(cbSb.isChecked()) {
-                        controlDistribution.reqDistribution(currentColumn, SB, currentSiteInfo, currentFlagInfo);
-                    }
                     if(cbZd.isChecked()) {
                         controlDistribution.reqDistribution(currentColumn, ZD, currentSiteInfo, currentFlagInfo);
                     } else if(cbDb.isChecked()) {
@@ -385,6 +417,9 @@ public class ControlDistributionHandler extends ControlDistributionBase {
 //                        controlDistribution.reqDistribution(currentColumn, CLOUD, currentSiteInfo, currentFlagInfo);
 //                        stopDraw();
 //                    }
+                    if(cbSb.isChecked()) {
+                        controlDistribution.reqDistribution(currentColumn, SB, currentSiteInfo, currentFlagInfo);
+                    }
                 }
             });
         }
@@ -505,6 +540,7 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked) {
+                cbDb.setTextColor(mActivity.getResources().getColor(R.color.text_livequery));
                 if(cbZd.isChecked()) {
                     cbZd.setChecked(false);
                 }
@@ -515,6 +551,7 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                 reqDistribution();
                 showLegend();
             } else {
+                cbDb.setTextColor(mActivity.getResources().getColor(R.color.text_black_common));
                 controlDistribution.clear(DB);
                 hideLegend();
             }
@@ -600,7 +637,13 @@ public class ControlDistributionHandler extends ControlDistributionBase {
             if (timeColumnList != null && timeColumnList.size() > 0) {
                 List<String> list = new ArrayList<>();
                 for (ColumnInfo bean : timeColumnList) {
-                    list.add(bean.name);
+                    if (TextUtils.equals(tvSite.getText().toString(), "海河流域") || TextUtils.equals(tvSite.getText().toString(), "海洋")) {
+                        if (!TextUtils.equals(bean.type, "MMaxTemp") && !TextUtils.equals(bean.type, "MMinTemp")) {
+                            list.add(bean.name);
+                        }
+                    } else {
+                        list.add(bean.name);
+                    }
                 }
                 createPopupWindow(tvTime, list, 0);
             }
