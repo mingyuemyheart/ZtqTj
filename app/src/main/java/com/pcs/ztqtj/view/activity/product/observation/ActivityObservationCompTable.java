@@ -6,18 +6,17 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.ItemObservationCompTable;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationCompTableDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationCompTableUp;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.observation.AdapterObservationCompTable;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.observation.ItemObservationCompTable;
-import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationCompTableDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.observation.PackObservationCompTableUp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,11 +112,8 @@ public class ActivityObservationCompTable extends FragmentActivityZtqBase {
             @Override
             public void onClick(View v) {
                 View layout = findViewById(R.id.layout);
-                PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share#ABOUT_QXCP_DXFW");
-                if(down != null) {
-                    Bitmap bm = ZtqImageTool.getInstance().getScreenBitmapNew(ActivityObservationCompTable.this);
-                    ShareTools.getInstance(ActivityObservationCompTable.this).setShareContent(getTitleText(),down.share_content, bm,"0").showWindow(layout);
-                }
+                Bitmap bm = ZtqImageTool.getInstance().getScreenBitmapNew(ActivityObservationCompTable.this);
+                ShareTools.getInstance(ActivityObservationCompTable.this).setShareContent(getTitleText(),getTitleText(), bm,"0").showWindow(layout);
             }
         });
 

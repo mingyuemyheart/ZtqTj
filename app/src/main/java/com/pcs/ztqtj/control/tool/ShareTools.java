@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -127,6 +128,9 @@ public class ShareTools {
     public ShareTools setShareContent(String title, String shareContent, String url, Bitmap shareBitmap) {
         this.mTitle = title;
         this.mShare = shareContent;
+        if (!TextUtils.isEmpty(url)) {
+            this.mShareUrl = url;
+        }
         this.mBitmap = shareBitmap;
         return instance;
     }

@@ -680,7 +680,7 @@ public class CommandMainRow0 extends CommandMainBase {
                                                             ivWarning.setOnClickListener(new View.OnClickListener() {
                                                                 @Override
                                                                 public void onClick(View v) {
-                                                                    intentWarningCenter(false, v.getTag() + "");
+                                                                    intentWarningCenter(true, v.getTag() + "");
                                                                 }
                                                             });
                                                         }

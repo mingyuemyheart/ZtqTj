@@ -9,8 +9,8 @@ public class CONST {
 
     public static final String SHARE_URL = BASE_IP+"/web/build/index.html";//分享地址
 
-    public static final String PROTOCAL = BASE_IP+"/web/tjfile/smart/yhxy.html";//用户协议
-    public static final String PRIVACY = BASE_IP+"/web/tjfile/smart/yszc.html";//隐私政策
+    public static final String PROTOCAL = BASE_IP+"/web/tjfile/wap/protocol.html";//用户协议
+    public static final String PRIVACY = BASE_IP+"/web/tjfile/wap/protocol2.html";//隐私政策
     public static final String MZSM = BASE_IP+"/web/tjfile/wap/mzsm.html";//免责声明
     public static final String SQZN = BASE_IP+"/web/tjfile/wap/sqzn.html";//申请指南
 

@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.view.activity.life.MyArtTitleInfo;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.List;
  */
 public class AdapterChannelList extends BaseAdapter {
 
-	private List<ArtTitleInfo> mItems;
+	private List<MyArtTitleInfo> mItems;
 	private Context context;
 
-	public AdapterChannelList(Context context, List<ArtTitleInfo> items) {
+	public AdapterChannelList(Context context, List<MyArtTitleInfo> items) {
 		this.mItems = items;
 		this.context = context;
 	}
@@ -58,7 +58,7 @@ public class AdapterChannelList extends BaseAdapter {
 			viewHodler = (ViewHodler) convertView.getTag();
 		}
 
-		ArtTitleInfo info = mItems.get(position);
+		MyArtTitleInfo info = mItems.get(position);
 		String title = info.title;
 		String description = info.desc;
 		String small_ico = context.getString(R.string.msyb)+info.small_ico;

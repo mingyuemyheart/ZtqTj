@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
@@ -177,6 +178,12 @@ public class AcitvityServeLogin extends FragmentActivityZtqBase implements View.
                                                 sendBroadcast(bdIntent);
 
                                                 finishView();
+                                            }
+                                            if (!obj.isNull("errorMessage")) {
+                                                String errorMessage = obj.getString("errorMessage");
+                                                if (errorMessage != null) {
+                                                    Toast.makeText(AcitvityServeLogin.this, errorMessage, Toast.LENGTH_SHORT).show();
+                                                }
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();

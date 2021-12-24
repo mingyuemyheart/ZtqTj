@@ -65,8 +65,7 @@ public class ActivitySelectTravelViewList extends FragmentActivityZtqBase {
 		viewsList = new ArrayList<PackLocalCity>();
 		province = new ArrayList<PackLocalCity>();
 		ZtqCityDB.getInstance().initTravels(getApplicationContext());
-		List<PackLocalCity> provinceResource = ZtqCityDB.getInstance()
-				.getProvincesList();
+		List<PackLocalCity> provinceResource = ZtqCityDB.getInstance().getProvincesList();
 		for (PackLocalCity city : provinceResource) {
 			if (!city.NAME.equals("钓鱼岛")) {
                 province.add(city);
@@ -85,8 +84,7 @@ public class ActivitySelectTravelViewList extends FragmentActivityZtqBase {
 		adapterSearch = new AdapteTraveSelectCityExpandableListView(this);
 		selectCityListview.setAdapter(adapterSearch);
 		for (int i = 0; i < province.size(); i++) {
-			List<PackLocalCity> infoList = ZtqCityDB.getInstance()
-					.getViewsByProcinceID(province.get(i).ID);
+			List<PackLocalCity> infoList = ZtqCityDB.getInstance().getViewsByProcinceID(province.get(i).ID);
 			datasMap.put(province.get(i).ID, infoList);
 		}
 		adapter = new AdapterSelectTravelViewExpandList(this, exList, province, datasMap);
@@ -96,8 +94,7 @@ public class ActivitySelectTravelViewList extends FragmentActivityZtqBase {
 
 	private class ExpendChildListener implements OnGroupClickListener {
 		@Override
-		public boolean onGroupClick(ExpandableListView parent, View v,
-				int groupPosition, long id) {
+		public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
 			if (adapter.getGroupClickStatus(groupPosition) == 0) {
 				adapter.setGroupClickStatus(groupPosition, 1);
 				parent.expandGroup(groupPosition);

@@ -51,7 +51,6 @@ import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.ColumnInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
@@ -344,10 +343,6 @@ public class ActivityTyphoon extends FragmentActivityWithShare implements OnClic
         intent.putExtra("title", name);
         intent.putExtra("url", url);
         startActivity(intent);
-    }
-
-    private void clickRadar() {
-
     }
 
     private Handler mHandler = new Handler() {
@@ -1223,12 +1218,7 @@ public class ActivityTyphoon extends FragmentActivityWithShare implements OnClic
 
             mShareBitmap = procImage(mAmapBitmap, bm, top);
             mShareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityTyphoon.this, mShareBitmap);
-            PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack
-                    ("wt_share#ABOUT_QXCP_DXFW");
-            if (down != null) {
-                ShareTools.getInstance(ActivityTyphoon.this).setShareContent(getTitleText(), down
-                        .share_content, mShareBitmap, "0").showWindow(layout);
-            }
+            ShareTools.getInstance(ActivityTyphoon.this).setShareContent(getTitleText(), getTitleText(), mShareBitmap, "0").showWindow(layout);
         }
 
         @Override

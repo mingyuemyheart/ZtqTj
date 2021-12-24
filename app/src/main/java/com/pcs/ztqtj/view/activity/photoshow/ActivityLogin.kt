@@ -171,7 +171,6 @@ class ActivityLogin : FragmentActivityZtqBase(), OnClickListener {
      * 登录接口
      */
     private fun okHttpLogin(json: String, dataUrl: String) {
-        Log.e("okHttpLogin", json)
         showProgressDialog()
         Thread {
             val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()

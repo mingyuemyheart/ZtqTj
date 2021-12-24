@@ -56,6 +56,7 @@ import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+import com.pcs.ztqtj.view.activity.life.expert_interpretation.ActivityExpertDetail;
 import com.pcs.ztqtj.view.myview.MainViewPager;
 import com.pcs.ztqtj.view.myview.TexureViewVideoView;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -207,10 +208,7 @@ public class ActivityMediaPlay extends FragmentActivityZtqBase implements OnClic
                 mBitmap = getShareBitmap();
                 PlayMeadia();
                 View layout = findViewById(R.id.layout);
-                ShareTools.getInstance(ActivityMediaPlay.this)
-                        .setShareClickListener(shareListener)
-                        .setShareCallBack(shareCallBackListener)
-                        .showWindow(layout);
+                ShareTools.getInstance(ActivityMediaPlay.this).setShareContent(getTitleText(),title, mediaurl, mBitmap).showWindow(layout);
             }
         });
 

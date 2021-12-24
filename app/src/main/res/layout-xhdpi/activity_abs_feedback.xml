@@ -195,15 +195,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:padding="@dimen/dimen10"
-                android:text="@string/suggest"
-                android:textColor="@color/text_orange"
-                android:textSize="@dimen/text_content" />
-
             <Button
                 android:id="@+id/commit_content"
                 android:layout_width="80dp"
@@ -216,6 +207,15 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textsize15" />
         </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/dimen10"
+            android:text="@string/suggest"
+            android:textColor="@color/text_orange"
+            android:textSize="@dimen/text_content" />
 
         <View
             android:layout_width="match_parent"

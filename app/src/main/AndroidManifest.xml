@@ -242,6 +242,10 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <!-- 实况告警推送 -->
+        <activity
+            android:name=".view.activity.set.AcitvityWarnLivePush"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <!-- 自动分享 -->
         <activity
             android:name=".view.activity.set.ActivityAutoShare"
@@ -260,9 +264,21 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <!-- 温馨提示推送 -->
+        <activity
+            android:name=".view.activity.set.ActivityReminder"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <!-- 气象服务推送设置界面 -->
+        <activity
+            android:name=".view.activity.set.ActivityServicePushSet"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <!-- 其他 设置 -->
         <!-- 气象预警推送 -->
+        <activity
+            android:name=".view.activity.set.ActivityWeatherBasedWarning"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
 
         <!-- 天气闹钟 -->
         <activity
@@ -270,11 +286,19 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <!-- 天气预报推送 -->
+        <activity
+            android:name=".view.activity.set.ActivityWeatherPush"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <!-- 推送集合 -->
         <activity
             android:name=".view.activity.set.ActivityColumnManager"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.set.ActivityPushMain"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <!-- 开机启动 -->
         <receiver
             android:name=".control.receiver.BootStrapReceiver"
@@ -524,6 +548,11 @@
             android:name=".view.activity.photoshow.ActivityLogin"
             android:exported="false"
             android:screenOrientation="portrait" /> <!-- 实景开拍：登陆 -->
+
+        <activity
+            android:name=".view.activity.photoshow.ActivityLogout"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".view.activity.photoshow.ActivityBind"

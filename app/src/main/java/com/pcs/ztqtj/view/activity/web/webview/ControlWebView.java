@@ -33,7 +33,6 @@ import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib.lib_pcs_v3.model.image.ImageResizer;
 import com.pcs.lib.lib_pcs_v3.model.pack.PcsPackUp;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalUrl;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCommitMoviceDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackCommitMoviceUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.PackInitDown;
@@ -63,53 +62,28 @@ import com.umeng.socialize.media.UMWeb;
 import java.io.File;
 import java.util.Random;
 
-/**
- * Created by Z on 2017/2/21.
- */
-
-
 public class ControlWebView {
     public final int resultCode = 11121;
     private ActivityWebView activity;
-    private KWHttpRequest.KwHttpRequestListener listener;
 
     public ControlWebView(ActivityWebView activity, KWHttpRequest.KwHttpRequestListener listener) {
         this.activity = activity;
         init();
     }
 
-    /**
-     * 上传数据+文件
-     */
-    private KWHttpRequest mKWHttpRequest;
-
     public void init() {
         PcsDataBrocastReceiver.registerReceiver(activity, mReceiver);
-        PackLocalUrl packUrl = (PackLocalUrl) PcsDataManager.getInstance().getLocalPack(PackLocalUrl.KEY);
-        PackInitUp initUp = new PackInitUp();
-        PackInitDown packInit = (PackInitDown) PcsDataManager.getInstance().getNetPack(initUp.getName());
-        mKWHttpRequest = new KWHttpRequest(activity);
-        mKWHttpRequest.setURL(packUrl.url);
-        mKWHttpRequest.setmP(packInit.pid);
-        mKWHttpRequest.setListener(0, listener);
 
         initPopupWindow();
         initPopupWindow2();
     }
 
     public void destory() {
-        if (mKWHttpRequest != null) {
-            mKWHttpRequest.setListener(0, null);
-        }
         PcsDataBrocastReceiver.unregisterReceiver(activity, mReceiver);
     }
 
     public void commitFile(String filePath, PcsPackUp packUp) {
 
-        // 请求网络
-        mKWHttpRequest.setFilePath(filePath, KWHttpRequest.FILETYPE.VIDEO);
-        mKWHttpRequest.addDownload(packUp);
-        mKWHttpRequest.startAsynchronous();
     }
 
     private PcsDataBrocastReceiver mReceiver = new PcsDataBrocastReceiver() {

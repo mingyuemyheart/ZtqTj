@@ -66,10 +66,12 @@ import com.pcs.ztqtj.util.AuthorityUtil;
 import com.pcs.ztqtj.util.CONST;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityLogin;
+import com.pcs.ztqtj.view.activity.photoshow.ActivityLogout;
 import com.pcs.ztqtj.view.activity.photoshow.ActivityUserCenter;
 import com.pcs.ztqtj.view.activity.prove.WeatherProveActivity;
 import com.pcs.ztqtj.view.activity.set.AcitvityAboutZTQ;
 import com.pcs.ztqtj.view.activity.set.AcitvityFeedBack;
+import com.pcs.ztqtj.view.activity.set.ActivityPushMain;
 import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 import com.pcs.ztqtj.view.activity.web.webview.JsInterfaceWebView;
 import com.pcs.ztqtj.view.dialog.DialogFactory;
@@ -112,6 +114,8 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private PackgetrecommendfriendsmsgDown Downpackgetshareinfo;
     private DialogWaiting getShareFriendDataDialog;
 
+    private TextView tvLogout;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -132,11 +136,51 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         ivHead = (ImageView) getView().findViewById(R.id.iv_head);
         listView = (MyListView) getView().findViewById(R.id.lv_list);
         gridSets = (MyGridView) getView().findViewById(R.id.grid_set);
+        tvLogout = getView().findViewById(R.id.tvLogout);
+        tvLogout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutDialog();
+            }
+        });
         init();
         initListener();
         initUser();
         initData();
         reqNet();
+    }
+
+    /**
+     * 显示退出弹出框
+     */
+    private DialogTwoButton mLogoutDialog;
+    private void showLogoutDialog() {
+        View layout = LayoutInflater.from(activity).inflate(R.layout.dialog_message, null);
+        TextView tv = (TextView) layout.findViewById(R.id.dialogmessage);
+        tv.setText("确认退出当前账号吗？");
+        mLogoutDialog = new DialogTwoButton(activity, layout, "确定", "取消", new DialogFactory.DialogListener() {
+            @Override
+            public void click(String str) {
+                mLogoutDialog.dismiss();
+                if(str.equals("确定")) {
+                    logout();
+                }
+            }
+        });
+        mLogoutDialog.show();
+    }
+
+    /**
+     * 登出当前账号
+     */
+    private void logout() {
+        MyApplication.clearUserInfo(activity);
+        initUser();
+
+        //刷新栏目数据
+        Intent bdIntent = new Intent();
+        bdIntent.setAction(CONST.BROADCAST_REFRESH_COLUMNN);
+        activity.sendBroadcast(bdIntent);
     }
 
     public void onDestroy() {
@@ -199,6 +243,11 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         itemUpdate.put("i", "" + R.drawable.icon_column_manager_update);
         listData.add(itemUpdate);
 
+        Map<String, String> itemZhuxiao = new HashMap<>();
+        itemZhuxiao.put("t", "注销账号");
+        itemZhuxiao.put("i", R.drawable.icon_column_manager_zhuxiao + "");
+        listData.add(itemZhuxiao);
+
         Map<String, String> itemAutoShare = new HashMap<>();
         itemAutoShare.put("t", "版本检测");
         itemAutoShare.put("i", R.drawable.icon_column_manager_version + "");
@@ -209,10 +258,10 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         advice.put("i", R.drawable.icon_set_item_autoshare + "");
         listData.add(advice);
 
-        Map<String, String> recommend = new HashMap<>();
-        recommend.put("t", "推荐好友");
-        recommend.put("i", R.drawable.icon_column_manager_recommend + "");
-        listData.add(recommend);
+//        Map<String, String> recommend = new HashMap<>();
+//        recommend.put("t", "推荐好友");
+//        recommend.put("i", R.drawable.icon_column_manager_recommend + "");
+//        listData.add(recommend);
 
         adapter = new AdapterColumnManager(getActivity(), listData, 0, 1);
         listView.setAdapter(adapter);
@@ -224,6 +273,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private void logged() {
 //        tvUserTitle.setText(LoginInformation.getInstance().getUsername());
 //        btnUserLogin.setText("退出");
+        tvLogout.setVisibility(View.VISIBLE);
         btnLogin.setVisibility(View.GONE);
         tvUserName.setVisibility(View.VISIBLE);
         tvUserName.setText(MyApplication.NAME);
@@ -236,6 +286,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
     private void notLogged() {
 //        tvUserTitle.setText("个人中心");
 //        btnUserLogin.setText("登录");
+        tvLogout.setVisibility(View.GONE);
         btnLogin.setVisibility(View.VISIBLE);
         tvUserName.setVisibility(View.GONE);
         ivHead.setImageResource(R.drawable.icon_head_default);
@@ -267,7 +318,7 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
         PcsDataBrocastReceiver.registerReceiver(getActivity(), mReceiver);
         SetsBean bean1 = new SetsBean(R.drawable.icon_set_item_ztq, "气象证明");
         SetsBean bean2 = new SetsBean(R.drawable.icon_set_about, "二维码");
-        SetsBean bean3 = new SetsBean(R.drawable.icon_set_item_push, "推送设置");
+//        SetsBean bean3 = new SetsBean(R.drawable.icon_set_item_push, "推送设置");
         SetsBean bean4 = new SetsBean(R.drawable.icon_set_item_useguide, "产品定制");
         setsBeanList.add(bean1);
         setsBeanList.add(bean2);
@@ -385,14 +436,22 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                         startActivity(intent);
                         break;
                     case 3:
+                        // 注销账号
+                        if (TextUtils.equals(MyApplication.UID, MyApplication.offline)) {
+                            Toast.makeText(getActivity(), "该功能需要先登录再使用", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        startActivityForResult(new Intent(activity, ActivityLogout.class), 1002);
+                        break;
+                    case 4:
                         // 版本监测
                         checkVersion();
                         break;
-                    case 4:
+                    case 5:
                         // 更新频率
                         itemUpdate();
                         break;
-                    case 5:
+                    case 6:
                         // 推荐好友
                         if (getShareFriendDataDialog == null) {
                             getShareFriendDataDialog = (DialogWaiting) DialogFactory.getWaitDialog(getActivity(), "正在准备分享数据");
@@ -503,6 +562,9 @@ public class FragmentSet extends Fragment implements OnClickListener, InterfaceR
                     if (ZtqCityDB.getInstance().isLoginService()) {
                         gotoAcitvity(ActivityUserCenter.class, "我");
                     }
+                    break;
+                case 1002:
+                    logout();
                     break;
                 case toanther:
                     initUser();

@@ -1,21 +1,18 @@
 package com.pcs.ztqtj.view.activity.loading;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.local.PackLocalInit;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.command.CommandBatching;
@@ -33,7 +30,7 @@ import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.ActivityMain;
 import com.pcs.ztqtj.view.activity.FragmentActivityBase;
-import com.pcs.ztqtj.view.dialog.PermissionVerifyDialog;
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
@@ -63,16 +60,7 @@ public class ActivityLoading extends FragmentActivityBase {
             Manifest.permission.RECORD_AUDIO
     };
 
-    private String[] nessaryPermissions = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-    };
-
     private boolean requestOnResume = false;
-    private PermissionVerifyDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,20 +70,22 @@ public class ActivityLoading extends FragmentActivityBase {
         TextView text_version = findViewById(R.id.text_version);
         text_version.setText(CommonUtil.getVersion(this));
 
-        dialog = new PermissionVerifyDialog(this, R.style.MyDialog);
-        PackLocalInit initDown = (PackLocalInit) PcsDataManager.getInstance().getLocalPack(PackLocalInit.KEY);
-        if (initDown != null && initDown.isNotFirst) {
-            checkPermissions(nessaryPermissions);
-        } else {
-            checkPermissions(needPermissions);
+        if (!policyFlag()) {
+            promptDialog();
+        }else {
+            initWidget();
         }
+    }
+
+    private void initWidget() {
+        checkPermissions(needPermissions);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if(requestOnResume) {
-            checkPermissions(nessaryPermissions);
+            checkPermissions(needPermissions);
             requestOnResume = false;
         }
     }
@@ -104,48 +94,7 @@ public class ActivityLoading extends FragmentActivityBase {
     public void onRequestPermissionsResult(int requestCode, @NonNull final String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PermissionsTools.PERMISSON_REQUESTCODE) {
-            if(PermissionsTools.verifyNessaryPermissions(nessaryPermissions, permissions, grantResults)) {
-                init();
-            } else {
-                String[] permissionList = PermissionsTools.getUnauthorizedNessaryPermissions(nessaryPermissions, permissions, grantResults);
-                String result = "";
-                for(int i = 0; i < permissionList.length; i++) {
-                    String permission = permissionList[i];
-                    String name = PermissionsTools.getPermissionName(permission);
-                    if(i == 0) {
-                        result = name;
-                    } else {
-                        if(!result.contains(name)) {
-                            result += "、" + name;
-                        }
-                    }
-                }
-                dialog.setMessage(result);
-                if(PermissionsTools.shouldShowRequestPermissionRationale(ActivityLoading.this, grantResults, permissions)) {
-                    dialog.setOKButtonMessage("确定");
-                    dialog.setOnConfirmListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            checkPermissions(nessaryPermissions);
-                        }
-                    });
-                } else {
-                    dialog.setOKButtonMessage("去设置");
-                    dialog.setOnConfirmListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            gotoSystemPermissionActivity();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    requestOnResume = true;
-                                }
-                            }, 1000);
-                        }
-                    });
-                }
-                dialog.show();
-            }
+            init();
         }
     }
 
@@ -158,18 +107,7 @@ public class ActivityLoading extends FragmentActivityBase {
         }
     }
 
-    private void gotoSystemPermissionActivity() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                Uri.fromParts("package", getPackageName(), null));
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(intent, MyConfigure.REQUEST_SYSTEM_PERMISSION);
-    }
-
     private void init() {
-        if(dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
         clearUserInfo();
         createImageFetcher();
         ZtqCityDB.getInstance().initnew(this, new Callback() {
@@ -314,6 +252,71 @@ public class ActivityLoading extends FragmentActivityBase {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 温馨提示对话框
+     */
+    private void promptDialog() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.dialog_policy, null);
+        TextView tvProtocal = view.findViewById(R.id.tvProtocal);
+        TextView tvPolicy = view.findViewById(R.id.tvPolicy);
+        TextView tvNegtive = view.findViewById(R.id.tvNegtive);
+        TextView tvPositive = view.findViewById(R.id.tvPositive);
+
+        final Dialog dialog = new Dialog(this, R.style.CustomProgressDialog);
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        tvProtocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityLoading.this, ActivityWebView.class);
+                intent.putExtra("title", "天津气象软件许可及服务协议");
+                intent.putExtra("url", CONST.PROTOCAL);
+                intent.putExtra("shareContent", "天津气象软件许可及服务协议");
+                startActivity(intent);
+            }
+        });
+        tvPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityLoading.this, ActivityWebView.class);
+                intent.putExtra("title", "天津气象软件用户隐私政策");
+                intent.putExtra("url", CONST.PRIVACY);
+                intent.putExtra("shareContent", "天津气象软件用户隐私政策");
+                startActivity(intent);
+            }
+        });
+        tvNegtive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                finish();
+            }
+        });
+        tvPositive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                savePolicyFlag();
+                initWidget();
+            }
+        });
+    }
+
+    private void savePolicyFlag() {
+        SharedPreferences sp = getSharedPreferences("policy", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("isShow", true);
+        editor.apply();
+    }
+
+    private boolean policyFlag() {
+        SharedPreferences sp = getSharedPreferences("policy", Context.MODE_PRIVATE);
+        return sp.getBoolean("isShow", false);
     }
 
 }

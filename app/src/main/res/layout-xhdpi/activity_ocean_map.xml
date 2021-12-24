@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/ocean_weather_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ocean_weather_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,16 +20,16 @@
             <com.amap.api.maps.TextureMapView
                 android:id="@+id/mapview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <LinearLayout
                 android:id="@+id/layout_data"
                 android:layout_width="match_parent"
                 android:layout_height="190dp"
-                android:layout_margin="5dp"
-                android:visibility="gone"
                 android:layout_alignParentBottom="true"
-                android:orientation="vertical">
+                android:layout_margin="5dp"
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <!-- 标题栏 -->
 
@@ -47,12 +46,12 @@
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:textColor="@color/text_white"
-                        android:textSize="@dimen/text_content"/>
+                        android:textSize="@dimen/text_content" />
 
                 </LinearLayout>
                 <!-- 列表标题 -->
 
-                <include layout="@layout/include_map_list_item"/>
+                <include layout="@layout/include_map_list_item" />
                 <!-- 列表 -->
 
                 <ListView
@@ -62,9 +61,7 @@
                     android:background="@android:color/white"
                     android:divider="#00000000"
                     android:dividerHeight="0dp"
-                    android:visibility="visible"
-                    >
-                </ListView>
+                    android:visibility="visible"></ListView>
 
             </LinearLayout>
         </RelativeLayout>

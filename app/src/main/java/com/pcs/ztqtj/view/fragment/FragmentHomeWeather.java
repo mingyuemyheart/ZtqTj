@@ -372,10 +372,10 @@ public class FragmentHomeWeather extends SupportMapFragment {
             PcsDataBrocastReceiver.unregisterReceiver(wReceiver.context, wReceiver.receiver);
             wReceiver.isRegistered = false;
         }
-//        if (recevier != null) {
-//            PcsDataBrocastReceiver.unregisterReceiver(getActivity(), recevier);
-//            recevier = null;
-//        }
+        if (recevier != null) {
+            PcsDataBrocastReceiver.unregisterReceiver(getActivity(), recevier);
+            recevier = null;
+        }
     }
 
     /**

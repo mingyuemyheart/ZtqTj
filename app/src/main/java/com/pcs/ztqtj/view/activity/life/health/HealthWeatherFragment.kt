@@ -1,7 +1,11 @@
 package com.pcs.ztqtj.view.activity.life.health
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
@@ -19,6 +23,7 @@ import com.pcs.ztqtj.util.CONST
 import com.pcs.ztqtj.util.CommonUtil
 import com.pcs.ztqtj.util.OkHttpUtil
 import com.pcs.ztqtj.view.activity.life.HealthDto
+import com.pcs.ztqtj.view.activity.web.webview.ActivityWebView
 import kotlinx.android.synthetic.main.fragment_health_weather.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -28,6 +33,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 /**
  * 健康气象
@@ -114,6 +120,7 @@ class HealthWeatherFragment: Fragment() {
         val month = calendar.get(Calendar.MONTH)+1
         tvMonth.text = month.toString()
 
+        okHttpFestival()
         okHttpHealthIndex()
         okHttpMonth()
     }
@@ -356,6 +363,182 @@ class HealthWeatherFragment: Fragment() {
             } catch (e : IndexOutOfBoundsException) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    private var rollingThread: RollingThread? = null
+    private val newsList: ArrayList<FestivalDto> = ArrayList()
+    /**
+     * 获取节日，定位信息下方，上下滚动显示
+     */
+    private fun okHttpFestival() {
+        Thread {
+            try {
+                val param = JSONObject()
+                param.put("token", MyApplication.TOKEN)
+                val info = JSONObject()
+                info.put("extra", "FW_NCZ")
+                param.put("paramInfo", info)
+                val json = param.toString()
+                val url = CONST.BASE_URL + "healthy_ncz"
+                Log.e("healthy_ncz", url)
+                val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+                val body = RequestBody.create(mediaType, json)
+                OkHttpUtil.enqueue(Request.Builder().url(url).post(body).build(), object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {}
+
+                    @Throws(IOException::class)
+                    override fun onResponse(call: Call, response: Response) {
+                        if (!response.isSuccessful) {
+                            return
+                        }
+                        if (!isAdded) {
+                            return
+                        }
+                        val result = response.body!!.string()
+                        activity!!.runOnUiThread {
+                            Log.e("healthy_ncz", result)
+                            if (!TextUtils.isEmpty(result)) {
+                                try {
+                                    val obj = JSONObject(result)
+                                    if (!obj.isNull("b")) {
+                                        val bobj = obj.getJSONObject("b")
+                                        if (!bobj.isNull("pub_ncz_health")) {
+                                            newsList.clear()
+                                            val array = bobj.getJSONArray("pub_ncz_health")
+                                            for (i in 0 until array.length()) {
+                                                val dto = FestivalDto()
+                                                val itemObj = array.getJSONObject(i)
+                                                if (!itemObj.isNull("title")) {
+                                                    dto.name = itemObj.getString("title")
+                                                }
+                                                if (!itemObj.isNull("title")) {
+                                                    dto.content = itemObj.getString("title")
+                                                }
+                                                if (!itemObj.isNull("html_path")) {
+                                                    dto.url = getString(R.string.file_download_url)+itemObj.getString("html_path")
+                                                }
+                                                newsList.add(dto)
+                                            }
+                                            tvNews.removeAllViews()
+                                            tvNews.setFactory {
+                                                val textView = TextView(activity)
+                                                textView.setSingleLine()
+                                                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                                                textView.setTextColor(Color.WHITE)
+                                                textView.ellipsize = TextUtils.TruncateAt.END
+                                                textView
+                                            }
+                                            if (newsList.size >= 2) {
+                                                tvNews.visibility = View.VISIBLE
+                                                tvNews1Title.visibility = View.GONE
+                                                tvNews1.visibility = View.GONE
+                                                removeThread()
+                                                rollingThread = RollingThread()
+                                                rollingThread!!.start()
+                                            } else if (newsList.size == 1) {
+                                                val data: FestivalDto = newsList[0]
+                                                tvNews1Title.visibility = View.VISIBLE
+                                                if (!TextUtils.isEmpty(data.content)) {
+                                                    tvNews1Title.text = data.content
+                                                }
+                                                tvNews.visibility = View.GONE
+                                                tvNews1.text = data.content
+                                                tvNews1.visibility = View.GONE
+
+                                                tvNews1Title.setOnClickListener {
+                                                    val intent = Intent(activity, ActivityWebView::class.java)
+                                                    intent.putExtra("title", "健康气象风险预警")
+                                                    intent.putExtra("url", data.url)
+                                                    intent.putExtra("shareContent", data.name)
+                                                    startActivity(intent)
+                                                }
+                                                tvNews1.setOnClickListener {
+                                                    val intent = Intent(activity, ActivityWebView::class.java)
+                                                    intent.putExtra("title", "健康气象风险预警")
+                                                    intent.putExtra("url", data.url)
+                                                    intent.putExtra("shareContent", data.name)
+                                                    startActivity(intent)
+                                                }
+                                            }
+                                        }
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        }
+                    }
+                })
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        }.start()
+    }
+
+    private class FestivalDto {
+        var name: String? = null
+        var content: String? = null
+        var url: String? = null
+    }
+
+    @SuppressLint("HandlerLeak")
+    private val handler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            val index: Int = msg.arg1
+            val data: FestivalDto = newsList[index]
+            if (data.content != null) {
+                tvNews.setText(data.content)
+            }
+        }
+    }
+
+    private fun removeThread() {
+        if (rollingThread != null) {
+            rollingThread!!.cancel()
+            rollingThread = null
+        }
+    }
+
+    private inner class RollingThread : Thread() {
+        private var state = 0
+        private var index = 0
+        private val isTracking = false
+
+        private val STATE_PLAYING = 1
+        private val STATE_PAUSE = 2
+        private val STATE_CANCEL = 3
+
+        override fun run() {
+            super.run()
+            state = STATE_PLAYING
+            while (index < newsList.size) {
+                if (state == STATE_CANCEL) {
+                    break
+                }
+                if (state == STATE_PAUSE) {
+                    continue
+                }
+                if (isTracking) {
+                    continue
+                }
+                try {
+                    val msg: Message = handler.obtainMessage()
+                    msg.arg1 = index
+                    handler.sendMessage(msg)
+                    sleep(4000)
+                    index++
+                    if (index >= newsList.size) {
+                        index = 0
+                    }
+                } catch (e: InterruptedException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        fun cancel() {
+            state = STATE_CANCEL
         }
     }
 

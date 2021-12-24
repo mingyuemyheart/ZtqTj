@@ -193,6 +193,12 @@ class ActivityUserLogin : FragmentActivityZtqBase(), OnClickListener {
 										setResult(RESULT_OK)
 										finish()
 									}
+									if (!obj.isNull("errorMessage")) {
+										val errorMessage = obj.getString("errorMessage")
+										if (errorMessage != null) {
+											Toast.makeText(this@ActivityUserLogin, errorMessage, Toast.LENGTH_SHORT).show()
+										}
+									}
 								} catch (e: JSONException) {
 									e.printStackTrace()
 								}

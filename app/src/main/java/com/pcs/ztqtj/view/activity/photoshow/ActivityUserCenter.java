@@ -163,7 +163,7 @@ public class ActivityUserCenter extends FragmentActivityZtqBase {
 	 */
 	private void initList() {
 		rightbtn_ok=(Button) findViewById(R.id.rightbtn_ok);
-		rightbtn_ok.setVisibility(View.VISIBLE);
+//		rightbtn_ok.setVisibility(View.VISIBLE);
 		rightbtn_ok.setText("退出");
 		//SlideCutListView listView = (SlideCutListView) findViewById(R.id.listview);
         MyListView listView = (MyListView) findViewById(R.id.listview);

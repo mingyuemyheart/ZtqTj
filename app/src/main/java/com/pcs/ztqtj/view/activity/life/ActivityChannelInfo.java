@@ -8,9 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
@@ -29,13 +26,14 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 	private TextView textTitle;
 	private TextView textTime;
 	private String title = "";
-	private ArtTitleInfo info;
+	private MyArtTitleInfo info;
+	private String url = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.channel_info_layout);
-		info = (ArtTitleInfo) getIntent().getSerializableExtra("info");
+		info = (MyArtTitleInfo) getIntent().getSerializableExtra("info");
 		title = getIntent().getStringExtra("title");
 		mImageLoader = new ImageLoader(this);
 		setTitleText(title);
@@ -48,22 +46,16 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
         setBtnRight(R.drawable.icon_share_new, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share#ABOUT_QXCP_DXFW");
-                if (down == null) {
-                    return;
-                }
                 String share_content = "";
                 if (!TextUtils.isEmpty(textTitle.getText().toString())) {
-                    share_content =  " 《" + textTitle.getText().toString() + "》 " + down.share_content;
-                } else {
-                    share_content =  down.share_content;
+                    share_content =  " 《" + textTitle.getText().toString() + "》 ";
                 }
                 View layout = findViewById(R.id.scrollview);
                 Bitmap headBitmap = ZtqImageTool.getInstance().getScreenBitmap(headLayout);
                 Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmap(layout);
                 shareBitmap = ZtqImageTool.getInstance().stitch(headBitmap, shareBitmap);
                 shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityChannelInfo.this, shareBitmap);
-                ShareTools.getInstance(ActivityChannelInfo.this).setShareContent(getTitleText(),share_content, shareBitmap,"0").showWindow(layout);
+                ShareTools.getInstance(ActivityChannelInfo.this).setShareContent(getTitleText(),share_content, url, shareBitmap).showWindow(layout);
             }
         });
     }
@@ -76,6 +68,7 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 	}
 
 	private void initData() {
+		url = info.url;
 		if (TextUtils.isEmpty(info.big_ico) || "null".equals(info.big_ico)) {
 			Log.d("info.big_ico", "大图为空");
 			bigImageView.setImageResource(R.drawable.no_pic);
@@ -96,6 +89,9 @@ public class ActivityChannelInfo extends FragmentActivitySZYBBase {
 		String txt = "暂无数据";
 		if (!TextUtils.isEmpty(info.desc)) {
 			txt = info.desc;
+		}
+		if (!TextUtils.isEmpty(info.content)) {
+			txt = info.content;
 		}
 		String str=txt.replace("\r", "\n\r");
 		TextView1.setText(str);

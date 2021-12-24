@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +15,34 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.typhoon.AdapterTyphoonBill;
-import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
-import com.pcs.ztqtj.view.activity.web.WebViewWithShare;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.ColumnInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.column.PackColumnUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterTfggsjDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.warn.PackWarningCenterTfggsjUp;
+import com.pcs.ztqtj.MyApplication;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.typhoon.AdapterTyphoonBill;
+import com.pcs.ztqtj.control.tool.utils.TextUtil;
+import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.OkHttpUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
+import com.pcs.ztqtj.view.activity.web.WebViewWithShare;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * 台风路径-警报单
@@ -38,12 +51,6 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
 
     private RadioGroup radioGroup;
     private ListView listView = null;
-    // 上传下载包
-    PackWarningCenterTfggsjUp packUp = new PackWarningCenterTfggsjUp();
-    PackWarningCenterTfggsjDown packDown = new PackWarningCenterTfggsjDown();
-    PackColumnUp packColumnUp = new PackColumnUp();
-    // 广播
-    private MyReceiver receiver = new MyReceiver();
     // 数据
     private List<PackWarningCenterTfggsjDown.WarnTFGGSJ> datalist = new ArrayList<>();
 
@@ -61,15 +68,6 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
         initData();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (receiver != null) {
-            PcsDataBrocastReceiver.unregisterReceiver(this, receiver);
-            receiver = null;
-        }
-    }
-
     private void initView() {
         radioGroup = (RadioGroup) findViewById(R.id.radiogroup);
         listView = (ListView) findViewById(R.id.warnlist);
@@ -81,10 +79,9 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
     }
 
     private void initData() {
-        PcsDataBrocastReceiver.registerReceiver(this, receiver);
         adapter = new AdapterTyphoonBill(this, datalist);
         listView.setAdapter(adapter);
-        reqColumn();
+        okHttpList();
     }
 
     private void initTable(List<ColumnInfo> list) {
@@ -95,10 +92,8 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
         for(int i = 0; i < list.size(); i++) {
             RadioButton radioButton = new RadioButton(this);
             radioButton.setId(101 + i);
-            radioButton.setTextColor(getResources()
-                    .getColor(R.color.text_black));
-            radioButton
-                    .setBackgroundResource(R.drawable.btn_warn_radiobutton_select);
+            radioButton.setTextColor(getResources().getColor(R.color.text_black));
+            radioButton.setBackgroundResource(R.drawable.btn_warn_radiobutton_select);
             radioButton.setPadding(0, pad, 0, pad);
             radioButton.setMaxLines(1);
             radioButton.setGravity(Gravity.CENTER);
@@ -107,8 +102,7 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
             radioButton.setText(list.get(i).name);
 
             //radioButton.setOnClickListener(onTimeTableListener);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(radioWidth, ViewGroup.LayoutParams
-                    .MATCH_PARENT);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(radioWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             radioGroup.addView(radioButton, lp);
         }
         if(list.size() > 0 && radioGroup.getChildCount() > 0) {
@@ -133,7 +127,7 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
 
     private void clickButton(int index) {
         if(columnInfoList.size() > index) {
-            reqNet(columnInfoList.get(index).type);
+            okHttpDetail(columnInfoList.get(index).type);
         }
     }
 
@@ -142,23 +136,6 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
         intent.putExtra("title", "台风警报单");
         intent.putExtra("url", url);
         startActivity(intent);
-    }
-
-    // 请求数据
-    private void reqNet(String type) {
-        clearList();
-        packUp = new PackWarningCenterTfggsjUp();
-        packUp.type = type;
-        PcsDataDownload.addDownload(packUp);
-    }
-
-    /**
-     * 请求栏目
-     */
-    private void reqColumn() {
-        packColumnUp = new PackColumnUp();
-        packColumnUp.column_type = "22";
-        PcsDataDownload.addDownload(packColumnUp);
     }
 
     private RadioGroup.OnCheckedChangeListener onCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
@@ -171,35 +148,124 @@ public class ActivityTyphoonBillList extends FragmentActivityZtqBase {
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            gotoWebview("http://www.weather-jy.cn:8099/ftp/" + datalist.get(position).html_path);
+            gotoWebview(getString(R.string.file_download_url) + datalist.get(position).html_path);
         }
     };
 
-    private View.OnClickListener onTimeTableListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            clickButton(v.getId()-101);
-        }
-    };
-
-    private class MyReceiver extends PcsDataBrocastReceiver {
-
-        @Override
-        public void onReceive(String nameStr, String errorStr) {
-            if (nameStr.equals(packUp.getName())) {
-                packDown = (PackWarningCenterTfggsjDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if (packDown == null) {
-                    return;
+    /**
+     * 获取警报单列表数据
+     */
+    private void okHttpList() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("typhoon_megs", json);
+                    final String url = CONST.BASE_URL+"typhoon_megs";
+                    Log.e("typhoon_megs", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("column")) {
+                                                    JSONObject column = bobj.getJSONObject("column");
+                                                    PackColumnDown down = new PackColumnDown();
+                                                    down.fillData(column.toString());
+                                                    initTable(down.arrcolumnInfo);
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-                dealwithData(packDown);
-            } else if(nameStr.equals(packColumnUp.getName())) {
-                PackColumnDown down = (PackColumnDown) PcsDataManager.getInstance().getNetPack(nameStr);
-                if(down == null) {
-                    return;
-                }
-                initTable(down.arrcolumnInfo);
             }
-        }
+        }).start();
+    }
+
+    /**
+     * 获取警报单具体数据
+     */
+    private void okHttpDetail(final String type) {
+        clearList();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject param  = new JSONObject();
+                    param.put("token", MyApplication.TOKEN);
+                    JSONObject info = new JSONObject();
+                    info.put("extra", type);
+                    param.put("paramInfo", info);
+                    String json = param.toString();
+                    Log.e("pub_warn_acci_health", json);
+                    final String url = CONST.BASE_URL+"pub_warn_acci_health";
+                    Log.e("pub_warn_acci_health", url);
+                    RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+                    OkHttpUtil.enqueue(new Request.Builder().post(body).url(url).build(), new Callback() {
+                        @Override
+                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        }
+                        @Override
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if (!response.isSuccessful()) {
+                                return;
+                            }
+                            final String result = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!TextUtil.isEmpty(result)) {
+                                        try {
+                                            JSONObject obj = new JSONObject(result);
+                                            if (!obj.isNull("b")) {
+                                                JSONObject bobj = obj.getJSONObject("b");
+                                                if (!bobj.isNull("pub_warn_acci_health")) {
+                                                    JSONObject pub_warn_acci_health = bobj.getJSONObject("pub_warn_acci_health");
+                                                    PackWarningCenterTfggsjDown packDown = new PackWarningCenterTfggsjDown();
+                                                    packDown.fillData(pub_warn_acci_health.toString());
+                                                    dealwithData(packDown);
+                                                }
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
 }

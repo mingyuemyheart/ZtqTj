@@ -204,6 +204,7 @@ class ActivityAgricutureFact: FragmentActivityZtqBase() {
                 info.put("stationId", stationId)
                 param.put("paramInfo", info)
                 val json = param.toString()
+                Log.e("agmeobs24h", json)
                 val url = CONST.BASE_URL + "agmeobs24h"
                 Log.e("agmeobs24h", url)
                 val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()

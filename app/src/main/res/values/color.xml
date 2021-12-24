@@ -32,6 +32,7 @@
     <color name="bg_content">#408cda</color>
     <!-- 背景:黑色半透明 -->
     <color name="bg_black_alpha">#bf000000</color>
+    <color name="orange">#fd8612</color>
 
     <!-- 背景:黑色70%透明 -->
     <color name="bg_black_alpha70">#b3000000</color>

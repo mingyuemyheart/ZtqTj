@@ -11,8 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.pcs.lib_ztqfj_v2.model.pack.net.art.ArtTitleInfo;
-import com.pcs.lib_ztqfj_v2.model.pack.net.art.PackArtTitleDown;
 import com.pcs.ztqtj.MyApplication;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.AdapterChannelList;
@@ -47,7 +45,7 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 	private View lineview;
 	private AdapterChannelList mAdapter;
 
-	private List<ArtTitleInfo> airTitleList = new ArrayList<>();
+	private List<MyArtTitleInfo> airTitleList = new ArrayList<>();
 
 	private String title = "";
 	private String channel_id;
@@ -125,7 +123,7 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 	private AdapterView.OnItemClickListener itemListener = new AdapterView.OnItemClickListener() {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			ArtTitleInfo info = airTitleList.get(position);
+			MyArtTitleInfo info = airTitleList.get(position);
 			Intent intent = new Intent(ActivityChannelList.this, ActivityChannelInfo.class);
 			intent.putExtra("info", info);
 			intent.putExtra("title", title);
@@ -196,7 +194,7 @@ public class ActivityChannelList extends FragmentActivityZtqBase {
 														art_title.put("page", "1");
 													}
 													if (!TextUtil.isEmpty(art_title.toString())) {
-														PackArtTitleDown pack = new PackArtTitleDown();
+														MyPackArtTitleDown pack = new MyPackArtTitleDown();
 														pack.fillData(art_title.toString());
 														airTitleList.addAll(pack.artTitleList);
 														reflashData();

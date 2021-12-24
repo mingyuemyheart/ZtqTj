@@ -746,6 +746,7 @@ public class ZtqCityDB {
     public List<PackLocalCity> getViewsByProcinceID(String provinceID) {
         List<PackLocalCity> citys = new ArrayList<>();
         for (PackLocalCity c : Tj_landscapeList) {
+            Log.e("namename", c.PARENT_ID+"-"+c.ID+"-"+c.NAME);
             if (c.PARENT_ID.equals(provinceID)) {
                 PackLocalCity cTemp = new PackLocalCity();
                 cTemp.copyCity(c);

@@ -30,6 +30,7 @@ import com.pcs.ztqtj.control.adapter.livequery.AdatperRainNowFall;
 import com.pcs.ztqtj.control.inter.DrowListClick;
 import com.pcs.ztqtj.control.tool.utils.TextUtil;
 import com.pcs.ztqtj.util.CONST;
+import com.pcs.ztqtj.util.CommonUtil;
 import com.pcs.ztqtj.util.OkHttpUtil;
 import com.pcs.ztqtj.view.activity.FragmentActivityZtqBase;
 import com.pcs.ztqtj.view.fragment.livequery.fujian_city.CityListControl;
@@ -406,6 +407,11 @@ public class ActivityTimeSearch extends FragmentActivityZtqBase implements View.
                         info.put("isTj", "");
                     } else {
                         info.put("isTj", "天津");
+                    }
+                    if (CommonUtil.isHaveAuth("201040701")) {//是否有查看自动站权限
+                        info.put("isAuto", true);
+                    } else {
+                        info.put("isAuto", false);
                     }
                     param.put("paramInfo", info);
                     String json = param.toString();

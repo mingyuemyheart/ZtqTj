@@ -79,7 +79,7 @@ public class AdapterColumnManager extends AdapterFragmentSetManager {
 //            holder.choosebutton.setVisibility(View.GONE);
 //        }
 
-        if(position == 3) {
+        if(TextUtils.equals(listdata.get(position).get("t"), "版本检测")) {
             holder.rightText.setVisibility(View.VISIBLE);
             String versionName = "";
             try {

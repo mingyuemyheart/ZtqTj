@@ -5,6 +5,7 @@
     android:background="#f5f5f5">
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/submit_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -94,6 +95,7 @@
 
 
             <RelativeLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -125,6 +127,7 @@
 
             <com.pcs.ztqtj.view.myview.MyListView
                 android:id="@+id/user_talk"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:cacheColorHint="@color/alpha100"

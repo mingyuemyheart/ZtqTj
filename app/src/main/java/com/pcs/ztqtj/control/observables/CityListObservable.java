@@ -98,30 +98,30 @@ public class CityListObservable {
         // 缓存文件路径：citydb文件路径/channelId_pubTime (example:citydb/1_201804192110)
         String cacheFilePath = PcsGetPathValue.getInstance().getCityDBPath() + cityDBInfo.channel_id + "_" + cityDBInfo.pub_time;
         File cacheFile = new File(cacheFilePath);
-        if(cacheFile.exists()) {
-            // 存在缓存文件
-            String result = null;
-            try {
-                InputStream inputStream = new FileInputStream(cacheFile);
-                result = getStringFromStream(inputStream);
-                if(!TextUtils.isEmpty(result)) {
-                    JSONObject jsonObject = new JSONObject(result);
-                } else {
-                    result = null;
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-                result = null;
-            }
-            if(TextUtils.isEmpty(result)) {
-                // 如果从缓存文件中获取的文件有问题则删除该文件并从assets中获取文件
-                cacheFile.delete();
-                return getFileFromAssets(cityDBInfo.channel_id);
-            }
-            return new FileEmitterValue(type, result);
-        } else {
+//        if(cacheFile.exists()) {
+//            // 存在缓存文件
+//            String result = null;
+//            try {
+//                InputStream inputStream = new FileInputStream(cacheFile);
+//                result = getStringFromStream(inputStream);
+//                if(!TextUtils.isEmpty(result)) {
+//                    JSONObject jsonObject = new JSONObject(result);
+//                } else {
+//                    result = null;
+//                }
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                result = null;
+//            }
+//            if(TextUtils.isEmpty(result)) {
+//                // 如果从缓存文件中获取的文件有问题则删除该文件并从assets中获取文件
+//                cacheFile.delete();
+//                return getFileFromAssets(cityDBInfo.channel_id);
+//            }
+//            return new FileEmitterValue(type, result);
+//        } else {
             String path = context.getString(R.string.file_download_url) + cityDBInfo.url;
             String result = null;
             try {
@@ -160,7 +160,7 @@ public class CityListObservable {
                 saveFile(result, cacheFilePath);
             }
             return new FileEmitterValue(type, result);
-        }
+//        }
     }
 
     /**
@@ -364,6 +364,7 @@ public class CityListObservable {
                     JSONObject param  = new JSONObject();
                     param.put("token", MyApplication.TOKEN);
                     String json = param.toString();
+                    Log.e("area_info_list", json);
                     final String url = CONST.BASE_URL+"area_info_list";
                     Log.e("area_info_list", url);
                     RequestBody body = FormBody.create(MediaType.parse("application/json; charset=utf-8"), json);

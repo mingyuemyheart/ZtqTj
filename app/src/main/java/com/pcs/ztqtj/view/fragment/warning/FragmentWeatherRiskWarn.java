@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -114,19 +115,19 @@ public class FragmentWeatherRiskWarn extends Fragment {
         int _10dp = Util.dip2px(getActivity(), 10);
         int _35dp = Util.dip2px(getActivity(), 35);
         int radioWidth = (width /3);
-        int pad = Util.dip2px(getActivity(), 10);
+        int pad = Util.dip2px(getActivity(), 5);
         // 这里修改过，省市县的显示顺序有变化
         for (int i = 0; i <list_column.size(); i++) {
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setGravity(Gravity.CENTER);
+            radioButton.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15);
             radioButton.setTextColor(getResources().getColor(R.color.text_black));
             radioButton.setBackgroundResource(R.drawable.btn_disaster_reporting);
-            radioButton.setPadding(pad, 0, pad, 0);
             radioButton.setButtonDrawable(getResources().getDrawable(android.R.color.transparent));
             radioButton.setText(list_column.get(i).name);
-            radioButton.setSingleLine(true);
             radioButton.setChecked(false);
+            radioButton.setPadding(pad, 0, pad, 0);
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -134,9 +135,10 @@ public class FragmentWeatherRiskWarn extends Fragment {
                 }
             });
             RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(radioWidth, _35dp, 1.0f);
-//            if(i != 1) {
-                lp.rightMargin = _10dp;
-//            }
+            if (list_column.size() > 3) {
+                lp = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, _35dp, 1.0f);
+            }
+            lp.rightMargin = _10dp;
             radioGroup.addView(radioButton, lp);
         }
 
@@ -198,7 +200,7 @@ public class FragmentWeatherRiskWarn extends Fragment {
 
     /**
      * 获取风险预警数据
-     * @param warningType FW_DZZH(地质灾害),FW_NLDZ(内涝),FW_SLHX(森林火险)，FW_SH(山洪)，FW_ZXHL(中小河流)
+     * @param warningType FW_DZZH(地质灾害),FW_NLDZ(内涝),FW_SLHX(森林火险)，FW_SH(山洪)，FW_ZXHL(中小河流)，FW_NCZ(脑卒中预警)
      */
     private void okHttpAcciWarning(final String warningType) {
         new Thread(new Runnable() {
@@ -231,6 +233,8 @@ public class FragmentWeatherRiskWarn extends Fragment {
                                 @Override
                                 public void run() {
                                     try {
+                                        datalist.clear();
+                                        adatper.notifyDataSetChanged();
                                         JSONObject obj = new JSONObject(result);
                                         if (!obj.isNull("b")) {
                                             JSONObject bobj = obj.getJSONObject("b");

@@ -29,20 +29,11 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.LatLngBounds.Builder;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-import com.pcs.ztqtj.R;
-import com.pcs.ztqtj.control.adapter.waterflood.AdapterWaterMonitorCount;
-import com.pcs.ztqtj.control.adapter.waterflood.AdapterWaterMonitorStation;
-import com.pcs.ztqtj.control.tool.ShareTools;
-import com.pcs.ztqtj.control.tool.ZtqImageTool;
-import com.pcs.ztqtj.control.tool.youmeng.ShareUtil;
-import com.pcs.ztqtj.view.activity.FragmentActivityWithShare;
-import com.pcs.ztqtj.wxapi.wxtools.MD5;
 import com.pcs.lib.lib_pcs_v3.control.tool.BitmapUtil;
 import com.pcs.lib.lib_pcs_v3.control.tool.Util;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorInfoDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorInfoUp;
@@ -51,6 +42,14 @@ import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorStationUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWaterMonitorUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.WaterMonitorInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.WaterMonitorStationInfo;
+import com.pcs.ztqtj.R;
+import com.pcs.ztqtj.control.adapter.waterflood.AdapterWaterMonitorCount;
+import com.pcs.ztqtj.control.adapter.waterflood.AdapterWaterMonitorStation;
+import com.pcs.ztqtj.control.tool.ShareTools;
+import com.pcs.ztqtj.control.tool.ZtqImageTool;
+import com.pcs.ztqtj.control.tool.youmeng.ShareUtil;
+import com.pcs.ztqtj.view.activity.FragmentActivityWithShare;
+import com.pcs.ztqtj.wxapi.wxtools.MD5;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -829,12 +828,7 @@ public class ActivityWaterMonitor extends FragmentActivityWithShare implements
 
             mShareBitmap = procImage(mAmapBitmap, bm, location[1]);
             mShareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityWaterMonitor.this, mShareBitmap);
-            PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack
-                    ("wt_share#ABOUT_QXCP_DXFW");
-            if (down != null) {
-                ShareTools.getInstance(ActivityWaterMonitor.this).setShareContent(getTitleText(), down
-                        .share_content, mShareBitmap, "0").showWindow(layout);
-            }
+            ShareTools.getInstance(ActivityWaterMonitor.this).setShareContent(getTitleText(), getTitleText(), mShareBitmap, "0").showWindow(layout);
         }
 
         @Override

@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/setimage_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/dimen10" />
 

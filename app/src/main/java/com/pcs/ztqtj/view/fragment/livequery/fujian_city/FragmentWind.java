@@ -119,7 +119,7 @@ public class FragmentWind extends FragmentLiveQueryCommon implements OnClickList
     public List<ColumnInfo> arrcolumnInfo;
 
     private void addRadioButtom() {
-        arrcolumnInfo = new ArrayList<ColumnInfo>();
+        arrcolumnInfo = new ArrayList<>();
         ColumnInfo info = new ColumnInfo();
         info.name = "近24小时";
         info.type = "24";

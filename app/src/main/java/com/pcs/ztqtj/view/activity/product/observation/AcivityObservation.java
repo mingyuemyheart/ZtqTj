@@ -89,12 +89,9 @@ public class AcivityObservation extends FragmentActivityZtqBase implements OnCli
             @Override
             public void onClick(View v) {
                 View layout = findViewById(R.id.layout);
-                PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share#ABOUT_QXCP_DXFW");
-                if(down != null) {
-                    Bitmap bm = ZtqImageTool.getInstance().getScreenBitmapNew(AcivityObservation.this);
-                    bm = ZtqImageTool.getInstance().stitchQR(AcivityObservation.this, bm);
-                    ShareTools.getInstance(AcivityObservation.this).setShareContent(getTitleText(), down.share_content, bm,"0").showWindow(layout);
-                }
+                Bitmap bm = ZtqImageTool.getInstance().getScreenBitmapNew(AcivityObservation.this);
+                bm = ZtqImageTool.getInstance().stitchQR(AcivityObservation.this, bm);
+                ShareTools.getInstance(AcivityObservation.this).setShareContent(getTitleText(), getTitleText(), bm,"0").showWindow(layout);
             }
         });
 

@@ -2,8 +2,6 @@ package com.pcs.ztqtj.control.livequery;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +21,6 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
 import com.pcs.lib_ztqfj_v2.model.pack.net.column.ColumnInfo;
 import com.pcs.lib_ztqfj_v2.model.pack.net.livequery.FycxFbtBean;
@@ -195,37 +192,91 @@ public class ControlDistributionDetail {
             mActivity.showToast("无数据！");
             return;
         }
-        List<FycxFbtBean> listdata = down.list;
-//        LatLngBounds.Builder builder = LatLngBounds.builder();
-        for (FycxFbtBean bean : listdata) {
-            if (TextUtils.isEmpty(bean.lat) || TextUtils.isEmpty(bean.lon) || TextUtils.isEmpty(bean.val)) {
-                continue;
-            }
-            LatLng latLng = new LatLng(Double.parseDouble(bean.lat), Double.parseDouble(bean.lon));
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, "")))
-                    //.zIndex(MapElementZIndex.markerZIndex)
-                    .anchor(0.5f, 0.0f);
-            // 添加点数据至缓存列表
-            Marker marker = aMap.addMarker(markerOptions);
-            //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
-            marker.setObject(bean);
-            markerOptionsList.add(marker);
-//            builder.include(latLng);
-        }
 
-        if(!cbRadar.isChecked() && !cbCloud.isChecked()) {
-            if (markerOptionsList.size() != 0) {
-                if (markerOptionsList.size() == 1) {
-                    aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptionsList.get(0).getPosition(), MAP_ZOOM));
-                } else {
-//                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
-                }
+        List<FycxFbtBean> listdata1 = new ArrayList<>();
+        List<FycxFbtBean> listdata2 = new ArrayList<>();
+        List<FycxFbtBean> listdata3 = new ArrayList<>();
+        List<FycxFbtBean> listdata4 = new ArrayList<>();
+        List<FycxFbtBean> listdata5 = new ArrayList<>();
+        List<FycxFbtBean> listdata6 = new ArrayList<>();
+        List<FycxFbtBean> listdata7 = new ArrayList<>();
+        List<FycxFbtBean> listdata8 = new ArrayList<>();
+        List<FycxFbtBean> listdata9 = new ArrayList<>();
+        List<FycxFbtBean> listdata10 = new ArrayList<>();
+        int item = 500;
+        for (int i = 0; i < down.list.size(); i++) {
+            FycxFbtBean bean = down.list.get(i);
+            if (i <= item) {
+                listdata1.add(bean);
+            } else if (i <= item*2) {
+                listdata2.add(bean);
+            } else if (i <= item*3) {
+                listdata3.add(bean);
+            } else if (i <= item*4) {
+                listdata4.add(bean);
+            } else if (i <= item*5) {
+                listdata5.add(bean);
+            } else if (i <= item*6) {
+                listdata6.add(bean);
+            } else if (i <= item*7) {
+                listdata7.add(bean);
+            } else if (i <= item*8) {
+                listdata8.add(bean);
+            } else if (i <= item*9) {
+                listdata9.add(bean);
+            } else {
+                listdata10.add(bean);
             }
         }
+        addMarkers(listdata1);
+        addMarkers(listdata2);
+        addMarkers(listdata3);
+        addMarkers(listdata4);
+        addMarkers(listdata5);
+        addMarkers(listdata6);
+        addMarkers(listdata7);
+        addMarkers(listdata8);
+        addMarkers(listdata9);
+        addMarkers(listdata10);
+
         mActivity.dismissProgressDialog();
         tvPublicTime.setText(down.pub_time + " 更新");
+    }
+
+    private void addMarkers(final List<FycxFbtBean> listdata) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < listdata.size(); i++) {
+                    FycxFbtBean bean = listdata.get(i);
+                    if (TextUtils.isEmpty(bean.lat) || TextUtils.isEmpty(bean.lon) || TextUtils.isEmpty(bean.val)) {
+                        continue;
+                    }
+                    LatLng latLng = new LatLng(Double.parseDouble(bean.lat), Double.parseDouble(bean.lon));
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, "")))
+                            //.zIndex(MapElementZIndex.markerZIndex)
+                            .anchor(0.5f, 0.0f);
+                    // 添加点数据至缓存列表
+                    Marker marker = aMap.addMarker(markerOptions);
+                    //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
+                    marker.setObject(bean);
+                    markerOptionsList.add(marker);
+//            builder.include(latLng);
+                }
+
+                if(!cbRadar.isChecked() && !cbCloud.isChecked()) {
+                    if (markerOptionsList.size() != 0) {
+                        if (markerOptionsList.size() == 1) {
+                            aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerOptionsList.get(0).getPosition(), MAP_ZOOM));
+                        } else {
+//                    aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
+                        }
+                    }
+                }
+            }
+        }).start();
     }
 
     /**
@@ -238,35 +289,89 @@ public class ControlDistributionDetail {
             mActivity.showToast("无数据！");
             return;
         }
-        List<FycxFbtBean> listdata = down.list;
-//        LatLngBounds.Builder builder = LatLngBounds.builder();
-        for (FycxFbtBean bean : listdata) {
-            if (TextUtils.isEmpty(bean.lat) || TextUtils.isEmpty(bean.lon) ||
-                    TextUtils.isEmpty(bean.val) || TextUtils.isEmpty(bean.fx)) {
-                continue;
-            }
-            LatLng latLng = new LatLng(Double.parseDouble(bean.lat), Double.parseDouble(bean.lon));
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, bean.fx)))
-                    .anchor(0.5f, 1.0f);
-            // 添加点数据至缓存列表
-            Marker marker = aMap.addMarker(markerOptions);
-            //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
-            marker.setObject(bean);
-            windMarkerOptionsList.add(marker);
-//            builder.include(latLng);
-        }
 
-        if(windMarkerOptionsList.size() != 0) {
-            if(windMarkerOptionsList.size() == 1) {
-                aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(windMarkerOptionsList.get(0).getPosition(), MAP_ZOOM));
+        List<FycxFbtBean> listdata1 = new ArrayList<>();
+        List<FycxFbtBean> listdata2 = new ArrayList<>();
+        List<FycxFbtBean> listdata3 = new ArrayList<>();
+        List<FycxFbtBean> listdata4 = new ArrayList<>();
+        List<FycxFbtBean> listdata5 = new ArrayList<>();
+        List<FycxFbtBean> listdata6 = new ArrayList<>();
+        List<FycxFbtBean> listdata7 = new ArrayList<>();
+        List<FycxFbtBean> listdata8 = new ArrayList<>();
+        List<FycxFbtBean> listdata9 = new ArrayList<>();
+        List<FycxFbtBean> listdata10 = new ArrayList<>();
+        int item = 500;
+        for (int i = 0; i < down.list.size(); i++) {
+            FycxFbtBean bean = down.list.get(i);
+            if (i <= item) {
+                listdata1.add(bean);
+            } else if (i <= item*2) {
+                listdata2.add(bean);
+            } else if (i <= item*3) {
+                listdata3.add(bean);
+            } else if (i <= item*4) {
+                listdata4.add(bean);
+            } else if (i <= item*5) {
+                listdata5.add(bean);
+            } else if (i <= item*6) {
+                listdata6.add(bean);
+            } else if (i <= item*7) {
+                listdata7.add(bean);
+            } else if (i <= item*8) {
+                listdata8.add(bean);
+            } else if (i <= item*9) {
+                listdata9.add(bean);
             } else {
-//                aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
+                listdata10.add(bean);
             }
         }
+        addWindMarkers(listdata1);
+        addWindMarkers(listdata2);
+        addWindMarkers(listdata3);
+        addWindMarkers(listdata4);
+        addWindMarkers(listdata5);
+        addWindMarkers(listdata6);
+        addWindMarkers(listdata7);
+        addWindMarkers(listdata8);
+        addWindMarkers(listdata9);
+        addWindMarkers(listdata10);
+
         mActivity.dismissProgressDialog();
         tvPublicTime.setText(down.pub_time + " 更新");
+    }
+
+    private void addWindMarkers(final List<FycxFbtBean> listdata) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < listdata.size(); i++) {
+                    FycxFbtBean bean = listdata.get(i);
+                    if (TextUtils.isEmpty(bean.lat) || TextUtils.isEmpty(bean.lon) ||
+                            TextUtils.isEmpty(bean.val) || TextUtils.isEmpty(bean.fx)) {
+                        continue;
+                    }
+                    LatLng latLng = new LatLng(Double.parseDouble(bean.lat), Double.parseDouble(bean.lon));
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(getIcon(currentColumn, bean.val, bean.fx)))
+                            .anchor(0.5f, 1.0f);
+                    // 添加点数据至缓存列表
+                    Marker marker = aMap.addMarker(markerOptions);
+                    //marker.setObject(ZtqCityDB.getInstance().getStation(bean.sta_name));
+                    marker.setObject(bean);
+                    windMarkerOptionsList.add(marker);
+//            builder.include(latLng);
+                }
+
+                if(windMarkerOptionsList.size() != 0) {
+                    if(windMarkerOptionsList.size() == 1) {
+                        aMap.animateCamera(CameraUpdateFactory.newLatLngZoom(windMarkerOptionsList.get(0).getPosition(), MAP_ZOOM));
+                    } else {
+//                aMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 10));
+                    }
+                }
+            }
+        }).start();
     }
 
     /**

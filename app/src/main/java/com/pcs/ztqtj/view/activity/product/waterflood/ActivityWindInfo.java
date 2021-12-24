@@ -22,23 +22,21 @@ import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.maps.model.LatLngBounds;
 import com.amap.api.maps.model.LatLngBounds.Builder;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
+import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWindInfoDown;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWindInfoUp;
+import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.WindInfo;
 import com.pcs.ztqtj.R;
 import com.pcs.ztqtj.control.adapter.waterflood.AdapterWindInfoCount;
 import com.pcs.ztqtj.control.tool.ShareTools;
 import com.pcs.ztqtj.control.tool.ZtqImageTool;
 import com.pcs.ztqtj.control.tool.ZtqLocationTool;
 import com.pcs.ztqtj.view.activity.FragmentActivityWithShare;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
-import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWindInfoDown;
-import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.PackWindInfoUp;
-import com.pcs.lib_ztqfj_v2.model.pack.net.waterflood.WindInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -415,10 +413,7 @@ public class ActivityWindInfo extends FragmentActivityWithShare implements
 
             mShareBitmap = procImage(mAmapBitmap, bm, location[1]);
 			mShareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityWindInfo.this, mShareBitmap);
-            PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share#ABOUT_QXCP_DXFW");
-            if(down != null) {
-                ShareTools.getInstance(ActivityWindInfo.this).setShareContent(getTitleText(), down.share_content, mShareBitmap,"0").showWindow(layout);
-            }
+			ShareTools.getInstance(ActivityWindInfo.this).setShareContent(getTitleText(), getTitleText(), mShareBitmap,"0").showWindow(layout);
         }
 
         @Override

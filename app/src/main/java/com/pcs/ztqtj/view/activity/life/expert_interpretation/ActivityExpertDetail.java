@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataBrocastReceiver;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataDownload;
 import com.pcs.lib.lib_pcs_v3.model.data.PcsDataManager;
-import com.pcs.lib_ztqfj_v2.model.pack.net.PackShareAboutDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitDown;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkCommitUp;
 import com.pcs.lib_ztqfj_v2.model.pack.net.expert.PackExpertDetailTalkDown;
@@ -170,22 +169,16 @@ public class ActivityExpertDetail extends FragmentActivitySZYBBase {
         setBtnRight(R.drawable.icon_share_new, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share#ABOUT_QXCP_DXFW");
-                if (down == null) {
-                    return;
-                }
                 String share_content = "";
                 if (!TextUtils.isEmpty(textTitle.getText().toString())) {
-                    share_content =  " 《" + textTitle.getText().toString() + "》 " + down.share_content;
-                } else {
-                    share_content =  down.share_content;
+                    share_content =  " 《" + textTitle.getText().toString() + "》 ";
                 }
                 View layout = findViewById(R.id.scrollview);
                 Bitmap headBitmap = ZtqImageTool.getInstance().getScreenBitmap(headLayout);
                 Bitmap shareBitmap = ZtqImageTool.getInstance().getScreenBitmap(layout);
                 shareBitmap = ZtqImageTool.getInstance().stitch(headBitmap, shareBitmap);
                 shareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityExpertDetail.this, shareBitmap);
-                ShareTools.getInstance(ActivityExpertDetail.this).setShareContent(getTitleText(),share_content, shareBitmap,"0").showWindow(layout);
+                ShareTools.getInstance(ActivityExpertDetail.this).setShareContent(getTitleText(),share_content, shareBitmap, "0").showWindow(layout);
             }
         });
         btn_commit.setOnClickListener(new View.OnClickListener() {

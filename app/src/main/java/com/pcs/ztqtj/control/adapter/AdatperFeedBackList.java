@@ -40,20 +40,17 @@ public class AdatperFeedBackList extends BaseAdapter{
 		if (null == convertView) {
 			holde = new Holde();
 			convertView = LayoutInflater.from(context).inflate(R.layout.item_feedback_list, null);
-			holde.tv_feedback_name = (TextView) convertView.findViewById(R.id.tv_feedback_name);
 			holde.tv_feedback_time = (TextView) convertView.findViewById(R.id.tv_feedback_time);
 			holde.tv_feedback = (TextView) convertView.findViewById(R.id.tv_feedback);
 			convertView.setTag(holde);
 		} else {
 			holde = (Holde) convertView.getTag();
 		}
-		holde.tv_feedback_name.setText(suggetList.get(position).nick_name);
 		holde.tv_feedback_time.setText(suggetList.get(position).create_time);
 		holde.tv_feedback.setText(suggetList.get(position).msg);
 		return convertView;
 	}
 	public class Holde{
-		public TextView tv_feedback_name;
 		public TextView tv_feedback_time;
 		public TextView tv_feedback;
 	}

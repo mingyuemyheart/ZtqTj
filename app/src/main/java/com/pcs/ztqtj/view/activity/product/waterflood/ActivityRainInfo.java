@@ -1561,10 +1561,7 @@ public class ActivityRainInfo extends FragmentActivityWithShare implements
 
             mShareBitmap = procImage(mAmapBitmap, bm, location[1]);
 			mShareBitmap = ZtqImageTool.getInstance().stitchQR(ActivityRainInfo.this, mShareBitmap);
-            PackShareAboutDown down = (PackShareAboutDown) PcsDataManager.getInstance().getNetPack("wt_share#ABOUT_QXCP_DXFW");
-            if(down != null) {
-                ShareTools.getInstance(ActivityRainInfo.this).setShareContent(getTitleText(), down.share_content, mShareBitmap,"0").showWindow(layout);
-            }
+            ShareTools.getInstance(ActivityRainInfo.this).setShareContent(getTitleText(), getTitleText(), mShareBitmap,"0").showWindow(layout);
         }
 
         @Override

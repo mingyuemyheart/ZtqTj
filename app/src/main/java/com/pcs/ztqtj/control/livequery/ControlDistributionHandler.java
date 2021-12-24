@@ -367,20 +367,28 @@ public class ControlDistributionHandler extends ControlDistributionBase {
         } else {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                     pop.dismiss();
                     dropDownView.setText(dataeaum.get(position));
                     if (TextUtils.equals(dataeaum.get(position), "海河流域") || TextUtils.equals(dataeaum.get(position), "海洋")) {
                         cbDb.setClickable(false);
                         cbDb.setTextColor(Color.LTGRAY);
-                        if (controlMapBound != null) {
-                            controlMapBound.showBounds(false, controlMapBound.polygonLv1List);
-                            controlMapBound.showBounds(false, controlMapBound.polygonLv2List);
-                        }
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
-                                CommonUtil.drawHhlyJson(mActivity, aMap);
+                                if (TextUtils.equals(dataeaum.get(position), "海河流域")) {
+                                    CommonUtil.drawHhlyJson(mActivity, aMap);
+                                    if (controlMapBound != null) {
+                                        controlMapBound.showBounds(false, controlMapBound.polygonLv1List);
+                                        controlMapBound.showBounds(false, controlMapBound.polygonLv2List);
+                                    }
+                                } else {
+                                    CommonUtil.removeHhlyJson();
+                                    if (controlMapBound != null) {
+                                        controlMapBound.showBounds(true, controlMapBound.polygonLv1List);
+                                        controlMapBound.showBounds(true, controlMapBound.polygonLv2List);
+                                    }
+                                }
                             }
                         }).start();
                     } else {
@@ -638,7 +646,9 @@ public class ControlDistributionHandler extends ControlDistributionBase {
                 List<String> list = new ArrayList<>();
                 for (ColumnInfo bean : timeColumnList) {
                     if (TextUtils.equals(tvSite.getText().toString(), "海河流域") || TextUtils.equals(tvSite.getText().toString(), "海洋")) {
-                        if (!TextUtils.equals(bean.type, "MMaxTemp") && !TextUtils.equals(bean.type, "MMinTemp")) {
+                        if (!TextUtils.equals(bean.type, "TempMax24h") && !TextUtils.equals(bean.type, "TempMin24h")
+                            && !TextUtils.equals(bean.type, "TMaxTemp") && !TextUtils.equals(bean.type, "TMinTemp")
+                            && !TextUtils.equals(bean.type, "MMaxTemp") && !TextUtils.equals(bean.type, "MMinTemp")) {
                             list.add(bean.name);
                         }
                     } else {
